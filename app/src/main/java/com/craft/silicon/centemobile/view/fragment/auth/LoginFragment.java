@@ -1,0 +1,101 @@
+package com.craft.silicon.centemobile.view.fragment.auth;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.craft.silicon.centemobile.databinding.FragmentLoginBinding;
+import com.craft.silicon.centemobile.util.ShowDialog;
+import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
+import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.google.gson.Gson;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link LoginFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+
+@AndroidEntryPoint
+public class LoginFragment extends Fragment implements AppCallbacks {
+    private FragmentLoginBinding binding;
+    private AuthViewModel authViewModel;
+    private CompositeDisposable subscribe;
+
+
+    public LoginFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment LoginFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
+        setBinding();
+        setViewModel();
+
+        binding.materialButton.setOnClickListener(v -> authAccount());
+        return binding.getRoot().getRootView();
+    }
+
+    private void authAccount() {
+        subscribe = new CompositeDisposable();
+        subscribe.add(authViewModel.loading
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::showProgress, Throwable::printStackTrace));
+        subscribe.add(authViewModel.loginAccount(binding.editMobile.getText().toString(), binding.editPin.getText().toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(data -> {
+                    LoadingFragment.dismiss(getChildFragmentManager());
+                }, Throwable::printStackTrace));
+
+    }
+
+    private void showProgress(boolean data) {
+        if (data) LoadingFragment.show(getChildFragmentManager());
+
+    }
+
+    @Override
+    public void setBinding() {
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+    }
+
+    @Override
+    public void setViewModel() {
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+    }
+}

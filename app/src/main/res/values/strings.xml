@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">CenteMobile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">Logo</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="login">Login</string>
+    <string name="forgot_pin">Forgot Pin?</string>
+    <string name="login_securely">Login Securely</string>
+    <string name="hello_there">Hello There</string>
+    <string name="we_have_missed_you">We have missed You</string>
+    <string name="mobile">Mobile</string>
+    <string name="pin">Pin</string>
+    <string name="otp_">OTP</string>
+    <string name="enter_otp">Enter the One-Time Password\nsent to Your Mobile Number</string>
+    <string name="resend_otp">Resend</string>
+    <string name="verification">Verification</string>
+    <string name="submit_">Submit</string>
+    <string name="otp_required">Enter OTP</string>
+    <string name="hello_jane">Hello Jane Doe</string>
+    <string name="log_out">logout</string>
+    <string name="image">Image</string>
+</resources>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.view.ep.data.HeaderData" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:padding="@dimen/dimens_10dp"
+            app:cardBackgroundColor="@color/app_blue_dark"
+            app:cardCornerRadius="@dimen/dimens_10dp"
+            app:layout_constraintBottom_toTopOf="@+id/layTwo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/container">
+
+            <ImageButton
+                android:id="@+id/buttonOne"
+                android:layout_width="@dimen/dimens_50dp"
+                android:layout_height="@dimen/dimens_50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/image"
+                android:padding="@dimen/dimens_10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/graph_white" />
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layTwo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:padding="@dimen/dimens_10dp"
+            app:cardBackgroundColor="@color/ghost_white"
+            app:cardCornerRadius="@dimen/dimens_10dp"
+            app:cardElevation="@dimen/dimens_0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layOne">
+
+            <ImageButton
+                android:id="@+id/buttonTwo"
+                android:layout_width="@dimen/dimens_50dp"
+                android:layout_height="@dimen/dimens_50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/image"
+                android:padding="@dimen/dimens_10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/copy_black" />
+
+
+        </androidx.cardview.widget.CardView>
+
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/container"
+            callback="@{callback}"
+            controller="@{data}"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimens_150dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layOne"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

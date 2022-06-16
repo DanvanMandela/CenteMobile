@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.home.HomeFragment">
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ghost_white">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ghost_white"
+            android:paddingVertical="@dimen/dimens_10dp"
+            app:elevation="@dimen/dimens_0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/dimens_5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/dimens_40dp"
+                    android:layout_height="@dimen/dimens_40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="@dimen/dimens_5dp"
+                    android:src="@drawable/user_icon" />
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentInsetStart="@dimen/dimens_10dp"
+                    app:menu="@menu/home_menu"
+                    app:subtitle="@string/welcome_back"
+                    app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:title="@string/hello_jane"
+                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    tools:ignore="UnusedAttribute" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/dimens_16dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layOne"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
