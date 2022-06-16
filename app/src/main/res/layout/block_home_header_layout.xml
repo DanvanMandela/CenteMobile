@@ -35,7 +35,7 @@
                 android:layout_height="@dimen/dimens_50dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/image"
-                android:padding="@dimen/dimens_10dp"
+                android:padding="@dimen/dimens_15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/graph_white" />
         </androidx.cardview.widget.CardView>
@@ -61,7 +61,7 @@
                 android:layout_height="@dimen/dimens_50dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/image"
-                android:padding="@dimen/dimens_10dp"
+                android:padding="@dimen/dimens_15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/copy_black" />
 
@@ -73,10 +73,9 @@
             callback="@{callback}"
             controller="@{data}"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dimens_150dp"
-            android:layout_marginStart="16dp"
+            android:layout_height="@dimen/dimens_170dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clipToPadding="false"
             android:orientation="horizontal"

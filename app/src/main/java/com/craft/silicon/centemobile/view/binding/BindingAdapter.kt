@@ -7,6 +7,7 @@ import com.airbnb.epoxy.EpoxyRecyclerView
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.HeaderController
 import com.craft.silicon.centemobile.view.ep.data.HeaderData
+import com.google.android.material.appbar.MaterialToolbar
 
 @BindingAdapter("callback", "controller")
 fun EpoxyRecyclerView.setHeader(callbacks: AppCallbacks, data: HeaderData) {
@@ -20,6 +21,12 @@ fun TextView.textSet(@StringRes text: String?) {
     if (text != null) {
         this.text = text
     }
+}
+
+@BindingAdapter("callback")
+fun MaterialToolbar.setToolbar(callbacks: AppCallbacks) {
+
+
 }
 
 
