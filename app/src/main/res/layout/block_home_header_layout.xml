@@ -27,7 +27,7 @@
             app:cardCornerRadius="@dimen/dimens_10dp"
             app:layout_constraintBottom_toTopOf="@+id/layTwo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/container">
+            app:layout_constraintTop_toTopOf="@+id/containerChild">
 
             <ImageButton
                 android:id="@+id/buttonOne"
@@ -51,7 +51,7 @@
             app:cardBackgroundColor="@color/ghost_white"
             app:cardCornerRadius="@dimen/dimens_10dp"
             app:cardElevation="@dimen/dimens_0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/container"
+            app:layout_constraintBottom_toBottomOf="@+id/containerChild"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layOne">
 
@@ -69,21 +69,36 @@
         </androidx.cardview.widget.CardView>
 
         <com.airbnb.epoxy.EpoxyRecyclerView
-            android:id="@+id/container"
+            android:id="@+id/containerChild"
             callback="@{callback}"
             controller="@{data}"
+            setIndicator="@{@id/indicatorLayout}"
             android:layout_width="0dp"
             android:layout_height="@dimen/dimens_170dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
+            android:paddingStart="@dimen/dimens_0dp"
+            android:paddingEnd="@dimen/dimens_8dp"
             app:layoutManager="LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/layOne"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <LinearLayout
+            android:id="@+id/indicatorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal"
+            android:tag="@string/welcome_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/containerChild"
+            app:layout_constraintTop_toBottomOf="@+id/containerChild" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
