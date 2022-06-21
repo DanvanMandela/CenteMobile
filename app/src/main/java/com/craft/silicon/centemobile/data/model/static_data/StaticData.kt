@@ -28,5 +28,5 @@ data class StaticData(
     @field:SerializedName("UserCode")
     @field:ColumnInfo(name = "userCode")
     @field:Expose
-    var userCode: List<UserData>
+    var userCode: List<StaticDataDetails>
 ) : Parcelable

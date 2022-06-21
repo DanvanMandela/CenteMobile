@@ -1,14 +1,20 @@
 package com.craft.silicon.centemobile.view.fragment.splash;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.craft.silicon.centemobile.R;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.craft.silicon.centemobile.databinding.FragmentSplashBinding;
+import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
+import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.model.SplashViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -18,12 +24,15 @@ import dagger.hilt.android.AndroidEntryPoint;
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-public class SplashFragment extends Fragment {
+public class SplashFragment extends Fragment implements AppCallbacks {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private FragmentSplashBinding binding;
+    private SplashViewModel splashViewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,9 +70,30 @@ public class SplashFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_splash, container, false);
+        binding = FragmentSplashBinding.inflate(inflater, container, false);
+        setBinding();
+        return binding.getRoot().getRootView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setViewModel();
+    }
+
+    @Override
+    public void setBinding() {
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+    }
+
+    @Override
+    public void setViewModel() {
+        splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ((MainActivity) requireActivity()).provideNavigationGraph().navigate(splashViewModel.getNavigation());
+        }, 300);
     }
 }

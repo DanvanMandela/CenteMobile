@@ -1,11 +1,15 @@
 package com.craft.silicon.centemobile.view.binding
 
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
@@ -28,12 +32,15 @@ import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.ep.controller.FrequentController
 import com.craft.silicon.centemobile.view.ep.controller.HeaderController
 import com.craft.silicon.centemobile.view.ep.controller.ModuleController
 import com.craft.silicon.centemobile.view.ep.data.BodyData
 import com.craft.silicon.centemobile.view.ep.data.HeaderData
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.internal.TextWatcherAdapter
 
 
 @BindingAdapter("callback", "controller", "setIndicator")
@@ -45,6 +52,8 @@ fun EpoxyRecyclerView.setHeader(callbacks: AppCallbacks, data: HeaderData, @IdRe
     val controller = HeaderController(callbacks)
     controller.setData(data)
     this.setController(controller)
+
+
     this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
@@ -87,15 +96,19 @@ fun setIndicator(
 
 
 @BindingAdapter("textSet")
-fun TextView.textSet(@StringRes text: String?) {
+fun TextView.textSet(text: String?) {
     if (text != null) {
         this.text = text
     }
 }
 
-//fun RecyclerView?.getCurrentPosition(): Int {
-//    return (this?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-//}
+@BindingAdapter("textStrRes")
+fun TextView.textStrRes(@StringRes text: Int?) {
+    if (text != null) {
+        this.text = this.context.getString(text)
+    }
+}
+
 
 @BindingAdapter("callback")
 fun MaterialToolbar.setToolbar(callbacks: AppCallbacks) {
@@ -138,17 +151,93 @@ fun ImageView.setImageUri(imageURL: String?) {
         .into(this)
 }
 
-@BindingAdapter("callback", "data")
-fun EpoxyRecyclerView.setBody(callbacks: AppCallbacks, data: BodyData) {
+@BindingAdapter("callback", "module")
+fun EpoxyRecyclerView.setModule(callbacks: AppCallbacks, module: BodyData) {
     this.animation =
         AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
     this.layoutManager = GridLayoutManager(this.context, 3)
     val controller = ModuleController(callbacks)
-    data.body.forEach {
-        controller.setData(it)
-    }
+    controller.setData(module.module)
     this.setController(controller)
 }
+
+@BindingAdapter("callback", "frequent")
+fun EpoxyRecyclerView.setFrequent(callbacks: AppCallbacks, frequent: BodyData) {
+    this.animation =
+        AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
+    this.layoutManager = GridLayoutManager(this.context, 4)
+    val controller = FrequentController(callbacks)
+    controller.setData(frequent.frequentList)
+    this.setController(controller)
+}
+
+@BindingAdapter("imageRes")
+fun ImageView.setImageRes(@DrawableRes res: Int?) {
+    val options: RequestOptions = RequestOptions()
+        .placeholder(R.drawable.photos)
+        .error(R.drawable.warning)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .priority(Priority.HIGH)
+    Glide.with(this)
+        .load(res)
+        .apply(options)
+        .listener(object : RequestListener<Drawable?> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable?>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable?>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+        })
+        .into(this)
+}
+
+@BindingAdapter("accountNumber")
+fun TextView.setAccountNumber(text: String?) {
+    if (text != null) {
+        this.text = BaseClass.maskCardNumber(text)
+        this.setOnClickListener {
+            this.text = text
+            Handler(Looper.getMainLooper()).postDelayed({
+                this.text = BaseClass.maskCardNumber(text)
+            }, 1500)
+        }
+    }
+
+}
+
+class CreditCardFormatWatcher : TextWatcherAdapter() {
+
+    override fun afterTextChanged(s: Editable) {
+        if (s.isEmpty()) return
+        s.forEachIndexed { index, c ->
+            val spaceIndex = index == 4 || index == 9 || index == 14
+            when {
+                !spaceIndex && !c.isDigit() -> s.delete(index, index + 1)
+                spaceIndex && !c.isWhitespace() -> s.insert(index, " ")
+            }
+        }
+
+        if (s.last().isWhitespace())
+            s.delete(s.length - 1, s.length)
+    }
+
+}
+
+
+
 
 
 

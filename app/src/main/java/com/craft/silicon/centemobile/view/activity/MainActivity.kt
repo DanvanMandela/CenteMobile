@@ -5,23 +5,30 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
+import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.source.remote.callback.RequestData
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.ep.data.AppData
+import com.craft.silicon.centemobile.view.ep.data.HeaderData
+import com.craft.silicon.centemobile.view.model.AuthViewModel
 import com.craft.silicon.centemobile.view.model.DynamicViewModel
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import java.lang.Exception
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinationChangedListener {
@@ -29,6 +36,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     private val viewModel: DynamicViewModel by viewModels()
     private val subscribe = CompositeDisposable()
     private var navController: NavController? = null
+    private val authViewModel: AuthViewModel by viewModels()
+    private var onAppData: OnAppData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +95,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+
+
                     if (it.respCode == "000") {
                         var keys = ""
                         val device = it.payload?.device
@@ -101,7 +112,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
                                 keys, false, it.payload?.ran
                             )
                         )
+                        Log.e("TAg",Gson().toJson(data))
                         data?.token = it.token!!
+                        data?.run = it.payload!!.ran
+                        data?.device = keys
                         viewModel.saveDeviceData(data)
                     }
                 },
@@ -124,5 +138,35 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
         arguments: Bundle?
     ) {
 
+    }
+
+
+    fun homeData(data: OnAppData) {
+        authViewModel.account
+            .subscribeOn(Schedulers.io())
+            .map { it }
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                data.onApData(HeaderData(it))
+            }, { it.printStackTrace() })
+    }
+
+    private fun cardData(): MutableList<Accounts>? {
+        val accounts = MutableLiveData<MutableList<Accounts>>()
+        authViewModel.account
+            .subscribeOn(Schedulers.io())
+            .map { it }
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                accounts.value = it
+            }, { it.printStackTrace() })
+        return accounts.value
+    }
+
+}
+
+interface OnAppData {
+    fun onApData(appData: AppData) {
+        throw Exception("Not implemented")
     }
 }

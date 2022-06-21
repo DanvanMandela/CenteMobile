@@ -14,4 +14,12 @@ public interface NavigationDataSource {
     default NavDirections navigateToHome() {
         return null;
     }
+
+    default NavDirections navigateAuth() {
+        return null;
+    }
+
+    default NavDirections navigateToOTP(String mobile) {
+        return null;
+    }
 }

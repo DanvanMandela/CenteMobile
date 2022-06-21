@@ -6,11 +6,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
-@Entity(tableName = "user_data_tbl")
-data class UserData(
+@Entity(tableName = "static_data_details_tbl")
+data class StaticDataDetails(
     @field:SerializedName("ID")
     @field:ColumnInfo(name = "id")
     @field:Expose

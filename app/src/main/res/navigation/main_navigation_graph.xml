@@ -3,9 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <!--    Global Directions-->
+    <action
+        android:id="@+id/action_nav_login"
+        app:destination="@+id/loginFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_home"
+        app:destination="@+id/homeFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_auth"
+        app:destination="@+id/authFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_otp"
+        app:destination="@+id/otpFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
     <!--    End-->
     <!--    Fragments-->
     <fragment

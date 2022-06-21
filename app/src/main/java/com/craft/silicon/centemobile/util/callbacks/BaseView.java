@@ -17,4 +17,8 @@ public interface BaseView {
     default void setController() {
     }
 
+    default void setBroadcastListener() {
+
+    }
+
 }

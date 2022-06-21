@@ -1,24 +1,27 @@
 package com.craft.silicon.centemobile.view.model;
 
-import android.util.Log;
+import android.app.Activity;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
+import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
+import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.repository.auth.AuthDataSource;
 import com.craft.silicon.centemobile.data.repository.auth.AuthRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
-import com.craft.silicon.centemobile.data.source.remote.callback.RequestData;
-import com.craft.silicon.centemobile.data.source.remote.callback.ResponseData;
+import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
+import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.util.BaseClass;
-import com.google.gson.Gson;
+import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -27,14 +30,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.subjects.BehaviorSubject;
-import kotlinx.coroutines.flow.MutableStateFlow;
 
 @HiltViewModel
 public class AuthViewModel extends ViewModel implements AuthDataSource {
 
     private final AuthRepository authRepository;
-    private final StorageDataSource storage;
-    public LiveData<String> optLiveData = new MutableLiveData<>("");
+    public final StorageDataSource storage;
+    public final NavigationDataSource navigationDataSource;
 
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
@@ -42,128 +44,154 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
 
 
     @Inject
-    public AuthViewModel(AuthRepository authRepository, StorageDataSource storageDataSource) {
+    public AuthViewModel(AuthRepository authRepository, StorageDataSource storageDataSource, NavigationDataSource navigationDataSource) {
         this.authRepository = authRepository;
         this.storage = storageDataSource;
-
+        this.navigationDataSource = navigationDataSource;
     }
 
 
     @Override
-    public Single<ResponseData> loginAccount(String mobile, String pin) {
+    public Single<DynamicResponse> activateAccount(String mobile, String pin, Activity activity) {
         try {
+            String iv = storage.getDeviceData().getValue().getRun();
+            String device = storage.getDeviceData().getValue().getDevice();
+            String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("FORMID", "ACTIVATIONREQ");
-            jsonObject.put("UNIQUEID", "wtgsgfsfsfsfsffsspo");
-            jsonObject.put("CUSTOMERID", "25600116");
-            jsonObject.put("BANKID", "16");
-            jsonObject.put("VersionNumber", "28");
+
+
+            Constants.commonJSON(jsonObject,
+                    activity,
+                    uniqueID,
+                    ActionTypeEnum.ACTIVATION_REQ.getType(),
+                    "",
+                    false);
+
             jsonObject.put("MobileNumber", mobile);
-            jsonObject.put("IMEI", BaseClass.encrypt("45687555"));
-            jsonObject.put("IMSI", BaseClass.encrypt("45687555"));
-            jsonObject.put("TRXSOURCE", "APP");
-            jsonObject.put("APPNAME", "CENTE");
-            jsonObject.put("CODEBASE", "ANDROID");
-            jsonObject.put(
-                    "LATLON",
-                    "0.0" + "," + "0.0"
-            );
-
             JSONObject jsonObject1 = new JSONObject();
             jsonObject.put("Activation", jsonObject1);
             JSONObject encryptedFieldsJsonObject = new JSONObject();
-            encryptedFieldsJsonObject.put("PIN", BaseClass.encrypt(pin));
+            encryptedFieldsJsonObject.put("PIN", BaseClass.newEncrypt(pin));
             jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
 
             String newRequest = jsonObject.toString();
-
-            Log.e("DATA", newRequest);
-
-            jsonObject.put("rashi", BaseClass.hashLatest(newRequest));
-            jsonObject.put("MobileNumber", "2500116");
-            jsonObject.put("CodeBase", "ANDROID");
-            jsonObject.put("lat", "0.0");
-            jsonObject.put("long", "0.0");
-            jsonObject.put("UniqueId", "eqrwfdgdgdhdhd");
-            jsonObject.put("Appname", "CENTE");
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
 
-            return authRepository.authRequest(new RequestData(
-                            "87654321",
-                            mobile,
-                            "12345678",
-                            "ANDROID",
-                            "0.0",
-                            "0.0",
-                            BaseClass.hashLatest(newRequest), "CENTE"
+            return authRepository.authRequest(new PayloadData(
+                            uniqueID,
+                            BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
                     .doOnSuccess(disposable -> loadingUi.onNext(false))
                     .doOnError(disposable -> loadingUi.onNext(false));
 
-
         } catch (JSONException exception) {
             exception.printStackTrace();
-
             return null;
         }
     }
 
     @Override
-    public Single<ResponseData> verifyOTP(String otp) {
+    public Single<DynamicResponse> loginAccount(String pin, Activity activity) {
         try {
+            String iv = storage.getDeviceData().getValue().getRun();
+            String device = storage.getDeviceData().getValue().getDevice();
+            String mobile = storage.getActivationData().getValue().getMobile();
+            String customerID = storage.getActivationData().getValue().getId();
+            String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("FORMID", "ACTIVATIONREQ");
-            jsonObject.put("UNIQUEID", "wtgsgfsfsfsfsffsspo");
-            jsonObject.put("CUSTOMERID", "16");
-            jsonObject.put("VersionNumber", "28");
-            jsonObject.put("MobileNumber", "mobile");
-            jsonObject.put("IMEI", BaseClass.encrypt("45687555"));
-            jsonObject.put("IMSI", BaseClass.encrypt("45687555"));
-            jsonObject.put("TRXSOURCE", "APP");
-            jsonObject.put("APPNAME", "CENTE");
-            jsonObject.put("CODEBASE", "ANDROID");
-            jsonObject.put(
-                    "LATLON",
-                    "0.0" + "," + "0.0"
-            );
 
+            Constants.commonJSON(jsonObject,
+                    activity,
+                    uniqueID,
+                    ActionTypeEnum.LOGIN.getType(),
+                    customerID,
+                    true);
+
+            jsonObject.put("MobileNumber", mobile);
             JSONObject jsonObject1 = new JSONObject();
-            jsonObject.put("Activation", jsonObject1);
+            jsonObject1.put("LoginType", "PIN");
+            jsonObject.put("Login", jsonObject1);
             JSONObject encryptedFieldsJsonObject = new JSONObject();
-            encryptedFieldsJsonObject.put("OTP", BaseClass.encrypt(otp));
+            encryptedFieldsJsonObject.put("PIN", BaseClass.newEncrypt(pin));
             jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
 
             String newRequest = jsonObject.toString();
 
-            Log.e("DATA", newRequest);
-
-            jsonObject.put("rashi", BaseClass.hashLatest(newRequest));
-            jsonObject.put("MobileNumber", "2500116");
-            jsonObject.put("CodeBase", "ANDROID");
-            jsonObject.put("lat", "0.0");
-            jsonObject.put("long", "0.0");
-            jsonObject.put("UniqueId", "eqrwfdgdgdhdhd");
-            jsonObject.put("Appname", "CENTE");
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
 
-            return authRepository.authRequest(new RequestData(
-                            "87654321",
-                            "mobile",
-                            "12345678",
-                            "ANDROID",
-                            "0.0",
-                            "0.0",
-                            BaseClass.hashLatest(newRequest), "CENTE"
+            return authRepository.authRequest(new PayloadData(
+                            uniqueID,
+                            BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
                     .doOnSuccess(disposable -> loadingUi.onNext(false))
                     .doOnError(disposable -> loadingUi.onNext(false));
 
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> verifyOTP(String otp, Activity activity, String mobile) {
+        try {
+            String iv = storage.getDeviceData().getValue().getRun();
+            String device = storage.getDeviceData().getValue().getDevice();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+            Constants.commonJSON(jsonObject,
+                    activity,
+                    uniqueID,
+                    ActionTypeEnum.ACTIVATE.getType(),
+                    "",
+                    false);
+
+            jsonObject.put("MobileNumber", mobile);
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject.put("Activation", jsonObject1);
+            JSONObject encryptedFieldsJsonObject = new JSONObject();
+            encryptedFieldsJsonObject.put("Key", BaseClass.newEncrypt(otp));
+            jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
+
+            String newRequest = jsonObject.toString();
+            String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+
+            return authRepository.authRequest(new PayloadData(
+                            uniqueID,
+                            BaseClass.encryptString(newRequest, device, iv)
+                    ), path)
+                    .doOnSubscribe(disposable -> loadingUi.onNext(true))
+                    .doOnSuccess(disposable -> loadingUi.onNext(false))
+                    .doOnError(disposable -> loadingUi.onNext(false));
 
         } catch (JSONException exception) {
             exception.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void saveFrequentModule(List<FrequentModules> modules) {
+        authRepository.saveFrequentModule(modules);
+    }
+
+    @Override
+    public Observable<List<FrequentModules>> getFrequentModules() {
+        return authRepository.getFrequentModules()
+                .doOnSubscribe(disposable -> loadingUi.onNext(true))
+                .doOnError(throwable -> loadingUi.onNext(false));
+    }
+
+    @Override
+    public Observable<List<Accounts>> getAccount() {
+        return authRepository.getAccount();
+    }
+
+    @Override
+    public void saveActivationData(ActivationData activationData) {
+        storage.setActivationData(activationData);
+        storage.setActivated(true);
     }
 }

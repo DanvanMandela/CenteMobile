@@ -7,15 +7,15 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.CardData" />
+            type="com.craft.silicon.centemobile.data.model.user.Accounts" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimens_150dp"
-        app:cardElevation="@dimen/dimens_5dp"
         android:layout_marginHorizontal="@dimen/dimens_10dp"
-        app:cardCornerRadius="@dimen/dimens_16dp">
+        app:cardCornerRadius="@dimen/dimens_16dp"
+        app:cardElevation="@dimen/dimens_5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_semi_bold"
+                android:fontFamily="@font/poppins_regular"
                 android:maxLines="1"
                 android:text="UGX. 85,256"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
@@ -76,6 +76,7 @@
 
             <TextView
                 android:id="@+id/textView6"
+                accountNumber="@{data.id}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -84,7 +85,6 @@
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_regular"
                 android:maxLines="1"
-                android:text="454,XXX,XXX,485"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/aspectRatioImageView"

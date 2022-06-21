@@ -1,3 +1,5 @@
 package com.craft.silicon.centemobile.util.callbacks
 
-interface AppCallbacks : BaseView
+import com.craft.silicon.centemobile.view.dialog.DialogCallback
+
+interface AppCallbacks : BaseView,DialogCallback

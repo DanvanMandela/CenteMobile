@@ -1,14 +1,15 @@
 package com.craft.silicon.centemobile.view.dialog
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLoadingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,24 +26,21 @@ class LoadingFragment : DialogFragment() {
     private lateinit var binding: FragmentLoadingBinding
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentLoadingBinding.inflate(inflater, container, false);
-
+        binding = FragmentLoadingBinding.inflate(inflater, container, false)
         return binding.root.rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog!!.setCancelable(false)
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
+
 
     companion object {
         private val TAG: String = LoadingFragment::class.java.simpleName
@@ -51,13 +49,11 @@ class LoadingFragment : DialogFragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
          * @return A new instance of fragment LoadingFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(manager: FragmentManager) =
+        fun newInstance() =
             LoadingFragment().apply {
 
             }

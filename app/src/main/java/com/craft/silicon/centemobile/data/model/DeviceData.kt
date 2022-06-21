@@ -7,8 +7,7 @@ import javax.annotation.Nullable
 data class DeviceData(
     @field:SerializedName("token")
     @field:Expose
-    @Nullable
-    var token: String?,
+    var token: String,
     @field:SerializedName("version")
     @field:Expose
     @Nullable
@@ -36,7 +35,16 @@ data class DeviceData(
     @field:SerializedName("balance")
     @field:Expose
     @Nullable
-    val balance: String?
+    val balance: String?,
+
+    @field:SerializedName("run")
+    @field:Expose
+    @Nullable
+    var run: String?,
+    @field:SerializedName("device")
+    @field:Expose
+    @Nullable
+    var device: String?
 )
 
 open class SpiltURL(url: String) {

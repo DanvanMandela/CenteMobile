@@ -2,6 +2,7 @@ package com.craft.silicon.centemobile.data.source.pref
 
 import android.content.SharedPreferences
 import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.user.ActivationData
 import kotlinx.coroutines.flow.StateFlow
 
 interface StorageDataSource {
@@ -17,5 +18,12 @@ interface StorageDataSource {
 
     fun setDeviceData(value: DeviceData)
     val deviceData: StateFlow<DeviceData?>
+
+    fun setActivationData(value: ActivationData)
+    val activationData: StateFlow<ActivationData?>
+
+    fun setActivated(value: Boolean)
+    val isActivated: StateFlow<Boolean?>
+
 
 }

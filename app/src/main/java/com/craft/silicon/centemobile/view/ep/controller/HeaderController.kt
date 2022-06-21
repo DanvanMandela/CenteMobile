@@ -9,9 +9,9 @@ class HeaderController(val callbacks: AppCallbacks) :
     TypedEpoxyController<HeaderData>() {
 
     override fun buildModels(data: HeaderData?) {
-        if (data!!.cardData.isNotEmpty())
-            for (d in data.cardData) headerItemCardLayout {
-                id(d.title)
+        if (data!!.account.isNotEmpty())
+            for (d in data.account) headerItemCardLayout {
+                id(d.id)
                 data(d)
             }
     }

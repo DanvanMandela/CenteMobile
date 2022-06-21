@@ -21,4 +21,8 @@
     <string name="log_out">logout</string>
     <string name="image">Image</string>
     <string name="avatar">Avatar</string>
+    <string name="error">Error</string>
+    <string name="something_">Something went wrong\nTry Again!</string>
+    <string name="pin_required">Pin required</string>
+    <string name="opt_required">OTP required</string>
 </resources>

@@ -95,7 +95,6 @@
                 android:inputType="number"
                 android:itemBackground="@color/ghost_white"
                 android:padding="10dp"
-                android:text="@{model.optLiveData}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:cursorColor="@color/grey_light"
                 app:cursorWidth="2dp"
@@ -114,20 +113,42 @@
                 tools:ignore="EditableContentDescCheck" />
 
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/resendLay"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="@string/resend_otp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                android:textColor="@color/app_blue_light"
+                android:padding="@dimen/dimens_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText">
+
+                <TextView
+                    android:id="@+id/counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText" />
+
+
+                <TextView
+                    android:id="@+id/resendOTP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/resend_otp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="@color/app_blue_light"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText" />
+
+            </FrameLayout>
 
 
             <com.google.android.material.button.MaterialButton
@@ -141,7 +162,7 @@
                 android:text="@string/submit_"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/resendLay" />
 
 
             <View

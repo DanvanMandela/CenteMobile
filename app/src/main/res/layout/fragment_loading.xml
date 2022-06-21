@@ -6,16 +6,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-
+        android:padding="@dimen/dimens_100dp"
         android:layout_height="match_parent">
 
         <com.github.ybq.android.spinkit.SpinKitView
-            android:layout_margin="@dimen/dimens_54dp"
             android:id="@+id/spin_kit"
-            style="@style/SpinKitView.ThreeBounce"
+            style="@style/SpinKitView.FadingCircle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:SpinKit_Color="@color/app_blue_dark"
+            app:SpinKit_Color="@color/white"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"

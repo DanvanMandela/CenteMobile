@@ -2,7 +2,9 @@ package com.craft.silicon.centemobile.util;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,9 +22,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class BaseClass {
     public static final String kv = "csXDRzpcEPm_jMny";
-    public static final String iv = "J7?*jee^E8_FNb2^";
+    public static String iv = "84jfkfndl3ybdfkf";
     private final String KeyValue = "KbPmng&1977dsfds%";
-    private final String LogKeyValue = "KBSB&er3bflx9%";
+    private static final String LogKeyValue = "KBSB&er3bflx9%";
 
     public static String encrypt(String value) {
         String escapedString;
@@ -39,6 +41,19 @@ public class BaseClass {
             e.printStackTrace();
             return value;
         }
+    }
+
+    public static String newEncrypt(String text) {
+        String data = "";
+        try {
+            CryptLib _crypt = new CryptLib();
+            String key = CryptLib.SHA256(LogKeyValue, 32);
+            data = _crypt.encrypt(text, key, iv);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        data = data.replace("\n", "");
+        return data;
     }
 
     public static String[] starboyEncrypt(String data) {
@@ -125,14 +140,14 @@ public class BaseClass {
         return decryptString;
     }
 
-    public static String decryptLatest(String encryptedStr, String keyVal, boolean doBase64Decrypt, String iv) {
+    public static String decryptLatest(String encryptedStr, String keyVal, boolean doBase64Decrypt, String v) {
 
         String data = "";
-
+        String mv = TextUtils.isEmpty(v) ? iv : v;
         try {
             CryptLib crypt = new CryptLib();
             String key = CryptLib.SHA256(keyVal, 32);
-            data = crypt.decrypt(encryptedStr, key, iv);
+            data = crypt.decrypt(encryptedStr, key, mv);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,6 +158,7 @@ public class BaseClass {
         }
         return data;
     }
+
 
     public static String base64Decrypt(String str) {
         // Receiving side
@@ -240,4 +256,53 @@ public class BaseClass {
         return hexString.toString();
 
     }
+
+    public static String encryptString(String decryptedString, String keyvaltest, String serverIV) {
+        String data = "";
+
+        try {
+            CryptLib crypt = new CryptLib();
+            String key = CryptLib.SHA256(keyvaltest, 32);
+            data = crypt.encrypt(decryptedString, key, serverIV);
+            data = data.replaceAll("\\r\\n|\\r|\\n", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    public static String decryptString(String encryptedString, String device, String serverIV) {
+        String data = "";
+        try {
+            CryptLib crypt = new CryptLib();
+            String key = CryptLib.SHA256(device, 32);
+            data = crypt.decrypt(encryptedString, key, serverIV);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+
+    public static String maskCardNumber(String cardNumber) {
+        final int START_LENGTH = 1;
+        final int END_LENGTH = 4;
+        int maskedLength = cardNumber.length() - (START_LENGTH + END_LENGTH);
+        System.out.println(maskedLength);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < maskedLength; i++) {
+            sb.append("#");
+        }
+
+        return cardNumber.substring(0, START_LENGTH) + sb + cardNumber.substring(cardNumber.length() - END_LENGTH);
+    }
+
+    public static String mask(String input) {
+
+        int length = input.length() - input.length() / 4;
+        String s = input.substring(0, length);
+
+        return s.replaceAll("[A-Za-z0-9]", "X") + input.substring(length);
+    }
+
 }

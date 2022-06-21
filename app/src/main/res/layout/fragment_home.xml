@@ -58,21 +58,53 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:fillViewport="true"
-            android:overScrollMode="never"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-            <com.airbnb.epoxy.EpoxyRecyclerView
-                android:id="@+id/container"
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                app:shimmer_repeat_mode="restart"
+                app:shimmer_shape="radial">
 
-                />
-        </androidx.core.widget.NestedScrollView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/shimmer_items" />
+
+                    <include layout="@layout/shimmer_items" />
+
+                    <include layout="@layout/shimmer_items" />
+
+                    <include layout="@layout/shimmer_items" />
+
+                    <include layout="@layout/shimmer_items" />
+
+                    <include layout="@layout/shimmer_items" />
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never">
+
+                <com.airbnb.epoxy.EpoxyRecyclerView
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    />
+            </androidx.core.widget.NestedScrollView>
+        </FrameLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

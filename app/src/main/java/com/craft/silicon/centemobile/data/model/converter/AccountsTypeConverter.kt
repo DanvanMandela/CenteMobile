@@ -2,7 +2,7 @@ package com.craft.silicon.centemobile.data.model.converter
 
 
 import androidx.room.TypeConverter
-import com.example.waroftheworlds.data.entity.user.Accounts
+import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
