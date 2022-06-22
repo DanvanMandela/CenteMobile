@@ -132,15 +132,10 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     R.drawable.warning_app
             ), getChildFragmentManager());
         } else {
-            Log.e("WAHH",BaseClass.decryptLatest(data.getResponse(),
-                    authViewModel.storage.getDeviceData().getValue().getDevice(),
-                    true,
-                    ""
-            ));
             LoginUserData responseDetails = new LoginDataTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                     authViewModel.storage.getDeviceData().getValue().getDevice(),
                     true,
-                   ""
+                    authViewModel.storage.getDeviceData().getValue().getRun()
             ));
             assert responseDetails != null;
             if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {

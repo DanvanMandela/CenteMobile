@@ -15,6 +15,7 @@ import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.data.source.remote.callback.WidgetRequest;
 import com.craft.silicon.centemobile.util.BaseClass;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -46,19 +47,24 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         String uniqueID = Constants.getUniqueID();
         JSONObject jsonObject = new JSONObject();
 
+
         Constants.commonJSON(jsonObject,
                 activity,
                 uniqueID,
                 action,
                 "",
-                false);
+                true);
+
+
+        String newRequest = jsonObject.toString();
+
 
         String path = new SpiltURL(storageDataSource.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storageDataSource.getDeviceData().getValue().getOther())).getPath();
-        Log.e("Tat", jsonObject.toString());
+        Log.e("Tat", newRequest);
 
         return widgetRepository.requestWidget(new PayloadData(
                 uniqueID,
-                BaseClass.encryptString(jsonObject.toString(), device, iv)
+                BaseClass.encryptString(newRequest, device, iv)
         ), path).doOnSubscribe(disposable -> {
         });
     }

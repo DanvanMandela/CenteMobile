@@ -27,7 +27,7 @@ class AuthWorker @AssistedInject constructor(
                         WorkerCommons.TAG_APP_DATA
                     )
                 )
-            updateActivationData(data)
+            //updateActivationData(data)
             authRepository.saveVersion(data?.version)
             authRepository.saveBeneficiary(data?.beneficiary)
             authRepository.saveAccountModule(data?.accounts)

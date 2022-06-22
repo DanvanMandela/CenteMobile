@@ -16,7 +16,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_height="wrap_content"
+        android:onClick="@{()->callback.onModule(data)}"
         android:padding="@dimen/dimens_5dp">
 
         <ImageView

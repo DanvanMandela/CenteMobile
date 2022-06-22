@@ -30,6 +30,8 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
@@ -218,22 +220,15 @@ fun TextView.setAccountNumber(text: String?) {
 
 }
 
-class CreditCardFormatWatcher : TextWatcherAdapter() {
-
-    override fun afterTextChanged(s: Editable) {
-        if (s.isEmpty()) return
-        s.forEachIndexed { index, c ->
-            val spaceIndex = index == 4 || index == 9 || index == 14
-            when {
-                !spaceIndex && !c.isDigit() -> s.delete(index, index + 1)
-                spaceIndex && !c.isWhitespace() -> s.insert(index, " ")
-            }
+@BindingAdapter("username")
+fun TextView.setUsername(data: ActivationData?) {
+    if (data != null) {
+        if (data.firstName != null) {
+            val name =
+                "${this.context.getString(R.string.hello_jane)} ${data.firstName} ${data.lastName}"
+            this.text = name
         }
-
-        if (s.last().isWhitespace())
-            s.delete(s.length - 1, s.length)
     }
-
 }
 
 

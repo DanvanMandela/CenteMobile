@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -304,5 +305,18 @@ public class BaseClass {
 
         return s.replaceAll("[A-Za-z0-9]", "X") + input.substring(length);
     }
+
+    public static String decode64(String s) {
+        byte[] decoded = Base64.decode(s, Base64.DEFAULT);
+        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+        return decodedStr;
+    }
+
+    public static  String decodeBase64(String coded) {
+        byte[] valueDecoded;
+        valueDecoded = Base64.decode(coded.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+        return new String(valueDecoded);
+    }
+
 
 }

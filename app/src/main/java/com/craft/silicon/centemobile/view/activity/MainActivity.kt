@@ -74,12 +74,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
                                 keys, false, it.payload?.ran
                             )
                         )
-                        Log.e("TAg", Gson().toJson(data))
+
                         data?.token = it.token!!
                         data?.run = it.payload!!.ran
                         data?.device = keys
                         viewModel.saveDeviceData(data)
                         fetchWidgets()
+                        Log.e("TAg", Gson().toJson(data))
                     }
                 },
                     { Log.e(this@MainActivity.javaClass.simpleName, it.localizedMessage!!) })
@@ -90,11 +91,18 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
 
         Handler(Looper.getMainLooper()).postDelayed({
             subscribe.add(
-                widgetViewModel.widgets(this, "MENU")
+                widgetViewModel.widgets(this, "ACTIONS")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        Log.e("Help", Gson().toJson(it))
+                        Log.e("DATA", Gson().toJson(it.response))
+                        Log.e("DECRYPTED", BaseClass.decryptLatest(
+                            it.response,
+                            authViewModel.storage.deviceData.value!!.device,
+                            true,
+                            authViewModel.storage.deviceData.value!!.run
+                        ))
+
                     }, { it.printStackTrace() })
             )
         }, 300)

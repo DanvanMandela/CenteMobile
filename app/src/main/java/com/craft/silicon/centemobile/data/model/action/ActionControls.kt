@@ -63,5 +63,10 @@ data class ActionControls(
     @field:SerializedName("MerchantID")
     @field:ColumnInfo(name = "merchantID")
     @field:Expose
-    var merchantID: String?
+    var merchantID: String?,
+
+    @field:SerializedName("WebHeader")
+    @field:ColumnInfo(name = "webHeader")
+    @field:Expose
+    var webHeader: String?
 ) : Serializable, Parcelable

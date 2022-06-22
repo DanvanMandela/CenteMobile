@@ -104,7 +104,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                             ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                                     authViewModel.storage.getDeviceData().getValue().getDevice(),
                                     true,
-                                    ""
+                                    authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
                             assert responseDetails != null;
                             if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {

@@ -23,6 +23,7 @@ import com.craft.silicon.centemobile.view.ep.controller.AppController;
 import com.craft.silicon.centemobile.view.ep.data.AppData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
 import com.craft.silicon.centemobile.view.ep.data.HeaderData;
+import com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 
 import java.util.ArrayList;
@@ -146,5 +147,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
         controller.setData(appDataList);
         updateController();
 
+    }
+
+    @Override
+    public void onModule(Modules modules) {
+         DynamicFragment.showDialog(getChildFragmentManager());
     }
 }
