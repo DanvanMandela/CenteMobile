@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.google.gson.Gson;
 
 import java.util.Objects;
 
@@ -91,6 +93,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         setViewModel();
         setBinding();
         setOnClick();
+        setBroadcastListener();
         return binding.getRoot().getRootView();
     }
 
@@ -141,6 +144,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                     LoadingFragment.dismiss(getChildFragmentManager());
+                    Log.e("OTP", new Gson().toJson(data));
                     try {
                         ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                                 authViewModel.storage.getDeviceData().getValue().getDevice(),
@@ -159,7 +163,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                             new ShowToast(requireContext(), responseDetails.getMessage());
                             new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
                                     .provideNavigationGraph()
-                                    .navigate(authViewModel.navigationDataSource.navigateToLogin()), 300);
+                                    .navigate(authViewModel.navigationDataSource.navigateAuth()), 300);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -232,6 +236,5 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     @Override
     public void onDestroy() {
         super.onDestroy();
-        requireActivity().unregisterReceiver(smsReceiver);
     }
 }

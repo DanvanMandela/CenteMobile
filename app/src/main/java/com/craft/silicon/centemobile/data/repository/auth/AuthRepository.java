@@ -1,9 +1,11 @@
 package com.craft.silicon.centemobile.data.repository.auth;
 
 import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 
@@ -20,11 +22,13 @@ public class AuthRepository implements AuthDataSource {
 
     private final AuthDataSource remoteData;
     private final AuthDataSource localData;
+    private final StorageDataSource storageDataSource;
 
     @Inject
-    public AuthRepository(@Remote AuthDataSource remoteData, @Local AuthDataSource localData) {
+    public AuthRepository(@Remote AuthDataSource remoteData, @Local AuthDataSource localData, StorageDataSource storageDataSource) {
         this.remoteData = remoteData;
         this.localData = localData;
+        this.storageDataSource = storageDataSource;
     }
 
     @Override
@@ -48,7 +52,22 @@ public class AuthRepository implements AuthDataSource {
     }
 
     @Override
+    public void saveVersion(String str) {
+        storageDataSource.setVersion(str);
+    }
+
+    @Override
     public Observable<List<Accounts>> getAccount() {
         return localData.getAccount();
+    }
+
+    @Override
+    public Observable<List<Beneficiary>> geBeneficiary() {
+        return localData.geBeneficiary();
+    }
+
+    @Override
+    public void saveBeneficiary(List<Beneficiary> modules) {
+        localData.saveBeneficiary(modules);
     }
 }

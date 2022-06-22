@@ -10,7 +10,7 @@ class ModuleController(val callbacks: AppCallbacks) :
     override fun buildModels(data: MutableList<Modules>?) {
         data?.forEach {
             moduleItemLayout {
-                id(it.ModuleID)
+                id(it.moduleID)
                 data(it)
                 callback(this@ModuleController.callbacks)
             }

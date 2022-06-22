@@ -1,34 +1,29 @@
 package com.craft.silicon.centemobile.view.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
-import com.craft.silicon.centemobile.data.model.user.Accounts
-import com.craft.silicon.centemobile.data.source.remote.callback.RequestData
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.AppData
-import com.craft.silicon.centemobile.view.ep.data.HeaderData
 import com.craft.silicon.centemobile.view.model.AuthViewModel
 import com.craft.silicon.centemobile.view.model.DynamicViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONObject
-import java.lang.Exception
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinationChangedListener {
@@ -37,6 +32,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     private val subscribe = CompositeDisposable()
     private var navController: NavController? = null
     private val authViewModel: AuthViewModel by viewModels()
+    private val widgetViewModel: WidgetViewModel by viewModels()
     private var onAppData: OnAppData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,47 +52,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     }
 
     override fun setViewModel() {
-        val jsonObject = JSONObject()
-        jsonObject.put("FORMID", "O-GetLatestVersion")
-        jsonObject.put("UNIQUEID", "wtgsgfsfsfsfsffsspo")
-        jsonObject.put("CUSTOMERID", "16")
-        jsonObject.put("VersionNumber", "28")
-        jsonObject.put("IMEI", BaseClass.encrypt("45687555"))
-        jsonObject.put("IMSI", BaseClass.encrypt("45687555"))
-        jsonObject.put("TRXSOURCE", "APP")
-        jsonObject.put("APPNAME", "CENTE")
-        jsonObject.put("CODEBASE", "ANDROID")
-        jsonObject.put(
-            "LATLON",
-            "0.0" + "," + "0.0"
-        )
-        val newRequest = jsonObject.toString()
-
-        jsonObject.put("rashi", BaseClass.hashLatest(newRequest))
-        jsonObject.put("MobileNumber", "2500116")
-        jsonObject.put("CodeBase", "ANDROID")
-        jsonObject.put("lat", "0.0")
-        jsonObject.put("long", "0.0")
-        jsonObject.put("UniqueId", "eqrwfdgdgdhdhd")
-        jsonObject.put("Appname", "CENTE")
-
         subscribe.add(
-            viewModel.requestBase(
-                RequestData(
-                    uniqueId = "87654321",
-                    mobileNumber = "25400116",
-                    device = "12345678",
-                    codeBase = "ANDROID",
-                    lat = "0.0",
-                    long = "0.0",
-                    rashi = BaseClass.hashLatest(newRequest), appName = "CENTE"
-                )
+            viewModel.getBaseData(
+                this
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-
-
                     if (it.respCode == "000") {
                         var keys = ""
                         val device = it.payload?.device
@@ -112,16 +74,32 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
                                 keys, false, it.payload?.ran
                             )
                         )
-                        Log.e("TAg",Gson().toJson(data))
+                        Log.e("TAg", Gson().toJson(data))
                         data?.token = it.token!!
                         data?.run = it.payload!!.ran
                         data?.device = keys
                         viewModel.saveDeviceData(data)
+                        fetchWidgets()
                     }
                 },
                     { Log.e(this@MainActivity.javaClass.simpleName, it.localizedMessage!!) })
         )
     }
+
+    private fun fetchWidgets() {
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            subscribe.add(
+                widgetViewModel.widgets(this, "MENU")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        Log.e("Help", Gson().toJson(it))
+                    }, { it.printStackTrace() })
+            )
+        }, 300)
+    }
+
 
     private fun setNavigation() {
         val navHostFragment =
@@ -140,28 +118,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
 
     }
 
-
-    fun homeData(data: OnAppData) {
-        authViewModel.account
-            .subscribeOn(Schedulers.io())
-            .map { it }
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                data.onApData(HeaderData(it))
-            }, { it.printStackTrace() })
-    }
-
-    private fun cardData(): MutableList<Accounts>? {
-        val accounts = MutableLiveData<MutableList<Accounts>>()
-        authViewModel.account
-            .subscribeOn(Schedulers.io())
-            .map { it }
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                accounts.value = it
-            }, { it.printStackTrace() })
-        return accounts.value
-    }
 
 }
 

@@ -60,8 +60,10 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
     private val _deviceData = MutableStateFlow(
         DeviceDataTypeConverter().to(
-            sharedPreferences.getString(
-                TAG_DEVICE_DATA, ""
+            BaseClass.decrypt(
+                sharedPreferences.getString(
+                    TAG_DEVICE_DATA, ""
+                )
             )
         )
     )
@@ -70,10 +72,9 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
 
     override fun setDeviceData(value: DeviceData) {
-
         _deviceData.value = value
         with(sharedPreferences.edit()) {
-            putString(TAG_DEVICE_DATA, DeviceDataTypeConverter().from(value))
+            putString(TAG_DEVICE_DATA, BaseClass.encrypt(DeviceDataTypeConverter().from(value)))
             apply()
         }
     }
@@ -91,7 +92,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override fun setActivationData(value: ActivationData) {
         _activationData.value = value
         with(sharedPreferences.edit()) {
-            putString(TAG_DEVICE_DATA, BaseClass.encrypt(ActivationDataTypeConverter().from(value)))
+            putString(TAG_ACTIVATION_DATA, BaseClass.encrypt(ActivationDataTypeConverter().from(value)))
             apply()
         }
     }
@@ -104,6 +105,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override val isActivated: StateFlow<Boolean?>
         get() = _isActivated
 
+
     override fun setActivated(value: Boolean) {
         _isActivated.value = value
         with(sharedPreferences.edit()) {
@@ -112,6 +114,14 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+
+    override fun setVersion(value: String) {
+
+    }
+
+    private val _version = MutableStateFlow(sharedPreferences.getString(TAG_VERSION, ""))
+    override val version: StateFlow<String?>
+        get() = _version
 
     private val _userId = MutableStateFlow(sharedPreferences.getString(TAG_USER_ID, ""))
     override val userId: StateFlow<String?>
@@ -135,5 +145,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_DEVICE_DATA = "deviceData"
         private const val TAG_ACTIVATION_DATA = "activeData"
         private const val TAG_ACTIVATED = "activated"
+        private const val TAG_VERSION = "version"
     }
 }

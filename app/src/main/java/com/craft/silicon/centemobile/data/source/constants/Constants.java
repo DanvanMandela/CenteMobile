@@ -33,17 +33,23 @@ public class Constants {
 
 
         @NotNull
-        public static final String LIVE = "https://uat.craftsilicon.com/ElmaAuthDynamic/";
+        public static final String LIVE = "https://app.craftsilicon.com/ElmaAuthDynamic/";
 
+
+        @NotNull
+        public static final String URL = Data.TEST ? UAT : LIVE;
 
     }
 
     public static class Data {
+
+        public static final boolean TEST = true;
+
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";
 
         @NotNull
-        public static final String COUNTRY = "UGANDATEST";
+        public static final String COUNTRY = TEST ? "UGANDATEST" : "UGANDA";
 
         @NotNull
         public final static String APP_NAME = "CENTEMOBILE";
@@ -58,7 +64,7 @@ public class Constants {
         public final static String BANK_ID = "16";
 
         @NotNull
-        public final static String CUSTOMER_ID = "25600116";
+        public final static String CUSTOMER_ID = TEST ? "25600116" : "25600016";
 
         @NotNull
         public final static String VERSION = "119";

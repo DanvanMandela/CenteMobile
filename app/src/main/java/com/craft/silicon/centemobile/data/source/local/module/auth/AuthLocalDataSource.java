@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.data.source.local.module.auth;
 
 import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.repository.auth.AuthDataSource;
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider;
@@ -28,7 +29,9 @@ public class AuthLocalDataSource implements AuthDataSource {
 
     @Override
     public void saveFrequentModule(List<FrequentModules> modules) {
-        Completable.fromRunnable(() -> authDao.saveFrequentModule(modules)).subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.ui()).subscribe();
+        Completable.fromRunnable(() -> authDao.saveFrequentModule(modules))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui()).subscribe();
     }
 
     @Override
@@ -38,11 +41,25 @@ public class AuthLocalDataSource implements AuthDataSource {
 
     @Override
     public void saveAccountModule(List<Accounts> modules) {
-        Completable.fromRunnable(() -> authDao.saveAccountModule(modules)).subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.ui()).subscribe();
+        Completable.fromRunnable(() -> authDao.saveAccountModule(modules))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui()).subscribe();
     }
 
     @Override
     public Observable<List<Accounts>> getAccount() {
         return authDao.getAccount();
+    }
+
+    @Override
+    public void saveBeneficiary(List<Beneficiary> modules) {
+        Completable.fromRunnable(() -> authDao.saveBeneficiary(modules))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui()).subscribe();
+    }
+
+    @Override
+    public Observable<List<Beneficiary>> geBeneficiary() {
+        return authDao.geBeneficiary();
     }
 }

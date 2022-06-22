@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.repository.auth.AuthDataSource;
 
@@ -32,4 +33,12 @@ public interface AuthDao extends AuthDataSource {
     @Override
     @Query("SELECT * FROM  account_tbl ORDER BY bankAccountID")
     Observable<List<Accounts>> getAccount();
+
+    @Override
+    @Insert(onConflict = REPLACE)
+    void saveBeneficiary(List<Beneficiary> modules);
+
+    @Override
+    @Query("SELECT * FROM  beneficiary_tbl ORDER BY accountAlias")
+    Observable<List<Beneficiary>> geBeneficiary();
 }

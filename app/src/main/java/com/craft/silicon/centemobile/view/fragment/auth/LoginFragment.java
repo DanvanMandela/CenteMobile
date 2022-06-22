@@ -114,7 +114,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                                         R.drawable.warning_app
                                 ), getChildFragmentManager());
                             } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
-                                new ShowToast(requireContext(),responseDetails.getMessage());
+                                new ShowToast(requireContext(), responseDetails.getMessage());
                                 ((MainActivity) requireActivity())
                                         .provideNavigationGraph()
                                         .navigate(authViewModel.navigationDataSource.navigateToOTP(Constants.setMobile(binding.countryCodeHolder.getSelectedCountryCode(),

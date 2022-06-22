@@ -2,8 +2,11 @@ package com.craft.silicon.centemobile.data.repository.auth;
 
 import android.app.Activity;
 
+import androidx.lifecycle.LiveData;
+
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
@@ -50,5 +53,19 @@ public interface AuthDataSource {
     }
 
     default void saveActivationData(ActivationData activationData) {
+    }
+
+    default void saveVersion(String str) {
+    }
+
+    default LiveData<String> getVersion() {
+        return null;
+    }
+
+    default Observable<List<Beneficiary>> geBeneficiary() {
+        return null;
+    }
+
+    default void saveBeneficiary(List<Beneficiary> modules) {
     }
 }

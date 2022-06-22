@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.craft.silicon.centemobile.data.model.converter.BeneficiaryTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.FrequentModulesTypeConverter
-import com.craft.silicon.centemobile.view.ep.data.Body
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -158,11 +157,14 @@ data class FrequentModules(
 ) : Parcelable
 
 @Parcelize
+@Entity(tableName = "beneficiary_tbl")
 data class Beneficiary(
     @field:SerializedName("MerchantID")
     @field:ColumnInfo(name = "merchantID")
+    @field:PrimaryKey
+    @field:NonNull
     @field:Expose
-    var merchantID: String?,
+    var merchantID: String,
 
     @field:SerializedName("AccountID")
     @field:ColumnInfo(name = "accountID")
@@ -187,12 +189,31 @@ data class Beneficiary(
 
 
 data class ActivationData(
-    @field:SerializedName("CustomerID")
+    @field:SerializedName("customerID")
     @field:Expose
     var id: String?,
 
-    @field:SerializedName("Mobile")
-    @field:ColumnInfo(name = "Mobile")
+    @field:SerializedName("mobile")
     @field:Expose
-    var mobile: String?,
-)
+    var mobile: String?
+) {
+    @field:SerializedName("IDNumber")
+    @field:Expose
+    var iDNumber: String? = null
+
+    @field:SerializedName("email")
+    @field:Expose
+    var email: String? = null
+
+    @field:SerializedName("lastName")
+    @field:Expose
+    var lastName: String? = null
+
+    @field:SerializedName("firstName")
+    @field:Expose
+    var firstName: String? = null
+
+    @field:SerializedName("imageURL")
+    @field:Expose
+    var ImageURL: String? = null
+}

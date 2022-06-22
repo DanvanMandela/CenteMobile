@@ -26,4 +26,8 @@ interface StorageDataSource {
     val isActivated: StateFlow<Boolean?>
 
 
+    fun setVersion(value: String)
+    val version: StateFlow<String?>
+
+
 }

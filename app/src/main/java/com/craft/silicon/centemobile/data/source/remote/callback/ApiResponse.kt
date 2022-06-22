@@ -1,9 +1,7 @@
 package com.craft.silicon.centemobile.data.source.remote.callback
 
-import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlin.String
 
 
 data class ResponseData(
@@ -86,6 +84,25 @@ data class DynamicResponse(
     @field:Expose
     var response: String?,
 )
+
+data class WidgetRequest(
+    @field:SerializedName("FormID")
+    @field:Expose
+    var formID: String?,
+    @field:SerializedName("CustomerID")
+    @field:Expose
+    var customerID: String?,
+    @field:SerializedName("Country")
+    @field:Expose
+    var country: String?,
+    @field:SerializedName("BankID")
+    @field:Expose
+    var bankID: String?,
+    @field:SerializedName("TrxSource")
+    @field:Expose
+    var trxSource: String?,
+)
+
 
 data class ResponseDetails(
     @field:SerializedName("Status")

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,10 +132,15 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     R.drawable.warning_app
             ), getChildFragmentManager());
         } else {
+            Log.e("WAHH",BaseClass.decryptLatest(data.getResponse(),
+                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+                    true,
+                    ""
+            ));
             LoginUserData responseDetails = new LoginDataTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                     authViewModel.storage.getDeviceData().getValue().getDevice(),
                     true,
-                    authViewModel.storage.getDeviceData().getValue().getRun()
+                   ""
             ));
             assert responseDetails != null;
             if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
@@ -148,7 +154,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 workerViewModel.onLoginData(responseDetails);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
                         .provideNavigationGraph()
-                        .navigate(authViewModel.navigationDataSource.navigateAuth()), 200);
+                        .navigate(authViewModel.navigationDataSource.navigateToHome()), 200);
             }
         }
     }

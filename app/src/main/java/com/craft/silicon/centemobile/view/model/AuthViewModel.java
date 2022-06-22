@@ -1,13 +1,17 @@
 package com.craft.silicon.centemobile.view.model;
 
 import android.app.Activity;
+import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.repository.auth.AuthDataSource;
 import com.craft.silicon.centemobile.data.repository.auth.AuthRepository;
@@ -17,6 +21,7 @@ import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,6 +82,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             String newRequest = jsonObject.toString();
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
 
+            Log.e("DATA",new Gson().toJson(jsonObject));
             return authRepository.authRequest(new PayloadData(
                             uniqueID,
                             BaseClass.encryptString(newRequest, device, iv)
@@ -193,5 +199,15 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
     public void saveActivationData(ActivationData activationData) {
         storage.setActivationData(activationData);
         storage.setActivated(true);
+    }
+
+    @Override
+    public LiveData<String> getVersion() {
+        return new MutableLiveData<>(storage.getVersion().getValue());
+    }
+
+    @Override
+    public Observable<List<Beneficiary>> geBeneficiary() {
+        return authRepository.geBeneficiary();
     }
 }

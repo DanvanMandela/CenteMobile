@@ -1,12 +1,11 @@
-package com.craft.silicon.centemobile.data.source.remote.dynamic;
+package com.craft.silicon.centemobile.data.source.remote.dynamic.widgets;
 
-import androidx.annotation.Nullable;
-
-import com.craft.silicon.centemobile.data.scope.Token;
+import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
-import com.craft.silicon.centemobile.data.source.remote.AuthorizationInterceptor;
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.google.gson.Gson;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
@@ -22,17 +21,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class DynamicRemoteDataModule {
+public class WidgetRemoteDataModule {
 
     @Provides
-    public DynamicApiService provideRequestDynamicApiService(Gson gson, @Token @Nullable String authToken) {
+    public WidgetApiService provideApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        assert authToken != null;
+        String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebOtherDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
+        String token = storage.getDeviceData().getValue() == null ? "" : storage.getDeviceData().getValue().getToken();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(Constants.BaseUrl.URL)
+                .baseUrl(base)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)
@@ -42,9 +43,11 @@ public class DynamicRemoteDataModule {
                             return chain.proceed(chain.request()
                                     .newBuilder().url(url)
                                     .build());
-                        }).addInterceptor(httpLoggingInterceptor).addInterceptor(new AuthorizationInterceptor("APIKey", "8CC9432C-B5AD-471C-A77D-28088C695916")).build()
+                        }).build()
                 ).build();
 
-        return retrofit.create(DynamicApiService.class);
+        return retrofit.create(WidgetApiService.class);
     }
+
+
 }
