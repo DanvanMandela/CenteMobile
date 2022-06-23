@@ -12,24 +12,24 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.craft.silicon.centemobile.data.model.DataResponse;
+import com.craft.silicon.centemobile.data.model.module.ModuleIdEnum;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.databinding.FragmentHomeBinding;
-import com.craft.silicon.centemobile.util.JSONUtil;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.OnAppData;
 import com.craft.silicon.centemobile.view.ep.controller.AppController;
 import com.craft.silicon.centemobile.view.ep.data.AppData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
+import com.craft.silicon.centemobile.view.ep.data.GroupForm;
+import com.craft.silicon.centemobile.view.ep.data.GroupModule;
 import com.craft.silicon.centemobile.view.ep.data.HeaderData;
 import com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
     private FragmentHomeBinding binding;
     private AppController controller;
     private AuthViewModel authViewModel;
+    private WidgetViewModel widgetViewModel;
     private final List<AppData> appDataList = new ArrayList<>();
 
 
@@ -64,8 +65,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(OnAppData onAppData) {
-        HomeFragment homeFragment = new HomeFragment();
+    public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
@@ -89,11 +89,15 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
 
 
     private void getModuleData(List<FrequentModules> data) {
-        DataResponse dataResponse = new JSONUtil().loadJSON(requireActivity());
-        List<Modules> moduleData = dataResponse.getModules().stream().filter(p -> Objects.equals(p.getParentModule(), "MAIN")).collect(Collectors.toList());
-        BodyData bodyData = new BodyData(moduleData, data);
-        appDataList.add(bodyData);
-        updateController();
+        subscribe.add(widgetViewModel.getModules(ModuleIdEnum.MAIN.getType())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(f -> {
+                    BodyData bodyData = new BodyData(f, data);
+                    appDataList.add(bodyData);
+                    updateController();
+                }, Throwable::printStackTrace));
+
     }
 
 
@@ -108,23 +112,21 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
     @Override
     public void setViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
     }
 
     private void setHomeData() {
+        binding.setUserData(authViewModel.storage.getActivationData().getValue());
         subscribe.add(authViewModel.getAccount()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    appDataList.add(new HeaderData(data));
-                }, Throwable::printStackTrace));
-
+                .subscribe(data -> appDataList.add(new HeaderData(data)), Throwable::printStackTrace));
         subscribe.add(authViewModel.getFrequentModules()
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::getModuleData, Throwable::printStackTrace));
-
-
     }
+
 
     @Override
     public void setBinding() {
@@ -151,6 +153,25 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
 
     @Override
     public void onModule(Modules modules) {
-         DynamicFragment.showDialog(getChildFragmentManager());
+        subscribe.add(widgetViewModel.getModules(modules.getModuleID())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(f -> {
+                    if (!f.isEmpty())
+                        DynamicFragment.showDialog(getChildFragmentManager(),
+                                new GroupModule(modules, f), this);
+                    else getFormControl(modules);
+                }, Throwable::printStackTrace));
+    }
+
+    private void getFormControl(Modules modules) {
+        subscribe.add(widgetViewModel.getFormControl(modules.getModuleID())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(f -> {
+                    if (!f.isEmpty())
+                        DynamicFragment.showDialog(getChildFragmentManager(),
+                                new GroupForm(modules, f), this);
+                }, Throwable::printStackTrace));
     }
 }

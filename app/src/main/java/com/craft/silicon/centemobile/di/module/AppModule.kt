@@ -5,14 +5,13 @@ import android.content.Context
 import com.craft.silicon.centemobile.data.source.pref.SharedPreferencesStorage
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.worker.WorkManagerApp
+import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.util.provider.ResourceProvider
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider
 import com.craft.silicon.centemobile.util.scheduler.SchedulerProvider
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource
-import com.craft.silicon.centewallet.util.provider.BaseResourceProvider
 import com.craft.silicon.centemobile.view.navigation.NavigationDirection
-import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
-
+import com.craft.silicon.centewallet.util.provider.BaseResourceProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

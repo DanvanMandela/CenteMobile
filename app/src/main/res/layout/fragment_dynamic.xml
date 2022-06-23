@@ -6,14 +6,16 @@
 
     <data>
 
+
         <variable
             name="callback"
             type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.AppData" />
+            type="com.craft.silicon.centemobile.view.ep.data.DynamicData" />
     </data>
+
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -24,8 +26,11 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                callback="@{callback}"
+                modules="@{data}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
         </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -39,10 +44,10 @@
 
             <com.airbnb.epoxy.EpoxyRecyclerView
                 android:id="@+id/container"
+                callback="@{callback}"
+                dynamic="@{data}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                />
+                android:layout_height="wrap_content" />
         </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

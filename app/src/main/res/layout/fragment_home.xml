@@ -7,6 +7,10 @@
     <data>
 
         <variable
+            name="userData"
+            type="com.craft.silicon.centemobile.data.model.user.ActivationData" />
+
+        <variable
             name="callback"
             type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
     </data>
@@ -43,6 +47,8 @@
 
                 <com.google.android.material.appbar.MaterialToolbar
                     callback="@{callback}"
+                    subTitle="@{userData}"
+                    title="@{userData}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:contentInsetStart="@dimen/dimens_10dp"

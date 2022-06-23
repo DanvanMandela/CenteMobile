@@ -7,6 +7,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import com.craft.silicon.centemobile.data.model.converter.LoginDataTypeConverter
 import com.craft.silicon.centemobile.data.model.user.LoginUserData
 import com.craft.silicon.centemobile.data.repository.auth.worker.AuthWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.util.BaseClass
@@ -32,6 +35,27 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
                 ExistingWorkPolicy.REPLACE,
                 authWorker.build()
             )
+        continuation.enqueue()
+    }
+
+    fun onWidgetData() {
+        val workWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()
+        var continuation = worker.getWorkManger()
+            .beginUniqueWork(
+                "${WorkerCommons.TAG_DATA_WORKER}${BaseClass.generateAlphaNumericString(2)}",
+                ExistingWorkPolicy.REPLACE,
+                workWorker.build()
+            )
+        val formWorker = OneTimeWorkRequestBuilder<FormControlGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(formWorker.build())
+
+        val actionWorker = OneTimeWorkRequestBuilder<ActionControlGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(actionWorker.build())
+
         continuation.enqueue()
     }
 

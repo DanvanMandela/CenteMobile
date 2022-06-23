@@ -71,7 +71,7 @@ public class Constants {
     }
 
     public static void commonJSON(JSONObject jsonObject,
-                                  Activity activity,
+                                  Context activity,
                                   String uniqueID,
                                   String formID,
                                   String customerID, boolean customer) {
@@ -79,6 +79,7 @@ public class Constants {
             jsonObject.put("FormID", formID);
             jsonObject.put("UNIQUEID", uniqueID);
 
+            //TODO CUSTOMER ID
             if (customer)
                 jsonObject.put("CustomerID", TextUtils.isEmpty(customerID) ? Data.CUSTOMER_ID : customerID);
 

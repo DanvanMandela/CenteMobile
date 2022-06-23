@@ -35,7 +35,12 @@ public interface WidgetDao extends WidgetDataSource {
     Observable<List<Modules>> getModules(String moduleID);
 
 
+
     @Override
     @Query("SELECT * FROM action_control_tb WHERE controlID=:moduleID")
     Observable<List<ActionControls>> getActionControl(String moduleID);
+
+    @Override
+    @Insert(onConflict = REPLACE)
+    void saveAction(List<ActionControls> data);
 }

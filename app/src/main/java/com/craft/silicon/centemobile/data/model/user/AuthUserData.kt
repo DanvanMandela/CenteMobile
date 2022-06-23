@@ -215,5 +215,9 @@ data class ActivationData(
 
     @field:SerializedName("imageURL")
     @field:Expose
-    var ImageURL: String? = null
+    var imageURL: String? = null
+
+    @field:SerializedName("message")
+    @field:Expose
+    var message: String? = null
 }

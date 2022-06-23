@@ -5,9 +5,6 @@
         <item name="colorPrimaryDark">@color/app_blue_dark</item>
         <item name="colorAccent">@color/app_blue_light</item>
         <item name="colorPrimary">@color/app_blue_dark</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/white</item>
-        <item name="actionMenuTextColor">@color/black</item>
     </style>
 
     <style name="MyDialogAnimation">
@@ -19,5 +16,13 @@
     <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="colorPrimaryDark">@color/app_blue_dark</item>
+        <item name="colorAccent">@color/app_blue_light</item>
+        <item name="colorPrimary">@color/app_blue_dark</item>
+    </style>
+
+
 
 </resources>

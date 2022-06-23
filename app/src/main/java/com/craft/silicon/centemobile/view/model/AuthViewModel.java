@@ -81,8 +81,6 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
 
             String newRequest = jsonObject.toString();
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
-
-            Log.e("DATA",new Gson().toJson(jsonObject));
             return authRepository.authRequest(new PayloadData(
                             uniqueID,
                             BaseClass.encryptString(newRequest, device, iv)
@@ -102,8 +100,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
         try {
             String iv = storage.getDeviceData().getValue().getRun();
             String device = storage.getDeviceData().getValue().getDevice();
-//            String mobile = storage.getActivationData().getValue().getMobile();
-//            String customerID = storage.getActivationData().getValue().getId();
+            String mobile = storage.getActivationData().getValue().getMobile();
+            String customerID = storage.getActivationData().getValue().getId();
             String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
 
@@ -111,10 +109,10 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     activity,
                     uniqueID,
                     ActionTypeEnum.LOGIN.getType(),
-                    "1258826801",
+                    customerID,
                     true);
 
-            jsonObject.put("MobileNumber", "256773932301");
+            jsonObject.put("MobileNumber", mobile);
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("LoginType", "PIN");
             jsonObject.put("Login", jsonObject1);

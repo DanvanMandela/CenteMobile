@@ -27,7 +27,7 @@ class AuthWorker @AssistedInject constructor(
                         WorkerCommons.TAG_APP_DATA
                     )
                 )
-            //updateActivationData(data)
+            updateActivationData(data)
             authRepository.saveVersion(data?.version)
             authRepository.saveBeneficiary(data?.beneficiary)
             authRepository.saveAccountModule(data?.accounts)
@@ -45,8 +45,10 @@ class AuthWorker @AssistedInject constructor(
         userData?.firstName = data?.firstName
         userData?.lastName = data?.lastName
         userData?.email = data?.emailId
-        userData?.ImageURL = data?.imageURL
+        userData?.imageURL = data?.imageURL
         userData?.iDNumber = data?.iDNumber
+        if (!data?.message.isNullOrEmpty())
+            userData?.message = data?.message
         storageSource?.setActivationData(userData!!)
     }
 

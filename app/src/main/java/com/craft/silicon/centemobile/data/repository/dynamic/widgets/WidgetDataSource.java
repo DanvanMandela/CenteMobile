@@ -40,11 +40,16 @@ public interface WidgetDataSource {
     }
 
 
+
     default void requestWidget(List<ActionControls> data) {
     }
 
     default Observable<List<ActionControls>> getActionControl(String moduleID) {
         return null;
+    }
+
+    default void saveAction(List<ActionControls> data) {
+
     }
 
 

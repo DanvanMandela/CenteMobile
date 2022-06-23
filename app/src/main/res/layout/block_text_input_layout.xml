@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="module"
+            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_8dp"
+        android:layout_marginHorizontal="@dimen/dimens_24dp"
+        android:hint="@{data.controlText}"
+        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            callback="@{callback}"
+            form="@{data}"
+            module="@{module}"
+            android:fontFamily="@font/poppins_medium"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</layout>

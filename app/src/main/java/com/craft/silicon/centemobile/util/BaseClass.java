@@ -24,7 +24,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class BaseClass {
     public static final String kv = "csXDRzpcEPm_jMny";
     public static String iv = "84jfkfndl3ybdfkf";
-    private final String KeyValue = "KbPmng&1977dsfds%";
     private static final String LogKeyValue = "KBSB&er3bflx9%";
 
     public static String encrypt(String value) {
@@ -226,7 +225,8 @@ public class BaseClass {
         String data = "";
         try {
             CryptLib _crypt = new CryptLib();
-            String key = CryptLib.SHA256(KeyValue, 32);
+            String keyValue = "KbPmng&1977dsfds%";
+            String key = CryptLib.SHA256(keyValue, 32);
             String iv = "84jfkfndl3ybdfkf";
             data = _crypt.decrypt(text, key, iv);
         } catch (Exception e) {

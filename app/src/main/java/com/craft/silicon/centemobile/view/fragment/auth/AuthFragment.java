@@ -80,7 +80,12 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         setBinding();
         setOnClick();
         setViewModel();
+        setData();
         return binding.getRoot().getRootView();
+    }
+
+    private void setData() {
+        binding.setData(authViewModel.storage.getActivationData().getValue());
     }
 
     @Override
@@ -125,33 +130,43 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void setOnSuccess(DynamicResponse data) {
         LoadingFragment.dismiss(getChildFragmentManager());
-        if (data.getResponse() != null && data.getResponse().equals("ok")) {
-            AlertDialogFragment.newInstance(new DialogData(
-                    R.string.error,
-                    getString(R.string.something_),
-                    R.drawable.warning_app
-            ), getChildFragmentManager());
-        } else {
-            LoginUserData responseDetails = new LoginDataTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
-                    authViewModel.storage.getDeviceData().getValue().getDevice(),
-                    true,
-                    authViewModel.storage.getDeviceData().getValue().getRun()
-            ));
-            assert responseDetails != null;
-            if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
+        try {
+            if (data.getResponse() != null && data.getResponse().equals("ok")) {
                 AlertDialogFragment.newInstance(new DialogData(
                         R.string.error,
-                        Objects.requireNonNull(responseDetails.getMessage()),
+                        getString(R.string.something_),
                         R.drawable.warning_app
                 ), getChildFragmentManager());
             } else {
-                new ShowToast(requireContext(), getString(R.string.welcome_back));
-                workerViewModel.onLoginData(responseDetails);
-                new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
-                        .provideNavigationGraph()
-                        .navigate(authViewModel.navigationDataSource.navigateToHome()), 200);
+                LoginUserData responseDetails = new LoginDataTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
+                        authViewModel.storage.getDeviceData().getValue().getDevice(),
+                        true,
+                        authViewModel.storage.getDeviceData().getValue().getRun()
+                ));
+                assert responseDetails != null;
+                if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
+                    showError(Objects.requireNonNull(responseDetails.getMessage()));
+                } else {
+                    new ShowToast(requireContext(), getString(R.string.welcome_back));
+                    workerViewModel.onLoginData(responseDetails);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
+                            .provideNavigationGraph()
+                            .navigate(authViewModel.navigationDataSource.navigateToHome()), 200);
+                }
             }
+        } catch (Exception e) {
+            showError(getString(R.string.something_));
+            e.printStackTrace();
         }
+
+    }
+
+    private void showError(String string) {
+        AlertDialogFragment.newInstance(new DialogData(
+                R.string.error,
+                string,
+                R.drawable.warning_app
+        ), getChildFragmentManager());
     }
 
 }

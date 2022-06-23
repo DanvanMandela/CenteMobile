@@ -4,6 +4,9 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -12,13 +15,12 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
+import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.airbnb.paris.utils.getFont
 import com.bumptech.glide.Glide
@@ -31,18 +33,24 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
+import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.ep.controller.FormController
 import com.craft.silicon.centemobile.view.ep.controller.FrequentController
 import com.craft.silicon.centemobile.view.ep.controller.HeaderController
 import com.craft.silicon.centemobile.view.ep.controller.ModuleController
-import com.craft.silicon.centemobile.view.ep.data.BodyData
-import com.craft.silicon.centemobile.view.ep.data.HeaderData
+import com.craft.silicon.centemobile.view.ep.data.*
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.internal.TextWatcherAdapter
+import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 
 
 @BindingAdapter("callback", "controller", "setIndicator")
@@ -227,9 +235,135 @@ fun TextView.setUsername(data: ActivationData?) {
             val name =
                 "${this.context.getString(R.string.hello_jane)} ${data.firstName} ${data.lastName}"
             this.text = name
+        } else this.text = this.context.getString(R.string.hello_there)
+    } else {
+        this.text = this.context.getString(R.string.hello_there)
+    }
+}
+
+@BindingAdapter("messageFromUs")
+fun TextView.setMessageFromUs(data: ActivationData?) {
+    if (data != null) {
+        if (!data.message.isNullOrEmpty()) {
+            this.text = data.message
+        } else this.text = this.context.getString(R.string.welcome_back)
+    } else {
+        this.text = this.context.getString(R.string.welcome_back)
+    }
+}
+
+@BindingAdapter("title")
+fun MaterialToolbar.setTitle(data: ActivationData?) {
+    if (data != null) {
+        if (data.firstName != null) {
+            val name =
+                "${this.context.getString(R.string.hello_jane)} ${data.firstName} ${data.lastName}"
+            this.title = name
+        } else this.title = this.context.getString(R.string.hello_there)
+    } else {
+        this.title = this.context.getString(R.string.hello_there)
+    }
+}
+
+@BindingAdapter("subTitle")
+fun MaterialToolbar.setSTitle(data: ActivationData?) {
+    if (data != null) {
+        if (data.email != null) {
+            this.subtitle = data.email
         }
     }
 }
+
+@BindingAdapter("modules", "callback")
+fun MaterialToolbar.setDynamicToolbar(dynamic: DynamicData?, callbacks: AppCallbacks) {
+    this.navigationIcon?.setTint(ContextCompat.getColor(this.context, R.color.white))
+    this.setTitleTextColor(ContextCompat.getColor(this.context, R.color.white))
+    this.setNavigationOnClickListener { callbacks.navigateUp() }
+    if (dynamic != null) {
+        when (dynamic) {
+            is GroupModule -> this.title = dynamic.parent.moduleName
+            is GroupForm -> this.title = dynamic.module.moduleName
+        }
+    }
+}
+
+
+@BindingAdapter("callback", "dynamic")
+fun EpoxyRecyclerView.setDynamic(callbacks: AppCallbacks, dynamic: DynamicData?) {
+    this.animation =
+        AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
+    var layout: RecyclerView.LayoutManager? = null
+    var controller: EpoxyController? = null
+    if (dynamic != null) {
+        when (dynamic) {
+            is GroupModule -> {
+                layout = GridLayoutManager(this.context, 3)
+                controller = ModuleController(callbacks)
+                controller.setData(dynamic.module)
+            }
+            is GroupForm -> {
+                layout = LinearLayoutManager(this.context)
+                controller = FormController(callbacks)
+                controller.setData(dynamic)
+            }
+        }
+        this.layoutManager = layout
+        if (controller != null) {
+            this.setController(controller)
+        }
+    }
+
+
+}
+
+@BindingAdapter("callback", "form", "module")
+fun MaterialButton.setDynamicButton(
+    callbacks: AppCallbacks,
+    formControl: FormControl?,
+    modules: Modules
+) {
+    if (formControl != null) {
+        this.setTextColor(ContextCompat.getColor(this.context, R.color.white))
+        this.text = formControl.controlText
+
+
+    }
+
+}
+
+@BindingAdapter("callback", "form", "module")
+fun TextInputEditText.setInputLayout(
+    callbacks: AppCallbacks,
+    formControl: FormControl?,
+    modules: Modules
+) {
+    if (formControl != null) {
+
+        when (formControl.controlFormat?.uppercase()) {
+            ControlFormatEnum.PHONE.type -> InputType.TYPE_CLASS_PHONE
+            ControlFormatEnum.PIN.type -> InputType.TYPE_NUMBER_VARIATION_PASSWORD
+        }
+
+
+        this.setText("")
+        this.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+    }
+
+}
+
+
 
 
 

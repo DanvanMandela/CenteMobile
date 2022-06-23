@@ -144,12 +144,11 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                     LoadingFragment.dismiss(getChildFragmentManager());
-                    Log.e("OTP", new Gson().toJson(data));
                     try {
                         ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                                 authViewModel.storage.getDeviceData().getValue().getDevice(),
                                 true,
-                                ""
+                                authViewModel.storage.getDeviceData().getValue().getRun()
                         ));
                         assert responseDetails != null;
                         if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
