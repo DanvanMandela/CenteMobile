@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.data.model.user.FrequentModules
@@ -17,7 +18,8 @@ import com.craft.silicon.centemobile.data.source.local.module.dynamic.widgets.Wi
         Beneficiary::class,
         FormControl::class,
         Modules::class,
-        ActionControls::class],
+        ActionControls::class,
+        StaticDataDetails::class],
     version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

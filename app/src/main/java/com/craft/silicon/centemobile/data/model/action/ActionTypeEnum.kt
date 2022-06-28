@@ -11,5 +11,8 @@ enum class ActionTypeEnum(val type: String) {
     REQUEST_BASE("O-GetLatestVersion"),
     GET_MENU("MENU"),
     GET_ACTION_CONTROL("ACTIONS"),
-    GET_FORM_CONTROL("FORMS")
+    GET_FORM_CONTROL("FORMS"),
+    STATIC_DATA("STATICDATA")
+
+
 }

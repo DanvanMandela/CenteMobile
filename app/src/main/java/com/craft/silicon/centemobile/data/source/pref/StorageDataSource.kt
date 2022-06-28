@@ -2,7 +2,9 @@ package com.craft.silicon.centemobile.data.source.pref
 
 import android.content.SharedPreferences
 import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface StorageDataSource {
@@ -28,6 +30,9 @@ interface StorageDataSource {
 
     fun setVersion(value: String)
     val version: StateFlow<String?>
+
+    fun setStaticData(value: MutableList<StaticDataDetails>)
+    val staticData: StateFlow<List<StaticDataDetails?>?>
 
 
 }

@@ -4,9 +4,11 @@ import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -17,6 +19,11 @@ data class FormControl(
     @field:ColumnInfo(name = "moduleID")
     @field:Expose
     var moduleID: String?,
+
+    @field:SerializedName("FormID")
+    @field:ColumnInfo(name = "formID")
+    @field:Expose
+    var formID: String?,
 
     @field:SerializedName("ControlID")
     @field:ColumnInfo(name = "controlID")
@@ -113,12 +120,17 @@ data class FormControl(
     @field:SerializedName("DataSourceID")
     @field:ColumnInfo(name = "dataSourceID")
     @field:Expose
-    var DataSourceID: String?,
+    var dataSourceID: String?,
 
     @field:SerializedName("LinkedToModule")
     @field:ColumnInfo(name = "linkedToModule")
     @field:Expose
     var linkedToModule: String?,
+
+    @field:SerializedName("LinkedToControl")
+    @field:ColumnInfo(name = "LinkedToControl")
+    @field:Expose
+    var linkedToControl: String?,
 
     @field:SerializedName("isMandatory")
     @field:ColumnInfo(name = "isMandatory")
@@ -128,5 +140,32 @@ data class FormControl(
     @field:SerializedName("isEncrypted")
     @field:ColumnInfo(name = "isEncrypted")
     @field:Expose
-    var isEncrypted: Boolean?
-) : Serializable, Parcelable
+    var isEncrypted: Boolean?,
+
+    @field:SerializedName("FormSequence")
+    @field:ColumnInfo(name = "formSequence")
+    @field:Expose
+    var formSequence: String?,
+
+    @field:SerializedName("PreviousFormID")
+    @field:ColumnInfo(name = "previousFormID")
+    @field:Expose
+    var previousFormID: String?,
+
+    @field:SerializedName("NextFormID")
+    @field:ColumnInfo(name = "NextFormID")
+    @field:Expose
+    var nextFormID: String?
+) : Serializable, Parcelable {
+
+    @IgnoredOnParcel
+    @field:SerializedName("checkMe")
+    @field:Expose
+    @field:Ignore
+    var isChecked: Boolean? = null
+}
+
+enum class FormNavigation {
+    VALIDATE,
+    PAYMENT
+}

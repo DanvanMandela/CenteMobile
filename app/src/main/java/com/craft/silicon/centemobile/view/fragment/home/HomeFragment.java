@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,15 +13,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.craft.silicon.centemobile.data.model.module.ModuleCategory;
 import com.craft.silicon.centemobile.data.model.module.ModuleIdEnum;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.databinding.FragmentHomeBinding;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
+import com.craft.silicon.centemobile.view.activity.DynamicActivity;
 import com.craft.silicon.centemobile.view.activity.OnAppData;
 import com.craft.silicon.centemobile.view.ep.controller.AppController;
 import com.craft.silicon.centemobile.view.ep.data.AppData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
+import com.craft.silicon.centemobile.view.ep.data.DynamicData;
 import com.craft.silicon.centemobile.view.ep.data.GroupForm;
 import com.craft.silicon.centemobile.view.ep.data.GroupModule;
 import com.craft.silicon.centemobile.view.ep.data.HeaderData;
@@ -30,6 +34,7 @@ import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,7 +55,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
     private AuthViewModel authViewModel;
     private WidgetViewModel widgetViewModel;
     private final List<AppData> appDataList = new ArrayList<>();
-
+    private AppCallbacks appCallbacks;
 
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
@@ -65,7 +70,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(AppCallbacks appCallbacks) {
         return new HomeFragment();
     }
 
@@ -153,25 +158,26 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAppData {
 
     @Override
     public void onModule(Modules modules) {
-        subscribe.add(widgetViewModel.getModules(modules.getModuleID())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(f -> {
-                    if (!f.isEmpty())
-                        DynamicFragment.showDialog(getChildFragmentManager(),
-                                new GroupModule(modules, f), this);
-                    else getFormControl(modules);
-                }, Throwable::printStackTrace));
+        if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
+            subscribe.add(widgetViewModel.getModules(modules.getModuleID())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(f -> {
+                        Intent intent = new Intent(getContext(), DynamicActivity.class);
+                        intent.putExtra("data", new GroupModule(modules, f));
+                        startActivity(intent);
+                    }, Throwable::printStackTrace));
+        } else getFormControl(modules);
     }
 
     private void getFormControl(Modules modules) {
-        subscribe.add(widgetViewModel.getFormControl(modules.getModuleID())
+        subscribe.add(widgetViewModel.getFormControl(modules.getModuleID(), "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(f -> {
                     if (!f.isEmpty())
                         DynamicFragment.showDialog(getChildFragmentManager(),
-                                new GroupForm(modules, f), this);
+                                new GroupForm(modules, f, new ArrayList<>()), this);
                 }, Throwable::printStackTrace));
     }
 }

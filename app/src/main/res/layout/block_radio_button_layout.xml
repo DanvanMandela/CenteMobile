@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="module"
+            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <RadioButton
+        callback="@{callback}"
+        data="@{data}"
+        modules="@{module}"
+        setTag="@{data.controlID}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimens_24dp"
+        android:text="@{data.controlText}"
+        tools:ignore="ObsoleteLayoutParam" />
+
+</layout>

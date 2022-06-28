@@ -28,12 +28,17 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_auth)
     }
 
+    override fun navigateLanding(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_land)
+    }
+
     override fun navigateToOTP(mobile: String?): NavDirections {
         return object : NavDirections {
             override val actionId: Int
                 get() = R.id.action_nav_otp
             override val arguments: Bundle
                 get() = mArguments()
+
             @Suppress("CAST_NEVER_SUCCEEDS")
             fun mArguments(): Bundle {
                 val result = Bundle()

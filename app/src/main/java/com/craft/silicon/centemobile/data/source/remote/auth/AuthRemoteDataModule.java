@@ -1,7 +1,5 @@
 package com.craft.silicon.centemobile.data.source.remote.auth;
 
-import android.util.Log;
-
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
@@ -27,7 +25,6 @@ public class AuthRemoteDataModule {
 
     @Provides
     public AuthApiService provideRequestDynamicApiService(Gson gson, StorageDataSource storage) {
-        Log.e("HAIYA",new Gson().toJson(storage.getDeviceData().getValue()));
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebAuthDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getBase();

@@ -115,9 +115,5 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
         }
     }
 
-    @Override
-    public int getTheme() {
-        return R.style.AppTheme_FullScreenDialog;
-    }
 }
 

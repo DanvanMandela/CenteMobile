@@ -2,10 +2,13 @@ package com.craft.silicon.centemobile.view.fragment.dynamic
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -17,6 +20,7 @@ import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 
@@ -65,6 +69,11 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.data = dynamicData
         binding.callback = this
+        getChildren()
+    }
+
+    private fun getChildren() {
+
     }
 
     override fun onModule(modules: Modules?) {
@@ -104,7 +113,6 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setOnShowListener {
-
             val bottomSheetDialog = it as BottomSheetDialog
             val parentLayout =
                 bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -123,6 +131,12 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
         bottomSheet.layoutParams = layoutParams
     }
 
+    override fun onChildren(linearLayout: LinearLayout?) {
+
+        for (c in 1..linearLayout!!.childCount) {
+
+        }
+    }
 
 
     override fun navigateUp() {

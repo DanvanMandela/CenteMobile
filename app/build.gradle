@@ -254,4 +254,8 @@ dependencies {
     implementation 'com.chaos.view:pinview:1.4.4'
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    implementation 'com.synnapps:carouselview:0.1.5'
 }

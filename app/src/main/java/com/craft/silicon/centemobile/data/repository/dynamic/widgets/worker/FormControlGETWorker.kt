@@ -83,6 +83,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 .subscribeOn(Schedulers.io())
         } catch (e: Exception) {
             e.printStackTrace()
+            e.localizedMessage?.let { Log.e("TAG", it) }
             Single.just(Result.failure())
         }
     }

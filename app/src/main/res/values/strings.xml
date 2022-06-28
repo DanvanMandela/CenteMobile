@@ -25,4 +25,14 @@
     <string name="something_">Something went wrong\nTry Again!</string>
     <string name="pin_required">Pin required</string>
     <string name="opt_required">OTP required</string>
+    <string name="welcome_cente">Welcome To Centenary Bank</string>
+    <string name="branch_atm"><![CDATA[Branch & ATM]]></string>
+    <string name="cente_login">Cente Login</string>
+    <string name="online_banking">Online Banking</string>
+    <string name="good_night">Good Night</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_morining">Good  Morning</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="cente_on_go">Cente On The Go</string>
+    <string name="recent">Recent</string>
 </resources>

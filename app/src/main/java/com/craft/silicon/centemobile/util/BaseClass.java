@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -316,6 +317,10 @@ public class BaseClass {
         byte[] valueDecoded;
         valueDecoded = Base64.decode(coded.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
         return new String(valueDecoded);
+    }
+
+    public static String nonCaps(String s) {
+        return s.toLowerCase(Locale.getDefault());
     }
 
 

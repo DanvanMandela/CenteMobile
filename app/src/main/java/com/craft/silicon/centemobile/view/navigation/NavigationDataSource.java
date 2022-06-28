@@ -18,6 +18,9 @@ public interface NavigationDataSource {
     default NavDirections navigateAuth() {
         return null;
     }
+    default NavDirections navigateLanding() {
+        return null;
+    }
 
     default NavDirections navigateToOTP(String mobile) {
         return null;

@@ -18,6 +18,12 @@ data class ActionControls(
     @field:Expose
     var moduleID: String?,
 
+
+    @field:SerializedName("FormID")
+    @field:ColumnInfo(name = "formID")
+    @field:Expose
+    var formID: String?,
+
     @field:SerializedName("ControlID")
     @field:ColumnInfo(name = "controlID")
     @field:Expose

@@ -9,6 +9,7 @@ import androidx.room.Query;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public interface WidgetDao extends WidgetDataSource {
     void saveFormControl(List<FormControl> data);
 
     @Override
-    @Query("SELECT * FROM form_control_tb WHERE moduleID=:moduleID")
-    Observable<List<FormControl>> getFormControl(String moduleID);
+    @Query("SELECT * FROM form_control_tb WHERE moduleID=:moduleID AND formSequence=:seq")
+    Observable<List<FormControl>> getFormControl(String moduleID, String seq);
 
     @Override
     @Insert(onConflict = REPLACE)
@@ -35,12 +36,23 @@ public interface WidgetDao extends WidgetDataSource {
     Observable<List<Modules>> getModules(String moduleID);
 
 
-
     @Override
     @Query("SELECT * FROM action_control_tb WHERE controlID=:moduleID")
     Observable<List<ActionControls>> getActionControl(String moduleID);
 
     @Override
+    @Query("SELECT * FROM action_control_tb WHERE controlID=:moduleID AND formID=:formID")
+    Observable<List<ActionControls>> getActionControlByFM(String moduleID, String formID);
+
+    @Override
     @Insert(onConflict = REPLACE)
     void saveAction(List<ActionControls> data);
+
+    @Override
+    @Insert(onConflict = REPLACE)
+    void saveStaticData(List<StaticDataDetails> data);
+
+    @Override
+    @Query("SELECT * FROM static_data_details_tbl")
+    Observable<List<StaticDataDetails>> getStaticData();
 }

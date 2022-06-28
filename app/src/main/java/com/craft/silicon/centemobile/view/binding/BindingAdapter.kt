@@ -8,10 +8,9 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -32,25 +31,25 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
+import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.ep.controller.FormController
-import com.craft.silicon.centemobile.view.ep.controller.FrequentController
-import com.craft.silicon.centemobile.view.ep.controller.HeaderController
-import com.craft.silicon.centemobile.view.ep.controller.ModuleController
+import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
+import com.craft.silicon.centemobile.view.ep.controller.*
 import com.craft.silicon.centemobile.view.ep.data.*
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.internal.TextWatcherAdapter
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
+import java.util.HashMap
 
 
 @BindingAdapter("callback", "controller", "setIndicator")
@@ -312,8 +311,6 @@ fun EpoxyRecyclerView.setDynamic(callbacks: AppCallbacks, dynamic: DynamicData?)
             this.setController(controller)
         }
     }
-
-
 }
 
 @BindingAdapter("callback", "form", "module")
@@ -326,7 +323,10 @@ fun MaterialButton.setDynamicButton(
         this.setTextColor(ContextCompat.getColor(this.context, R.color.white))
         this.text = formControl.controlText
 
-
+        this.setOnClickListener {
+            Log.e("DANVAN", "DANVANA")
+            callbacks.onForm(formControl, modules)
+        }
     }
 
 }
@@ -338,31 +338,109 @@ fun TextInputEditText.setInputLayout(
     modules: Modules
 ) {
     if (formControl != null) {
+        this.tag = formControl.controlID
+        when (nonCaps(formControl.controlFormat)) {
+            nonCaps(ControlFormatEnum.PHONE.type) -> InputType.TYPE_CLASS_PHONE
+            nonCaps(ControlFormatEnum.PIN.type) -> InputType.TYPE_NUMBER_VARIATION_PASSWORD
+        }
+    }
 
-        when (formControl.controlFormat?.uppercase()) {
-            ControlFormatEnum.PHONE.type -> InputType.TYPE_CLASS_PHONE
-            ControlFormatEnum.PIN.type -> InputType.TYPE_NUMBER_VARIATION_PASSWORD
+    this.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
         }
 
+        override fun onTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
 
-        this.setText("")
-        this.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        override fun afterTextChanged(e: Editable?) {
+            val hashMap = HashMap<String, String>()
+            hashMap[tag.toString()] = e.toString()
+            callbacks.inputData(hashMap)
+        }
+    })
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-    }
 
 }
 
+
+@BindingAdapter("callback", "form")
+fun RadioGroup.setRadioButton(callbacks: AppCallbacks?, form: GroupForm?) {
+    if (form != null) {
+        this.tag = "mainGroup"
+        val data =
+            form.form.filter { a -> nonCaps(a.controlType) == nonCaps(ControlTypeEnum.R_BUTTON.type) }
+        this.removeAllViews()
+//        for (d in data) {
+//
+//        }
+        for (d in 0..data.size.minus(1)) {
+            val inflater = LayoutInflater.from(this.context)
+            val binding = BlockRadioButtonLayoutBinding.inflate(inflater, null, false)
+            binding.root.id = d.plus(1)
+            this.addView(binding.root)
+            binding.callback = callbacks
+            binding.data = data[d]
+            binding.module = form.module
+        }
+    }
+}
+
+@BindingAdapter("setTag")
+fun View.setID(tag: String?) {
+    if (tag != null) this.tag = tag
+}
+
+@BindingAdapter("callback", "data", "modules")
+fun RadioButton.setButton(callbacks: AppCallbacks, data: FormControl?, modules: Modules?) {
+    if (data?.isChecked != null) {
+        this.isChecked = data.isChecked!!
+    }
+//    this.setOnClickListener {
+//        callbacks.onRadioCheck(data)
+//    }
+    this.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+        override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+            if (p1) {
+                callbacks.onRadioCheck(data)
+            }
+        }
+    })
+}
+
+
+@BindingAdapter("callback", "controller")
+fun EpoxyRecyclerView.setLandingPage(callbacks: AppCallbacks, data: GroupLanding) {
+
+//    val layoutManager = FlexboxLayoutManager(context)
+//    layoutManager.flexDirection = FlexDirection.COLUMN
+//    layoutManager.justifyContent = JustifyContent.FLEX_END
+
+    this.animation = AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
+    this.layoutManager = GridLayoutManager(this.context, 3)
+    val controller = LandingPageController(callbacks)
+    controller.setData(data)
+    this.setController(controller)
+
+}
+
+@BindingAdapter("callback", "form")
+fun AutoCompleteTextView.setDropDownData(callbacks: AppCallbacks, data: GroupForm?) {
+    if (data != null) {
+        if (data.data.isNotEmpty()) {
+            val staticData =
+                data.data.filter { a -> nonCaps(a.id) == nonCaps(this.tag.toString()) }
+            val adapter = AutoTextArrayAdapter(context, 1, staticData)
+            this.setAdapter(adapter)
+            this.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, p2, _ ->
+                    val hashMap = HashMap<String, String>()
+                    hashMap[tag.toString()] = adapter.getItem(p2)!!.subCodeID
+                    callbacks.inputData(hashMap)
+                }
+        }
+    }
+}
 
 
 

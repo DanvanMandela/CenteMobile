@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
@@ -12,6 +13,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
 import com.craft.silicon.centemobile.util.BaseClass
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.reactivex.Single
@@ -60,6 +62,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                     constructResponse(Result.failure())
                 }
                 .map {
+
                     val data = WidgetDataTypeConverter().from(
                         BaseClass.decryptLatest(
                             it.response,

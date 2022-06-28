@@ -10,6 +10,7 @@ import com.craft.silicon.centemobile.data.repository.auth.worker.AuthWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.util.BaseClass
@@ -55,6 +56,11 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
             .setConstraints(worker.getConstraint())
             .addTag(WorkerCommons.TAG_OUTPUT)
         continuation = continuation.then(actionWorker.build())
+
+        val staticWorker = OneTimeWorkRequestBuilder<StaticDataGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(staticWorker.build())
 
         continuation.enqueue()
     }

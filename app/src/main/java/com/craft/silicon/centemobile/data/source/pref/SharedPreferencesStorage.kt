@@ -6,6 +6,9 @@ import android.util.Log
 import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.ActivationDataTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.StaticDataDetailTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.StaticDataTypeConverter
+import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -92,7 +95,10 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override fun setActivationData(value: ActivationData) {
         _activationData.value = value
         with(sharedPreferences.edit()) {
-            putString(TAG_ACTIVATION_DATA, BaseClass.encrypt(ActivationDataTypeConverter().from(value)))
+            putString(
+                TAG_ACTIVATION_DATA,
+                BaseClass.encrypt(ActivationDataTypeConverter().from(value))
+            )
             apply()
         }
     }
@@ -135,6 +141,25 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _staticData =
+        MutableStateFlow(
+            StaticDataDetailTypeConverter().from(
+                sharedPreferences.getString(
+                    STATIC_DATA,
+                    ""
+                )
+            )
+        )
+    override val staticData: MutableStateFlow<List<StaticDataDetails?>?>
+        get() = _staticData
+
+    override fun setStaticData(value: MutableList<StaticDataDetails>) {
+        _staticData.value = value.toMutableList()
+        with(sharedPreferences.edit()) {
+            putString(STATIC_DATA, StaticDataDetailTypeConverter().to(value))
+            apply()
+        }
+    }
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -146,5 +171,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_ACTIVATION_DATA = "activeData"
         private const val TAG_ACTIVATED = "activated"
         private const val TAG_VERSION = "version"
+        private const val STATIC_DATA = "version"
     }
 }

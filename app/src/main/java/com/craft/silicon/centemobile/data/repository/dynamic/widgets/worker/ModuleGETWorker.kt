@@ -75,7 +75,6 @@ class ModuleGETWorker @AssistedInject constructor(
                         activeData?.message = s?.message
                         storageDataSource.setActivationData(activeData!!)
                     }
-
                     constructResponse(Result.success())
                 }
                 .onErrorReturn {

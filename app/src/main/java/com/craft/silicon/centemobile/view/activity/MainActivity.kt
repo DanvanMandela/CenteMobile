@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     private val subscribe = CompositeDisposable()
     private var navController: NavController? = null
     private val workViewModel: WorkerViewModel by viewModels()
-    private var onAppData: OnAppData? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
         setViewModel()
         setNavigation()
     }
+
 
     override fun setBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)

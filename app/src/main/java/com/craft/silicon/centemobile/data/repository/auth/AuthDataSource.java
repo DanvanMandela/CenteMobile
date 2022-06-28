@@ -68,4 +68,5 @@ public interface AuthDataSource {
 
     default void saveBeneficiary(List<Beneficiary> modules) {
     }
+
 }

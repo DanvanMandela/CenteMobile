@@ -3,21 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.craft.silicon.centemobile">
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="smartpos.deviceservice.permission.Printer" />
-
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -36,6 +34,15 @@
         android:theme="@style/Theme.CenteMobile"
         tools:targetApi="31">
         <activity
+            android:name=".view.activity.PaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.ValidateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.DynamicActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activity.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -50,6 +57,7 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
+
             <!-- If you are using androidx.startup to initialize other components -->
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
@@ -66,7 +74,6 @@
                 <category android:name="android.intent.category.APP_MESSAGING" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
