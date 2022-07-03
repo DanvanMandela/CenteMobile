@@ -16,10 +16,9 @@
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/ghost_white">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -56,62 +55,42 @@
                     app:subtitle="@string/welcome_back"
                     app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     app:title="@string/hello_jane"
-                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    tools:ignore="UnusedAttribute" />
+                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
             </LinearLayout>
 
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+            android:layout_height="match_parent"
+            android:background="@color/ghost_white"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmerContainer"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:shimmer_repeat_mode="restart"
-                app:shimmer_shape="radial">
+                android:layout_height="match_parent">
 
-                <LinearLayout
+                <include
+                    android:id="@+id/headerItem"
+                    layout="@layout/block_home_header_layout" />
+
+                <include
+                    android:id="@+id/bodyItem"
+                    layout="@layout/block_home_body_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/headerItem" />
 
-                    <include layout="@layout/shimmer_items" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-                    <include layout="@layout/shimmer_items" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-                    <include layout="@layout/shimmer_items" />
-
-                    <include layout="@layout/shimmer_items" />
-
-                    <include layout="@layout/shimmer_items" />
-
-                    <include layout="@layout/shimmer_items" />
-                </LinearLayout>
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:overScrollMode="never">
-
-                <com.airbnb.epoxy.EpoxyRecyclerView
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    />
-            </androidx.core.widget.NestedScrollView>
-        </FrameLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -6,6 +6,9 @@
 
     <data>
 
+        <variable
+            name="storage"
+            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
 
         <variable
             name="callback"
@@ -46,6 +49,7 @@
                 android:id="@+id/container"
                 callback="@{callback}"
                 dynamic="@{data}"
+                storage="@{storage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </androidx.core.widget.NestedScrollView>

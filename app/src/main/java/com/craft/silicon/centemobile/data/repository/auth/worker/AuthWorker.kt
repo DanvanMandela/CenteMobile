@@ -29,9 +29,12 @@ class AuthWorker @AssistedInject constructor(
                 )
             updateActivationData(data)
             authRepository.saveVersion(data?.version)
-            authRepository.saveBeneficiary(data?.beneficiary)
             authRepository.saveAccountModule(data?.accounts)
-            authRepository.saveFrequentModule(data?.modules)
+            if (data?.accounts!!.isNotEmpty())
+                storageSource?.setAccounts(data.accounts!!.toMutableList())
+            authRepository.saveFrequentModule(data.modules)
+            if (data.beneficiary!!.isNotEmpty())
+                storageSource?.setBeneficiary(data.beneficiary!!.toMutableList())
             Result.success()
 
         } catch (e: Exception) {

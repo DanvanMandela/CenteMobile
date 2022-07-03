@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Set parent theme as app theme. -->
-    <style name="AppTheme.FullScreenDialog" parent="Theme.MaterialComponents.Light.Dialog">
+    <style name="AppTheme.FullScreenDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="colorPrimaryDark">@color/app_blue_dark</item>
         <item name="colorAccent">@color/app_blue_light</item>
         <item name="colorPrimary">@color/app_blue_dark</item>
@@ -21,6 +21,11 @@
         <item name="colorPrimaryDark">@color/app_blue_dark</item>
         <item name="colorAccent">@color/app_blue_light</item>
         <item name="colorPrimary">@color/app_blue_dark</item>
+    </style>
+
+
+    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
 

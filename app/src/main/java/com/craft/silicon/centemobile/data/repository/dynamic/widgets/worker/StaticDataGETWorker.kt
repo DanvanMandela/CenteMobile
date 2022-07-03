@@ -14,6 +14,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
 import com.craft.silicon.centemobile.util.BaseClass
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.reactivex.Single
@@ -71,6 +72,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
+                    Log.e("STATIC", Gson().toJson(data))
                     storageDataSource.setStaticData(data?.userCode!!.toMutableList())
                     constructResponse(Result.success())
                 }

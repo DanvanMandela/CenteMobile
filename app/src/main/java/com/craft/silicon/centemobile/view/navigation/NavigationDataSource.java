@@ -18,11 +18,24 @@ public interface NavigationDataSource {
     default NavDirections navigateAuth() {
         return null;
     }
+
     default NavDirections navigateLanding() {
         return null;
     }
 
     default NavDirections navigateToOTP(String mobile) {
+        return null;
+    }
+
+    default NavDirections navigateValidation() {
+        return null;
+    }
+
+    default NavDirections navigatePurchase(String account) {
+        return null;
+    }
+
+    default NavDirections navigateDynamic() {
         return null;
     }
 }

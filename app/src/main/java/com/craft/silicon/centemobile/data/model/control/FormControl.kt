@@ -15,6 +15,13 @@ import java.io.Serializable
 @Parcelize
 @Entity(tableName = "form_control_tb")
 data class FormControl(
+    @field:SerializedName("id")
+    @field:ColumnInfo(name = "id")
+    @field:PrimaryKey(autoGenerate = true)
+    @field:NonNull
+    @field:Expose
+    var id: Int,
+
     @field:SerializedName("ModuleID")
     @field:ColumnInfo(name = "moduleID")
     @field:Expose
@@ -27,7 +34,6 @@ data class FormControl(
 
     @field:SerializedName("ControlID")
     @field:ColumnInfo(name = "controlID")
-    @field:PrimaryKey
     @field:NonNull
     @field:Expose
     var controlID: String,
@@ -163,6 +169,8 @@ data class FormControl(
     @field:Expose
     @field:Ignore
     var isChecked: Boolean? = null
+
+
 }
 
 enum class FormNavigation {

@@ -13,6 +13,14 @@ import java.io.Serializable
 @Parcelize
 @Entity(tableName = "action_control_tb")
 data class ActionControls(
+
+    @field:SerializedName("id")
+    @field:ColumnInfo(name = "id")
+    @field:PrimaryKey(autoGenerate = true)
+    @field:NonNull
+    @field:Expose
+    var id: Int,
+
     @field:SerializedName("ModuleID")
     @field:ColumnInfo(name = "moduleID")
     @field:Expose
@@ -31,7 +39,6 @@ data class ActionControls(
 
     @field:SerializedName("ActionID")
     @field:ColumnInfo(name = "actionID")
-    @field:PrimaryKey
     @field:NonNull
     @field:Expose
     var actionID: String,

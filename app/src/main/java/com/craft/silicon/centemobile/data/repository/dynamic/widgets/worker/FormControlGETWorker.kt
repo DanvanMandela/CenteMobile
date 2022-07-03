@@ -32,6 +32,7 @@ class FormControlGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
+            widgetRepository.deleteFormControl()
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
@@ -71,6 +72,7 @@ class FormControlGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
+                    Log.e("FORMS",Gson().toJson(data))
                     data?.forEach { s ->
                         widgetRepository.saveFormControl(s?.formControls)
                     }

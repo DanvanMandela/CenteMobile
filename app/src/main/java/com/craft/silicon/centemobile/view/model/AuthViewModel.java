@@ -80,6 +80,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
 
             String newRequest = jsonObject.toString();
+            Log.e("ACTIVATION",newRequest);
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
             return authRepository.authRequest(new PayloadData(
                             uniqueID,
@@ -123,6 +124,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             String newRequest = jsonObject.toString();
 
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+
+            Log.e("ACTIVATION",newRequest);
 
             return authRepository.authRequest(new PayloadData(
                             uniqueID,

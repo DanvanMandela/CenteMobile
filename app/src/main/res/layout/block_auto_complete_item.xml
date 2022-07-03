@@ -20,6 +20,7 @@
             android:id="@+id/businessName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
             android:padding="@dimen/dimens_15dp"
             android:text="@{data.description}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"

@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class DialogData(
     @StringRes
     val title: Int,
-    val subTitle: String,
+    val subTitle: String?,
     @DrawableRes
     val avatar: Int
 ) : Parcelable

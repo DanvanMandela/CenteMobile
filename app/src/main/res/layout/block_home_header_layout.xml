@@ -1,105 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.HeaderData" />
 
         <variable
             name="callback"
             type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layOne"
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroup"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:padding="@dimen/dimens_10dp"
-            app:cardBackgroundColor="@color/app_blue_dark"
-            app:cardCornerRadius="@dimen/dimens_10dp"
-            app:layout_constraintBottom_toTopOf="@+id/layTwo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/containerChild">
-
-            <ImageButton
-                android:id="@+id/buttonOne"
-                android:layout_width="@dimen/dimens_50dp"
-                android:layout_height="@dimen/dimens_50dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/image"
-                android:padding="@dimen/dimens_15dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/graph_white" />
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layTwo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:padding="@dimen/dimens_10dp"
-            app:cardBackgroundColor="@color/ghost_white"
-            app:cardCornerRadius="@dimen/dimens_10dp"
-            app:cardElevation="@dimen/dimens_0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/containerChild"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layOne">
-
-            <ImageButton
-                android:id="@+id/buttonTwo"
-                android:layout_width="@dimen/dimens_50dp"
-                android:layout_height="@dimen/dimens_50dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/image"
-                android:padding="@dimen/dimens_15dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/copy_black" />
-
-
-        </androidx.cardview.widget.CardView>
-
-        <com.airbnb.epoxy.EpoxyRecyclerView
-            android:id="@+id/containerChild"
-            callback="@{callback}"
-            controller="@{data}"
-            setIndicator="@{@id/indicatorLayout}"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dimens_170dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/dimens_0dp"
-            android:paddingEnd="@dimen/dimens_8dp"
-            app:layoutManager="LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/layOne"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <LinearLayout
-            android:id="@+id/indicatorLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:animateLayoutChanges="true"
-            android:orientation="horizontal"
-            android:tag="@string/welcome_back"
+            android:paddingHorizontal="@dimen/dimens_16dp"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_toggle"
+            android:gravity="center"
+            app:selectionRequired="true"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/dimens_16dp"
+            android:showDividers="middle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/containerChild"
-            app:layout_constraintTop_toBottomOf="@+id/containerChild" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:singleSelection="true">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/accountButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="@dimen/dimens_60dp"
+                android:layout_height="@dimen/dimens_70dp"
+                app:cornerRadius="@dimen/dimens_8dp"
+                app:icon="@drawable/graph_white"
+                app:iconSize="@dimen/dimens_30dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/utilsButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="@dimen/dimens_60dp"
+                android:layout_height="@dimen/dimens_70dp"
+                app:cornerRadius="@dimen/dimens_8dp"
+                app:icon="@drawable/copy_white"
+                app:iconSize="@dimen/dimens_30dp" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/motionContainer"
+            android:layout_width="@dimen/dimens_0dp"
+            android:layout_height="match_parent"
+            app:layoutDescription="@xml/motion_scene_header"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/toggleGroup"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/accountPager"
+                layout="@layout/block_accounts_layout" />
+
+            <include
+                android:id="@+id/utilPager"
+                layout="@layout/block_util_layout"
+                tools:layout_editor_absoluteY="250dp" />
+
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

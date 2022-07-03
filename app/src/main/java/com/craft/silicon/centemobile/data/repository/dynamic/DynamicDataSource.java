@@ -14,4 +14,6 @@ public interface DynamicDataSource {
 
     default void saveDeviceData(DeviceData data) {
     }
+
+
 }

@@ -6,6 +6,10 @@
 
     <data>
 
+        <variable
+            name="storage"
+            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
+
 
         <variable
             name="callback"
@@ -26,6 +30,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
                 callback="@{callback}"
                 modules="@{data}"
                 android:layout_width="match_parent"
@@ -37,7 +42,6 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:overScrollMode="never"
@@ -46,7 +50,8 @@
             <com.airbnb.epoxy.EpoxyRecyclerView
                 android:id="@+id/container"
                 callback="@{callback}"
-                dynamic="@{data}"
+                form="@{data}"
+                storage="@{storage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </androidx.core.widget.NestedScrollView>

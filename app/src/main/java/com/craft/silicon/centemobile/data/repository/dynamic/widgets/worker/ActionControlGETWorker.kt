@@ -31,6 +31,7 @@ class ActionControlGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
+            widgetRepository.deleteAction()
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()

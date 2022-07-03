@@ -6,13 +6,18 @@
     <data>
 
         <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+
+        <variable
             name="data"
             type="com.craft.silicon.centemobile.data.model.user.Accounts" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:layout_marginVertical="@dimen/dimens_8dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_150dp"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/dimens_10dp"
         app:cardCornerRadius="@dimen/dimens_16dp"
         app:cardElevation="@dimen/dimens_5dp">

@@ -22,9 +22,11 @@ public interface ModuleCallback {
 
     }
 
-    default void onRadioCheck(FormControl formControl) {
+    default void onMenuItem() {
 
     }
+
+
 
     default void activityMove(DynamicData dynamicData) {
 
@@ -41,6 +43,10 @@ public interface ModuleCallback {
     }
 
     default void onModuleData() {
+    }
+
+    default void onRecent(FormControl formControl) {
+
     }
 
 }

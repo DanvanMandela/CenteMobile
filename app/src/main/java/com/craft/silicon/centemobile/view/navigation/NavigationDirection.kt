@@ -51,4 +51,33 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
             }
         }
     }
+
+
+    override fun navigateValidation(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_validation)
+    }
+
+    override fun navigateDynamic(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_dynamic)
+    }
+
+    override fun navigatePurchase(account: String?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_purchase
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(String::class.java)) {
+                    result.putParcelable("account", account as Parcelable)
+                } else if (Serializable::class.java.isAssignableFrom(String::class.java)) {
+                    result.putSerializable("account", account as Serializable)
+                }
+                return result
+            }
+        }
+    }
 }

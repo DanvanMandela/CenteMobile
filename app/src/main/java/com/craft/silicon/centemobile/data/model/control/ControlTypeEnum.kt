@@ -21,5 +21,11 @@ enum class ControlTypeEnum(val type: String) {
     SLIDER_LAYOUT("SLIDERLAYOUT"),
     SELECTED_TEXT("SELECTEDTEXT"),
     PHONE_CONTACTS("PHONECONTACTS"),
-    CHECKBOX("CHECKBOX")
+    CHECKBOX("CHECKBOX"),
+    CONFORM("CONFIRMATIONFORM"),
+
+}
+
+enum class ControlIDEnum(val type: String) {
+    RECENT_LIST("RECENTLIST")
 }

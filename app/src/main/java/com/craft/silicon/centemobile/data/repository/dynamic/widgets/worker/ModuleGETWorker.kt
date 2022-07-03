@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
@@ -12,6 +13,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
 import com.craft.silicon.centemobile.util.BaseClass
+import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.reactivex.Single
@@ -30,6 +32,8 @@ class ModuleGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
+            widgetRepository.deleteFormModule()
+
             val activeData = storageDataSource.activationData.value
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
@@ -70,6 +74,7 @@ class ModuleGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
+                    Log.e("MODULES", Gson().toJson(data))
                     data?.forEach { s ->
                         widgetRepository.saveModule(s?.modules)
                         activeData?.message = s?.message

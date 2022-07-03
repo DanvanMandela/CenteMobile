@@ -13,6 +13,14 @@ import java.io.Serializable
 @Parcelize
 @Entity(tableName = "modules_tbl")
 class Modules(
+
+    @field:SerializedName("id")
+    @field:ColumnInfo(name = "id")
+    @field:PrimaryKey(autoGenerate = true)
+    @field:NonNull
+    @field:Expose
+    var id: Int,
+
     @field:SerializedName("ParentModule")
     @field:ColumnInfo(name = "parentModule")
     @field:Expose
@@ -20,7 +28,6 @@ class Modules(
 
     @field:SerializedName("ModuleID")
     @field:ColumnInfo(name = "moduleID")
-    @field:PrimaryKey
     @field:NonNull
     @field:Expose
     var moduleID: String,

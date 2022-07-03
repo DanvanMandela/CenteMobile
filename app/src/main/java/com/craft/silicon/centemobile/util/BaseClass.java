@@ -313,14 +313,17 @@ public class BaseClass {
         return decodedStr;
     }
 
-    public static  String decodeBase64(String coded) {
+    public static String decodeBase64(String coded) {
         byte[] valueDecoded;
         valueDecoded = Base64.decode(coded.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
         return new String(valueDecoded);
     }
 
     public static String nonCaps(String s) {
-        return s.toLowerCase(Locale.getDefault());
+        if (s != null) {
+            return s.toLowerCase(Locale.getDefault());
+        }
+        return "";
     }
 
 

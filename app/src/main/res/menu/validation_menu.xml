@@ -4,5 +4,6 @@
 
     <item
         android:id="@+id/actionRecent"
-        android:title="@string/recent" />
+        android:title="@string/recent"
+        android:visible="false" />
 </menu>

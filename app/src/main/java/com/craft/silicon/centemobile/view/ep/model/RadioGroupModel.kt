@@ -36,9 +36,9 @@ open class RadioGroupModel : DataBindingEpoxyModel() {
 
     private fun addChildren(parent: RadioGroup) {
         val s =
-            data.form.filter { a -> nonCaps(a.controlType) == nonCaps(ControlTypeEnum.R_BUTTON.type) }
+            data.form?.filter { a -> nonCaps(a.controlType) == nonCaps(ControlTypeEnum.R_BUTTON.type) }
         parent.removeAllViews()
-        s.forEachIndexed { index, formControl ->
+        s?.forEachIndexed { index, formControl ->
             val inflater = LayoutInflater.from(parent.context)
             val binding =
                 BlockRadioButtonLayoutBinding.inflate(inflater, null, false)
@@ -51,7 +51,7 @@ open class RadioGroupModel : DataBindingEpoxyModel() {
             if (formControl == s.first()) {
                 if (formControl.isChecked == null) {
                     v.isChecked = true
-                    callbacks.onRadioCheck(formControl)
+                    callbacks.onRadioCheck(formControl, v)
                 }
 
             }

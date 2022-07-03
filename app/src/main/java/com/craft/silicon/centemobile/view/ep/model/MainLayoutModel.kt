@@ -35,7 +35,7 @@ open class MainLayoutModel : DataBindingEpoxyModel() {
 
     private fun addChildren(mainParent: LinearLayout) {
         mainParent.removeAllViews()
-        for (d in data.form) {
+        for (d in data.form!!) {
             when (BaseClass.nonCaps(d.controlType)) {
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> setTextLayout(mainParent, d)
                 BaseClass.nonCaps(ControlTypeEnum.BUTTON.type) -> setButtonLayout(mainParent, d)
@@ -67,7 +67,6 @@ open class MainLayoutModel : DataBindingEpoxyModel() {
         val binding = BlockDropDownLayoutBinding.inflate(inflater, mainParent, false)
         binding.data = d
         binding.callback = callbacks
-        binding.form = data
         mainParent.addView(binding.root)
     }
 

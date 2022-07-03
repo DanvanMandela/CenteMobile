@@ -3,17 +3,27 @@ package com.craft.silicon.centemobile.view.ep.data
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.room.*
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.GroupFormTypeConverter
+import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
+import com.craft.silicon.centemobile.data.model.dynamic.ResultsData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
+import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.data.model.user.FrequentModules
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import io.reactivex.annotations.NonNull
 import kotlinx.parcelize.Parcelize
 
 open class AppData
 
-data class HeaderData(
+data class AccountData(
     val account: MutableList<Accounts>
 ) : AppData()
 
@@ -32,10 +42,46 @@ data class GroupModule(val parent: Modules, val module: MutableList<Modules>) : 
 
 @Parcelize
 data class GroupForm(
+    @field:SerializedName("modules")
+    @field:Expose
     val module: Modules,
-    val form: MutableList<FormControl>,
-    val data: MutableList<StaticDataDetails>
+    @field:SerializedName("formList")
+    @field:Expose
+    val form: MutableList<FormControl>?,
 ) : DynamicData()
+
+
+data class FormData(
+    @field:SerializedName("modules")
+    @field:Expose
+    var forms: GroupForm,
+    @field:SerializedName("storage")
+    @field:Expose
+    var storage: StorageDataSource,
+) : DynamicData()
+
+
+@Entity(tableName = "layout_tbl")
+data class LayoutData(
+    @field:SerializedName("layout")
+    @field:ColumnInfo(name = "layout")
+    @field:TypeConverters(GroupFormTypeConverter::class)
+    @field:Expose
+    var layout: GroupForm,
+
+    @field:SerializedName("data")
+    @field:ColumnInfo(name = "data")
+    @field:TypeConverters(DynamicDataResponseTypeConverter::class)
+    @field:Expose
+    var data: DynamicDataResponse?,
+) {
+    @field:SerializedName("id")
+    @field:ColumnInfo(name = "id")
+    @field:PrimaryKey
+    @field:NonNull
+    @field:Expose
+    var id: Int = 1
+}
 
 data class LandingPageItem(
     @StringRes val title: Int,
@@ -74,6 +120,45 @@ object LandingData {
         )
     )
 }
+
+
+data class ResultDataList(
+    val total: Int,
+    val list: MutableList<ResultsData>
+) : AppData()
+
+data class ControlList(
+    val formControl: FormControl,
+    val list: MutableList<ControlList>,
+    val container: Boolean,
+    val linked: Boolean
+)
+
+
+data class DisplayContent(
+    val key: String,
+    val value: String
+)
+
+@Parcelize
+data class NavigationData(
+    var module: Modules?,
+    var forms: MutableList<FormControl>?
+) : Parcelable
+
+
+data class DisplayList(val list: MutableList<DisplayContent>) : AppData()
+
+
+data class ConfirmData(
+    val list: MutableList<FormControl>,
+    val hashMap: HashMapWrapper
+) : AppData()
+
+data class HashMapWrapper(val hashMap: HashMap<String, String>)
+
+
+
 
 
 

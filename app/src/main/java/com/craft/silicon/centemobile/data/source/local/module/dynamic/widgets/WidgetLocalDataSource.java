@@ -6,6 +6,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider;
+import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 
 import java.util.List;
 
@@ -43,6 +44,14 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     }
 
     @Override
+    public void deleteFormControl() {
+        Completable.fromRunnable(widgetDao::deleteFormControl)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
     public void saveModule(List<Modules> data) {
         Completable.fromRunnable(() -> widgetDao.saveModule(data))
                 .subscribeOn(schedulerProvider.io())
@@ -55,6 +64,13 @@ public class WidgetLocalDataSource implements WidgetDataSource {
         return widgetDao.getModules(moduleID);
     }
 
+    @Override
+    public void deleteFormModule() {
+        Completable.fromRunnable(widgetDao::deleteFormModule)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
 
     @Override
     public Observable<List<ActionControls>> getActionControl(String moduleID) {
@@ -67,8 +83,26 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     }
 
     @Override
+    public Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
+        return widgetDao.getFormControlNoSq(moduleID);
+    }
+
+    @Override
+    public Observable<List<ActionControls>> getActionControlCID(String controlID) {
+        return widgetDao.getActionControlCID(controlID);
+    }
+
+    @Override
     public void saveAction(List<ActionControls> data) {
         Completable.fromRunnable(() -> widgetDao.saveAction(data))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteAction() {
+        Completable.fromRunnable(widgetDao::deleteAction)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe();
@@ -85,5 +119,18 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     @Override
     public Observable<List<StaticDataDetails>> getStaticData() {
         return widgetDao.getStaticData();
+    }
+
+    @Override
+    public Single<LayoutData> layoutData() {
+        return widgetDao.layoutData();
+    }
+
+    @Override
+    public void saveLayoutData(LayoutData data) {
+        Completable.fromRunnable(() -> widgetDao.saveLayoutData(data))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
     }
 }

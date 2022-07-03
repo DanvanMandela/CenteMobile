@@ -1,7 +1,5 @@
 package com.craft.silicon.centemobile.data.repository.dynamic.widgets;
 
-import android.util.Log;
-
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
@@ -10,7 +8,7 @@ import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
-import com.google.gson.Gson;
+import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 
 import java.util.List;
 
@@ -36,13 +34,17 @@ public class WidgetRepository implements WidgetDataSource {
 
     @Override
     public void saveFormControl(List<FormControl> data) {
-        Log.e("DATA", new Gson().toJson(data));
         localData.saveFormControl(data);
     }
 
     @Override
     public Observable<List<FormControl>> getFormControl(String moduleID, String seq) {
         return localData.getFormControl(moduleID, seq);
+    }
+
+    @Override
+    public void deleteFormControl() {
+        localData.deleteFormControl();
     }
 
     @Override
@@ -55,6 +57,10 @@ public class WidgetRepository implements WidgetDataSource {
         return localData.getModules(moduleID);
     }
 
+    @Override
+    public void deleteFormModule() {
+        localData.deleteFormModule();
+    }
 
     @Override
     public void requestWidget(List<ActionControls> data) {
@@ -67,6 +73,11 @@ public class WidgetRepository implements WidgetDataSource {
     }
 
     @Override
+    public Observable<List<ActionControls>> getActionControlCID(String controlID) {
+        return localData.getActionControlCID(controlID);
+    }
+
+    @Override
     public Observable<List<ActionControls>> getActionControlByFM(String moduleID, String formID) {
         return localData.getActionControlByFM(moduleID, formID);
     }
@@ -74,6 +85,12 @@ public class WidgetRepository implements WidgetDataSource {
     @Override
     public void saveAction(List<ActionControls> data) {
         localData.saveAction(data);
+    }
+
+
+    @Override
+    public void deleteAction() {
+        localData.deleteAction();
     }
 
     @Override
@@ -89,5 +106,21 @@ public class WidgetRepository implements WidgetDataSource {
     @Override
     public Observable<List<StaticDataDetails>> getStaticData() {
         return localData.getStaticData();
+    }
+
+
+    @Override
+    public Single<LayoutData> layoutData() {
+        return localData.layoutData();
+    }
+
+    @Override
+    public void saveLayoutData(LayoutData data) {
+        localData.saveLayoutData(data);
+    }
+
+    @Override
+    public Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
+        return localData.getFormControlNoSq(moduleID);
     }
 }

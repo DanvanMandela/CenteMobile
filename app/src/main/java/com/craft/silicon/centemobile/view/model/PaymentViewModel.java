@@ -1,8 +1,8 @@
 package com.craft.silicon.centemobile.view.model;
 
 import android.content.Context;
+import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
@@ -18,7 +18,6 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Closeable;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -31,7 +30,7 @@ import io.reactivex.subjects.BehaviorSubject;
 @HiltViewModel
 public class PaymentViewModel extends ViewModel implements PaymentDataSource {
 
-    private final StorageDataSource dataSource;
+    public final StorageDataSource dataSource;
     private final PaymentRepository repository;
 
     @Inject
@@ -45,7 +44,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
 
 
     @Override
-    public Single<DynamicResponse> recentList(String moduleID, String merchantID, Context context) {
+    public Single<DynamicResponse> pay(JSONObject data, JSONObject encrypted, Context context, String moduleID) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
@@ -56,26 +55,27 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
-                    ActionTypeEnum.DB_CALL.getType(),
+                    ActionTypeEnum.PAY_BILL.getType(),
                     customerID,
                     true);
 
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("HEADER", "GETRECENTLIST");
-            jsonObject.put("DynamicForm", jsonObject1);
-
+            jsonObject.put("ModuleID", moduleID);
+            jsonObject.put("PayBill", data);
+            jsonObject.put("EncryptedFields", encrypted);
             String newRequest = jsonObject.toString();
-            String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData().getValue().getOther())).getPath();
+
+            String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
+                    Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
+                    .getValue().getPurchase())).getPath();
+
+            Log.e("PAY", newRequest);
 
             return repository.paymentRequest(
-                            dataSource.getDeviceData().getValue().getToken(),
-                            new PayloadData(
-                                    uniqueID,
-                                    BaseClass.encryptString(newRequest, device, iv)
-                            ), path)
-                    .doOnSubscribe(disposable -> loadingUi.onNext(true))
-                    .doOnSuccess(disposable -> loadingUi.onNext(false))
-                    .doOnError(disposable -> loadingUi.onNext(false));
+                    dataSource.getDeviceData().getValue().getToken(),
+                    new PayloadData(
+                            uniqueID,
+                            BaseClass.encryptString(newRequest, device, iv)
+                    ), path);
 
         } catch (JSONException exception) {
             exception.printStackTrace();

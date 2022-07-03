@@ -14,4 +14,8 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="grey_light">#d3d3d3</color>
     <color name="ghost_white">#f8f8ff</color>
+    <color name="red_app">#FF5733</color>
+
+    <color name="dar_color_one">#222831</color>
+    <color name="dar_color_two">#393E46</color>
 </resources>

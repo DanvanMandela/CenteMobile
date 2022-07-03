@@ -11,6 +11,7 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.Acti
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
+import com.craft.silicon.centemobile.data.worker.CleanDBWorker
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.util.BaseClass
@@ -40,13 +41,20 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
     }
 
     fun onWidgetData() {
-        val workWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()
+        val workWorker = OneTimeWorkRequestBuilder<CleanDBWorker>()
         var continuation = worker.getWorkManger()
             .beginUniqueWork(
                 "${WorkerCommons.TAG_DATA_WORKER}${BaseClass.generateAlphaNumericString(2)}",
                 ExistingWorkPolicy.REPLACE,
                 workWorker.build()
             )
+
+        val moduleWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(moduleWorker.build())
+
+
         val formWorker = OneTimeWorkRequestBuilder<FormControlGETWorker>()
             .setConstraints(worker.getConstraint())
             .addTag(WorkerCommons.TAG_OUTPUT)

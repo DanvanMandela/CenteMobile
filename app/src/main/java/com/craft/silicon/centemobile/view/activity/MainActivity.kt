@@ -13,8 +13,9 @@ import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.ep.data.AppData
+import com.craft.silicon.centemobile.view.fragment.home.HomeFragment
 import com.craft.silicon.centemobile.view.model.DynamicViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     private val subscribe = CompositeDisposable()
     private var navController: NavController? = null
     private val workViewModel: WorkerViewModel by viewModels()
+    private val widgetViewModel: WidgetViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     override fun setBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
+        HomeFragment.newInstance(this)
     }
 
     fun provideNavigationGraph(): NavController {
@@ -101,10 +104,4 @@ class MainActivity : AppCompatActivity(), AppCallbacks, NavController.OnDestinat
     }
 
 
-}
-
-interface OnAppData {
-    fun onApData(appData: AppData) {
-        throw Exception("Not implemented")
-    }
 }

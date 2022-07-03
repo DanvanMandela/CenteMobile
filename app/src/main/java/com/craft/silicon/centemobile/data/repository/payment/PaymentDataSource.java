@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import io.reactivex.Single;
 
@@ -16,7 +19,7 @@ public interface PaymentDataSource {
         return null;
     }
 
-    default Single<DynamicResponse> recentList(String moduleID, String merchantID, Context context) {
+    default Single<DynamicResponse> pay(JSONObject data, JSONObject encrypted, Context context, String moduleID) {
         return null;
     }
 

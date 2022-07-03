@@ -63,13 +63,13 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         val hours = calendar.get(Calendar.HOUR_OF_DAY)
 
         if (hours < 12) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.morning)
+            binding.aspectRatioImageView2.setImageRes(R.drawable.noon_one)
             binding.textView7.text = getString(R.string.good_morining)
         } else if (hours in 12..14) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.noon)
+            binding.aspectRatioImageView2.setImageRes(R.drawable.morning)
             binding.textView7.text = getString(R.string.good_afternoon)
         } else if (hours in 15..19) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.noon_one)
+            binding.aspectRatioImageView2.setImageRes(R.drawable.noon)
             binding.textView7.text = getString(R.string.good_evening)
         } else if (hours in 19..24) {
             binding.aspectRatioImageView2.setImageRes(R.drawable.night)
