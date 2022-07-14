@@ -21,6 +21,11 @@ data class LoginUserData(
     @field:Expose
     var status: String?,
 
+    @field:SerializedName("LastLoginDateTime")
+    @field:ColumnInfo(name = "LastLoginDateTime")
+    @field:Expose
+    var loginDate: String?,
+
     @field:SerializedName("Message")
     @field:ColumnInfo(name = "message")
     @field:Expose
@@ -71,7 +76,51 @@ data class LoginUserData(
     @field:ColumnInfo(name = "beneficiary")
     @field:TypeConverters(BeneficiaryTypeConverter::class)
     @field:Expose
-    var beneficiary: @RawValue List<Beneficiary>?
+    var beneficiary: @RawValue List<Beneficiary>?,
+
+    @field:SerializedName("ServiceAlerts")
+    @field:ColumnInfo(name = "serviceAlerts")
+    @field:Expose
+    var serviceAlerts: MutableList<AlertServices>?
+) : Parcelable
+
+@Parcelize
+data class AlertServices(
+    @field:SerializedName("ModuleID")
+    @field:Expose
+    var moduleID: String?,
+
+    @field:SerializedName("AllowPayment")
+    @field:Expose
+    var payment: String?,
+
+    @field:SerializedName("NoOfDays")
+    @field:Expose
+    var days: String,
+
+    @field:SerializedName("ContainerID")
+    @field:Expose
+    var containerID: String,
+
+    @field:SerializedName("ModuleName")
+    @field:Expose
+    var moduleName: String,
+
+    @field:SerializedName("BankAccountID")
+    @field:Expose
+    var bankAccountID: String,
+
+    @field:SerializedName("MerchantID")
+    @field:Expose
+    var merchantID: String,
+
+    @field:SerializedName("ControlFormat")
+    @field:Expose
+    var controlFormat: String,
+
+    @field:SerializedName("DueDate")
+    @field:Expose
+    var dueDate: String,
 ) : Parcelable
 
 @Parcelize
@@ -185,7 +234,11 @@ data class Beneficiary(
     @field:ColumnInfo(name = "branchID")
     @field:Expose
     var branchID: String?,
-) : Parcelable
+) : Parcelable {
+    override fun toString(): String {
+        return accountAlias!!
+    }
+}
 
 
 data class ActivationData(
@@ -204,6 +257,10 @@ data class ActivationData(
     @field:SerializedName("email")
     @field:Expose
     var email: String? = null
+
+    @field:SerializedName("LastLoginDateTime")
+    @field:Expose
+    var loginDate: String? = null
 
     @field:SerializedName("lastName")
     @field:Expose

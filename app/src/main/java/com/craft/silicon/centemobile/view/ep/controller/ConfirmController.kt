@@ -25,7 +25,7 @@ class ConfirmController(val callbacks: AppCallbacks) :
             ) {
                 val m = DisplayContent(
                     key = s.controlID,
-                    value = data.hashMap.hashMap[s.controlID]!!
+                    value = data.hashMap.hashMap?.get(s.controlID)!!
                 )
                 displayItemLayout {
                     id(s.controlID)

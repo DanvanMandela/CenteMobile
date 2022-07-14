@@ -5,10 +5,6 @@
     <data>
 
         <variable
-            name="module"
-            type="com.craft.silicon.centemobile.data.model.module.Modules" />
-
-        <variable
             name="data"
             type="com.craft.silicon.centemobile.data.model.control.FormControl" />
 
@@ -20,7 +16,6 @@
     <RadioButton
         callback="@{callback}"
         data="@{data}"
-        modules="@{module}"
         setTag="@{data.controlID}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

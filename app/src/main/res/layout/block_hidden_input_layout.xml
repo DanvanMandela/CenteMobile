@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_0dp"
+        android:hint="@{data.controlText}"
+        android:visibility="gone"
+        app:boxBackgroundColor="@color/ghost_white"
+        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/child"
+            callback="@{callback}"
+            hidden="@{data}"
+            setTag="@{data.controlID}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:fontFamily="@font/poppins_medium"
+            android:inputType="text"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</layout>

@@ -86,7 +86,6 @@ open class MainLayoutModel : DataBindingEpoxyModel() {
         val binding = BlockTextInputLayoutBinding.inflate(inflater, mainParent, false)
         binding.data = d
         binding.callback = callbacks
-        binding.module = data.module
         mainParent.addView(binding.root)
     }
 }

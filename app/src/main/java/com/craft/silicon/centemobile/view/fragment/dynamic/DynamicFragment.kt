@@ -1,8 +1,11 @@
 package com.craft.silicon.centemobile.view.fragment.dynamic
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,7 +84,7 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     private fun startShimmer() {
-        binding.shimmerContainer.startShimmer();
+        binding.shimmerContainer.startShimmer()
     }
 
     companion object {
@@ -120,11 +123,13 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
             GroupForm(
                 module = modules!!,
                 form = form?.toMutableList()
-            )
+            ),
+            response = null,
+            map = null
         )
         ((requireActivity()) as MainActivity)
             .provideNavigationGraph()
-            .navigate(widgetViewModel.navigation().navigatePurchase(""))
+            .navigate(widgetViewModel.navigation().navigatePurchase())
     }
 
     private fun onValidate(form: List<FormControl>?, modules: Modules?) {
@@ -144,6 +149,27 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun onModule(modules: Modules?) {
+        if (modules!!.moduleURLTwo != null) {
+            if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
+                openUrl(modules.moduleURLTwo)
+            } else navigate(modules)
+        } else navigate(modules)
+    }
+
+    private fun getFormControl(modules: Modules) {
+        subscribe.add(widgetViewModel.getFormControl(modules.moduleID, "1")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ f: List<FormControl> ->
+                setFormNavigation(f.toMutableList(), modules)
+            }) { obj: Throwable -> obj.printStackTrace() })
+    }
+
+    override fun openUrl(url: String?) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+    private fun navigate(modules: Modules?) {
         if (modules!!.ModuleCategory == ModuleCategory.BLOCK.type) {
             subscribe.add(widgetViewModel.getModules(modules.moduleID)
                 .subscribeOn(Schedulers.io())
@@ -157,13 +183,5 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
         } else getFormControl(modules)
     }
 
-    private fun getFormControl(modules: Modules) {
-        subscribe.add(widgetViewModel.getFormControl(modules.moduleID, "1")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ f: List<FormControl> ->
-                setFormNavigation(f.toMutableList(), modules)
-            }) { obj: Throwable -> obj.printStackTrace() })
-    }
 
 }

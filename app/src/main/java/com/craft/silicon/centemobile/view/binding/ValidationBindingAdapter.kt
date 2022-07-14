@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.binding
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
@@ -7,12 +8,13 @@ import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
-import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockToggleButtonLayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.ep.controller.ValidationController
+import com.craft.silicon.centemobile.view.ep.controller.FormController
+import com.craft.silicon.centemobile.view.ep.controller.NewFormController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
@@ -64,7 +66,7 @@ fun EpoxyRecyclerView.validationForm(
         if (dynamic != null) {
             when (dynamic) {
                 is GroupForm -> {
-                    controller = ValidationController(callbacks)
+                    controller = NewFormController(callbacks)
                     controller.setData(FormData(forms = dynamic, storage = storage))
                 }
             }
@@ -76,7 +78,7 @@ fun EpoxyRecyclerView.validationForm(
 
 
 @BindingAdapter("callback", "button")
-fun MaterialButton.setToggle(callbacks: AppCallbacks, data: FormControl?) {
+fun MaterialButton.setToggle(callbacks: AppCallbacks?, data: FormControl?) {
     val param = LinearLayout.LayoutParams(
         0, LinearLayout.LayoutParams.MATCH_PARENT, 1F
     )
@@ -84,6 +86,38 @@ fun MaterialButton.setToggle(callbacks: AppCallbacks, data: FormControl?) {
     if (data != null) {
         this.text = data.controlText
     }
-    if (!data?.isChecked!!)
-        this.setOnClickListener { callbacks.onToggleButton(data) }
+    if (data?.controlValue != null)
+        if (!TextUtils.isEmpty(data.controlValue))
+            callbacks?.userInput(
+                InputData(
+                    name = data.controlText,
+                    key = data.serviceParamID,
+                    value = data.controlValue,
+                    encrypted = data.isEncrypted,
+                    mandatory = data.isMandatory
+                )
+            )
 }
+
+@BindingAdapter("callback", "linked", "storage")
+fun EpoxyRecyclerView.setChildren(
+    callbacks: AppCallbacks, dynamic: DynamicData?,
+    storage: StorageDataSource?
+) {
+//    this.animation =
+//        AnimationUtils.loadAnimation(this.context, R.anim.anim_slide_in_right)
+    var controller: EpoxyController? = null
+    if (storage != null)
+        if (dynamic != null) {
+            when (dynamic) {
+                is GroupForm -> {
+                    controller = FormController(callbacks)
+                    controller.setData(FormData(forms = dynamic, storage = storage))
+                }
+            }
+            if (controller != null) {
+                this.setController(controller)
+            }
+        }
+}
+

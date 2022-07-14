@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.data.repository.auth;
 
 import android.app.Activity;
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
@@ -10,6 +11,8 @@ import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,6 +32,13 @@ public interface AuthDataSource {
     default Single<DynamicResponse> loginAccount(String pin, Activity activity) {
         return null;
     }
+
+    default Single<DynamicResponse> pinForgotATM(JSONObject jsonObject, Context context) {
+        return null;
+    }
+
+
+
 
     default Single<DynamicResponse> verifyOTP(String otp, Activity activity, String mobile) {
         return null;

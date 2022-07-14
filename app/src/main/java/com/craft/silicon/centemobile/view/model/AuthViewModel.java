@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -19,6 +20,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
 import com.google.gson.Gson;
@@ -80,8 +82,51 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
 
             String newRequest = jsonObject.toString();
-            Log.e("ACTIVATION",newRequest);
+            Log.e("ACTIVATION", newRequest);
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+            return authRepository.authRequest(new PayloadData(
+                            uniqueID,
+                            BaseClass.encryptString(newRequest, device, iv)
+                    ), path)
+                    .doOnSubscribe(disposable -> loadingUi.onNext(true))
+                    .doOnSuccess(disposable -> loadingUi.onNext(false))
+                    .doOnError(disposable -> loadingUi.onNext(false));
+
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> pinForgotATM(JSONObject data, Context context) {
+        try {
+            String iv = storage.getDeviceData().getValue().getRun();
+            String device = storage.getDeviceData().getValue().getDevice();
+            String mobile = storage.getActivationData().getValue().getMobile();
+            String customerID = storage.getActivationData().getValue().getId();
+            String uniqueID = Constants.getUniqueID();
+
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.PAY_BILL.getType(),
+                    customerID,
+                    true);
+
+            data.put("PHONENUMBER", mobile);
+            jsonObject.put("PayBill", data);
+
+            String newRequest = jsonObject.toString();
+
+            String path = new SpiltURL(storage.getDeviceData()
+                    .getValue() == null ? Constants.BaseUrl.UAT : Objects
+                    .requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+
+            new AppLogger().appLog("PIN:Forgot", new Gson().toJson(newRequest));
+
             return authRepository.authRequest(new PayloadData(
                             uniqueID,
                             BaseClass.encryptString(newRequest, device, iv)
@@ -125,7 +170,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
 
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
 
-            Log.e("ACTIVATION",newRequest);
+            Log.e("ACTIVATION", newRequest);
 
             return authRepository.authRequest(new PayloadData(
                             uniqueID,
@@ -211,4 +256,11 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
     public Observable<List<Beneficiary>> geBeneficiary() {
         return authRepository.geBeneficiary();
     }
+
+    @Override
+    public void saveVersion(String str) {
+        authRepository.saveVersion(str);
+    }
+
+
 }

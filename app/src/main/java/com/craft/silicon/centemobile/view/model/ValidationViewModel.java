@@ -1,18 +1,23 @@
 package com.craft.silicon.centemobile.view.model;
 
 import android.content.Context;
-import android.util.Log;
+import android.text.TextUtils;
 
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
+import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
+import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
+import com.craft.silicon.centemobile.data.repository.payment.PaymentRepository;
 import com.craft.silicon.centemobile.data.repository.validation.ValidationDataSource;
 import com.craft.silicon.centemobile.data.repository.validation.ValidationRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 
 import org.json.JSONException;
@@ -30,6 +35,9 @@ import io.reactivex.subjects.BehaviorSubject;
 @HiltViewModel
 public class ValidationViewModel extends ViewModel implements ValidationDataSource {
     private final ValidationRepository repository;
+    private final WidgetRepository widgetRepository;
+    private final PaymentRepository paymentRepository;
+
     public final StorageDataSource dataSource;
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
@@ -37,14 +45,23 @@ public class ValidationViewModel extends ViewModel implements ValidationDataSour
 
 
     @Inject
-    public ValidationViewModel(ValidationRepository repository, StorageDataSource dataSource) {
+    public ValidationViewModel(ValidationRepository repository,
+                               WidgetRepository widgetRepository,
+                               PaymentRepository paymentRepository,
+                               StorageDataSource dataSource) {
         this.repository = repository;
+        this.widgetRepository = widgetRepository;
+        this.paymentRepository = paymentRepository;
         this.dataSource = dataSource;
     }
 
 
     @Override
-    public Single<DynamicResponse> validation(String moduleID, String merchantID, JSONObject data, Context context) {
+    public Single<DynamicResponse> validation(ActionControls action,
+                                              JSONObject data,
+                                              JSONObject encrypted,
+                                              Modules modules,
+                                              Context context) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
@@ -55,30 +72,92 @@ public class ValidationViewModel extends ViewModel implements ValidationDataSour
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
-                    ActionTypeEnum.VALIDATE.getType(),
+                    action.getActionType(),
                     customerID,
                     true);
-            jsonObject.put("MerchantID", merchantID);
-            jsonObject.put("ModuleID", moduleID);
-            jsonObject.put("Validate", data);
 
-            String newRequest = jsonObject.toString();
-            Log.e("Validation", newRequest);
-            String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData().getValue().getValidate())).getPath();
+            if (BaseClass.nonCaps(action.getActionType())
+                    .equals(BaseClass.nonCaps(ActionTypeEnum.DB_CALL.getType()))) {
 
-            return repository.validationRequest(
-                            dataSource.getDeviceData().getValue().getToken(),
-                            new PayloadData(
-                                    uniqueID,
-                                    BaseClass.encryptString(newRequest, device, iv)
-                            ), path)
-                    .doOnSubscribe(disposable -> loadingUi.onNext(true))
-                    .doOnSuccess(disposable -> loadingUi.onNext(false))
-                    .doOnError(disposable -> loadingUi.onNext(false));
+                jsonObject.put("MerchantID", !TextUtils.isEmpty(modules.getMerchantID()) ?
+                        modules.getMerchantID() : action.getMerchantID());
+                jsonObject.put("ModuleID", modules.getModuleID());
+                JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("HEADER", action.getActionID());
+                jsonObject.put("DynamicForm", jsonObject1);
+
+                String dbRequest = jsonObject.toString();
+                AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
+                return dbCall(new PayloadData(
+                        uniqueID,
+                        BaseClass.encryptString(dbRequest, device, iv)
+                ));
+            } else if (BaseClass.nonCaps(action.getActionType())
+                    .equals(BaseClass.nonCaps(ActionTypeEnum.VALIDATE.getType()))) {
+                jsonObject.put("MerchantID", !TextUtils.isEmpty(modules.getMerchantID()) ?
+                        modules.getMerchantID() : action.getMerchantID());
+                jsonObject.put("ModuleID", modules.getModuleID());
+                jsonObject.put("Validate", data);
+                String validateRequest = jsonObject.toString();
+                AppLogger.Companion.getInstance().appLog("Validation", validateRequest);
+                return validateCall(new PayloadData(
+                        uniqueID,
+                        BaseClass.encryptString(validateRequest, device, iv)
+                ));
+            } else if (BaseClass.nonCaps(action.getActionType())
+                    .equals(BaseClass.nonCaps(ActionTypeEnum.PAY_BILL.getType()))) {
+                jsonObject.put("ModuleID", modules.getModuleID());
+                jsonObject.put("PayBill", data);
+                jsonObject.put("EncryptedFields", encrypted);
+                String payBillRequest = jsonObject.toString();
+                AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
+                return payBillCall(new PayloadData(
+                        uniqueID,
+                        BaseClass.encryptString(payBillRequest, device, iv)
+                ));
+            } else return null;
 
         } catch (JSONException exception) {
             exception.printStackTrace();
             return null;
         }
     }
+
+    @Override
+    public Single<DynamicResponse> dbCall(PayloadData data) {
+        String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                .getValue().getOther())).getPath();
+        return widgetRepository.requestWidget(data, path)
+                .doOnSubscribe(disposable -> loadingUi.onNext(true))
+                .doOnSuccess(disposable -> loadingUi.onNext(false))
+                .doOnError(disposable -> loadingUi.onNext(false));
+    }
+
+    @Override
+    public Single<DynamicResponse> payBillCall(PayloadData data) {
+        String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                .getValue().getPurchase())).getPath();
+
+        return paymentRepository.paymentRequest(
+                        dataSource.getDeviceData().getValue().getToken(),
+                        data, path).doOnSubscribe(disposable -> loadingUi.onNext(true))
+                .doOnSuccess(disposable -> loadingUi.onNext(false))
+                .doOnError(disposable -> loadingUi.onNext(false));
+    }
+
+    @Override
+    public Single<DynamicResponse> validateCall(PayloadData data) {
+        String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                .getValue().getValidate())).getPath();
+
+        return repository.validationRequest(
+                        dataSource.getDeviceData().getValue().getToken(),
+                        data, path).doOnSubscribe(disposable -> loadingUi.onNext(true))
+                .doOnSuccess(disposable -> loadingUi.onNext(false))
+                .doOnError(disposable -> loadingUi.onNext(false));
+    }
+
 }

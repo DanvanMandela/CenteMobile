@@ -1,4 +1,4 @@
-package com.craft.silicon.centewallet.util.provider
+package com.craft.silicon.centemobile.util.provider
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.ArrayRes

@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavDirections
+import androidx.palette.graphics.Palette
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.image.drawableToBitmap
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.setImageRes
 import com.craft.silicon.centemobile.view.ep.data.GroupLanding
@@ -19,6 +22,7 @@ import com.craft.silicon.centemobile.view.ep.data.LandingPageItem
 import com.craft.silicon.centemobile.view.model.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,18 +67,28 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         val hours = calendar.get(Calendar.HOUR_OF_DAY)
 
         if (hours < 12) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.noon_one)
+            binding.banner.setImageRes(R.drawable.noon_one)
             binding.textView7.text = getString(R.string.good_morining)
+            setColorPalette(R.drawable.noon_one)
         } else if (hours in 12..14) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.morning)
+            binding.banner.setImageRes(R.drawable.morning)
             binding.textView7.text = getString(R.string.good_afternoon)
         } else if (hours in 15..19) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.noon)
+            binding.banner.setImageRes(R.drawable.noon)
             binding.textView7.text = getString(R.string.good_evening)
         } else if (hours in 19..24) {
-            binding.aspectRatioImageView2.setImageRes(R.drawable.night)
+            binding.banner.setImageRes(R.drawable.night)
             binding.textView7.text = getString(R.string.good_night)
         }
+
+    }
+
+    private fun setColorPalette(drawable: Int) {
+
+        val bitmap = ContextCompat.getDrawable(requireContext(), drawable)
+            ?.let { drawableToBitmap(it) }
+
+        val p = bitmap?.let { Palette.from(it).generate() }!!
 
     }
 
@@ -119,9 +133,18 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
     override fun onLanding(data: LandingPageItem?) {
         when (data?.enum) {
-            LandingPageEnum.LOGIN -> setNavigation(authViewModel.navigationDataSource.navigateAuth())
-            LandingPageEnum.REGISTRATION -> setNavigation(authViewModel.navigationDataSource.navigateToLogin())
-            LandingPageEnum.BRANCH -> setNavigation(authViewModel.navigationDataSource.navigateToLogin())
+            LandingPageEnum.LOGIN -> setNavigation(
+                authViewModel.navigationDataSource
+                    .navigateAuth()
+            )
+            LandingPageEnum.REGISTRATION -> setNavigation(
+                authViewModel.navigationDataSource
+                    .navigateSelfReg()
+            )
+            LandingPageEnum.BRANCH -> setNavigation(
+                authViewModel.navigationDataSource
+                    .navigateToLogin()
+            )
             else -> {
                 throw Exception("No direction implemented")
             }
@@ -131,4 +154,6 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     private fun setNavigation(direction: NavDirections?) {
         (requireActivity() as MainActivity).provideNavigationGraph().navigate(direction!!)
     }
+
+
 }

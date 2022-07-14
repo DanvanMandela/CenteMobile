@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.user.AlertServices" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="@dimen/dimens_150dp"
+            android:layout_height="@dimen/dimens_150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dimens_20dp"
+                android:src="@drawable/user_icon" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/poppins_medium"
+            android:autoSizeTextType="uniform"
+            android:text="@{data.moduleName}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+            tools:text="pepsi"
+            tools:targetApi="o" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

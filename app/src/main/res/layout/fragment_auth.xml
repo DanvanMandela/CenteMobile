@@ -12,6 +12,7 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -20,7 +21,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/back_clip">
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -85,11 +86,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputPin"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                app:boxBackgroundColor="@color/ghost_white"
                 app:hintEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,8 +102,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPin"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_54dp"
-                    android:background="@color/transparent"
+                    android:layout_height="@dimen/dimens_70dp"
                     android:fontFamily="@font/poppins_semi_bold"
                     android:gravity="center"
                     android:hint="@string/pin"
@@ -114,7 +116,7 @@
 
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/forgotPin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -138,7 +140,7 @@
                 android:text="@string/login_securely"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/forgotPin" />
 
 
             <View

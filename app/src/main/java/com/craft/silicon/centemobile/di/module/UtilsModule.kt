@@ -2,7 +2,6 @@ package com.craft.silicon.centemobile.di.module
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -20,7 +19,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.StateFlow
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
-        android:background="@color/red_app"
-        android:id="@+id/accountPager"
+    <data>
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.view.ep.controller.AlertList" />
+    </data>
+
+    <com.airbnb.epoxy.EpoxyRecyclerView
+        alerts="@{data}"
+        callback="@{callback}"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_150dp">
-
-    </FrameLayout>
+        android:layout_height="@dimen/dimens_150dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/dimens_10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </layout>

@@ -74,6 +74,10 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         return widgetRepository.getModules(moduleID);
     }
 
+    @Override
+    public Observable<Modules> getModule(String moduleID) {
+        return widgetRepository.getModule(moduleID);
+    }
 
     @Override
     public Observable<List<ActionControls>> getActionControl(String moduleID) {
@@ -155,5 +159,10 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     @Override
     public Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
         return widgetRepository.getFormControlNoSq(moduleID);
+    }
+
+    @Override
+    public LiveData<String> versionData() {
+        return new MutableLiveData<>(storageDataSource.getVersion().getValue());
     }
 }

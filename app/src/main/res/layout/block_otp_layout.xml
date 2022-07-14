@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="module"
+            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <LinearLayout
+        android:id="@+id/outlinedTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingHorizontal="@dimen/dimens_24dp"
+            android:paddingVertical="@dimen/dimens_5dp"
+            android:text="@{data.controlText}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        <com.chaos.view.PinView
+            android:id="@+id/verificationCodeEditText"
+            style="@style/PinWidget.PinView"
+            callback="@{callback}"
+            module="@{module}"
+            otp="@{data}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="@dimen/dimens_5dp"
+            android:contentDescription="@string/otp_"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:gravity="center"
+            android:inputType="number"
+            android:itemBackground="@color/ghost_white"
+            android:padding="10dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:cursorColor="@color/app_blue_light"
+            app:cursorWidth="2dp"
+            app:hideLineWhenFilled="true"
+            app:itemCount="6"
+            app:itemHeight="@dimen/dimens_54dp"
+            app:itemRadius="4dp"
+            app:itemSpacing="10dp"
+            app:itemWidth="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:lineColor="@color/app_blue_light"
+            app:lineWidth="0dp"
+            app:viewType="rectangle"
+            tools:ignore="EditableContentDescCheck" />
+    </LinearLayout>
+</layout>

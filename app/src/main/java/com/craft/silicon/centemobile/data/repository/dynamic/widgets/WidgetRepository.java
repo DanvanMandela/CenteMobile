@@ -58,6 +58,11 @@ public class WidgetRepository implements WidgetDataSource {
     }
 
     @Override
+    public Observable<Modules> getModule(String moduleID) {
+        return localData.getModule(moduleID);
+    }
+
+    @Override
     public void deleteFormModule() {
         localData.deleteFormModule();
     }

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.CenteMobile" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.CenteMobile" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/app_blue_light</item>
         <item name="colorPrimaryVariant">@color/app_blue_dark</item>
@@ -14,5 +14,6 @@
         <!-- Customize your theme here. -->
 
         <item name="backgroundColor">@color/ghost_white</item>
+
     </style>
 </resources>

@@ -17,6 +17,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="@{()->callback.onFrequent(data)}"
         android:padding="@dimen/dimens_5dp">
 
         <ImageView
@@ -41,15 +43,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:autoSizeTextType="uniform"
+            android:ellipsize="end"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
             android:maxLines="2"
-            android:textColor="@color/white"
             android:minLines="2"
-            android:ellipsize="end"
             android:paddingHorizontal="@dimen/dimens_5dp"
             android:paddingVertical="@dimen/dimens_2dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

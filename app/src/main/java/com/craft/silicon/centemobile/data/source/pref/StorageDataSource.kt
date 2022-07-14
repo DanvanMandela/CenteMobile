@@ -5,6 +5,7 @@ import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import kotlinx.coroutines.flow.StateFlow
 
@@ -40,6 +41,9 @@ interface StorageDataSource {
 
     fun setAccounts(value: MutableList<Accounts>)
     val accounts: StateFlow<List<Accounts?>?>
+
+    fun setAlerts(value: MutableList<AlertServices>)
+    val alerts: StateFlow<List<AlertServices?>?>
 
 
 }

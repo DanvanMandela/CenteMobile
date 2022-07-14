@@ -29,6 +29,7 @@ enum class ControlFormatEnum(var type: String) {
     VERTICAL("Vertical"),
     LIST_BUTTON("ListButton"),
     HORIZONTAL("HORIZONTAL"),
+    HORIZONTAL_SCROLL("HORIZONTALSCROLL"),
     CATEGORY("CATEGORY"),
     NUMBER("NUMBER"),
     PRIMARY("PRIMARY"),
@@ -40,7 +41,8 @@ enum class ControlFormatEnum(var type: String) {
     MEDIUM("MEDIUM"),
 
     ACCOUNT_BANK("SELECTBANKACCOUNT"),
-    BENEFICIARY("SELECTBENEFICIARY")
+    BENEFICIARY("SELECTBENEFICIARY"),
+    END("END")
 
 
 }

@@ -43,6 +43,7 @@
             app:layout_constraintTop_toBottomOf="@+id/container">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_60dp"
@@ -55,6 +56,7 @@
                 app:strokeColor="@color/red_app" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_60dp"
                 android:layout_margin="@dimen/dimens_10dp"

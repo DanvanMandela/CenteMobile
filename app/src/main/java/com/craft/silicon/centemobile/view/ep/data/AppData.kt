@@ -3,19 +3,22 @@ package com.craft.silicon.centemobile.view.ep.data
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.GroupFormTypeConverter
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.dynamic.ResultsData
+import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
-import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
-import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.data.model.user.FrequentModules
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.craft.silicon.centemobile.data.source.remote.callback.ReceiptDetails
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.reactivex.annotations.NonNull
@@ -117,6 +120,11 @@ object LandingData {
             title = R.string.cente_on_go,
             avatar = R.drawable.photos,
             enum = LandingPageEnum.LOGIN
+        ),
+        LandingPageItem(
+            title = R.string.self_reg,
+            avatar = R.drawable.photos,
+            enum = LandingPageEnum.REGISTRATION
         )
     )
 }
@@ -136,8 +144,8 @@ data class ControlList(
 
 
 data class DisplayContent(
-    val key: String,
-    val value: String
+    val key: String?,
+    val value: String?
 )
 
 @Parcelize
@@ -155,7 +163,21 @@ data class ConfirmData(
     val hashMap: HashMapWrapper
 ) : AppData()
 
-data class HashMapWrapper(val hashMap: HashMap<String, String>)
+@Parcelize
+data class HashMapWrapper(val hashMap: HashMap<String, String>?) :
+    Parcelable
+
+@Parcelize
+data class ReceiptList(val receipt: MutableList<ReceiptDetails>) : DynamicData()
+
+
+@Parcelize
+data class InputList(
+    @field:SerializedName("data")
+    @field:Expose
+    val data: MutableList<InputData>?
+) : DynamicData()
+
 
 
 

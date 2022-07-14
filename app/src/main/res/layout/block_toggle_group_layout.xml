@@ -15,6 +15,7 @@
     </data>
 
     <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/parent"
         callback="@{callback}"
         form="@{data}"
         android:layout_width="match_parent"

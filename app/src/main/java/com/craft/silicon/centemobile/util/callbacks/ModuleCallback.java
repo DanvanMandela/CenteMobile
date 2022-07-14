@@ -4,6 +4,8 @@ import android.widget.LinearLayout;
 
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.view.ep.data.DynamicData;
 import com.craft.silicon.centemobile.view.ep.data.LandingPageItem;
 
@@ -18,6 +20,14 @@ public interface ModuleCallback {
 
     }
 
+    default void openUrl(String url) {
+    }
+
+
+    default void onFrequent(FrequentModules modules) {
+
+    }
+
     default void onForm(FormControl formControl, Modules modules) {
 
     }
@@ -25,7 +35,6 @@ public interface ModuleCallback {
     default void onMenuItem() {
 
     }
-
 
 
     default void activityMove(DynamicData dynamicData) {
@@ -47,6 +56,13 @@ public interface ModuleCallback {
 
     default void onRecent(FormControl formControl) {
 
+    }
+
+    default void onDisplay(FormControl formControl) {
+
+    }
+
+    default void currentAccount(Accounts accounts) {
     }
 
 }

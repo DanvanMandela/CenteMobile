@@ -14,7 +14,6 @@ import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockRadionGroupLayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.binding.setRadioButton
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 
 @EpoxyModelClass
@@ -44,7 +43,6 @@ open class RadioGroupModel : DataBindingEpoxyModel() {
                 BlockRadioButtonLayoutBinding.inflate(inflater, null, false)
             binding.data = formControl
             binding.callback = callbacks
-            binding.module = data.module
             binding.root.id = index
             parent.addView(binding.root)
             val v = binding.root as RadioButton

@@ -1,7 +1,11 @@
 package com.craft.silicon.centemobile.data.source.remote.callback
 
+import android.os.Parcelable
+import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import javax.annotation.Nullable
 
 
 data class ResponseData(
@@ -118,6 +122,19 @@ data class ResponseDetails(
     @field:Expose
     var customerID: String?,
 )
+
+
+@Parcelize
+data class ReceiptDetails(
+    @field:SerializedName("Title")
+    @field:Expose
+    var title: String,
+    @field:SerializedName("Value")
+    @field:Nullable
+    @field:Expose
+    var value: String?,
+) : Parcelable, DynamicData()
+
 
 
 

@@ -23,6 +23,7 @@ import com.craft.silicon.centemobile.data.receiver.SMSReceiver;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
 import com.craft.silicon.centemobile.databinding.FragmentOtpBinding;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
@@ -116,7 +117,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     @Override
     public boolean validateFields() {
         if (TextUtils.isEmpty(binding.verificationCodeEditText.getText())) {
-            new ShowToast(requireContext(), getString(R.string.opt_required));
+            new ShowToast(requireContext(), getString(R.string.opt_required), true);
             return false;
         } else return true;
     }
@@ -145,6 +146,12 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                 .subscribe(data -> {
                     LoadingFragment.dismiss(getChildFragmentManager());
                     try {
+                        new AppLogger().appLog("ACTIVATION:OTP:Response", BaseClass.decryptLatest(data.getResponse(),
+                                authViewModel.storage.getDeviceData().getValue().getDevice(),
+                                true,
+                                authViewModel.storage.getDeviceData().getValue().getRun()
+                        ));
+
                         ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
                                 authViewModel.storage.getDeviceData().getValue().getDevice(),
                                 true,
@@ -236,4 +243,6 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     public void onDestroy() {
         super.onDestroy();
     }
+
+
 }

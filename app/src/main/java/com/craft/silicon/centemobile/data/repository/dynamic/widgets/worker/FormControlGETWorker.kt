@@ -10,8 +10,10 @@ import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
 import dagger.assisted.Assisted
@@ -45,6 +47,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 "",
                 true
             )
+            AppLogger.instance.appLog("FORM:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
             val path =
                 (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
@@ -72,11 +75,15 @@ class FormControlGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
-                    Log.e("FORMS",Gson().toJson(data))
-                    data?.forEach { s ->
-                        widgetRepository.saveFormControl(s?.formControls)
-                    }
-                    constructResponse(Result.success())
+                    AppLogger.instance.appLog("FORMS", Gson().toJson(data))
+                    val status = data?.map { s -> s?.status }?.single()
+                    if (status == StatusEnum.SUCCESS.type) {
+                        val forms = data.map { s -> s?.formControls }.single()
+                        forms?.forEach { s -> s.generateID() }
+                        if (forms != null)
+                            widgetRepository.saveFormControl(forms)
+                        constructResponse(Result.success())
+                    } else constructResponse(Result.retry())
                 }
                 .onErrorReturn {
                     constructResponse(Result.retry())

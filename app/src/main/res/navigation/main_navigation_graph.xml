@@ -91,6 +91,22 @@
         app:popEnterAnim="@anim/anim_slide_in_right"
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_global"
+        app:destination="@+id/globalFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_receipt"
+        app:destination="@+id/receiptFragment"
+        app:popUpToInclusive="true" />
     <!--    End-->
 
 
@@ -109,7 +125,16 @@
         android:id="@+id/authFragment"
         android:name="com.craft.silicon.centemobile.view.fragment.auth.AuthFragment"
         android:label="fragment_auth"
-        tools:layout="@layout/fragment_auth" />
+        tools:layout="@layout/fragment_auth">
+        <action
+            android:id="@+id/action_nav_pin_atm"
+            app:destination="@+id/forgotPinFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/otpFragment"
         android:name="com.craft.silicon.centemobile.view.fragment.auth.OtpFragment"
@@ -145,6 +170,16 @@
             app:popEnterAnim="@anim/anim_slide_in_right"
             app:popExitAnim="@anim/anim_slide_out_right"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_self"
+            app:destination="@+id/selfRegistrationFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/validationFragment"
@@ -161,6 +196,47 @@
         android:name="com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment"
         android:label="fragment_purchase"
         tools:layout="@layout/fragment_purchase" />
+
+
+    <!--    End-->
+
+    <!--    Dialog-->
+
+    <dialog
+        android:id="@+id/receiptFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment"
+        android:label="fragment_receipt"
+        tools:layout="@layout/fragment_receipt" />
+    <fragment
+        android:id="@+id/globalFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.global.GlobalFragment"
+        android:label="fragment_global"
+        tools:layout="@layout/fragment_global" />
+    <fragment
+        android:id="@+id/forgotPinFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.auth.ForgotPinFragment"
+        android:label="fragment_forgot_pin"
+        tools:layout="@layout/fragment_forgot_pin" />
+    <fragment
+        android:id="@+id/selfRegistrationFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.registration.self.SelfRegistrationFragment"
+        android:label="fragment_self_registration"
+        tools:layout="@layout/fragment_self_registration">
+        <action
+            android:id="@+id/action_nav_card_details"
+            app:destination="@+id/cardDetailsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.registration.self.steps.CardDetailsFragment"
+        android:label="fragment_card_details"
+        tools:layout="@layout/fragment_card_details" />
 
     <!--    End-->
 

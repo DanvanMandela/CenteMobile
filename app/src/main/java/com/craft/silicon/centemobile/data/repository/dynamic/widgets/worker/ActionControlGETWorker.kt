@@ -1,7 +1,6 @@
 package com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
@@ -10,8 +9,10 @@ import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
 import dagger.assisted.Assisted
@@ -44,6 +45,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                 "",
                 true
             )
+            AppLogger.instance.appLog("ACTION:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
             val path =
                 (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
@@ -72,10 +74,15 @@ class ActionControlGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
-                    data?.forEach { s ->
-                        widgetRepository.saveAction(s?.actionControls)
-                    }
-                    constructResponse(Result.success())
+                    AppLogger.instance.appLog("ACTION", Gson().toJson(data))
+                    val status = data?.map { s -> s?.status }?.single()
+                    if (status == StatusEnum.SUCCESS.type) {
+                        val actions = data.map { s -> s?.actionControls }.single()
+                        actions?.forEach { a -> a.generateID() }
+                        widgetRepository.saveAction(actions)
+                        constructResponse(Result.success())
+                    } else constructResponse(Result.retry())
+
                 }
                 .onErrorReturn {
                     constructResponse(Result.retry())

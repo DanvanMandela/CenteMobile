@@ -19,7 +19,6 @@ class ValidationController(val callbacks: AppCallbacks) :
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> textInputLayout {
                     id(d.controlID)
                     data(d)
-                    module(data.forms.module)
                     callback(this@ValidationController.callbacks)
                 }
 

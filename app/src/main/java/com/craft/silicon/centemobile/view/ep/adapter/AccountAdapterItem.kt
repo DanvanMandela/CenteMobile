@@ -43,4 +43,6 @@ class AccountAdapterItem(
 
     override fun getItemCount(): Int = itemList.size
 
+    fun currentItem(position: Int): Accounts = itemList[position]
+
 }

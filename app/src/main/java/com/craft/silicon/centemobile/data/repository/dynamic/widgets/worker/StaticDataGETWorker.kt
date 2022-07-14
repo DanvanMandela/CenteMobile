@@ -8,11 +8,12 @@ import androidx.work.WorkerParameters
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.StaticDataTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
 import dagger.assisted.Assisted
@@ -72,9 +73,13 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
-                    Log.e("STATIC", Gson().toJson(data))
-                    storageDataSource.setStaticData(data?.userCode!!.toMutableList())
-                    constructResponse(Result.success())
+                    AppLogger.instance.appLog("STATIC:DATA",Gson().toJson(data))
+                    if (data?.status == StatusEnum.SUCCESS.type) {
+                        storageDataSource.setStaticData(data.userCode.toMutableList())
+                        constructResponse(Result.success())
+                    } else {
+                        constructResponse(Result.retry())
+                    }
                 }
                 .onErrorReturn {
                     constructResponse(Result.retry())

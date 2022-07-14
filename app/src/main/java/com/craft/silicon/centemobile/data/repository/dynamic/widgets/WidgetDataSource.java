@@ -57,6 +57,11 @@ public interface WidgetDataSource extends NavigationCallback {
     }
 
 
+    default Observable<Modules> getModule(String moduleID) {
+        return null;
+    }
+
+
     default void deleteFormModule() {
 
     }
@@ -105,6 +110,10 @@ public interface WidgetDataSource extends NavigationCallback {
         return null;
     }
 
+    default LiveData<String> versionData() {
+        return null;
+    }
+
     default LiveData<List<Beneficiary>> beneficiaryData() {
         return null;
     }
@@ -119,6 +128,10 @@ public interface WidgetDataSource extends NavigationCallback {
     }
 
     default void saveLayoutData(LayoutData data) {
+    }
+
+    default void resetForm() {
+
     }
 
 

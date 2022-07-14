@@ -2,19 +2,15 @@ package com.craft.silicon.centemobile.data.source.pref
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.AccountsTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.ActivationDataTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.BeneficiaryTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.StaticDataDetailTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.util.BaseClass
-import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -124,13 +120,17 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     }
 
 
-    override fun setVersion(value: String) {
-
-    }
-
     private val _version = MutableStateFlow(sharedPreferences.getString(TAG_VERSION, ""))
     override val version: StateFlow<String?>
         get() = _version
+
+    override fun setVersion(value: String) {
+        _version.value = value
+        with(sharedPreferences.edit()) {
+            putString(TAG_VERSION, value)
+            apply()
+        }
+    }
 
     private val _userId = MutableStateFlow(sharedPreferences.getString(TAG_USER_ID, ""))
     override val userId: StateFlow<String?>
@@ -167,9 +167,11 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     private val _beneficiary =
         MutableStateFlow(
             BeneficiaryTypeConverter().from(
-                sharedPreferences.getString(
-                    BENEFICIARY_DATA,
-                    ""
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        BENEFICIARY_DATA,
+                        ""
+                    )
                 )
             )
         )
@@ -179,7 +181,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override fun setBeneficiary(value: MutableList<Beneficiary>) {
         _beneficiary.value = value.toMutableList()
         with(sharedPreferences.edit()) {
-            putString(STATIC_DATA, BeneficiaryTypeConverter().to(value))
+            putString(BENEFICIARY_DATA, BaseClass.encrypt(BeneficiaryTypeConverter().to(value)))
             apply()
         }
     }
@@ -187,9 +189,11 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     private val _accounts =
         MutableStateFlow(
             AccountsTypeConverter().from(
-                sharedPreferences.getString(
-                    ACCOUNTS_DATA,
-                    ""
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        ACCOUNTS_DATA,
+                        ""
+                    )
                 )
             )
         )
@@ -200,7 +204,29 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override fun setAccounts(value: MutableList<Accounts>) {
         _accounts.value = value.toMutableList()
         with(sharedPreferences.edit()) {
-            putString(ACCOUNTS_DATA, AccountsTypeConverter().to(value))
+            putString(ACCOUNTS_DATA, BaseClass.encrypt(AccountsTypeConverter().to(value)))
+            apply()
+        }
+    }
+
+    private val _alerts =
+        MutableStateFlow(
+            AlertsTypeConverter().from(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        ALERTS_DATA,
+                        ""
+                    )
+                )
+            )
+        )
+    override val alerts: StateFlow<List<AlertServices?>?>
+        get() = _alerts
+
+    override fun setAlerts(value: MutableList<AlertServices>) {
+        _alerts.value = value.toMutableList()
+        with(sharedPreferences.edit()) {
+            putString(ALERTS_DATA, BaseClass.encrypt(AlertsTypeConverter().to(value)))
             apply()
         }
     }
@@ -218,5 +244,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val STATIC_DATA = "staticData"
         private const val BENEFICIARY_DATA = "beneficiary"
         private const val ACCOUNTS_DATA = "accounts"
+        private const val ALERTS_DATA = "alerts"
     }
 }

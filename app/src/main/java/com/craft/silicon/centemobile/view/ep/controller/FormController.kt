@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.ep.controller
 
+import android.text.TextUtils
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.*
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
@@ -10,7 +11,8 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
-import com.craft.silicon.centemobile.view.ep.model.addMainLayout
+import com.craft.silicon.centemobile.view.ep.model.dateSelect
+import com.craft.silicon.centemobile.view.ep.model.phoneContacts
 import com.craft.silicon.centemobile.view.ep.model.radioGroup
 
 class FormController(val callbacks: AppCallbacks) :
@@ -22,7 +24,6 @@ class FormController(val callbacks: AppCallbacks) :
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> textInputLayout {
                     id(d.controlID)
                     data(d)
-                    module(data.forms.module)
                     callback(this@FormController.callbacks)
                 }
 
@@ -48,6 +49,35 @@ class FormController(val callbacks: AppCallbacks) :
                     data(d)
                     module(data.forms.module)
                     callback(this@FormController.callbacks)
+                }
+
+                BaseClass.nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
+                    phoneContacts(
+                        vault = ChildVault(container = d, mainData = data),
+                        appCallbacks = this@FormController.callbacks
+                    )
+                }
+
+                BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> {
+                    hiddenInputLayout {
+                        id(d.controlID)
+                        data(d)
+                        callback(this@FormController.callbacks)
+                    }
+                }
+                BaseClass.nonCaps(ControlTypeEnum.DATE.type) -> {
+                    dateSelect(
+                        vault = ChildVault(container = d, mainData = data),
+                        appCallbacks = this@FormController.callbacks
+                    )
+                }
+                BaseClass.nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
+                    if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+                        textDisplay {
+                            id(d.controlID)
+                            data(d)
+                            callback(this@FormController.callbacks)
+                        }
                 }
 
                 BaseClass.nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)

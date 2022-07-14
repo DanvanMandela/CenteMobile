@@ -3,6 +3,9 @@ package com.craft.silicon.centemobile.util.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Base64
@@ -68,4 +71,33 @@ fun checkForEncode(string: String?): Boolean {
     val r: Pattern = Pattern.compile(pattern)
     val m: Matcher = r.matcher(string!!)
     return m.find()
+}
+
+fun drawableToBitmap(drawable: Drawable): Bitmap? {
+    if (drawable is BitmapDrawable) {
+        if (drawable.bitmap != null) {
+            return drawable.bitmap
+        }
+    }
+    val bitmap: Bitmap? = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+        Bitmap.createBitmap(
+            1,
+            1,
+            Bitmap.Config.ARGB_8888
+        )
+    } else {
+        Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+    }
+    val canvas = bitmap?.let { Canvas(it) }
+    if (canvas != null) {
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+    }
+    if (canvas != null) {
+        drawable.draw(canvas)
+    }
+    return bitmap
 }

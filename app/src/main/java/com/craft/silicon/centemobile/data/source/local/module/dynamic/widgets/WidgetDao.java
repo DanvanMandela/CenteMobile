@@ -37,6 +37,7 @@ public interface WidgetDao extends WidgetDataSource {
     @Query("DELETE FROM form_control_tb")
     void deleteFormControl();
 
+
     @Override
     @Insert(onConflict = REPLACE)
     void saveModule(List<Modules> data);
@@ -44,6 +45,10 @@ public interface WidgetDao extends WidgetDataSource {
     @Override
     @Query("SELECT * FROM modules_tbl WHERE parentModule=:moduleID")
     Observable<List<Modules>> getModules(String moduleID);
+
+    @Override
+    @Query("SELECT * FROM modules_tbl WHERE parentModule=:moduleID")
+    Observable<Modules> getModule(String moduleID);
 
     @Override
     @Query("DELETE FROM modules_tbl")
@@ -84,4 +89,6 @@ public interface WidgetDao extends WidgetDataSource {
     @Override
     @Insert(onConflict = REPLACE)
     void saveLayoutData(LayoutData data);
+
+
 }

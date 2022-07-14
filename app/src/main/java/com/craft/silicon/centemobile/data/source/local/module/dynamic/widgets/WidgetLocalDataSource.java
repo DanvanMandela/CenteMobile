@@ -133,4 +133,9 @@ public class WidgetLocalDataSource implements WidgetDataSource {
                 .observeOn(schedulerProvider.ui())
                 .subscribe();
     }
+
+    @Override
+    public Observable<Modules> getModule(String moduleID) {
+        return widgetDao.getModule(moduleID);
+    }
 }

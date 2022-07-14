@@ -71,18 +71,9 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
         // Inflate the layout for this fragment
         binding = FragmentAlertDialogBinding.inflate(inflater, container, false);
         setBinding();
-        //setAnimation();
         return binding.getRoot().getRootView();
     }
 
-    private void setAnimation() {
-        final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f);
-        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f);
-        growAnim.setDuration(2000);
-        shrinkAnim.setDuration(2000);
-        binding.banner.setAnimation(growAnim);
-        growAnim.start();
-    }
 
     @Override
     public void setBinding() {

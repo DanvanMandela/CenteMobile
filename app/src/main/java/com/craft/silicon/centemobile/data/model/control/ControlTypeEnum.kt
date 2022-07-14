@@ -12,6 +12,7 @@ enum class ControlTypeEnum(val type: String) {
     LIST("LIST"),
     IMAGE("IMAGE"),
     DROPDOWN("DROPDOWN"),
+    DYNAMICDROPDOWN("DYNAMICDROPDOWN"),
     HIDDEN("HIDDEN"),
     DATE("DATE"),
     BUTTON("BUTTON"),
@@ -23,6 +24,7 @@ enum class ControlTypeEnum(val type: String) {
     PHONE_CONTACTS("PHONECONTACTS"),
     CHECKBOX("CHECKBOX"),
     CONFORM("CONFIRMATIONFORM"),
+    OTP("OTPFORM"),
 
 }
 

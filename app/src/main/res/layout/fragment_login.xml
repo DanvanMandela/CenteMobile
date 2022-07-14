@@ -13,7 +13,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/back_clip">
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -72,13 +72,13 @@
                     android:id="@+id/inputMobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/ghost_white"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editMobile"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_54dp"
-                        android:background="@color/transparent"
                         android:fontFamily="@font/poppins_regular"
                         android:hint="@string/mobile"
                         android:inputType="phone"
@@ -114,6 +114,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                app:boxBackgroundColor="@color/ghost_white"
                 app:hintEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -121,10 +122,9 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
                     android:id="@+id/editPin"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_54dp"
-                    android:background="@color/transparent"
                     android:fontFamily="@font/poppins_regular"
                     android:hint="@string/pin"
                     android:inputType="numberPassword"

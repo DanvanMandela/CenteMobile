@@ -5,21 +5,16 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 @Parcelize
 @Entity(tableName = "modules_tbl")
 class Modules(
-
-    @field:SerializedName("id")
-    @field:ColumnInfo(name = "id")
-    @field:PrimaryKey(autoGenerate = true)
-    @field:NonNull
-    @field:Expose
-    var id: Int,
 
     @field:SerializedName("ParentModule")
     @field:ColumnInfo(name = "parentModule")
@@ -28,9 +23,8 @@ class Modules(
 
     @field:SerializedName("ModuleID")
     @field:ColumnInfo(name = "moduleID")
-    @field:NonNull
     @field:Expose
-    var moduleID: String,
+    var moduleID: String?,
 
     @field:SerializedName("ModuleName")
     @field:ColumnInfo(name = "moduleName")
@@ -46,6 +40,11 @@ class Modules(
     @field:ColumnInfo(name = "moduleURL")
     @field:Expose
     var moduleURL: String?,
+
+    @field:SerializedName("ModuleURL2")
+    @field:ColumnInfo(name = "moduleURTwo")
+    @field:Expose
+    var moduleURLTwo: String?,
 
     @field:SerializedName("MerchantID")
     @field:ColumnInfo(name = "merchantID")
@@ -97,4 +96,18 @@ class Modules(
     @field:ColumnInfo(name = "isDisabled")
     @field:Expose
     var isDisabled: Boolean,
-) : Serializable, Parcelable
+) : Serializable, Parcelable {
+
+    @IgnoredOnParcel
+    @field:SerializedName("id")
+    @field:ColumnInfo(name = "id")
+    @field:PrimaryKey
+    @field:NonNull
+    @field:Expose(serialize = false, deserialize = false)
+    var id: String = ""
+
+    fun generateID() {
+        id = "M-${BaseClass.generateAlphaNumericString(10)}"
+    }
+
+}

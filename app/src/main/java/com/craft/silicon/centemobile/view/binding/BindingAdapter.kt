@@ -4,11 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.InputType
-import android.text.TextUtils
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -34,27 +29,30 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.HorizontalMarginItemDecoration
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AccountAdapterItem
-import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
-import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
 import com.craft.silicon.centemobile.view.ep.controller.*
 import com.craft.silicon.centemobile.view.ep.data.*
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
@@ -234,6 +232,17 @@ fun TextView.setAccountNumber(text: String?) {
 
 }
 
+@BindingAdapter("account", "callbacks")
+fun TextView.setBalance(account: Accounts?, callbacks: AppCallbacks) {
+    if (text != null) {
+        this.text = BaseClass.maskCardNumber("####")
+        this.setOnClickListener {
+            callbacks.onBalance(this, account)
+        }
+    }
+
+}
+
 @BindingAdapter("username")
 fun TextView.setUsername(data: ActivationData?) {
     if (data != null) {
@@ -274,8 +283,8 @@ fun MaterialToolbar.setTitle(data: ActivationData?) {
 @BindingAdapter("subTitle")
 fun MaterialToolbar.setSTitle(data: ActivationData?) {
     if (data != null) {
-        if (data.email != null) {
-            this.subtitle = data.email
+        if (data.loginDate != null) {
+            this.subtitle = "Last Login ${data.loginDate}"
         }
     }
 }
@@ -344,63 +353,9 @@ fun MaterialButton.setDynamicButton(
         this.text = formControl.controlText
 
         this.setOnClickListener {
-            Log.e("DANVAN", "DANVANA")
             callbacks.onForm(formControl, modules)
         }
     }
-
-}
-
-@BindingAdapter("callback", "form", "module")
-fun TextInputEditText.setInputLayout(
-    callbacks: AppCallbacks,
-    formControl: FormControl?,
-    modules: Modules
-) {
-    if (formControl != null) {
-        this.tag = formControl.controlID
-        when (nonCaps(formControl.controlFormat)) {
-            nonCaps(ControlFormatEnum.PHONE.type) -> InputType.TYPE_CLASS_PHONE
-            nonCaps(ControlFormatEnum.PIN.type) -> InputType.TYPE_NUMBER_VARIATION_PASSWORD
-        }
-        if (formControl.linkedToControl != null
-            || TextUtils.isEmpty(formControl.linkedToControl)
-        ) {
-            callbacks.linkedInput(this, formControl)
-        }
-    }
-
-
-
-    this.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-        }
-
-        override fun onTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
-
-        override fun afterTextChanged(e: Editable?) {
-            val hashMap = HashMap<String, String>()
-            hashMap[tag.toString()] = e.toString()
-            callbacks.inputData(hashMap)
-        }
-    })
-
-
-    if (formControl?.controlFormat != null && !TextUtils.isEmpty(formControl.controlFormat)) {
-        when (nonCaps(formControl.controlFormat)) {
-            nonCaps(ControlFormatEnum.PHONE.type) -> {
-                inputType = InputType.TYPE_CLASS_PHONE
-            }
-            nonCaps(ControlFormatEnum.PIN.type) -> {
-                inputType = InputType.TYPE_NUMBER_VARIATION_PASSWORD
-                this.maxLines = formControl.maxValue!!.toInt()
-            }
-
-        }
-    }
-
 
 }
 
@@ -420,7 +375,7 @@ fun RadioGroup.setRadioButton(callbacks: AppCallbacks?, form: GroupForm?) {
             this.addView(binding.root)
             binding.callback = callbacks
             binding.data = data[d]
-            binding.module = form.module
+
         }
     }
 }
@@ -430,18 +385,24 @@ fun View.setID(tag: String?) {
     if (tag != null) this.tag = tag
 }
 
-@BindingAdapter("callback", "data", "modules")
-fun RadioButton.setButton(callbacks: AppCallbacks, data: FormControl?, modules: Modules?) {
+@BindingAdapter("callback", "data")
+fun RadioButton.setButton(callbacks: AppCallbacks, data: FormControl?) {
     if (data?.isChecked != null) {
         this.isChecked = data.isChecked!!
-
     }
-
     this.setOnCheckedChangeListener { _, p1 ->
         if (p1) {
-            val hashMap = HashMap<String, String>()
-            hashMap[data?.serviceParamID.toString()] = "${this.isChecked}"
-            callbacks.onRadioCheck(data, this)
+            callbacks.userInput(
+                InputData(
+                    name = data?.controlText,
+                    key = data?.serviceParamID,
+                    value = if (this.isChecked) {
+                        "TRUE"
+                    } else "FALSE",
+                    encrypted = data?.isEncrypted!!,
+                    mandatory = data.isMandatory
+                )
+            )
         }
     }
 }
@@ -487,9 +448,9 @@ fun TextView.setMon(data: String?) {
 @BindingAdapter("callback", "controller")
 fun EpoxyRecyclerView.setLandingPage(callbacks: AppCallbacks, data: GroupLanding) {
 
-//    val layoutManager = FlexboxLayoutManager(context)
-//    layoutManager.flexDirection = FlexDirection.COLUMN
-//    layoutManager.justifyContent = JustifyContent.FLEX_END
+    val layoutManager = FlexboxLayoutManager(context)
+    layoutManager.flexDirection = FlexDirection.COLUMN
+    layoutManager.justifyContent = JustifyContent.FLEX_END
 
     this.animation = AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
     this.layoutManager = GridLayoutManager(this.context, 3)
@@ -499,71 +460,6 @@ fun EpoxyRecyclerView.setLandingPage(callbacks: AppCallbacks, data: GroupLanding
 
 }
 
-
-@BindingAdapter("callback", "form", "storage", "module")
-fun AutoCompleteTextView.setDropDownData(
-    callbacks: AppCallbacks,
-    formControl: FormControl?,
-    storage: StorageDataSource,
-    modules: Modules
-) {
-    this.setText("")
-    when (nonCaps(formControl?.controlFormat)) {
-        nonCaps(ControlFormatEnum.ACCOUNT_BANK.type) -> {
-            if (storage.accounts.value != null) {
-                val accounts = storage.accounts.value!!.map { it?.id }
-                val adapter = NameBaseAdapter(context, 1, accounts)
-                this.setAdapter(adapter)
-                this.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, _, p2, _ ->
-                        val hashMap = HashMap<String, String>()
-                        hashMap[formControl?.serviceParamID.toString()] =
-                            adapter.getItem(p2)!!
-                        callbacks.inputData(hashMap)
-                    }
-            }
-        }
-        nonCaps(ControlFormatEnum.BENEFICIARY.type) -> {
-            if (storage.beneficiary.value != null) {
-                val beneficiaries =
-                    storage.beneficiary.value!!
-                        .filter { a -> a?.merchantID == modules.merchantID }
-                        .map { it?.accountAlias }
-                val adapter = NameBaseAdapter(context, 1, beneficiaries)
-                this.setAdapter(adapter)
-                this.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, _, p2, _ ->
-                        val hashMap = HashMap<String, String>()
-                        hashMap[formControl?.serviceParamID.toString()] =
-                            adapter.getItem(p2)!!
-                        callbacks.inputData(hashMap)
-                    }
-            }
-        }
-        else -> {
-            if (storage.staticData.value != null) {
-                val staticData =
-                    storage.staticData.value!!.filter { a ->
-                        nonCaps(a?.id) == nonCaps(
-                            formControl!!.dataSourceID
-                        )
-                    }
-                val adapter = AutoTextArrayAdapter(context, 1, staticData)
-                this.setAdapter(adapter)
-                this.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, _, p2, _ ->
-                        val hashMap = HashMap<String, String>()
-                        hashMap[formControl?.serviceParamID.toString()] =
-                            adapter.getItem(p2)!!.subCodeID
-                        callbacks.inputData(hashMap)
-                        callbacks.linkedDropDown(formControl, adapter.getItem(p2))
-                    }
-
-            }
-        }
-    }
-
-}
 
 @BindingAdapter("callback", "form", "storage")
 fun EpoxyRecyclerView.setForm(
@@ -579,7 +475,7 @@ fun EpoxyRecyclerView.setForm(
                 is GroupForm -> {
                     layout = LinearLayoutManager(this.context)
                     controller = FormController(callbacks)
-                    controller.setData(FormData(forms = dynamic, storage = storage!!))
+                    controller.setData(FormData(forms = dynamic, storage = storage))
                 }
             }
             this.layoutManager = layout
@@ -590,20 +486,26 @@ fun EpoxyRecyclerView.setForm(
 }
 
 @BindingAdapter("callback", "display")
-fun EpoxyRecyclerView.setDisplayController(callbacks: AppCallbacks, data: AppData?) {
-    val controller = DisplayController(callbacks)
-    controller.setData(data)
-    this.setController(controller)
+fun EpoxyRecyclerView.setDisplayController(callbacks: AppCallbacks?, data: DisplayVaultData?) {
+    val controller = callbacks?.let { DisplayController(it) }
+    controller?.setData(data)
+    controller?.let { this.setController(it) }
 }
 
 @BindingAdapter("callback", "data", "modules")
 fun CheckBox.setCheckBox(callbacks: AppCallbacks, data: FormControl?, modules: Modules?) {
+    this.isChecked = false
     this.setOnCheckedChangeListener { _, p1 ->
-        if (p1) {
-            val hashMap = HashMap<String, String>()
-            hashMap[data?.serviceParamID.toString()] = "${this.isChecked}"
-            callbacks.onCheckBox(data, this)
-        }
+        if (p1)
+            callbacks.userInput(
+                InputData(
+                    name = data?.controlText,
+                    key = data?.serviceParamID,
+                    value = "TRUE",
+                    encrypted = data?.isEncrypted!!,
+                    mandatory = data.isMandatory
+                )
+            )
     }
 }
 
@@ -619,6 +521,17 @@ fun View.setRecentList(
     }
 }
 
+@BindingAdapter("callback", "display")
+fun TextView.setDisplay(
+    callbacks: AppCallbacks,
+    formControl: FormControl?
+) {
+    if (formControl != null) {
+        callbacks.onDisplay(formControl)
+    }
+}
+
+
 @BindingAdapter("callback", "accounts")
 fun ViewPager2.setRecentList(
     callbacks: AppCallbacks?,
@@ -628,6 +541,12 @@ fun ViewPager2.setRecentList(
     if (accounts != null) {
         val adapter = AccountAdapterItem(accounts.account, callbacks!!)
         this.adapter = adapter
+        callbacks.currentAccount(adapter.currentItem(0))
+        this.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                callbacks.currentAccount(adapter.currentItem(position))
+            }
+        })
     }
 }
 
@@ -650,6 +569,16 @@ private fun setupCarousel(viewPager: ViewPager2, context: Context) {
     )
     viewPager.addItemDecoration(itemDecoration)
 }
+
+@BindingAdapter("callback", "alerts")
+fun EpoxyRecyclerView.serviceAlerts(callbacks: AppCallbacks?, data: AppData?) {
+    val controller = callbacks?.let { AlertServiceController(it) }
+    controller?.setData(data)
+    controller?.let { this.setController(it) }
+}
+
+
+
 
 
 

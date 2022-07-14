@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.registration.self.steps.OTPDialogFragment">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@color/white"
+            android:layout_margin="@dimen/dimens_16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_54dp"
+                android:background="@color/app_blue_light"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center"
+                android:text="@string/otp_"
+                android:textColor="@color/ghost_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:alpha="0.8"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/enter_otp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <FrameLayout
+                android:id="@+id/resendLay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimens_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText">
+
+                <TextView
+                    android:id="@+id/counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText" />
+
+
+                <TextView
+                    android:id="@+id/resendOTP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/resend_otp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="@color/app_blue_light"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditText" />
+
+            </FrameLayout>
+
+
+            <com.chaos.view.PinView
+                android:id="@+id/verificationCodeEditText"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/otp_"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center"
+                android:inputType="number"
+                android:itemBackground="@color/ghost_white"
+                android:padding="10dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                app:cursorColor="@color/grey_light"
+                app:cursorWidth="2dp"
+                app:hideLineWhenFilled="true"
+                app:itemCount="6"
+                app:itemHeight="@dimen/dimens_54dp"
+                app:itemRadius="4dp"
+                app:itemSpacing="10dp"
+                app:itemWidth="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                app:lineColor="@color/grey_light"
+                app:lineWidth="0dp"
+                app:viewType="rectangle"
+                tools:ignore="EditableContentDescCheck" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/materialButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_60dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/submit_"
+                app:cornerRadius="@dimen/dimens_0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/resendLay" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+
+</layout>

@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
 import com.craft.silicon.centemobile.databinding.FragmentLoginBinding;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
@@ -73,9 +75,26 @@ public class LoginFragment extends Fragment implements AppCallbacks {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         setBinding();
         setViewModel();
-
-        binding.materialButton.setOnClickListener(v -> authAccount());
+        binding.materialButton.setOnClickListener(v ->
+                {
+                    if (validateFields()) authAccount();
+                }
+        );
         return binding.getRoot().getRootView();
+    }
+
+
+    @Override
+    public boolean validateFields() {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(binding.editMobile.getText())) {
+            new ShowToast(requireContext(), getString(R.string.mobile_required), true);
+            isValid = false;
+        } else if (TextUtils.isEmpty(binding.editPin.getText())) {
+            new ShowToast(requireContext(), getString(R.string.enter_pin), true);
+        }
+
+        return isValid;
     }
 
     private void authAccount() {
@@ -92,6 +111,11 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
+                    new AppLogger().appLog("ACTIVATION:Response", BaseClass.decryptLatest(data.getResponse(),
+                            authViewModel.storage.getDeviceData().getValue().getDevice(),
+                            true,
+                            authViewModel.storage.getDeviceData().getValue().getRun()
+                    ));
                     LoadingFragment.dismiss(getChildFragmentManager());
                     if (data.getResponse() != null && data.getResponse().equals("ok")) {
                         AlertDialogFragment.newInstance(new DialogData(

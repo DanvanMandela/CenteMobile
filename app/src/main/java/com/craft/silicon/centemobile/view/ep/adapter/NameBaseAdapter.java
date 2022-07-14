@@ -11,10 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.craft.silicon.centemobile.R;
-import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
-import com.craft.silicon.centemobile.databinding.BlockAutoCompleteItemBinding;
-import com.craft.silicon.centemobile.view.ep.adapter.holder.AutoTextViewHolder;
-import com.craft.silicon.centemobile.view.ep.adapter.holder.TextLayoutViewHolder;
+import com.craft.silicon.centemobile.databinding.BlockSingleTextDropDownBinding;
+import com.craft.silicon.centemobile.view.ep.adapter.holder.SingleTextViewHolder;
 
 import java.util.List;
 
@@ -34,38 +32,43 @@ public class NameBaseAdapter extends ArrayAdapter<String> {
     }
 
     private View textView(int position, View convertView, ViewGroup parent) {
-        TextLayoutViewHolder holder;
+        SingleTextViewHolder holder;
         if (convertView == null) {
-            BlockAutoCompleteItemBinding itemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.block_auto_complete_item, parent, false);
-            holder = new TextLayoutViewHolder(itemBinding);
+            BlockSingleTextDropDownBinding itemBinding =
+                    DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                            R.layout.block_single_text_drop_down, parent, false);
+            holder = new SingleTextViewHolder(itemBinding);
             holder.view = itemBinding.getRoot();
             holder.view.setTag(holder);
             itemBinding.executePendingBindings();
         } else {
-            holder = (TextLayoutViewHolder) convertView.getTag();
+            holder = (SingleTextViewHolder) convertView.getTag();
         }
-        holder.binding.businessName.setText(getItem(position));
+        holder.binding.setData(getItem(position));
         return holder.binding.getRoot();
     }
 
 
     public View initView(int i, View view, ViewGroup viewGroup) {
-        AutoTextViewHolder holder;
+        SingleTextViewHolder holder;
         if (view == null) {
-            BlockAutoCompleteItemBinding itemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()), R.layout.block_auto_complete_item, viewGroup, false);
-            holder = new AutoTextViewHolder(itemBinding);
+            BlockSingleTextDropDownBinding itemBinding
+                    = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
+                    R.layout.block_single_text_drop_down, viewGroup, false);
+            holder = new SingleTextViewHolder(itemBinding);
             holder.view = itemBinding.getRoot();
             holder.view.setTag(holder);
             itemBinding.executePendingBindings();
         } else {
-            holder = (AutoTextViewHolder) view.getTag();
+            holder = (SingleTextViewHolder) view.getTag();
         }
-        holder.binding.businessName.setText(getItem(i));
+        holder.binding.setData(getItem(i));
         return holder.binding.getRoot();
     }
 
     @Override
-    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getDropDownView(int position, @Nullable View convertView,
+                                @NonNull ViewGroup parent) {
         return initView(position, convertView, parent);
     }
 

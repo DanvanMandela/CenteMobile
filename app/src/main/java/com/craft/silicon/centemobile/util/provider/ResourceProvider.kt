@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import com.craft.silicon.centewallet.util.provider.BaseResourceProvider
 import com.google.android.gms.common.internal.Preconditions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
