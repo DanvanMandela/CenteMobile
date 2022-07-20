@@ -1,23 +1,26 @@
 package com.craft.silicon.centemobile.view.fragment.home;
 
+import static com.craft.silicon.centemobile.util.BaseClass.nonCaps;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.control.FormNavigation;
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter;
@@ -30,9 +33,11 @@ import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.AlertServices;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
+import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.databinding.FragmentHomeBinding;
 import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
+import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
@@ -49,13 +54,17 @@ import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment
 import com.craft.silicon.centemobile.view.model.AccountViewModel;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
-import com.synnapps.carouselview.ImageListener;
+import com.craft.silicon.centemobile.view.model.WorkerViewModel;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -75,10 +84,12 @@ public class HomeFragment extends Fragment implements AppCallbacks {
     private AppController controller;
     private AuthViewModel authViewModel;
     private WidgetViewModel widgetViewModel;
-
+    private WorkerViewModel workerViewModel;
     private AccountViewModel accountViewModel;
+    private MotionLayout motionLayout;
 
     private final CompositeDisposable subscribe = new CompositeDisposable();
+    private MutableLiveData<List<CarouselItem>> adverts = new MutableLiveData<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,8 +103,7 @@ public class HomeFragment extends Fragment implements AppCallbacks {
      */
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(AppCallbacks appCallbacks) {
-        HomeFragment homeFragment = new HomeFragment();
-        return homeFragment;
+        return new HomeFragment();
     }
 
     @Override
@@ -113,61 +123,59 @@ public class HomeFragment extends Fragment implements AppCallbacks {
         setHomeData();
         setAccountData(widgetViewModel.accountsData().getValue());
         setToggle();
+        getAdverts();
         setAdvert();
-        tryBalance();
         return binding.getRoot().getRootView();
     }
 
+    private void getAdverts() {
+        subscribe.add(widgetViewModel.getCarousel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(v -> {
+                    if (!v.isEmpty()) {
+                        ArrayList<CarouselItem> carouselItems = new ArrayList<>();
+                        v.forEach(data -> {
+                            carouselItems.add(new CarouselItem(
+                                    data.getImageURL()
+                            ));
+                        });
+                        adverts.setValue(carouselItems);
+                    }
+                }, Throwable::printStackTrace));
+    }
+
     private void setAdvert() {
-        int[] advert = new int[]{R.drawable.advert, R.drawable.advert, R.drawable.advert};
-        binding.carouselView.setPageCount(advert.length);
-        binding.carouselView.setImageListener((position, imageView) -> imageView.setImageResource(advert[position]));
+        adverts.observe(getViewLifecycleOwner(), v -> binding.carousel.setData(v));
     }
 
     private void setToggle() {
-        binding.headerItem.toggleGroup.check(R.id.accountButton);
+        motionLayout = binding.headerItem.motionContainer;
         binding.headerItem.toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (checkedId == R.id.accountButton) {
-                setUtilsItem();
-            } else if (checkedId == R.id.utilsButton) {
-                setAccountItems();
+            if (isChecked) {
+                if (checkedId == R.id.accountButton) {
+                    setAccountItems();
+                } else if (checkedId == R.id.utilsButton) {
+                    setUtilsItem();
+                }
             }
-
         });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.headerItem.toggleGroup.check(R.id.accountButton);
     }
 
     private void setUtilsItem() {
-        binding.headerItem.motionContainer.setTransition(R.id.accountState, R.id.utilsState);
-        binding.headerItem.motionContainer.transitionToEnd();
+        motionLayout.setTransition(R.id.accountState, R.id.utilsState);
+        motionLayout.transitionToEnd();
     }
 
     private void setAccountItems() {
-        binding.headerItem.motionContainer.setTransition(R.id.utilsState, R.id.accountState);
-        binding.headerItem.motionContainer.transitionToEnd();
-    }
-
-    private void tryBalance() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("BANKACCOUNTID", "25102024410");
-            jsonObject.put("MerchantID", "BALANCE");
-
-            subscribe.add(accountViewModel.checkBalance(jsonObject,
-                            requireContext(), "HOME")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        Log.e("TAG", BaseClass.decryptLatest(v.getResponse(),
-                                authViewModel.storage.getDeviceData().getValue().getDevice(),
-                                true,
-                                authViewModel.storage.getDeviceData().getValue().getRun()
-                        ));
-                    }, Throwable::printStackTrace)
-            );
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        motionLayout.setTransition(R.id.utilsState, R.id.accountState);
+        motionLayout.transitionToEnd();
     }
 
 
@@ -188,6 +196,7 @@ public class HomeFragment extends Fragment implements AppCallbacks {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
         accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
+        workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
     }
 
     private void setHomeData() {
@@ -260,23 +269,29 @@ public class HomeFragment extends Fragment implements AppCallbacks {
     }
 
     public void setAccountData(List<Accounts> accountData) {
-        binding.headerItem.accountPager.setCallback(this);
-        binding.headerItem.accountPager.setData(new AccountData(accountData));
+        binding.headerItem.headerAux.accountPager.setCallback(this);
+        binding.headerItem.headerAux.accountPager.setData(new AccountData(accountData));
     }
 
     @Override
     public void currentAccount(Accounts accounts) {
-        List<AlertServices> servicesList = authViewModel
-                .storage.getAlerts().getValue().stream()
-                .filter(a -> a.getBankAccountID().equals(accounts.getId()))
-                .collect(Collectors.toList());
-        binding.headerItem.utilPager.setData(new AlertList(servicesList));
-        binding.headerItem.utilPager.setCallback(this);
+
+        try {
+            List<AlertServices> servicesList = authViewModel
+                    .storage.getAlerts().getValue().stream()
+                    .filter(a -> a.getBankAccountID().equals(accounts.getId()))
+                    .collect(Collectors.toList());
+            binding.headerItem.headerAux.utilPager.setData(new AlertList(servicesList));
+            binding.headerItem.headerAux.utilPager.setCallback(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onBalance(TextView textView, Accounts accounts) {
-        LoadingFragment.show(requireActivity().getSupportFragmentManager());
+        setLoading(true);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("BANKACCOUNTID", accounts.getId());
@@ -286,63 +301,8 @@ public class HomeFragment extends Fragment implements AppCallbacks {
                             requireContext(), "HOME")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        LoadingFragment.dismiss(requireActivity().getSupportFragmentManager());
-                        new AppLogger().appLog(
-                                "BALANCE:Response", BaseClass.decryptLatest(
-                                        v.getResponse(),
-                                        accountViewModel.dataSource.getDeviceData()
-                                                .getValue().getDevice(),
-                                        true,
-                                        accountViewModel.dataSource.getDeviceData()
-                                                .getValue().getRun()
-                                )
-                        );
-                        if (!BaseClass.nonCaps(v.getResponse())
-                                .equals(StatusEnum.ERROR.getType())) {
-                            DynamicAPIResponse resData = new DynamicAPIResponseConverter().to(
-                                    BaseClass.decryptLatest(
-                                            v.getResponse(),
-                                            accountViewModel.dataSource.getDeviceData()
-                                                    .getValue().getDevice(),
-                                            true,
-                                            accountViewModel.dataSource.getDeviceData()
-                                                    .getValue().getRun()));
-                            if (!BaseClass.nonCaps(v.getResponse())
-                                    .equals(StatusEnum.SUCCESS.getType())) {
-                                if (resData != null)
-                                    if (resData.getRData() != null)
-                                        for (FormField field : resData.getRData()) {
-                                            if (field.getControlID().equals("BALTEXT")) {
-                                                String balance = "UGX. " + field.getControlValue();
-                                                textView.setText(balance);
-                                            }
-                                        }
-                                new Handler(Looper.getMainLooper()).postDelayed(()
-                                                -> textView.setText(BaseClass.maskCardNumber("####")),
-                                        8500);
-                            } else {
-                                AlertDialogFragment.newInstance(
-                                        new DialogData(
-                                                R.string.error,
-                                                resData.getMessage(),
-                                                R.drawable.warning_app
-                                        ),
-                                        requireActivity().getSupportFragmentManager()
-                                );
-                            }
-                        } else {
-
-                            AlertDialogFragment.newInstance(
-                                    new DialogData(
-                                            R.string.error,
-                                            getString(R.string.something_),
-                                            R.drawable.warning_app
-                                    ),
-                                    requireActivity().getSupportFragmentManager()
-                            );
-                        }
-                    }, Throwable::printStackTrace)
+                    .subscribe(data -> setOnSuccessBalance(data, textView, accounts),
+                            Throwable::printStackTrace)
             );
         } catch (
                 JSONException e) {
@@ -351,17 +311,82 @@ public class HomeFragment extends Fragment implements AppCallbacks {
 
     }
 
+    private void setOnSuccessBalance(DynamicResponse data, TextView textView, Accounts accounts) {
+        try {
+            new AppLogger().appLog(
+                    "BALANCE:Response", BaseClass.decryptLatest(
+                            data.getResponse(),
+                            accountViewModel.dataSource.getDeviceData()
+                                    .getValue().getDevice(),
+                            true,
+                            accountViewModel.dataSource.getDeviceData()
+                                    .getValue().getRun()
+                    )
+            );
+
+            if (data.getResponse() == null) {
+                setLoading(false);
+                new ShowToast(requireContext(), getString(R.string.fatal_error));
+            } else {
+                if (data.getResponse().equals("ok")) {
+                    setLoading(false);
+                    new ShowToast(requireContext(), getString(R.string.something_));
+                } else {
+                    DynamicAPIResponse resData = new DynamicAPIResponseConverter().to(
+                            BaseClass.decryptLatest(
+                                    data.getResponse(),
+                                    accountViewModel.dataSource.getDeviceData()
+                                            .getValue().getDevice(),
+                                    true,
+                                    accountViewModel.dataSource.getDeviceData()
+                                            .getValue().getRun()));
+
+                    assert resData != null;
+                    if (nonCaps(resData.getStatus()).equals(nonCaps(StatusEnum.ERROR.getType()))) {
+                        setLoading(false);
+                        new ShowToast(requireContext(), resData.getMessage());
+                    } else if (nonCaps(resData.getStatus())
+                            .equals(nonCaps(StatusEnum.SUCCESS.getType()))) {
+                        setLoading(false);
+                        if (resData.getRData() != null) {
+                            for (FormField field : resData.getRData()) {
+                                if (Objects.equals(field.getControlID(), "BALTEXT")) {
+                                    String balance = "UGX. " + field.getControlValue();
+                                    textView.setText(balance);
+                                }
+                            }
+                            new Handler(Looper.getMainLooper()).postDelayed(()
+                                            -> textView.setText(BaseClass.maskCardNumber("####")),
+                                    8500);
+                        } else new ShowToast(requireContext(), getString(R.string.something_));
+
+                    } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
+                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
+                            setLoading(false);
+                            if (b) onBalance(textView, accounts);
+                        });
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setLoading(false);
+            new ShowToast(requireContext(), getString(R.string.fatal_error));
+        }
+    }
+
     @Override
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
         String destination = forms.stream()
                 .map(FormControl::getFormID)
                 .collect(Collectors.toList())
                 .stream().findFirst().get();
-        if (BaseClass.nonCaps(destination)
-                .equals(BaseClass.nonCaps(FormNavigation.VALIDATE.name())))
+        if (nonCaps(destination)
+                .equals(nonCaps(FormNavigation.VALIDATE.name())))
             validate(forms, modules);
-        else if (BaseClass.nonCaps(destination)
-                .equals(BaseClass.nonCaps(FormNavigation.VALIDATE.name())))
+        else if (nonCaps(destination)
+                .equals(nonCaps(FormNavigation.VALIDATE.name())))
             payment(forms, modules);
     }
 
@@ -375,6 +400,11 @@ public class HomeFragment extends Fragment implements AppCallbacks {
         ((MainActivity) requireActivity())
                 .provideNavigationGraph()
                 .navigate(widgetViewModel.navigation().navigateValidation());
+    }
+
+    private void setLoading(boolean b) {
+        if (b) LoadingFragment.show(getChildFragmentManager());
+        else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
 

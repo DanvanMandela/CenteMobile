@@ -19,7 +19,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="40dp"
                 android:contentDescription="@string/logo"
                 android:src="@drawable/company_icon"
@@ -30,12 +30,14 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
-                android:fontFamily="@font/poppins_semi_bold"
+                android:fontFamily="@font/poppins_bold"
                 android:text="@string/hello_there"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textColor="@color/dar_color_one"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -46,47 +48,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
                 android:alpha="0.8"
-                android:fontFamily="@font/poppins_regular"
-                android:text="@string/we_have_missed_you"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/welcome_back_to"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="@dimen/dimens_8dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/activation"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/app_blue_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
 
             <FrameLayout
                 android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_54dp"
+                android:layout_height="@dimen/dimens_70dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5">
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
 
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputMobile"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:boxBackgroundColor="@color/ghost_white"
+                    android:layout_height="match_parent"
+                    app:boxBackgroundColor="@color/white"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editMobile"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_54dp"
-                        android:fontFamily="@font/poppins_regular"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/poppins_medium"
                         android:hint="@string/mobile"
                         android:inputType="phone"
                         android:maxLength="10"
                         android:paddingVertical="@dimen/dimens_0dp"
                         android:paddingStart="@dimen/dimens_110dp"
                         android:paddingEnd="@dimen/dimens_0dp"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        android:textColor="@color/dar_color_one" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,8 +112,9 @@
                     android:layout_width="@dimen/dimens_160dp"
                     android:layout_height="match_parent"
                     android:background="@color/transparent"
-                    android:gravity="start"
+                    android:gravity="start|center"
                     android:padding="@dimen/dimens_5dp"
+                    android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     app:ccp_arrowSize="25dp"
                     app:ccp_autoDetectCountry="true"
                     app:ccp_autoDetectLanguage="true"
@@ -114,7 +132,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                app:boxBackgroundColor="@color/ghost_white"
+                app:boxBackgroundColor="@color/white"
                 app:hintEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -124,8 +142,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPin"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_54dp"
-                    android:fontFamily="@font/poppins_regular"
+                    android:layout_height="@dimen/dimens_70dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:hint="@string/pin"
                     android:inputType="numberPassword"
                     android:maxLength="4"
@@ -153,7 +171,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/materialButton"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_60dp"
+                android:layout_height="@dimen/dimens_70dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"

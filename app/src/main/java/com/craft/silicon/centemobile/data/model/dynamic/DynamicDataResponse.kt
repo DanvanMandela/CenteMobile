@@ -119,8 +119,15 @@ data class GlobalResponse(
     var message: String?,
     @field:SerializedName("FormID")
     @field:Expose
-    var formID: String?
+    var formID: String?,
+    @field:SerializedName("Data")
+    @field:Expose
+    var data: MutableList<HashMap<String, String>>?
 ) : Parcelable
+
+
+
+
 
 
 

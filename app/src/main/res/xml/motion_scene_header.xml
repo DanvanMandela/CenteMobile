@@ -16,32 +16,33 @@
 
 
     <ConstraintSet android:id="@+id/accountState">
-        <Constraint android:id="@+id/accountPager">
+        <Constraint
+            android:id="@id/accountFrame">
             <Transform
-                android:rotationY="0"
+                android:rotationX="0"
                 android:translationY="0dp" />
         </Constraint>
-        <Constraint android:id="@+id/utilPager">
+
+        <Constraint android:id="@+id/utilFrame">
             <Transform
                 android:rotationY="-15"
-                android:translationY="-250dp" />
+                android:translationY="250dp" />
         </Constraint>
+        <Constraint
+            android:id="@+id/headerAux"
+            motion:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
 
     <ConstraintSet android:id="@+id/utilsState">
         <Constraint
-            android:id="@id/accountPager"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent">
+            android:id="@id/accountFrame">
             <Transform
-                android:rotationX="-15"
-                android:translationY="250dp" />
+                android:rotationX="15"
+                android:translationY="-250dp" />
         </Constraint>
 
-        <Constraint android:id="@id/utilPager">
+        <Constraint android:id="@id/utilFrame">
             <Transform
                 android:rotationX="0"
                 android:translationY="0dp" />

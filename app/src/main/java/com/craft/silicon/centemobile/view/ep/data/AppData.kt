@@ -114,16 +114,16 @@ object LandingData {
         LandingPageItem(
             title = R.string.online_banking,
             avatar = R.drawable.piggy_bank,
-            enum = LandingPageEnum.LOGIN
+            enum = LandingPageEnum.ONLINE_BANKING
         ),
         LandingPageItem(
             title = R.string.cente_on_go,
-            avatar = R.drawable.photos,
-            enum = LandingPageEnum.LOGIN
+            avatar = R.drawable.cente,
+            enum = LandingPageEnum.ON_THE_GO
         ),
         LandingPageItem(
             title = R.string.self_reg,
-            avatar = R.drawable.photos,
+            avatar = R.drawable.registration,
             enum = LandingPageEnum.REGISTRATION
         )
     )
@@ -177,6 +177,11 @@ data class InputList(
     @field:Expose
     val data: MutableList<InputData>?
 ) : DynamicData()
+
+data class GlobalInput(
+    val hint: String,
+    val data: String?
+)
 
 
 

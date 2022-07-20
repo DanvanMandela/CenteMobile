@@ -16,7 +16,6 @@ import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
-import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.InsuranceTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.LoanTypeConverter
@@ -24,6 +23,7 @@ import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
+import com.craft.silicon.centemobile.data.source.remote.helper.NetworkIsh
 import com.craft.silicon.centemobile.databinding.FragmentPurchaseBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -32,18 +32,17 @@ import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
-import com.craft.silicon.centemobile.view.binding.setDisplayController
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
+import com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
 import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.InsuranceAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.LoanAdapterItem
 import com.craft.silicon.centemobile.view.ep.controller.DisplayData
 import com.craft.silicon.centemobile.view.ep.controller.DisplayVault
-import com.craft.silicon.centemobile.view.ep.controller.DisplayVaultData
 import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
@@ -70,7 +69,7 @@ import java.time.format.DateTimeFormatter
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
+class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
 
     private lateinit var binding: FragmentPurchaseBinding
     private val inputList = mutableListOf<InputData>()
@@ -85,8 +84,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
     private val workViewModel: WorkerViewModel by viewModels()
 
     private val liveFormData = MutableLiveData<DynamicData>()
-    private val module = MutableLiveData<Modules>()
-
 
     private val baseViewModel: BaseViewModel by viewModels()
 
@@ -230,7 +227,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    setLoading(false)
                     AppLogger.instance.appLog(
                         "Pay", BaseClass.decryptLatest(
                             it.response,
@@ -240,6 +236,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                         )
                     )
                     if (nonCaps(it.response) != "ok") {
+                        setLoading(false)
                         val resData = DynamicDataResponseTypeConverter().to(
                             BaseClass.decryptLatest(
                                 it.response,
@@ -249,6 +246,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                             )
                         )
                         if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                            setLoading(false)
                             if (nonCaps(resData?.formID)
                                 == nonCaps("STATEMENT")
                             ) {
@@ -281,7 +279,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                             }
 
                         } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
-                            setLoading(true)
                             workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
                                 override fun workDone(b: Boolean) {
                                     setLoading(false)
@@ -400,7 +397,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
     }
 
     private fun startShimmer() {
-        binding.shimmerContainer.visibility = View.VISIBLE
+        binding.shimmerContainer.visibility = VISIBLE
         binding.shimmerContainer.startShimmer()
     }
 
@@ -571,7 +568,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
         editTextList: MutableList<TextInputEditText>?
     ) {
         try {
-
+            AppLogger.instance.appLog("DYNAMIC:AUTO", Gson().toJson(formControl))
             editTextList?.forEach {
                 AppLogger.instance.appLog("DYNAMIC:EDIT:TAGS", it.tag.toString())
             }
@@ -581,6 +578,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                     response?.formField?.single { a -> a.controlID == formControl?.controlID }
 
                 if (nonCaps(data?.controlID) == nonCaps("Packages")) {
+                    AppLogger.instance.appLog("DYNAMIC:DROP:PACKAGES", Gson().toJson(data))
                     val packages = InsuranceTypeConverter().from(data?.controlValue)
                     val adapter =
                         InsuranceAdapterItem(
@@ -609,6 +607,8 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                                 }
                         }
                 } else if (nonCaps(data?.controlID) == nonCaps("LOANS")) {
+                    AppLogger.instance.appLog("DYNAMIC:DROP:LOAN", Gson().toJson(data))
+
                     val packages = LoanTypeConverter().from(data?.controlValue)
                     val adapter =
                         LoanAdapterItem(
@@ -638,12 +638,10 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                 }
             }
 
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
 
 
     fun parameters(obj: Any): Map<String, Any> {
@@ -658,6 +656,23 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
         }
         return map
     }
+
+    override fun onNetwork(boolean: Boolean) {
+        if (!boolean) ConnectionFragment.showDialog(this.childFragmentManager)
+        else ConnectionFragment.dismiss(this.childFragmentManager)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        widgetViewModel.networkDataSource.connection(this)
+        widgetViewModel.networkDataSource.enable()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        widgetViewModel.networkDataSource.disable()
+    }
+
 
 }
 

@@ -12,10 +12,10 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:fitsSystemWindows="true"
         android:overScrollMode="never">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,8 +43,9 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
                 android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_semi_bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:fontFamily="@font/poppins_bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textColor="@color/dar_color_one"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView"
@@ -58,10 +59,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:alpha="0.8"
+                android:alpha="0.9"
                 android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/poppins_semi_bold"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/dar_color_two"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -74,8 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="@dimen/dimens_8dp"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="@font/poppins_medium"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/poppins_semi_bold"
                 android:text="@string/login"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="@color/app_blue_light"
@@ -92,7 +94,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                app:boxBackgroundColor="@color/ghost_white"
+                app:boxBackgroundColor="@color/white"
                 app:hintEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -61,7 +61,6 @@ fun TextInputEditText.setInputLayout(
 
 
 
-
     this.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -87,7 +86,7 @@ fun TextInputEditText.setInputLayout(
 fun setControl(view: TextInputEditText, form: FormControl?) {
     if (form?.displayControl != null)
         if (!TextUtils.isEmpty(form.displayControl))
-            if (nonCaps(form.displayControl) == nonCaps("TRUE")) {
+            if (nonCaps(form.displayControl) == nonCaps("true")) {
                 view.clearFocus()
             }
 }

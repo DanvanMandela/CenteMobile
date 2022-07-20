@@ -410,7 +410,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        setLoading(false)
                         try {
                             AppLogger.instance.appLog(
                                 "VALIDATION:Response", BaseClass.decryptLatest(
@@ -421,6 +420,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(it.response) != StatusEnum.ERROR.type) {
+                                setLoading(false)
                                 val resData = DynamicAPIResponseConverter().to(
                                     BaseClass.decryptLatest(
                                         it.response,
@@ -430,8 +430,9 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                     )
                                 )
                                 AppLogger.instance.appLog("Validation", Gson().toJson(resData))
-                                if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-
+                                if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type)
+                                {
+                                    setLoading(false)
                                     dynamicResponse.value = resData
                                     if (!resData?.formID.isNullOrEmpty()
                                         || !resData?.formID.isNullOrBlank()
@@ -488,7 +489,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 } else if (nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {
-                                    setLoading(true)
                                     workViewModel.routeData(
                                         viewLifecycleOwner,
                                         object : WorkStatus {
@@ -507,6 +507,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
 
 
                                 } else {
+                                    setLoading(false)
                                     AlertDialogFragment.newInstance(
                                         DialogData(
                                             title = R.string.error,
@@ -519,6 +520,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                             }
 
                         } catch (e: Exception) {
+                            setLoading(false)
                             AlertDialogFragment.newInstance(
                                 DialogData(
                                     title = R.string.error,
@@ -530,11 +532,13 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                         }
 
                     }, {
+                        setLoading(false)
                         it.printStackTrace()
                     })
             )
 
         } catch (e: Exception) {
+            setLoading(false)
             e.printStackTrace()
         }
 

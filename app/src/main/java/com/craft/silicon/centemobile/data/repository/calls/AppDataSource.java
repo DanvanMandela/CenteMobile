@@ -24,6 +24,11 @@ public interface AppDataSource {
         return null;
     }
 
+    default Single<DynamicResponse> ocr(JSONObject jsonObject,
+                                        Context context) {
+        return null;
+    }
+
     default Single<DynamicResponse> createOTP(JSONObject jsonObject,
                                               Context context) {
         return null;

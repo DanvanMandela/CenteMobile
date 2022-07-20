@@ -34,6 +34,7 @@ class DynamicGETWorker @AssistedInject constructor(
         return try {
 
             val uniqueID = Constants.getUniqueID()
+            storageDataSource.setUniqueID(uniqueID)
             val jsonObject = JSONObject()
             Constants.commonJSON(
                 jsonObject,
@@ -41,8 +42,11 @@ class DynamicGETWorker @AssistedInject constructor(
                 uniqueID,
                 ActionTypeEnum.REQUEST_BASE.type,
                 "",
-                false
+                true,
+                storageDataSource
             )
+
+
 
             dynamicRepository.requestBase(
                 RequestData(
@@ -51,8 +55,8 @@ class DynamicGETWorker @AssistedInject constructor(
                     Constants.getIMEIDeviceId(applicationContext),
                     Constants.Data.CODE_BASE,
                     "0.00",
-                    "0.00",
                     BaseClass.hashLatest(jsonObject.toString()),
+                    "0.00",
                     Constants.Data.APP_NAME
                 )
             )

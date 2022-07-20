@@ -24,7 +24,8 @@
         android:layout_marginTop="@dimen/dimens_16dp"
         android:hint="@{data.controlText}"
         app:boxBackgroundColor="@color/white"
-        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:hintTextColor="@color/dar_color_two"
         app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
 
         <com.google.android.material.textfield.TextInputEditText

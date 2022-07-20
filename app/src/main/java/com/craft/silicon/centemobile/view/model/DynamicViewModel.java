@@ -47,7 +47,8 @@ public class DynamicViewModel extends ViewModel implements DynamicDataSource {
                 uniqueID,
                 ActionTypeEnum.REQUEST_BASE.getType(),
                 "",
-                false);
+                false,
+                storageDataSource);
         return dynamicRepository.requestBase(
                 new RequestData(
                         uniqueID,

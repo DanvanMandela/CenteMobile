@@ -17,7 +17,7 @@
         alerts="@{data}"
         callback="@{callback}"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_150dp"
+        android:layout_height="@dimen/dimens_160dp"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingVertical="@dimen/dimens_10dp"

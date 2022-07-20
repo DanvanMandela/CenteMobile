@@ -33,7 +33,9 @@
         android:layout_marginHorizontal="@dimen/dimens_24dp"
         android:layout_marginTop="@dimen/dimens_16dp"
         android:hint="@{data.controlText}"
-        app:boxBackgroundColor="@color/white">
+        app:boxBackgroundColor="@color/white"
+        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:hintTextColor="@color/dar_color_two">
 
         <AutoCompleteTextView
             android:id="@+id/autoEdit"
@@ -49,6 +51,7 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/dar_color_one"
             tools:ignore="LabelFor" />
 
     </com.google.android.material.textfield.TextInputLayout>

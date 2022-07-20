@@ -10,8 +10,14 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.util.BaseClass;
+import com.craft.silicon.centemobile.view.fragment.map.MapData;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -35,6 +41,8 @@ public class Constants {
         @NotNull
         public static final String LIVE = "https://app.craftsilicon.com/ElmaAuthDynamic/";
 
+        @NotNull
+        public static final String OCR = "https://craftsiliconai.azurewebsites.net/";
 
         @NotNull
         public static final String URL = Data.TEST ? UAT : LIVE;
@@ -68,20 +76,39 @@ public class Constants {
 
         @NotNull
         public final static String VERSION = "119";
+
+        @NotNull
+        public final static String GO = "cente";
     }
 
     public static void commonJSON(JSONObject jsonObject,
                                   Context activity,
                                   String uniqueID,
                                   String formID,
-                                  String customerID, boolean customer) {
+                                  String customerID,
+                                  boolean customer,
+                                  StorageDataSource dataSource) {
         try {
             jsonObject.put("FormID", formID);
             jsonObject.put("UNIQUEID", uniqueID);
 
+            MapData mapData = dataSource.getLatLng().getValue();
+            LatLng latLng = new LatLng(0.0, 0.0);
+
+            ActivationData aData = dataSource.getActivationData().getValue();
+
+            if (aData != null)
+                if (TextUtils.isEmpty(customerID))
+                    customerID = aData.getId();
+
+            if (mapData != null)
+                latLng = dataSource.getLatLng().getValue().getLatLng();
+
+
             //TODO CUSTOMER ID
             if (customer)
-                jsonObject.put("CustomerID", TextUtils.isEmpty(customerID) ? Data.CUSTOMER_ID : customerID);
+                jsonObject.put("CustomerID",
+                        TextUtils.isEmpty(customerID) ? Data.CUSTOMER_ID : customerID);
 
             jsonObject.put("BankID", Data.BANK_ID);
             jsonObject.put("Country", Data.COUNTRY);
@@ -93,7 +120,7 @@ public class Constants {
             jsonObject.put("CODEBASE", Data.CODE_BASE);
             jsonObject.put(
                     "LATLON",
-                    "0.0" + "," + "0.0"
+                    latLng.latitude + "," + latLng.longitude
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -161,4 +188,11 @@ public class Constants {
             value = value.substring(1);
         return value;
     }
+
+    public static class MapsConstants {
+        public static long interval = 600 * 10000;
+        public static long fastestInterval = 5 * 10000;
+        public static long maxWaitTime = 5 * 10000;
+    }
+
 }

@@ -24,7 +24,7 @@ public class SplashRepository implements SplashDataSource {
     @Override
     public NavDirections getNavigation() {
         if (storageDataSource.isActivated().getValue()) {
-            return navigationDataSource.navigateLanding();
+            return navigationDataSource.navigateAuth();
         } else return navigationDataSource.navigateToLogin();
     }
 }

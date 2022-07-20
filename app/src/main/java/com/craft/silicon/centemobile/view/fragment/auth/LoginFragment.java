@@ -15,6 +15,7 @@ import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.converter.ResponseTypeConverter;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
+import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
 import com.craft.silicon.centemobile.databinding.FragmentLoginBinding;
 import com.craft.silicon.centemobile.util.AppLogger;
@@ -26,6 +27,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 
 import java.util.Objects;
 
@@ -45,6 +47,7 @@ import io.reactivex.schedulers.Schedulers;
 public class LoginFragment extends Fragment implements AppCallbacks {
     private FragmentLoginBinding binding;
     private AuthViewModel authViewModel;
+    private WorkerViewModel workerViewModel;
 
 
     public LoginFragment() {
@@ -98,68 +101,95 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     }
 
     private void authAccount() {
-        LoadingFragment.show(getChildFragmentManager());
+        setLoading(true);
         CompositeDisposable subscribe = new CompositeDisposable();
-        subscribe.add(authViewModel.loading
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showProgress, Throwable::printStackTrace));
-        subscribe.add(authViewModel.activateAccount(Constants.setMobile(binding.countryCodeHolder.getSelectedCountryCode(),
-                                Objects.requireNonNull(binding.editMobile.getText()).toString()),
+        subscribe.add(authViewModel.activateAccount(Constants.
+                                setMobile(binding.countryCodeHolder.getSelectedCountryCode(),
+                                        Objects.requireNonNull(binding.editMobile.getText()).toString()),
                         Objects.requireNonNull(binding.editPin.getText()).toString(),
                         requireActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    new AppLogger().appLog("ACTIVATION:Response", BaseClass.decryptLatest(data.getResponse(),
+                .subscribe(this::setOnSuccess, Throwable::printStackTrace));
+
+    }
+
+    private void setOnSuccess(DynamicResponse data) {
+        try {
+            new AppLogger().appLog("ACTIVATION:Response",
+                    BaseClass.decryptLatest(data.getResponse(),
                             authViewModel.storage.getDeviceData().getValue().getDevice(),
                             true,
                             authViewModel.storage.getDeviceData().getValue().getRun()
                     ));
-                    LoadingFragment.dismiss(getChildFragmentManager());
-                    if (data.getResponse() != null && data.getResponse().equals("ok")) {
-                        AlertDialogFragment.newInstance(new DialogData(
-                                R.string.error,
-                                getString(R.string.something_),
-                                R.drawable.warning_app
-                        ), getChildFragmentManager());
-                    } else {
-                        try {
-                            ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
-                                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+
+            if (data.getResponse() == null) {
+                setLoading(false);
+                AlertDialogFragment.newInstance(new DialogData(
+                        R.string.error,
+                        getString(R.string.something_),
+                        R.drawable.warning_app
+                ), getChildFragmentManager());
+            } else {
+                if (data.getResponse().equals("ok")) {
+                    setLoading(false);
+                    AlertDialogFragment.newInstance(new DialogData(
+                            R.string.error,
+                            getString(R.string.something_),
+                            R.drawable.warning_app
+                    ), getChildFragmentManager());
+                } else {
+                    ResponseDetails responseDetails = new ResponseTypeConverter()
+                            .to(BaseClass.decryptLatest(data.getResponse(),
+                                    authViewModel.storage
+                                            .getDeviceData().getValue().getDevice(),
                                     true,
                                     authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
-                            assert responseDetails != null;
-                            if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
-                                AlertDialogFragment.newInstance(new DialogData(
-                                        R.string.error,
-                                        Objects.requireNonNull(responseDetails.getMessage()),
-                                        R.drawable.warning_app
-                                ), getChildFragmentManager());
-                            } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
-                                new ShowToast(requireContext(), responseDetails.getMessage());
-                                ((MainActivity) requireActivity())
-                                        .provideNavigationGraph()
-                                        .navigate(authViewModel.navigationDataSource.navigateToOTP(Constants.setMobile(binding.countryCodeHolder.getSelectedCountryCode(),
-                                                Objects.requireNonNull(binding.editMobile.getText()).toString())));
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            AlertDialogFragment.newInstance(new DialogData(
-                                    R.string.error,
-                                    getString(R.string.something_),
-                                    R.drawable.warning_app
-                            ), getChildFragmentManager());
-                        }
+                    assert responseDetails != null;
+                    if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
+                        setLoading(false);
+                        AlertDialogFragment.newInstance(new DialogData(
+                                R.string.error,
+                                Objects.requireNonNull(responseDetails.getMessage()),
+                                R.drawable.warning_app
+                        ), getChildFragmentManager());
+                    } else if (Objects.equals(responseDetails.getStatus(),
+                            StatusEnum.TOKEN.getType())) {
+                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
+                            setLoading(false);
+                            if (b) authAccount();
+                        });
+                    } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
+                        setLoading(false);
+                        new ShowToast(requireContext(), responseDetails.getMessage());
+                        ((MainActivity) requireActivity())
+                                .provideNavigationGraph()
+                                .navigate(authViewModel.navigationDataSource
+                                        .navigateToOTP(Constants
+                                                .setMobile(binding.countryCodeHolder
+                                                                .getSelectedCountryCode(),
+                                                        Objects.requireNonNull(binding
+                                                                .editMobile.getText()).toString())));
                     }
-                }, Throwable::printStackTrace));
+                }
+            }
 
+
+        } catch (Exception e) {
+            setLoading(false);
+            e.printStackTrace();
+            AlertDialogFragment.newInstance(new DialogData(
+                    R.string.error,
+                    getString(R.string.fatal_error),
+                    R.drawable.warning_app
+            ), getChildFragmentManager());
+        }
     }
 
-    private void showProgress(boolean data) {
-        // if (data) LoadingFragment.show(getChildFragmentManager());
-
+    private void setLoading(boolean b) {
+        if (b) LoadingFragment.show(getChildFragmentManager());
+        else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
     @Override
@@ -170,6 +200,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     @Override
     public void setViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
     }
 
 }

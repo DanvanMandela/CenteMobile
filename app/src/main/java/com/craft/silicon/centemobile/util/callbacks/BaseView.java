@@ -1,5 +1,13 @@
 package com.craft.silicon.centemobile.util.callbacks;
 
+import android.graphics.Bitmap;
+
+import com.craft.silicon.centemobile.view.fragment.go.steps.ImageSelector;
+
+import org.jetbrains.annotations.Nullable;
+
+import kotlin.Unit;
+
 public interface BaseView {
     default void setBinding() {
     }
@@ -24,4 +32,9 @@ public interface BaseView {
     default void navigateUp() {
     }
 
+    default void onImage(Bitmap bitmap) {
+    }
+
+    default void imageSelector(ImageSelector selector) {
+    }
 }

@@ -5,12 +5,14 @@ import android.content.SharedPreferences
 import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.*
+import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.view.fragment.map.MapData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -231,6 +233,91 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _latLng =
+        MutableStateFlow(
+            MapDataTypeConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        LAT_LNG_DATA,
+                        "latitude:0.0," + "longitude:0.0"
+                    )
+                )
+            )
+        )
+
+    override val latLng: StateFlow<MapData?>
+        get() = _latLng
+
+    override fun setLatLng(value: MapData) {
+        _latLng.value = value
+        with(sharedPreferences.edit()) {
+            putString(LAT_LNG_DATA, BaseClass.encrypt(MapDataTypeConverter().from(value)))
+            apply()
+        }
+    }
+
+    private val _uniqueID =
+        MutableStateFlow(
+            sharedPreferences.getString(
+                TAG_UNIQUE_ID,
+                ""
+            )
+        )
+
+    override val uniqueID: StateFlow<String?>
+        get() = _uniqueID
+
+    override fun setUniqueID(value: String) {
+        _uniqueID.value = value
+        with(sharedPreferences.edit()) {
+            putString(TAG_UNIQUE_ID, value)
+            apply()
+        }
+    }
+
+    private val _accountProduct =
+        MutableStateFlow(
+            AccountProductTypeConverter().from(
+                sharedPreferences.getString(
+                    TAG_ACCOUNT_PRODUCT,
+                    ""
+                )
+            )
+        )
+
+    override val productAccountData: StateFlow<List<OnlineAccountProduct?>?>
+        get() = _accountProduct
+
+    override fun setProductAccountData(value: MutableList<OnlineAccountProduct>) {
+        _accountProduct.value = value
+        with(sharedPreferences.edit()) {
+            putString(TAG_ACCOUNT_PRODUCT, AccountProductTypeConverter().to(value))
+            apply()
+        }
+    }
+
+    private val _branchData =
+        MutableStateFlow(
+            AccountProductTypeConverter().from(
+                sharedPreferences.getString(
+                    TAG_BRANCH,
+                    ""
+                )
+            )
+        )
+
+    override val branchData: StateFlow<List<OnlineAccountProduct?>?>
+        get() = _branchData
+
+    override fun setBranchData(value: MutableList<OnlineAccountProduct>) {
+        _branchData.value = value
+        with(sharedPreferences.edit()) {
+            putString(TAG_BRANCH, AccountProductTypeConverter().to(value))
+            apply()
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val TAG_LOGIN = "auth"
@@ -245,5 +332,9 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val BENEFICIARY_DATA = "beneficiary"
         private const val ACCOUNTS_DATA = "accounts"
         private const val ALERTS_DATA = "alerts"
+        private const val LAT_LNG_DATA = "latLng"
+        private const val TAG_UNIQUE_ID = "uniqueID"
+        private const val TAG_ACCOUNT_PRODUCT = "accountProduct"
+        private const val TAG_BRANCH = "branch"
     }
 }

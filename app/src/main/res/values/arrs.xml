@@ -6,4 +6,10 @@
         <item>Craft Silicon</item>
     </string-array>
 
+    <string-array name="title">
+        <item>Mr.</item>
+        <item>Miss.</item>
+        <item>Mrs.</item>
+    </string-array>
+
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroup"
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/divider_toggle"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_5dp"
+        app:checkedButton="@id/atmButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/atmButton"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_60dp"
+            android:layout_weight="1"
+            android:text="@string/ATM"
+            android:textColor="@color/chip_text_color"
+            app:cornerRadius="@dimen/dimens_8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/branchButton"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_60dp"
+            android:layout_weight="1"
+            android:text="@string/branch_"
+            android:textColor="@color/chip_text_color"
+            app:cornerRadius="@dimen/dimens_8dp" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+</layout>

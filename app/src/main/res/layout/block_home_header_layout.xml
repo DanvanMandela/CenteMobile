@@ -27,6 +27,7 @@
             android:paddingStart="@dimen/dimens_16dp"
             android:paddingEnd="@dimen/dimens_5dp"
             android:showDividers="middle"
+            app:checkedButton="@id/accountButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -62,14 +63,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <include
-                android:id="@+id/accountPager"
-                layout="@layout/block_accounts_layout" />
-
-            <include
-                android:id="@+id/utilPager"
-                layout="@layout/block_util_layout"
-                tools:layout_editor_absoluteY="250dp" />
-
+                android:id="@+id/headerAux"
+                layout="@layout/block_header_views_layout" />
 
         </androidx.constraintlayout.motion.widget.MotionLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

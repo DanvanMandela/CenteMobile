@@ -1,5 +1,7 @@
 package com.craft.silicon.centemobile.data.source.local.module.dynamic.widgets;
 
+import com.craft.silicon.centemobile.data.model.AtmData;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
@@ -137,5 +139,52 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     @Override
     public Observable<Modules> getModule(String moduleID) {
         return widgetDao.getModule(moduleID);
+    }
+
+    @Override
+    public void saveAtms(List<AtmData> atmData) {
+        Completable.fromRunnable(() -> widgetDao.saveAtms(atmData))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteAtms() {
+        Completable.fromRunnable(widgetDao::deleteAtms)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public Observable<List<AtmData>> getAtms() {
+        return widgetDao.getAtms();
+    }
+
+    @Override
+    public void saveCarousel(List<CarouselData> data) {
+        Completable.fromRunnable(() -> widgetDao.saveCarousel(data))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteCarousel() {
+        Completable.fromRunnable(widgetDao::deleteCarousel)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public Observable<List<CarouselData>> getCarousel() {
+        return widgetDao.getCarousel();
+    }
+
+    @Override
+    public Observable<List<AtmData>> getATMBranch(boolean b) {
+        return widgetDao.getATMBranch(b);
     }
 }

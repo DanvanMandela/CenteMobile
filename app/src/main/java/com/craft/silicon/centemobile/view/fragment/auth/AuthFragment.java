@@ -122,7 +122,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void authUser() {
-        LoadingFragment.show(getChildFragmentManager());
+        setLoading(true);
         subscribe.add(authViewModel.loginAccount(Objects.requireNonNull(binding.editPin.getText()).toString(),
                         requireActivity())
                 .subscribeOn(Schedulers.io())
@@ -137,7 +137,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void setOnSuccess(DynamicResponse data) {
-        LoadingFragment.dismiss(getChildFragmentManager());
         try {
             new AppLogger().appLog("LOGIN:Response", BaseClass.decryptLatest(data.getResponse(),
                     authViewModel.storage.getDeviceData().getValue().getDevice(),
@@ -145,40 +144,61 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     authViewModel.storage.getDeviceData().getValue().getRun()
             ));
 
-
-            if (data.getResponse() != null && data.getResponse().equals("ok")) {
+            if (data.getResponse() == null) {
+                setLoading(false);
                 AlertDialogFragment.newInstance(new DialogData(
                         R.string.error,
-                        getString(R.string.something_),
+                        getString(R.string.fatal_error),
                         R.drawable.warning_app
                 ), getChildFragmentManager());
             } else {
-                LoginUserData responseDetails = new LoginDataTypeConverter()
-                        .to(BaseClass.decryptLatest(data.getResponse(),
-                                authViewModel.storage.getDeviceData().getValue().getDevice(),
-                                true,
-                                authViewModel.storage.getDeviceData().getValue().getRun()
-                        ));
-
-
-                assert responseDetails != null;
-                if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
-                    showError(Objects.requireNonNull(responseDetails.getMessage()));
+                if (data.getResponse().equals("ok")) {
+                    setLoading(false);
+                    AlertDialogFragment.newInstance(new DialogData(
+                            R.string.error,
+                            getString(R.string.fatal_error),
+                            R.drawable.warning_app
+                    ), getChildFragmentManager());
                 } else {
-                    new ShowToast(requireContext(), getString(R.string.welcome_back));
-                    AppLogger.Companion.getInstance().appLog("AUTH",
-                            new Gson().toJson(responseDetails));
-                    saveUserData(responseDetails);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
-                            .provideNavigationGraph()
-                            .navigate(authViewModel.navigationDataSource.navigateToHome()), 300);
+                    LoginUserData responseDetails = new LoginDataTypeConverter()
+                            .to(BaseClass.decryptLatest(data.getResponse(),
+                                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+                                    true,
+                                    authViewModel.storage.getDeviceData().getValue().getRun()
+                            ));
+
+                    assert responseDetails != null;
+                    if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
+                        setLoading(false);
+                        showError(Objects.requireNonNull(responseDetails.getMessage()));
+                    } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
+                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
+                            setLoading(false);
+                            if (b) authUser();
+                        });
+                    } else {
+                        setLoading(false);
+                        new ShowToast(requireContext(), getString(R.string.welcome_back));
+                        AppLogger.Companion.getInstance().appLog("AUTH",
+                                new Gson().toJson(responseDetails));
+                        saveUserData(responseDetails);
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
+                                .provideNavigationGraph()
+                                .navigate(authViewModel.navigationDataSource.navigateToHome()), 300);
+                    }
                 }
             }
         } catch (Exception e) {
-            showError(getString(R.string.something_));
+            setLoading(false);
+            showError(getString(R.string.parsing_error));
             e.printStackTrace();
         }
 
+    }
+
+    private void setLoading(boolean b) {
+        if (b) LoadingFragment.show(getChildFragmentManager());
+        else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
     private void saveUserData(LoginUserData responseDetails) {

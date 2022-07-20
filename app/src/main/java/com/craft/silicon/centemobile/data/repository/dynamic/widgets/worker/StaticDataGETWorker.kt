@@ -43,7 +43,8 @@ class StaticDataGETWorker @AssistedInject constructor(
                 uniqueID,
                 ActionTypeEnum.STATIC_DATA.type,
                 "",
-                true
+                true,
+                storageDataSource
             )
             val newRequest = jsonObject.toString()
             val path =
@@ -56,7 +57,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                 }
             widgetRepository.requestWidget(
                 PayloadData(
-                    uniqueID,
+                    storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
                 ), path
             )
@@ -73,9 +74,18 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.deviceData.value!!.run
                         )
                     )
-                    AppLogger.instance.appLog("STATIC:DATA",Gson().toJson(data))
+                    AppLogger.instance.appLog("STATIC:DATA", Gson().toJson(data))
                     if (data?.status == StatusEnum.SUCCESS.type) {
-                        storageDataSource.setStaticData(data.userCode.toMutableList())
+                        if (data.userCode.isNotEmpty())
+                            storageDataSource.setStaticData(data.userCode.toMutableList())
+                        if (data.accountProduct.isNotEmpty())
+                            storageDataSource.setProductAccountData(
+                                data.accountProduct.toMutableList()
+                            )
+                        if (data.bankBranch.isNotEmpty())
+                            storageDataSource.setBranchData(
+                                data.bankBranch.toMutableList()
+                            )
                         constructResponse(Result.success())
                     } else {
                         constructResponse(Result.retry())

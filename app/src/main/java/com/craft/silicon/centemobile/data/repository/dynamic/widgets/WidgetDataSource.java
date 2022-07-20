@@ -5,6 +5,8 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import com.craft.silicon.centemobile.data.model.AtmData;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
@@ -114,6 +116,7 @@ public interface WidgetDataSource extends NavigationCallback {
         return null;
     }
 
+
     default LiveData<List<Beneficiary>> beneficiaryData() {
         return null;
     }
@@ -132,6 +135,30 @@ public interface WidgetDataSource extends NavigationCallback {
 
     default void resetForm() {
 
+    }
+
+    default void saveAtms(List<AtmData> atmData) {
+    }
+
+    default void deleteAtms() {
+    }
+
+    default Observable<List<AtmData>> getAtms() {
+        return null;
+    }
+
+    default Observable<List<AtmData>> getATMBranch(boolean b) {
+        return null;
+    }
+
+    default void saveCarousel(List<CarouselData> data) {
+    }
+
+    default void deleteCarousel() {
+    }
+
+    default Observable<List<CarouselData>> getCarousel() {
+        return null;
     }
 
 

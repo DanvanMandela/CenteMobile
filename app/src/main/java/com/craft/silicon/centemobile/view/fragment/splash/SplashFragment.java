@@ -15,6 +15,7 @@ import com.craft.silicon.centemobile.databinding.FragmentSplashBinding;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.model.SplashViewModel;
+import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -32,7 +33,7 @@ public class SplashFragment extends Fragment implements AppCallbacks {
     private static final String ARG_PARAM2 = "param2";
 
     private FragmentSplashBinding binding;
-    private SplashViewModel splashViewModel;
+    private WidgetViewModel widgetViewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -91,9 +92,10 @@ public class SplashFragment extends Fragment implements AppCallbacks {
 
     @Override
     public void setViewModel() {
-        splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
+        widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ((MainActivity) requireActivity()).provideNavigationGraph().navigate(splashViewModel.getNavigation());
+            ((MainActivity) requireActivity()).provideNavigationGraph()
+                    .navigate(widgetViewModel.navigation().navigateLanding());
         }, 300);
     }
 }

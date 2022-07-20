@@ -6,6 +6,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.craft.silicon.centemobile.data.model.AtmData;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
@@ -90,5 +92,31 @@ public interface WidgetDao extends WidgetDataSource {
     @Insert(onConflict = REPLACE)
     void saveLayoutData(LayoutData data);
 
+    @Override
+    @Insert(onConflict = REPLACE)
+    void saveAtms(List<AtmData> atmData);
 
+    @Override
+    @Query("SELECT * FROM atm_branch_tbl")
+    Observable<List<AtmData>> getAtms();
+
+    @Override
+    @Query("DELETE FROM atm_branch_tbl")
+    void deleteAtms();
+
+    @Override
+    @Insert(onConflict = REPLACE)
+    void saveCarousel(List<CarouselData> data);
+
+    @Override
+    @Query("DELETE FROM carousel_tbl")
+    void deleteCarousel();
+
+    @Override
+    @Query("SELECT * FROM carousel_tbl")
+    Observable<List<CarouselData>> getCarousel();
+
+    @Override
+    @Query("SELECT * FROM atm_branch_tbl WHERE type=:b")
+    Observable<List<AtmData>> getATMBranch(boolean b);
 }

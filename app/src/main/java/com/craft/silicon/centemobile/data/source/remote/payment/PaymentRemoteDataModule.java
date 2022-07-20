@@ -43,7 +43,8 @@ public class PaymentRemoteDataModule {
                             return chain.proceed(chain.request()
                                     .newBuilder().url(url)
                                     .build());
-                        }).build()
+                        })
+                        .addInterceptor(httpLoggingInterceptor).build()
                 ).build();
 
         return retrofit.create(PaymentApiService.class);

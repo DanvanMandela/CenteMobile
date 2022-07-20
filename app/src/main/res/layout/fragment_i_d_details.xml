@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".view.fragment.go.steps.IDDetailsFragment">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:elevation="@dimen/dimens_0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_close_white_24dp"
+                app:navigationIconTint="@color/dar_color_one" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/mainLay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="24dp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_bold"
+                        android:paddingVertical="@dimen/dimens_5dp"
+                        android:text="@string/national_id_details"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textColor="@color/dar_color_one"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/progressIndicator"
+                        tools:targetApi="o" />
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/givenName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginTop="8dp"
+                        android:hint="@string/given_name"
+                        app:boxBackgroundColor="@color/white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintTop_toBottomOf="@+id/textView"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:layout_editor_absoluteX="24dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/givenInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/surName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginTop="8dp"
+                        android:hint="@string/surname"
+                        app:boxBackgroundColor="@color/white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintTop_toBottomOf="@+id/givenName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:layout_editor_absoluteX="24dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/surInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/otherName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginTop="8dp"
+                        android:hint="@string/other_names"
+                        app:boxBackgroundColor="@color/white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintTop_toBottomOf="@+id/surName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:layout_editor_absoluteX="24dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/otherInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/idLay"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginTop="8dp"
+                        android:hint="@string/id_"
+                        app:boxBackgroundColor="@color/white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintTop_toBottomOf="@+id/otherName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:layout_editor_absoluteX="24dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/idInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:shimmer_repeat_mode="restart"
+                    app:shimmer_shape="radial">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/block_sand_of_time_layout" />
+
+
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </FrameLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

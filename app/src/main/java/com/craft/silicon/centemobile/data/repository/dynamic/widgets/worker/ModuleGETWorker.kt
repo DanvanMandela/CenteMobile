@@ -46,7 +46,8 @@ class ModuleGETWorker @AssistedInject constructor(
                 uniqueID,
                 ActionTypeEnum.GET_MENU.type,
                 "",
-                true
+                true,
+                storageDataSource
             )
             AppLogger.instance.appLog("MODULES:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
@@ -60,7 +61,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 }
             widgetRepository.requestWidget(
                 PayloadData(
-                    uniqueID,
+                    storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
                 ), path
             )

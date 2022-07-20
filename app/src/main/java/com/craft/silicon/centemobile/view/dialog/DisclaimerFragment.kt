@@ -86,6 +86,7 @@ class DisclaimerFragment : BottomSheetDialogFragment(), AppCallbacks {
                 val behaviour = BottomSheetBehavior.from(data)
                 setupFullHeight(data)
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
             }
         }
         return dialog

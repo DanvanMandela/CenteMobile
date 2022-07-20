@@ -107,6 +107,11 @@
         android:id="@+id/action_nav_receipt"
         app:destination="@+id/receiptFragment"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_connection"
+        app:destination="@+id/connectionFragment"
+        app:popUpToInclusive="true" />
     <!--    End-->
 
 
@@ -180,6 +185,26 @@
             app:popEnterAnim="@anim/anim_slide_in_right"
             app:popExitAnim="@anim/anim_slide_out_right"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_map"
+            app:destination="@+id/mapsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_on_the_go"
+            app:destination="@+id/onTheGoFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/validationFragment"
@@ -237,7 +262,37 @@
         android:name="com.craft.silicon.centemobile.view.fragment.registration.self.steps.CardDetailsFragment"
         android:label="fragment_card_details"
         tools:layout="@layout/fragment_card_details" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.map.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps">
+        <action
+            android:id="@+id/action_nav_bottom_map"
+            app:destination="@+id/mapBottomSheetFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onTheGoFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.go.OnTheGoFragment"
+        android:label="fragment_on_the_go"
+        tools:layout="@layout/fragment_on_the_go" />
+
 
     <!--    End-->
+    <!--    Dialog-->
 
+    <dialog
+        android:id="@+id/connectionFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment"
+        android:label="fragment_connection"
+        tools:layout="@layout/fragment_connection" />
+    <dialog
+        android:id="@+id/mapBottomSheetFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.map.MapBottomSheetFragment"
+        android:label="fragment_map_bottom_sheet"
+        tools:layout="@layout/fragment_map_bottom_sheet" />
+
+    <!--    Dialog-->
 </navigation>

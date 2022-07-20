@@ -21,6 +21,7 @@ import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.receiver.SMSData;
 import com.craft.silicon.centemobile.data.receiver.SMSReceiver;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
+import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
 import com.craft.silicon.centemobile.databinding.FragmentOtpBinding;
 import com.craft.silicon.centemobile.util.AppLogger;
@@ -32,6 +33,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -53,6 +55,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
 
     private FragmentOtpBinding binding;
     private AuthViewModel authViewModel;
+    private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
     private final SMSReceiver smsReceiver = new SMSReceiver();
@@ -106,6 +109,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     @Override
     public void setViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
     }
 
     @Override
@@ -137,60 +141,87 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
 
     private void verifyOTP() {
         setTimer();
-        LoadingFragment.show(getChildFragmentManager());
+        setLoading(true);
         subscribe.add(authViewModel.verifyOTP(String.valueOf(binding.verificationCodeEditText.getText()),
                         requireActivity(),
                         mobile)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(data -> {
-                    LoadingFragment.dismiss(getChildFragmentManager());
-                    try {
-                        new AppLogger().appLog("ACTIVATION:OTP:Response", BaseClass.decryptLatest(data.getResponse(),
-                                authViewModel.storage.getDeviceData().getValue().getDevice(),
-                                true,
-                                authViewModel.storage.getDeviceData().getValue().getRun()
-                        ));
+                .subscribe(this::setOnSuccess, Throwable::printStackTrace));
 
-                        ResponseDetails responseDetails = new ResponseTypeConverter().to(BaseClass.decryptLatest(data.getResponse(),
-                                authViewModel.storage.getDeviceData().getValue().getDevice(),
-                                true,
-                                authViewModel.storage.getDeviceData().getValue().getRun()
-                        ));
-                        assert responseDetails != null;
-                        if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
-                            AlertDialogFragment.newInstance(new DialogData(
-                                    R.string.error,
-                                    Objects.requireNonNull(responseDetails.getMessage()),
-                                    R.drawable.warning_app
-                            ), getChildFragmentManager());
-                        } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
-                            authViewModel.saveActivationData(new ActivationData(responseDetails.getCustomerID(), mobile));
-                            new ShowToast(requireContext(), responseDetails.getMessage());
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
-                                    .provideNavigationGraph()
-                                    .navigate(authViewModel.navigationDataSource.navigateAuth()), 300);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+    }
+
+    private void setOnSuccess(DynamicResponse data) {
+        try {
+
+            if (data.getResponse() == null) {
+                setLoading(false);
+                AlertDialogFragment.newInstance(new DialogData(
+                        R.string.error,
+                        getString(R.string.something_),
+                        R.drawable.warning_app
+                ), getChildFragmentManager());
+            } else {
+                if (data.getResponse().equals("ok")) {
+                    setLoading(false);
+                    AlertDialogFragment.newInstance(new DialogData(
+                            R.string.error,
+                            getString(R.string.something_),
+                            R.drawable.warning_app
+                    ), getChildFragmentManager());
+                } else {
+                    new AppLogger().appLog("ACTIVATION:OTP:Response",
+                            BaseClass.decryptLatest(data.getResponse(),
+                                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+                                    true,
+                                    authViewModel.storage.getDeviceData().getValue().getRun()
+                            ));
+
+                    ResponseDetails responseDetails = new ResponseTypeConverter()
+                            .to(BaseClass.decryptLatest(data.getResponse(),
+                                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+                                    true,
+                                    authViewModel.storage.getDeviceData().getValue().getRun()
+                            ));
+                    assert responseDetails != null;
+                    if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
+                        setLoading(false);
                         AlertDialogFragment.newInstance(new DialogData(
                                 R.string.error,
-                                getString(R.string.something_),
+                                Objects.requireNonNull(responseDetails.getMessage()),
                                 R.drawable.warning_app
                         ), getChildFragmentManager());
+                    } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
+                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
+                            setLoading(false);
+                            if (b) verifyOTP();
+                        });
+                    } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
+                        setLoading(false);
+                        authViewModel.saveActivationData(new ActivationData(responseDetails
+                                .getCustomerID(), mobile));
+                        new ShowToast(requireContext(), responseDetails.getMessage());
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                ((MainActivity) requireActivity())
+                                        .provideNavigationGraph()
+                                        .navigate(authViewModel
+                                                .navigationDataSource.navigateAuth()), 300);
                     }
-                }, Throwable::printStackTrace));
-        subscribe.add(authViewModel.loading
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showProgress, Throwable::printStackTrace));
+                }
+            }
 
 
+        } catch (Exception e) {
+            setLoading(false);
+            e.printStackTrace();
+            AlertDialogFragment.newInstance(new DialogData(
+                    R.string.error,
+                    getString(R.string.fatal_error),
+                    R.drawable.warning_app
+            ), getChildFragmentManager());
+        }
     }
 
-    private void showProgress(boolean data) {
-        //if (data) LoadingFragment.show(getChildFragmentManager());
-    }
 
     private void setTimer() {
         binding.counter.setVisibility(View.VISIBLE);
@@ -237,6 +268,11 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     public void onPause() {
         super.onPause();
         requireActivity().unregisterReceiver(smsReceiver);
+    }
+
+    private void setLoading(boolean b) {
+        if (b) LoadingFragment.show(getChildFragmentManager());
+        else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
     @Override

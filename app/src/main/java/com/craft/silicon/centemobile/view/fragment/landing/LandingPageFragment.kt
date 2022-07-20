@@ -1,5 +1,12 @@
 package com.craft.silicon.centemobile.view.fragment.landing
 
+
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +14,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavDirections
 import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Palette.Swatch
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.drawableToBitmap
 import com.craft.silicon.centemobile.view.activity.MainActivity
@@ -20,7 +30,12 @@ import com.craft.silicon.centemobile.view.ep.data.LandingData
 import com.craft.silicon.centemobile.view.ep.data.LandingPageEnum
 import com.craft.silicon.centemobile.view.ep.data.LandingPageItem
 import com.craft.silicon.centemobile.view.model.AuthViewModel
+import com.craft.silicon.centemobile.view.model.SplashViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import java.util.*
 
 
@@ -41,6 +56,9 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     private var param2: String? = null
     private lateinit var binding: FragmentLandingPageBinding
     private val authViewModel: AuthViewModel by viewModels()
+    private val widgetViewModel: WidgetViewModel by viewModels()
+    private val splashViewModel: SplashViewModel by viewModels()
+    private val adverts = MutableLiveData<List<CarouselItem>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,30 +75,60 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         // Inflate the layout for this fragment
         binding = FragmentLandingPageBinding.inflate(inflater, container, false)
         setBinding()
+        getAdverts()
         setAdvert()
-
         return binding.root.rootView
+    }
+
+    private fun getAdverts() {
+        widgetViewModel.carousel
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it.isNotEmpty()) {
+                    val itemList = mutableListOf<CarouselItem>()
+                    it.forEach { a ->
+                        itemList.add(
+                            CarouselItem(
+                                imageUrl = a.imageURL
+                            )
+                        )
+                    }
+                    adverts.value = itemList
+                }
+            }, { it.printStackTrace() })
     }
 
     private fun setTimeOfDay() {
         val calendar: Calendar = Calendar.getInstance()
         val hours = calendar.get(Calendar.HOUR_OF_DAY)
-
         if (hours < 12) {
-            binding.banner.setImageRes(R.drawable.noon_one)
-            binding.textView7.text = getString(R.string.good_morining)
-            setColorPalette(R.drawable.noon_one)
+            setDynamicImage(
+                message = R.string.good_morining,
+                image = R.drawable.noon_one
+            )
         } else if (hours in 12..14) {
-            binding.banner.setImageRes(R.drawable.morning)
-            binding.textView7.text = getString(R.string.good_afternoon)
+            setDynamicImage(
+                message = R.string.good_afternoon,
+                image = R.drawable.morning
+            )
         } else if (hours in 15..19) {
-            binding.banner.setImageRes(R.drawable.noon)
-            binding.textView7.text = getString(R.string.good_evening)
+            setDynamicImage(
+                message = R.string.good_evening,
+                image = R.drawable.noon
+            )
         } else if (hours in 19..24) {
-            binding.banner.setImageRes(R.drawable.night)
-            binding.textView7.text = getString(R.string.good_night)
+            setDynamicImage(
+                message = R.string.good_night,
+                image = R.drawable.night
+            )
         }
+    }
 
+    private fun setDynamicImage(message: Int, image: Int) {
+        setColorPalette(image)
+        binding.banner.setImageRes(image)
+        binding.textView7.text = getString(message)
     }
 
     private fun setColorPalette(drawable: Int) {
@@ -90,14 +138,37 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
         val p = bitmap?.let { Palette.from(it).generate() }!!
 
+        AppLogger.instance.appLog("COLOR", p.lightMutedSwatch.toString())
+        val vibrant: Swatch? = p.darkVibrantSwatch
+
+
+
+        if (vibrant != null) {
+            when (val background: Drawable = binding.textView7.background) {
+                is ShapeDrawable -> {
+                    background.paint.color = vibrant.rgb
+                }
+                is GradientDrawable -> {
+                    background.setColor(vibrant.rgb)
+                }
+                is ColorDrawable -> {
+
+                    background.color = vibrant.rgb
+                }
+            }
+        }
+
     }
 
     private fun setAdvert() {
-        val avert = mutableListOf(
-            R.drawable.advert, R.drawable.advert, R.drawable.advert
-        )
-        binding.carouselView.pageCount = avert.size
-        binding.carouselView.setImageListener { position, imageView -> imageView?.setImageRes(avert[position]) }
+        adverts.observe(viewLifecycleOwner) {
+            binding.carousel.setData(it)
+        }
+    }
+
+
+    override fun openUrl(url: String?) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     override fun setBinding() {
@@ -134,8 +205,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     override fun onLanding(data: LandingPageItem?) {
         when (data?.enum) {
             LandingPageEnum.LOGIN -> setNavigation(
-                authViewModel.navigationDataSource
-                    .navigateAuth()
+                splashViewModel.navigation
             )
             LandingPageEnum.REGISTRATION -> setNavigation(
                 authViewModel.navigationDataSource
@@ -143,13 +213,22 @@ class LandingPageFragment : Fragment(), AppCallbacks {
             )
             LandingPageEnum.BRANCH -> setNavigation(
                 authViewModel.navigationDataSource
-                    .navigateToLogin()
+                    .navigateMap()
+            )
+
+            LandingPageEnum.ONLINE_BANKING ->
+                openUrl("https://centeonlinebanking.centenarybank.co.ug/iProfits2Prod/")
+
+            LandingPageEnum.ON_THE_GO -> setNavigation(
+                authViewModel.navigationDataSource
+                    .navigateOnTheGo()
             )
             else -> {
                 throw Exception("No direction implemented")
             }
         }
     }
+
 
     private fun setNavigation(direction: NavDirections?) {
         (requireActivity() as MainActivity).provideNavigationGraph().navigate(direction!!)

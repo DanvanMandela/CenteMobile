@@ -50,7 +50,7 @@ public class AccountViewModel extends ViewModel implements AccountDataSource {
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
                     customerID,
-                    true);
+                    true,dataSource);
 
             jsonObject.put("ModuleID", moduleID);
             jsonObject.put("PayBill", data);
@@ -65,7 +65,7 @@ public class AccountViewModel extends ViewModel implements AccountDataSource {
             return accountRepository.accountRequestT(
                     dataSource.getDeviceData().getValue().getToken(),
                     new PayloadData(
-                            uniqueID,
+                            dataSource.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path);
 

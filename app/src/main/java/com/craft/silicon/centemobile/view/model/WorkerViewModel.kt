@@ -4,16 +4,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
-import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
-import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
-import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
-import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.craft.silicon.centemobile.data.worker.CleanDBWorker
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.data.worker.WorkerCommons.IS_WORK_DONE
-import com.craft.silicon.centemobile.data.worker.WorkerCommons.PROGRESS
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -29,7 +25,8 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
         val workWorker = OneTimeWorkRequestBuilder<CleanDBWorker>()
         var continuation = worker.getWorkManger()
             .beginUniqueWork(
-                "${WorkerCommons.TAG_DATA_WORKER}${BaseClass.generateAlphaNumericString(2)}",
+                WorkerCommons.TAG_DATA_WORKER +
+                        BaseClass.generateAlphaNumericString(2),
                 ExistingWorkPolicy.REPLACE,
                 workWorker.build()
             )
@@ -54,6 +51,21 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
             .setConstraints(worker.getConstraint())
             .addTag(WorkerCommons.TAG_OUTPUT)
         continuation = continuation.then(staticWorker.build())
+
+        val atmWorker = OneTimeWorkRequestBuilder<ATMGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(atmWorker.build())
+
+        val branchWorker = OneTimeWorkRequestBuilder<BranchGetWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(branchWorker.build())
+
+        val carouselWorker = OneTimeWorkRequestBuilder<CarouselGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(carouselWorker.build())
 
         continuation.enqueue()
 

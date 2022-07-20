@@ -72,7 +72,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     uniqueID,
                     ActionTypeEnum.ACTIVATION_REQ.getType(),
                     "",
-                    false);
+                    false,
+                    storage);
 
             jsonObject.put("MobileNumber", mobile);
             JSONObject jsonObject1 = new JSONObject();
@@ -85,7 +86,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             Log.e("ACTIVATION", newRequest);
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
             return authRepository.authRequest(new PayloadData(
-                            uniqueID,
+                            storage.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
@@ -114,7 +115,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
                     customerID,
-                    true);
+                    true,
+                    storage);
 
             data.put("PHONENUMBER", mobile);
             jsonObject.put("PayBill", data);
@@ -128,7 +130,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             new AppLogger().appLog("PIN:Forgot", new Gson().toJson(newRequest));
 
             return authRepository.authRequest(new PayloadData(
-                            uniqueID,
+                            storage.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
@@ -156,7 +158,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     uniqueID,
                     ActionTypeEnum.LOGIN.getType(),
                     customerID,
-                    true);
+                    true,
+                    storage);
 
             jsonObject.put("MobileNumber", mobile);
             JSONObject jsonObject1 = new JSONObject();
@@ -173,7 +176,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             Log.e("ACTIVATION", newRequest);
 
             return authRepository.authRequest(new PayloadData(
-                            uniqueID,
+                            storage.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
@@ -198,7 +201,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     uniqueID,
                     ActionTypeEnum.ACTIVATE.getType(),
                     "",
-                    false);
+                    false,
+                    storage);
 
             jsonObject.put("MobileNumber", mobile);
             JSONObject jsonObject1 = new JSONObject();
@@ -211,7 +215,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
 
             return authRepository.authRequest(new PayloadData(
-                            uniqueID,
+                            storage.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))

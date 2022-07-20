@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.craft.silicon.centemobile.data.model.AtmData;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
@@ -21,6 +23,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.data.source.remote.helper.NetworkDataSource;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
@@ -42,15 +45,18 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
 
     private final WidgetRepository widgetRepository;
     public final StorageDataSource storageDataSource;
+    public final NetworkDataSource networkDataSource;
     private final NavigationDataSource navigationDataSource;
 
 
     @Inject
     public WidgetViewModel(WidgetRepository widgetRepository,
                            StorageDataSource storageDataSource,
+                           NetworkDataSource networkDataSource,
                            NavigationDataSource navigationDataSource) {
         this.widgetRepository = widgetRepository;
         this.storageDataSource = storageDataSource;
+        this.networkDataSource = networkDataSource;
         this.navigationDataSource = navigationDataSource;
     }
 
@@ -123,7 +129,8 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
                     uniqueID,
                     ActionTypeEnum.DB_CALL.getType(),
                     customerID,
-                    true);
+                    true,
+                    storageDataSource);
             jsonObject.put("MerchantID", merchantID);
             jsonObject.put("ModuleID", moduleID);
             JSONObject jsonObject1 = new JSONObject();
@@ -132,11 +139,13 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
 
             String newRequest = jsonObject.toString();
             Log.e("Recent", newRequest);
-            String path = new SpiltURL(storageDataSource.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storageDataSource.getDeviceData().getValue().getOther())).getPath();
+            String path = new SpiltURL(storageDataSource.getDeviceData().getValue()
+                    == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storageDataSource
+                    .getDeviceData().getValue().getOther())).getPath();
 
             return widgetRepository.requestWidget(
                     new PayloadData(
-                            uniqueID,
+                            storageDataSource.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path);
 
@@ -164,5 +173,20 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     @Override
     public LiveData<String> versionData() {
         return new MutableLiveData<>(storageDataSource.getVersion().getValue());
+    }
+
+    @Override
+    public Observable<List<CarouselData>> getCarousel() {
+        return widgetRepository.getCarousel();
+    }
+
+    @Override
+    public Observable<List<AtmData>> getAtms() {
+        return widgetRepository.getAtms();
+    }
+
+    @Override
+    public Observable<List<AtmData>> getATMBranch(boolean b) {
+        return widgetRepository.getATMBranch(b);
     }
 }

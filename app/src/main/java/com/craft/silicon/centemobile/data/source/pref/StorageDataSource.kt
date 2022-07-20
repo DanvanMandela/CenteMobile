@@ -2,11 +2,14 @@ package com.craft.silicon.centemobile.data.source.pref
 
 import android.content.SharedPreferences
 import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
+import com.craft.silicon.centemobile.view.fragment.map.MapData
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.StateFlow
 
 interface StorageDataSource {
@@ -22,6 +25,7 @@ interface StorageDataSource {
 
     fun setDeviceData(value: DeviceData)
     val deviceData: StateFlow<DeviceData?>
+
 
     fun setActivationData(value: ActivationData)
     val activationData: StateFlow<ActivationData?>
@@ -46,4 +50,16 @@ interface StorageDataSource {
     val alerts: StateFlow<List<AlertServices?>?>
 
 
+    fun setLatLng(value: MapData)
+    val latLng: StateFlow<MapData?>
+
+    fun setUniqueID(value: String)
+    val uniqueID: StateFlow<String?>
+
+    fun setProductAccountData(value: MutableList<OnlineAccountProduct>)
+    val productAccountData: StateFlow<List<OnlineAccountProduct?>?>
+
+
+    fun setBranchData(value: MutableList<OnlineAccountProduct>)
+    val branchData: StateFlow<List<OnlineAccountProduct?>?>
 }

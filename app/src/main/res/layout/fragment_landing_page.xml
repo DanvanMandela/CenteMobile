@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:autoSizeTextType="uniform"
                         android:background="@drawable/text_corner_back_morning"
-                        android:fontFamily="@font/poppins_regular"
+                        android:fontFamily="@font/poppins_medium"
                         android:gravity="center"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         android:textColor="@color/white"
@@ -113,38 +113,54 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/container">
 
-                        <com.synnapps.carouselview.CarouselView
-                            android:id="@+id/carouselView"
+                        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+                            android:id="@+id/carousel"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:slideInterval="3000" />
+                            app:autoPlay="true"
+                            app:autoPlayDelay="3000"
+                            app:autoWidthFixing="true"
+                            app:carouselType="BLOCK"
+                            app:imagePlaceholder="@drawable/logo"
+                            app:imageScaleType="fitXY"
+                            app:scaleOnScroll="false"
+                            app:scalingFactor="0.15"
+                            app:showBottomShadow="false"
+                            app:showCaption="false"
+                            app:showIndicator="true"
+                            app:showNavigationButtons="false"
+                            app:showTopShadow="false" />
+
                     </com.google.android.material.card.MaterialCardView>
 
 
+                    <Space
+                        android:id="@+id/space"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_16dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginBottom="32dp"
+                        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />
+
                     <RelativeLayout
+                        android:id="@+id/relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="32dp"
                         android:background="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/materialCardView5">
-
-                        <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
-                            android:id="@+id/mainConnect"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_online_world_pana_one" />
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
                             android:id="@+id/childConnect"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimens_20dp"
-                            android:layout_below="@id/mainConnect"
                             android:layout_centerHorizontal="true"
                             android:src="@drawable/connect_banner" />
 

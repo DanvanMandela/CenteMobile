@@ -1,5 +1,7 @@
 package com.craft.silicon.centemobile.data.repository.dynamic.widgets;
 
+import com.craft.silicon.centemobile.data.model.AtmData;
+import com.craft.silicon.centemobile.data.model.CarouselData;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
@@ -127,5 +129,41 @@ public class WidgetRepository implements WidgetDataSource {
     @Override
     public Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
         return localData.getFormControlNoSq(moduleID);
+    }
+
+
+    @Override
+    public void saveAtms(List<AtmData> atmData) {
+        localData.saveAtms(atmData);
+    }
+
+    @Override
+    public Observable<List<AtmData>> getAtms() {
+        return localData.getAtms();
+    }
+
+    @Override
+    public void deleteAtms() {
+        localData.deleteAtms();
+    }
+
+    @Override
+    public void saveCarousel(List<CarouselData> data) {
+        localData.saveCarousel(data);
+    }
+
+    @Override
+    public void deleteCarousel() {
+        localData.deleteCarousel();
+    }
+
+    @Override
+    public Observable<List<CarouselData>> getCarousel() {
+        return localData.getCarousel();
+    }
+
+    @Override
+    public Observable<List<AtmData>> getATMBranch(boolean b) {
+        return localData.getATMBranch(b);
     }
 }

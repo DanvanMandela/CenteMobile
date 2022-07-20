@@ -72,7 +72,8 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
                     customerID,
-                    true);
+                    true,
+                    dataSource);
 
             jsonObject.put("ModuleID", moduleID);
             jsonObject.put("PayBill", data);
@@ -88,7 +89,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
             return repository.paymentRequest(
                     dataSource.getDeviceData().getValue().getToken(),
                     new PayloadData(
-                            uniqueID,
+                            dataSource.getUniqueID().getValue(),
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path);
 
@@ -117,7 +118,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                     uniqueID,
                     action.getActionType(),
                     customerID,
-                    true);
+                    true, dataSource);
 
             if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.DB_CALL.getType()))) {
@@ -132,7 +133,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                 String dbRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
                 return dbCall(new PayloadData(
-                        uniqueID,
+                        dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(dbRequest, device, iv)
                 ));
             } else if (BaseClass.nonCaps(action.getActionType())
@@ -144,7 +145,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                 String validateRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("Validation", validateRequest);
                 return validateCall(new PayloadData(
-                        uniqueID,
+                        dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(validateRequest, device, iv)
                 ));
             } else if (BaseClass.nonCaps(action.getActionType())
@@ -155,7 +156,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                 String payBillRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
                 return payBillCall(new PayloadData(
-                        uniqueID,
+                        dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(payBillRequest, device, iv)
                 ));
             } else return null;

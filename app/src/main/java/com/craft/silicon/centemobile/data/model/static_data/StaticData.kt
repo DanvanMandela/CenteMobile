@@ -28,5 +28,41 @@ data class StaticData(
     @field:SerializedName("UserCode")
     @field:ColumnInfo(name = "userCode")
     @field:Expose
-    var userCode: List<StaticDataDetails>
+    var userCode: List<StaticDataDetails>,
+
+    @field:SerializedName("OnlineAccountProduct")
+    @field:ColumnInfo(name = "accountProduct")
+    @field:Expose
+    var accountProduct: List<OnlineAccountProduct>,
+
+    @field:SerializedName("BankBranch")
+    @field:Expose
+    var bankBranch: List<OnlineAccountProduct>
 ) : Parcelable
+
+
+@Parcelize
+data class OnlineAccountProduct(
+    @field:SerializedName("ID")
+    @field:Expose
+    var id: String,
+
+    @field:SerializedName("Description")
+    @field:Expose
+    var description: String?,
+
+    @field:SerializedName("RelationID")
+    @field:Expose
+    var relationID: String?,
+
+    @field:SerializedName("Urls")
+
+    @field:Expose
+    var Urls: String?
+) : Parcelable {
+    override fun toString(): String {
+        return description!!
+    }
+}
+
+

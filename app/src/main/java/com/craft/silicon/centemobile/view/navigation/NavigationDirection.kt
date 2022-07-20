@@ -96,6 +96,22 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         }
     }
 
+    override fun navigateMap(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_map)
+    }
+
+    override fun navigateOnTheGo(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_on_the_go)
+    }
+
+    override fun navigateConnection(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_connection)
+    }
+
+    override fun navigateBottomSheet(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_bottom_map)
+    }
+
     override fun navigateCardDetails(mobile: String?): NavDirections {
         return object : NavDirections {
             override val actionId: Int

@@ -45,7 +45,8 @@ class FormControlGETWorker @AssistedInject constructor(
                 uniqueID,
                 ActionTypeEnum.GET_FORM_CONTROL.type,
                 "",
-                true
+                true,
+                storageDataSource
             )
             AppLogger.instance.appLog("FORM:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
@@ -59,7 +60,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 }
             widgetRepository.requestWidget(
                 PayloadData(
-                    uniqueID,
+                    storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
                 ), path
             )

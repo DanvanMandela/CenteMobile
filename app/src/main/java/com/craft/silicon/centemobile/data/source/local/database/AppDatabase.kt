@@ -3,6 +3,8 @@ package com.craft.silicon.centemobile.data.source.local.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.craft.silicon.centemobile.data.model.AtmData
+import com.craft.silicon.centemobile.data.model.CarouselData
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
@@ -24,7 +26,9 @@ import com.craft.silicon.centemobile.view.ep.data.LayoutData
         Modules::class,
         ActionControls::class,
         StaticDataDetails::class,
-        LayoutData::class
+        LayoutData::class,
+        AtmData::class,
+        CarouselData::class
     ],
     version = 1, exportSchema = false
 )

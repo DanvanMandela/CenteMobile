@@ -57,6 +57,22 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateMap() {
+        return null;
+    }
+
+    default NavDirections navigateOnTheGo() {
+        return null;
+    }
+
+    default NavDirections navigateConnection() {
+        return null;
+    }
+
+    default NavDirections navigateBottomSheet() {
+        return null;
+    }
+
     default NavDirections navigateReceipt(DynamicData data) {
         return null;
     }

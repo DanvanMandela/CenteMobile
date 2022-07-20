@@ -17,6 +17,7 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.GlobalResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.input.InputData
@@ -34,10 +35,14 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
+import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
+import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
+import com.craft.silicon.centemobile.view.ep.data.ReceiptList
 import com.craft.silicon.centemobile.view.fragment.dynamic.RecentFragment
 import com.craft.silicon.centemobile.view.fragment.global.GlobalFragment
+import com.craft.silicon.centemobile.view.fragment.payment.Confirm
 import com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -62,7 +67,7 @@ import java.time.format.DateTimeFormatter
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class ValidationFragment : Fragment(), AppCallbacks {
+class ValidationFragment : Fragment(), AppCallbacks, Confirm {
 
     private lateinit var binding: FragmentValidationBinding
     private val widgetViewModel: WidgetViewModel by viewModels()
@@ -256,7 +261,7 @@ class ValidationFragment : Fragment(), AppCallbacks {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    setLoading(false)
+
                     try {
                         AppLogger.instance.appLog(
                             "VALIDATION:Response", BaseClass.decryptLatest(
@@ -267,6 +272,7 @@ class ValidationFragment : Fragment(), AppCallbacks {
                             )
                         )
                         if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            setLoading(false)
                             val resData = DynamicAPIResponseConverter().to(
                                 BaseClass.decryptLatest(
                                     it.response,
@@ -277,18 +283,62 @@ class ValidationFragment : Fragment(), AppCallbacks {
                             )
                             AppLogger.instance.appLog("Validation", Gson().toJson(resData))
                             if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-
+                                setLoading(false)
                                 dynamicResponse.value = resData
+
+
                                 if (!resData?.formID.isNullOrEmpty()
                                     || !resData?.formID.isNullOrBlank()
                                 ) {
-                                    ShowToast(requireContext(), resData?.message)
-                                    setOnNextModule(
-                                        formControl,
-                                        resData?.next,
-                                        modules,
-                                        resData?.formID
-                                    )
+
+                                    if (BaseClass.nonCaps(resData?.formID)
+                                        == BaseClass.nonCaps("TRANSACTIONSCENTER")
+                                    ) {
+                                        val mData = GlobalResponseTypeConverter().to(
+                                            BaseClass.decryptLatest(
+                                                it.response,
+                                                baseViewModel.dataSource.deviceData.value!!.device,
+                                                true,
+                                                baseViewModel.dataSource.deviceData.value!!.run
+                                            )
+                                        )
+                                        DisplayDialogFragment.showDialog(
+                                            manager = this.parentFragmentManager,
+                                            data = mData?.data,
+                                            modules = modules
+                                        )
+
+                                    } else if (BaseClass.nonCaps(resData?.formID)
+                                        == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
+                                    ) {
+                                        AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                        ReceiptFragment.newInstance(
+                                            this, ReceiptList(
+                                                receipt = resData?.receipt!!
+                                                    .toMutableList()
+                                            )
+                                        )
+                                        (requireActivity() as MainActivity)
+                                            .provideNavigationGraph()
+                                            .navigate(
+                                                widgetViewModel.navigation()
+                                                    .navigateReceipt(
+                                                        ReceiptList(
+                                                            receipt = resData.receipt!!
+                                                                .toMutableList()
+                                                        )
+                                                    )
+                                            )
+                                    } else {
+                                        ShowToast(requireContext(), resData?.message)
+                                        setOnNextModule(
+                                            formControl,
+                                            resData?.next,
+                                            modules,
+                                            resData?.formID
+                                        )
+                                    }
+
                                 } else {
                                     SuccessDialogFragment.showDialog(
                                         DialogData(
@@ -308,7 +358,6 @@ class ValidationFragment : Fragment(), AppCallbacks {
                                 )
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 LoadingFragment.show(requireActivity().supportFragmentManager)
-                                setLoading(true)
                                 workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
                                     override fun workDone(b: Boolean) {
                                         setLoading(false)
@@ -324,6 +373,7 @@ class ValidationFragment : Fragment(), AppCallbacks {
 
 
                             } else {
+                                setLoading(false)
                                 AlertDialogFragment.newInstance(
                                     DialogData(
                                         title = R.string.error,
@@ -336,6 +386,7 @@ class ValidationFragment : Fragment(), AppCallbacks {
                         }
 
                     } catch (e: Exception) {
+                        setLoading(false)
                         AlertDialogFragment.newInstance(
                             DialogData(
                                 title = R.string.error,
@@ -435,7 +486,6 @@ class ValidationFragment : Fragment(), AppCallbacks {
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            ShowToast(requireContext(), getString(R.string.error_fetching_recent))
                         }
                     }
                 }, { it.printStackTrace() })
@@ -502,6 +552,10 @@ class ValidationFragment : Fragment(), AppCallbacks {
             AppLogger.instance.appLog("Input:fields", "User input cleared")
             inputList.clear()
         }
+    }
+
+    override fun onCancel() {
+        requireActivity().onBackPressed()
     }
 
 

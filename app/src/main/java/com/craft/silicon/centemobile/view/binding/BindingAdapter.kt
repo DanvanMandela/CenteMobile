@@ -1,9 +1,14 @@
 package com.craft.silicon.centemobile.view.binding
 
 import android.content.Context
+import android.graphics.BlurMaskFilter
+import android.graphics.MaskFilter
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.MaskFilterSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -35,12 +40,10 @@ import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
-import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
-import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.HorizontalMarginItemDecoration
@@ -234,8 +237,14 @@ fun TextView.setAccountNumber(text: String?) {
 
 @BindingAdapter("account", "callbacks")
 fun TextView.setBalance(account: Accounts?, callbacks: AppCallbacks) {
+    val blurMask: MaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.NORMAL)
+    val string = SpannableString("Money")
+    string.setSpan(
+        MaskFilterSpan(blurMask), 0, string.length,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     if (text != null) {
-        this.text = BaseClass.maskCardNumber("####")
+        this.text = string
         this.setOnClickListener {
             callbacks.onBalance(this, account)
         }

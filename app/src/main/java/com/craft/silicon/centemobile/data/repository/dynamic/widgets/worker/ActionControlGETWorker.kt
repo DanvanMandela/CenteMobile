@@ -43,7 +43,8 @@ class ActionControlGETWorker @AssistedInject constructor(
                 uniqueID,
                 ActionTypeEnum.GET_ACTION_CONTROL.type,
                 "",
-                true
+                true,
+                storageDataSource
             )
             AppLogger.instance.appLog("ACTION:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
@@ -57,7 +58,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                 }
             widgetRepository.requestWidget(
                 PayloadData(
-                    uniqueID,
+                    storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
                 ), path
             )

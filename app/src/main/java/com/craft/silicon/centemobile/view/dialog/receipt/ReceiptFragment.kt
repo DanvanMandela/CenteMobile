@@ -88,6 +88,7 @@ class ReceiptFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.setCanceledOnTouchOutside(false)
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
             val parentLayout =
@@ -96,6 +97,7 @@ class ReceiptFragment : BottomSheetDialogFragment(), AppCallbacks {
                 val behaviour = BottomSheetBehavior.from(data)
                 setupFullHeight(data)
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
             }
         }
         return dialog
