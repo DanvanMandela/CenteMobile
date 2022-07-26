@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.global
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -35,6 +37,7 @@ import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.JSONUtil.cleanData
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
 import com.craft.silicon.centemobile.view.binding.serviceAlerts
@@ -793,6 +796,24 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             }
         }
         return map
+    }
+
+    override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
+        (requireActivity() as MainActivity).onImagePicker(object : AppCallbacks {
+            override fun onImage(bitmap: Bitmap?) {
+                this@GlobalFragment.userInput(
+                    InputData(
+                        name = data?.controlText,
+                        key = data?.serviceParamID,
+                        value = convert(bitmap!!),
+                        encrypted = data?.isEncrypted!!,
+                        mandatory = data.isMandatory
+                    )
+                )
+                imageView?.setImageBitmap(bitmap)
+
+            }
+        })
     }
 
 

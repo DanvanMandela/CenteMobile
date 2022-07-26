@@ -1,10 +1,10 @@
 package com.craft.silicon.centemobile.util.callbacks;
 
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.chaos.view.PinView;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.input.InputData;
@@ -12,7 +12,6 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface FormCallback {
@@ -60,14 +59,17 @@ public interface FormCallback {
 
     }
 
-    default void onOTP(FormControl formControl,PinView otpView) {
+    default void onOTP(FormControl formControl, PinView otpView) {
 
     }
 
     default void onDynamicDropDown(AutoCompleteTextView view,
                                    FormControl formControl,
-                                   List<TextInputEditText> editTextList
-    ) {
+                                   List<TextInputEditText> editTextList) {
+
+    }
+
+    default void onImageSelect(ImageView imageView, FormControl data) {
 
     }
 

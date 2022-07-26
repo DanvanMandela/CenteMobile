@@ -25,6 +25,7 @@ import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.databinding.BlockCustomerTypeLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockOnGoAccountItemBinding
 import com.craft.silicon.centemobile.databinding.FragmentCustomerProductBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.OnAlertDialog
 import com.craft.silicon.centemobile.util.ShowAlertDialog
 import com.craft.silicon.centemobile.util.ShowToast
@@ -302,6 +303,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                 binding.currencyLay.autoEdit.text.clear()
                 val c = currency?.filter { a -> a?.id == p.id }?.map { it?.relationID }
                 if (tab?.tag == i) {
+                    AppLogger.instance.appLog("Account:product", Gson().toJson(p))
                     hashMap["Product"] = TwoDMap(
                         key = i,
                         value = p.id

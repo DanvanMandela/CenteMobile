@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLoadingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,6 +40,10 @@ class LoadingFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         dialog!!.setCancelable(false)
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    override fun getTheme(): Int {
+        return R.style.mytheme
     }
 
 

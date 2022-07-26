@@ -136,6 +136,12 @@ class NewFormController(val callbacks: AppCallbacks) :
                             }
                     }
                     BaseClass.nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
+
+                    BaseClass.nonCaps(ControlTypeEnum.IMAGE.type) -> imageButtonLayout {
+                        id(d.controlID)
+                        data(d)
+                        callback(this@NewFormController.callbacks)
+                    }
                 }
 
             } else {

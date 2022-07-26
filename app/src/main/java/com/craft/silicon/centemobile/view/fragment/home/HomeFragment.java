@@ -355,9 +355,6 @@ public class HomeFragment extends Fragment implements AppCallbacks {
                                     textView.setText(balance);
                                 }
                             }
-                            new Handler(Looper.getMainLooper()).postDelayed(()
-                                            -> textView.setText(BaseClass.maskCardNumber("####")),
-                                    8500);
                         } else new ShowToast(requireContext(), getString(R.string.something_));
 
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
@@ -365,6 +362,8 @@ public class HomeFragment extends Fragment implements AppCallbacks {
                             setLoading(false);
                             if (b) onBalance(textView, accounts);
                         });
+                    } else {
+                        new ShowToast(requireContext(), getString(R.string.unable_to_get_balance));
                     }
                 }
             }

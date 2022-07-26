@@ -15,10 +15,10 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_marginVertical="@dimen/dimens_8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/dimens_10dp"
+        android:layout_marginVertical="@dimen/dimens_8dp"
         app:cardCornerRadius="@dimen/dimens_16dp"
         app:cardElevation="@dimen/dimens_5dp">
 
@@ -52,23 +52,49 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="UnusedAttribute" />
 
-            <TextView
-                android:id="@+id/balance"
-                android:layout_width="0dp"
+
+            <LinearLayout
+                android:id="@+id/balanceLay"
+                account="@{data}"
+                callbacks="@{callback}"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_regular"
-                android:maxLines="1"
-                callbacks="@{callback}"
-                account="@{data}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/aspectRatioImageView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/balanceTitle"
-                tools:ignore="UnusedAttribute" />
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/aspectRatioImageView"
+                app:layout_constraintTop_toBottomOf="@+id/balanceTitle">
+
+                <TextView
+                    android:id="@+id/balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/poppins_regular"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/aspectRatioImageView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/balanceTitle"
+                    tools:ignore="UnusedAttribute" />
+
+
+                <TextView
+                    android:id="@+id/info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/dimens_5dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center_vertical"
+                    android:text="@string/view_balance"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="@color/white"
+                    app:drawableStartCompat="@drawable/ic_baseline_remove_red_eye_24"
+                    app:drawableTint="@color/white" />
+            </LinearLayout>
 
 
             <View
@@ -78,7 +104,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/textView6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/balance" />
+                app:layout_constraintTop_toBottomOf="@+id/balanceLay" />
 
             <TextView
                 android:id="@+id/textView6"

@@ -118,6 +118,10 @@ data class AlertServices(
     @field:Expose
     var controlFormat: String,
 
+    @field:SerializedName("ModuleUrl")
+    @field:Expose
+    var moduleUrl: String?,
+
     @field:SerializedName("DueDate")
     @field:Expose
     var dueDate: String,

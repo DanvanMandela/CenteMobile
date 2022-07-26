@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.payment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +10,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -30,6 +32,7 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
@@ -146,8 +149,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
         ) (requireActivity().onBackPressed())
         else {
             try {
-
-
                 subscribe.add(
                     widgetViewModel.getActionControlCID(formControl?.controlID).subscribe({
                         if (it.isNotEmpty()) {
@@ -155,6 +156,10 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                             AppLogger.instance.appLog(
                                 "PURCHASE:MERCHANT:ID",
                                 Gson().toJson(merchantID)
+                            )
+                            AppLogger.instance.appLog(
+                                "PURCHASE:ACTIONS",
+                                Gson().toJson(it)
                             )
 
                             val action = it.first { a -> a.moduleID == formControl?.moduleID }
@@ -184,18 +189,25 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                 encrypted = encrypted
             )
         ) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                ConfirmFragment.showDialog(
-                    manager = this.childFragmentManager,
-                    json = json,
-                    encrypted = encrypted,
-                    inputList = inputList,
-                    module = modules,
-                    action = action,
-                    formControl,
-                    this,
+            if (action.confirmationModuleID != null)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    ConfirmFragment.showDialog(
+                        manager = this.childFragmentManager,
+                        json = json,
+                        encrypted = encrypted,
+                        inputList = inputList,
+                        module = modules,
+                        action = action,
+                        formControl,
+                        this,
+                    )
+                }, 200)
+            else
+                onPay(
+                    json = json, encrypted = encrypted,
+                    inputList = inputList, module = modules,
+                    action = action, formControl = formControl
                 )
-            }, 200)
         }
     }
 
@@ -671,6 +683,24 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     override fun onStop() {
         super.onStop()
         widgetViewModel.networkDataSource.disable()
+    }
+
+    override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
+        (requireActivity() as MainActivity).onImagePicker(object : AppCallbacks {
+            override fun onImage(bitmap: Bitmap?) {
+                this@PurchaseFragment.userInput(
+                    InputData(
+                        name = data?.controlText,
+                        key = data?.serviceParamID,
+                        value = convert(bitmap!!),
+                        encrypted = data?.isEncrypted!!,
+                        mandatory = data.isMandatory
+                    )
+                )
+                imageView?.setImageBitmap(bitmap)
+
+            }
+        })
     }
 
 

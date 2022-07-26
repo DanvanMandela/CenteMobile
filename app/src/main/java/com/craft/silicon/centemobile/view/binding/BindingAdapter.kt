@@ -40,6 +40,7 @@ import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
+import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
@@ -56,8 +57,10 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 
@@ -236,20 +239,47 @@ fun TextView.setAccountNumber(text: String?) {
 }
 
 @BindingAdapter("account", "callbacks")
-fun TextView.setBalance(account: Accounts?, callbacks: AppCallbacks) {
+fun LinearLayout.setBalance(account: Accounts?, callbacks: AppCallbacks) {
+    var isVisible = false
     val blurMask: MaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.NORMAL)
-    val string = SpannableString("Money")
+    val balanceText = findViewById<TextView>(R.id.balance)
+    val info = findViewById<TextView>(R.id.info)
+    val string = SpannableString("XXX,XXX,XXX")
     string.setSpan(
         MaskFilterSpan(blurMask), 0, string.length,
         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
     )
-    if (text != null) {
-        this.text = string
-        this.setOnClickListener {
-            callbacks.onBalance(this, account)
+    balanceText.text = string
+    this.setOnClickListener {
+        if (!isVisible) {
+            setInfo(info, true)
+            callbacks.onBalance(balanceText, account)
+            isVisible = true
+        } else {
+            isVisible = false
+            setInfo(info, false)
+            balanceText.text = string
         }
     }
 
+}
+
+fun setInfo(info: TextView?, b: Boolean) {
+    if (b) {
+        info?.text = info!!.context.getString(R.string.hide_balance)
+        info.setCompoundDrawablesWithIntrinsicBounds(
+            ContextCompat.getDrawable(
+                info.context, R.drawable.ic_baseline_remove_red_eye_24
+            ), null, null, null
+        )
+    } else {
+        info?.text = info!!.context.getString(R.string.view_balance)
+        info.setCompoundDrawablesWithIntrinsicBounds(
+            ContextCompat.getDrawable(
+                info.context, R.drawable.ic_baseline_remove_red_eye_24
+            ), null, null, null
+        )
+    }
 }
 
 @BindingAdapter("username")
@@ -257,7 +287,7 @@ fun TextView.setUsername(data: ActivationData?) {
     if (data != null) {
         if (data.firstName != null) {
             val name =
-                "${this.context.getString(R.string.hello_jane)} ${data.firstName} ${data.lastName}"
+                "${this.context.getString(R.string.hello_jane)} ${data.firstName}"
             this.text = name
         } else this.text = this.context.getString(R.string.hello_there)
     } else {
@@ -281,7 +311,7 @@ fun MaterialToolbar.setTitle(data: ActivationData?) {
     if (data != null) {
         if (data.firstName != null) {
             val name =
-                "${this.context.getString(R.string.hello_jane)} ${data.firstName} ${data.lastName}"
+                "${this.context.getString(R.string.hello_jane)} ${data.firstName}"
             this.title = name
         } else this.title = this.context.getString(R.string.hello_there)
     } else {
@@ -585,6 +615,58 @@ fun EpoxyRecyclerView.serviceAlerts(callbacks: AppCallbacks?, data: AppData?) {
     controller?.setData(data)
     controller?.let { this.setController(it) }
 }
+
+@BindingAdapter("callback", "data")
+fun ImageButton.imageSelect(callbacks: AppCallbacks?, data: FormControl?) {
+    setDefaultValue(data, callbacks)
+    this.setOnClickListener {
+        callbacks?.onImageSelect(this, data)
+    }
+}
+
+
+@BindingAdapter("period")
+fun CircularProgressIndicator.setPeriod(data: AlertServices?) {
+    val editTime = data!!.dueDate.split("T")
+    val date = LocalDate.parse(editTime[0])
+    val maxDay = date.lengthOfMonth()
+    this.max = maxDay
+    val progress = data.days.toInt()
+    this.progress = progress
+
+    setIndicatorColor(this, maxDay)
+}
+
+fun setIndicatorColor(indicator: CircularProgressIndicator, maxDay: Int) {
+    val half = maxDay.div(2)
+    val third = maxDay.div(3)
+    val forth = maxDay.div(4)
+    val current = indicator.progress
+
+    if (current >= half) {
+        indicator.setIndicatorColor(
+            ContextCompat.getColor(
+                indicator.context,
+                R.color.green_indicator
+            )
+        )
+    } else if (current in third until half) {
+        indicator.setIndicatorColor(
+            ContextCompat.getColor(
+                indicator.context,
+                R.color.yellow_indicator
+            )
+        )
+    } else if (current <= forth) {
+        indicator.setIndicatorColor(
+            ContextCompat.getColor(
+                indicator.context,
+                R.color.red_app
+            )
+        )
+    }
+}
+
 
 
 

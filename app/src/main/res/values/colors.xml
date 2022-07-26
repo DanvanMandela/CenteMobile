@@ -18,4 +18,6 @@
 
     <color name="dar_color_one">#222831</color>
     <color name="dar_color_two">#393E46</color>
+    <color name="green_indicator">#32CD32</color>
+    <color name="yellow_indicator">#FFC300</color>
 </resources>

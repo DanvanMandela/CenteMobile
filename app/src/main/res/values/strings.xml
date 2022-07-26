@@ -272,5 +272,9 @@
     <string name="resend_code">Resend code in</string>
     <string name="registered_success">Registered Successfully</string>
     <string name="done">Done</string>
-    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in placerat diam. Fusce luctus, tellus id eleifend sodales, risus lacus vulputate nunc, vitae faucibus metus metus quis lectus. Aenean vel ligula id sem porttitor interdum. Mauris id neque id risus vulputate tempus volutpat sit amet tortor. Suspendisse potenti. Nunc sapien ipsum, egestas in egestas eget, pharetra nec urna. Donec ut quam in leo porttitor varius.</string>
+    <string name="lorem">Lorem ipsum dolor sit amet,consectetur adipiscing elit. Sed in placerat diam. Fusce luctus, tellus id eleifend sodales, risus lacus vulputate nunc, vitae faucibus metus metus quis lectus. Aenean vel ligula id sem porttitor interdum. Mauris id neque id risus vulputate tempus volutpat sit amet tortor. Suspendisse potenti. Nunc sapien ipsum, egestas in egestas eget, pharetra nec urna. Donec ut quam in leo porttitor varius.</string>
+    <string name="days_remaining">Days to go</string>
+    <string name="view_balance">Show Balance</string>
+    <string name="unable_to_get_balance">Unable to get balance at the moment</string>
+    <string name="hide_balance">Hide Balance</string>
 </resources>
