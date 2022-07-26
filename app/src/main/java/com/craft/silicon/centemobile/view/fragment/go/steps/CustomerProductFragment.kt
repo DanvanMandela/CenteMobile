@@ -11,31 +11,39 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
+import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.databinding.BlockCustomerTypeLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockOnGoAccountItemBinding
 import com.craft.silicon.centemobile.databinding.FragmentCustomerProductBinding
+import com.craft.silicon.centemobile.util.OnAlertDialog
+import com.craft.silicon.centemobile.util.ShowAlertDialog
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.ep.adapter.BranchAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
-import com.craft.silicon.centemobile.view.fragment.go.MovePager
+import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import kotlin.math.abs
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,26 +57,35 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog,
+    PagerData {
+
 
     private lateinit var binding: FragmentCustomerProductBinding
     private val baseViewModel: BaseViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
-    private val subscribe = CompositeDisposable()
 
-    private val customer = MutableLiveData<String>()
-    private val product = MutableLiveData<String>()
-    private val branchData = MutableLiveData<String>()
+
+    private val hashMap = HashMap<String, TwoDMap>()
+    private lateinit var stateData: CustomerProduct
+    private lateinit var branchAdapter: BranchAdapterItem
+    private lateinit var currencyAdapter: NameBaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        activity?.onBackPressedDispatcher?.addCallback(this,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    ShowAlertDialog().showDialog(
+//                        context!!,
+//                        getString(R.string.exit_registration),
+//                        getString(R.string.proceed_registration),
+//                        this@CustomerProductFragment
+//                    )
+//                }
+//
+//            }
+//        )
     }
 
     override fun onCreateView(
@@ -79,11 +96,80 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
         binding = FragmentCustomerProductBinding.inflate(inflater, container, false)
         setBinding()
         getData()
+        setTitle()
+        setToolbar()
         setOnClick()
         setController()
-        setOnClick()
-        getBranchData()
         return binding.root.rootView
+    }
+
+    private fun setTitle() {
+        var state = ToolbarEnum.EXPANDED
+
+        binding.collapsedLay.apply {
+            setCollapsedTitleTypeface(
+                ResourcesCompat.getFont(
+                    requireContext(),
+                    R.font.poppins_medium
+                )
+            )
+            setExpandedTitleTypeface(
+                ResourcesCompat.getFont(
+                    requireContext(),
+                    R.font.poppins_bold
+                )
+            )
+        }
+
+        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == 0) {
+                if (state !== ToolbarEnum.EXPANDED) {
+                    state =
+                        ToolbarEnum.EXPANDED
+                    binding.collapsedLay.title = getString(R.string.customer_product)
+
+                }
+            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                if (state !== ToolbarEnum.COLLAPSED) {
+                    val title = getString(R.string.customer_product)
+                    title.replace("\n", " ")
+                    state =
+                        ToolbarEnum.COLLAPSED
+                    binding.collapsedLay.title = title
+                }
+            }
+        }
+    }
+
+    private fun setStep() {
+        binding.progressIndicator.setProgress(10, true)
+    }
+
+    override fun onPositive() {
+        saveState()
+        pagerData?.currentPosition()
+        (requireActivity() as MainActivity).provideNavigationGraph()
+            .navigate(widgetViewModel.navigation().navigateLanding())
+    }
+
+    override fun onNegative() {
+        pagerData?.clearState()
+        (requireActivity() as MainActivity).provideNavigationGraph()
+            .navigate(widgetViewModel.navigation().navigateLanding())
+    }
+
+    override fun saveState() {
+        statePersist()
+        widgetViewModel.storageDataSource.setCustomerProduct(stateData)
+    }
+
+    override fun statePersist() {
+        stateData = CustomerProduct(
+            type = hashMap["Type"],
+            product = hashMap["Product"],
+            currency = hashMap["Currency"],
+            branch = hashMap["Branch"]
+        )
     }
 
     private fun getData() {
@@ -94,7 +180,51 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
             binding.mainLay.visibility = VISIBLE
             setCustomerType()
             setProductType()
+            getBranchData()
+            setStep()
+            setState()
         }, animationDuration.toLong())
+    }
+
+    override fun setState() {
+        val sData = widgetViewModel.storageDataSource.customerProduct.value
+        if (sData != null) {
+            if (sData.type != null) stateCustomer(sData.type)
+            if (sData.product != null) stateProduct(sData.product, sData)
+            if (sData.branch != null) stateBranch(sData.branch)
+
+        }
+    }
+
+    private fun stateCurrency(currency: TwoDMap) {
+        val value = currencyAdapter.getItem(currency.key!!)
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.currencyLay.autoEdit.setText(value, false)
+        }, 200)
+        hashMap["Currency"] = currency
+    }
+
+    private fun stateBranch(branch: TwoDMap) {
+        val value = branchAdapter.getItem(branch.key!!)
+        binding.branchLay.autoEdit.setText(value?.description, false)
+        hashMap["Branch"] = branch
+    }
+
+    private fun stateProduct(product: TwoDMap, sData: CustomerProduct) {
+        try {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.productLay.parent.getTabAt(product.key!!)?.select()
+            }, 200)
+            hashMap["Product"] = product
+            stateCurrency(sData.currency!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun stateCustomer(type: TwoDMap) {
+        binding.customerLay.parent.getTabAt(type.key!!)?.select()
+        hashMap["Type"] = type
     }
 
     private fun stopShimmer() {
@@ -106,12 +236,14 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
     private fun getBranchData() {
         val branch = widgetViewModel.storageDataSource.branchData.value
         if (branch != null) {
-            val adapter = BranchAdapterItem(requireContext(), 0, branch.toMutableList())
-            binding.branchLay.autoEdit.setAdapter(adapter)
-
+            branchAdapter = BranchAdapterItem(requireContext(), 0, branch.toMutableList())
+            binding.branchLay.autoEdit.setAdapter(branchAdapter)
             binding.branchLay.autoEdit.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, p2, _ ->
-                    branchData.value = adapter.getItem(p2)?.id
+                    hashMap["Branch"] = TwoDMap(
+                        key = p2,
+                        value = branchAdapter.getItem(p2)?.id
+                    )
                 }
         }
     }
@@ -167,9 +299,13 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
 
         tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.currencyLay.autoEdit.text.clear()
                 val c = currency?.filter { a -> a?.id == p.id }?.map { it?.relationID }
                 if (tab?.tag == i) {
-                    product.value = p.description
+                    hashMap["Product"] = TwoDMap(
+                        key = i,
+                        value = p.id
+                    )
                     setCurrencyDropDown(c)
                     custom.parent.setCardBackgroundColor(
                         ContextCompat.getColor(
@@ -224,14 +360,18 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
     }
 
     private fun setCurrencyDropDown(currency: List<String?>?) {
-        binding.currencyLay.autoEdit.text.clear()
-        val adapter = NameBaseAdapter(requireContext(), 0, currency!!.toMutableList())
-        binding.currencyLay.autoEdit.setAdapter(adapter)
+        currencyAdapter = NameBaseAdapter(requireContext(), 0, currency!!.toMutableList())
+        binding.currencyLay.autoEdit.setAdapter(currencyAdapter)
+        binding.currencyLay.autoEdit.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, p2, _ ->
+                hashMap["Currency"] = TwoDMap(
+                    key = p2,
+                    value = currencyAdapter.getItem(p2)
+                )
+            }
     }
 
     private fun setCustomerType() {
-
-
         val tab = binding.customerLay.parent
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -251,11 +391,8 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
             item.tag = index
             custom.parent.layoutParams = param
             item.customView = custom.root
-
             onItemClick(custom, tab, index, type)
             tab.addTab(item)
-
-
         }
     }
 
@@ -270,7 +407,10 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
                 if (tab?.tag == index) {
-                    customer.value = getString(type.type)
+                    hashMap["Type"] = TwoDMap(
+                        key = index,
+                        value = getString(type.type)
+                    )
                     custom.parent.setCardBackgroundColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -338,10 +478,18 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
     }
 
     override fun setOnClick() {
-        binding.toolbar.setNavigationOnClickListener {
-            (requireActivity() as MainActivity).provideNavigationGraph().navigateUp()
-        }
         binding.materialButton.setOnClickListener(this)
+    }
+
+    private fun setToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            ShowAlertDialog().showDialog(
+                requireContext(),
+                getString(R.string.exit_registration),
+                getString(R.string.proceed_registration),
+                this
+            )
+        }
     }
 
     override fun setController() {
@@ -359,7 +507,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
     }
 
     companion object {
-        private var movePager: MovePager? = null
+        private var pagerData: PagerData? = null
 
         /**
          * Use this factory method to create a new instance of
@@ -380,23 +528,16 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener {
             }
 
         @JvmStatic
-        fun onStep(movePager: MovePager) = CustomerProductFragment().apply {
-            this@Companion.movePager = movePager
+        fun onStep(pagerData: PagerData) = CustomerProductFragment().apply {
+            this@Companion.pagerData = pagerData
         }
     }
 
     override fun onClick(p: View?) {
         if (p == binding.materialButton) {
             if (validateFields()) {
-                val data = CustomerProduct(
-                    type = customer.value!!,
-                    product = product.value!!,
-                    currency = binding.currencyLay.autoEdit.editableText.toString(),
-                    branch = branchData.value!!
-                )
-                movePager?.customerProduct(data = data)
-                movePager?.onNext(2)
-
+                saveState()
+                pagerData?.onNext(2)
             }
         }
     }
@@ -420,14 +561,50 @@ val customerType = mutableListOf(
 @Parcelize
 data class CustomerProduct(
     @field:SerializedName("type")
-    val type: String,
-    @field:SerializedName("type")
-    val product: String,
+    val type: TwoDMap?,
+    @field:SerializedName("product")
+    val product: TwoDMap?,
     @field:SerializedName("currency")
     @field:Expose
-    val currency: String,
+    val currency: TwoDMap?,
     @field:SerializedName("branch")
     @field:Expose
-    val branch: String
+    val branch: TwoDMap?
 ) : Parcelable
+
+@Parcelize
+data class TwoDMap(
+    @field:SerializedName("key")
+    @field:Expose
+    var key: Int?,
+    @field:SerializedName("value")
+    @field:Expose
+    var value: String?
+) : Parcelable {
+    @IgnoredOnParcel
+    @field:SerializedName("extra")
+    @field:Expose
+    var extra: String? = null
+}
+
+class CustomerProductConverter {
+    @TypeConverter
+    fun from(data: CustomerProduct?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, CustomerProduct::class.java)
+    }
+
+    @TypeConverter
+    fun to(data: String?): CustomerProduct? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, CustomerProduct::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().create()
+    }
+}
 

@@ -3,21 +3,44 @@ package com.craft.silicon.centemobile.view.fragment.go
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.room.TypeConverter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
+import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentOnTheGoBinding
+import com.craft.silicon.centemobile.util.*
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
+import com.craft.silicon.centemobile.view.dialog.DialogData
+import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
+import com.craft.silicon.centemobile.view.model.BaseViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
+import com.craft.silicon.centemobile.view.model.WorkStatus
+import com.craft.silicon.centemobile.view.model.WorkerViewModel
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.parcelize.Parcelize
+import org.json.JSONObject
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,12 +54,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
+class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentOnTheGoBinding
     private var adapter: ONTHGFragmentAdapter? = null
+    private val onTheGoData = MutableLiveData<OnTheGoData>()
+    private val widgetViewModel: WidgetViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +72,7 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,7 +80,49 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
         // Inflate the layout for this fragment
         binding = FragmentOnTheGoBinding.inflate(inflater, container, false)
         setBinding()
+        setSateData()
         return binding.root.rootView
+    }
+
+
+    private fun checkCurrent() {
+        val currentPosition = widgetViewModel.storageDataSource.currentPosition.value
+
+        if (currentPosition != null) {
+            if (currentPosition != 0)
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.saved_state),
+                    getString(R.string.proceed_registration_left),
+                    this
+                )
+        }
+
+    }
+
+    override fun onPositive() {
+        val currentPosition = widgetViewModel.storageDataSource.currentPosition.asLiveData()
+        currentPosition.observe(viewLifecycleOwner) {
+            AppLogger.instance.appLog("Current:step", it.toString())
+            binding.pager.setCurrentItem(it!!, false)
+            currentPosition.removeObservers(viewLifecycleOwner)
+        }
+
+    }
+
+    override fun onNegative() {
+        widgetViewModel.storageDataSource.setCurrentPosition(0)
+        widgetViewModel.storageDataSource.deleteRecommendState()
+        widgetViewModel.storageDataSource.deleteParentDetails()
+        widgetViewModel.storageDataSource.deleteCustomerProduct()
+        widgetViewModel.storageDataSource.deleteIDDetails()
+        widgetViewModel.storageDataSource.deleteAddress()
+    }
+
+
+    private fun setSateData() {
+        val state = widgetViewModel.storageDataSource.onTheGoData.value
+        if (state != null) onTheGoData.value = state
     }
 
     override fun setBinding() {
@@ -62,6 +131,7 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
         Handler(Looper.getMainLooper()).postDelayed({
             stopShimmer()
             setViewPager()
+            checkCurrent()
         }, animationDuration.toLong())
     }
 
@@ -75,7 +145,10 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
         binding.shimmerContainer.startShimmer()
     }
 
+
     companion object {
+        var ocrData = MutableLiveData<OCRData>()
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -97,15 +170,19 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
 
     private fun setViewPager() {
         adapter =
-            ONTHGFragmentAdapter(requireActivity().supportFragmentManager, lifecycle, this)
+            ONTHGFragmentAdapter(
+                requireActivity().supportFragmentManager,
+                lifecycle,
+                this
+            )
         binding.pager.adapter = adapter
         binding.pager.isUserInputEnabled = false
-        binding.pager.setPageTransformer { page, position ->
-
-//            val slide: Animation =
-//                AnimationUtils.loadAnimation(requireContext(), R.anim.anim_slide_out_right)
-//            page.animation = slide
-        }
+//        binding.pager.setPageTransformer { page, position ->
+//
+////            val slide: Animation =
+////                AnimationUtils.loadAnimation(requireContext(), R.anim.anim_slide_out_right)
+////            page.animation = slide
+//        }
     }
 
 
@@ -117,13 +194,74 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
         moveViewPager(pos)
     }
 
-    override fun customerProduct(data: CustomerProduct) {
-
+    override fun currentPosition() {
+        widgetViewModel.storageDataSource
+            .setCurrentPosition(binding.pager.currentItem)
     }
+
+    override fun clearState() {
+        val state = widgetViewModel.storageDataSource
+        state.setCurrentPosition(0)
+        state.deleteCustomerProduct()
+        state.deleteIDDetails()
+        state.deleteParentDetails()
+        state.deleteRecommendState()
+        state.deleteAddress()
+        state.deleteOtherServices()
+        state.deleteNOK()
+        state.deleteIncomeSource()
+    }
+
+    override fun customerProduct(data: CustomerProduct) {
+        val onData = onTheGoData.value
+        onData?.customer = data
+        onTheGoData.value = onData
+    }
+
+
+    override fun incomeData(data: IncomeData) {
+        val onData = onTheGoData.value
+        onData?.incomeData = data
+        onTheGoData.value = onData
+    }
+
+    override fun parentDetails(data: ParentDetails) {
+        val onData = onTheGoData.value
+        onData?.parentDetails = data
+        onTheGoData.value = onData
+    }
+
+    override fun addressData(data: AddressData) {
+        val onData = onTheGoData.value
+        onData?.addressData = data
+        onTheGoData.value = onData
+    }
+
+    override fun kinData(data: NextKinData) {
+        val onData = onTheGoData.value
+        onData?.nextKinData = data
+        onTheGoData.value = onData
+    }
+
+    override fun finish() {
+        clearState()
+        Handler(Looper.getMainLooper()).postDelayed({
+            (requireActivity() as MainActivity)
+                .provideNavigationGraph().navigateUp()
+        }, 200)
+    }
+
 
     override fun idDetails(data: IDDetails) {
-
+        ocrData.value = data.data
     }
+
+    override fun ocrData(data: OCRData) {
+        val onData = onTheGoData.value
+        onData?.oCRData = data
+        onTheGoData.value = onData
+    }
+
 
     private fun moveViewPager(pos: Int) {
         binding.pager.postDelayed(
@@ -138,7 +276,7 @@ class OnTheGoFragment : Fragment(), AppCallbacks, MovePager {
 class ONTHGFragmentAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val move: MovePager
+    private val move: PagerData
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
@@ -148,23 +286,43 @@ class ONTHGFragmentAdapter(
     }
 
     override fun createFragment(position: Int): Fragment {
-        when (position) {
-            0 -> return OnTheLandingFragment.onStep(move)
-            1 -> return CustomerProductFragment.onStep(move)
-            2 -> return TermsAndConditionFragment.newInstance(move)
-            3 -> return IDFragment.onStep(move)
-        }
-        return OnTheLandingFragment()
+        return setFragment(position)
     }
 
+    private fun setFragment(position: Int): Fragment {
+        return when (position) {
+            0 -> OnTheLandingFragment.onStep(move) // TODO OnTheLandingFragment
+            1 -> CustomerProductFragment.onStep(move)
+            2 -> TermsAndConditionFragment.newInstance(move)
+            3 -> IDFragment.onStep(move)
+            4 -> IDDetailsFragment.onStep(move)
+            5 -> ParentDetailsFragment.onStep(move)
+            6 -> IncomeSourceFragment.onStep(move)
+            7 -> NextKinFragment.onStep(move)
+            8 -> AddressFragment.onStep(move)
+            9 -> OtherServiceFragment.onStep(move)
+            10 -> HearAboutFragment.onStep(move)
+            11 -> GoOTPFragment.onStep(move)
+            else -> {
+                throw Exception("Not implemented")
+            }
+        }
+    }
+
+
     companion object {
-        private const val TABS = 4
+        private const val TABS = 12
     }
 }
 
-interface MovePager {
-    fun onNext(pos: Int)
-    fun onBack(pos: Int)
+interface PagerData {
+    fun onNext(pos: Int) {
+        throw Exception("Not implemented")
+    }
+
+    fun onBack(pos: Int) {
+        throw Exception("Not implemented")
+    }
 
     fun customerProduct(data: CustomerProduct) {
         throw Exception("Not implemented")
@@ -172,6 +330,109 @@ interface MovePager {
 
     fun idDetails(data: IDDetails) {
         throw Exception("Not implemented")
+    }
+
+    fun parentDetails(data: ParentDetails) {
+        throw Exception("Not implemented")
+    }
+
+    fun incomeData(data: IncomeData) {
+        throw Exception("Not implemented")
+    }
+
+    fun kinData(data: NextKinData) {
+        throw Exception("Not implemented")
+    }
+
+    fun addressData(data: AddressData) {
+        throw Exception("Not implemented")
+    }
+
+    fun onService(data: OtherService, boolean: Boolean) {
+        throw Exception("Not implemented")
+    }
+
+
+    fun currentPosition() {
+        throw Exception("Not implemented")
+    }
+
+    fun clearState() {
+        throw Exception("Not implemented")
+    }
+
+    fun ocrData(data: OCRData) {
+        throw Exception("Not implemented")
+    }
+
+    fun statePersist() {
+        throw Exception("Not implemented")
+    }
+
+    fun setState() {
+        throw Exception("Not implemented")
+    }
+
+    fun saveState() {
+        throw Exception("Not implemented")
+    }
+
+    fun completeStep() {
+        throw Exception("Not implemented")
+    }
+
+    fun finish() {
+        throw Exception("Not implemented")
+    }
+}
+
+@Parcelize
+data class OnTheGoData(
+    @field:SerializedName("customerProduct")
+    @field:Expose
+    var customer: CustomerProduct?,
+    @field:SerializedName("iDDetails")
+    @field:Expose
+    var iDDetails: IDDetails?,
+    @field:SerializedName("oCRData")
+    @field:Expose
+    var oCRData: OCRData?,
+    @field:SerializedName("parentDetails")
+    @field:Expose
+    var parentDetails: ParentDetails?,
+    @field:SerializedName("nextKinData")
+    @field:Expose
+    var nextKinData: NextKinData?,
+    @field:SerializedName("incomeData")
+    @field:Expose
+    var incomeData: IncomeData?,
+    @field:SerializedName("addressData")
+    @field:Expose
+    var addressData: AddressData?,
+    @field:SerializedName("otherServices")
+    @field:Expose
+    var otherService: MutableList<String>?,
+
+    ) : Parcelable
+
+class OnTheGoConverter {
+    @TypeConverter
+    fun from(data: OnTheGoData?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, OnTheGoData::class.java)
+    }
+
+    @TypeConverter
+    fun to(data: String?): OnTheGoData? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, OnTheGoData::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().create()
     }
 }
 

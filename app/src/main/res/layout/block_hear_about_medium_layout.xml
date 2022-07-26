@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:paddingHorizontal="@dimen/dimens_24dp"
+            android:paddingTop="@dimen/dimens_16dp"
+            android:text="@string/medium"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <RadioGroup
+            android:id="@+id/parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/tv_radio"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioSocialMedia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/social_media"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioBank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/bank_staff"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/customer_current"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioAgent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/agent"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/child"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_16dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

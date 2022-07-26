@@ -9,6 +9,7 @@ import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.repository.account.AccountRepository;
 import com.craft.silicon.centemobile.data.repository.auth.AuthRepository;
 import com.craft.silicon.centemobile.data.repository.calls.AppDataSource;
@@ -71,7 +72,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
-            String customerID = dataSource.getActivationData().getValue().getId();
+            ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
 
@@ -79,7 +80,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     context,
                     uniqueID,
                     action.getActionType(),
-                    customerID,
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
@@ -177,18 +178,18 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             String uniqueID = Constants.getUniqueID();
-
+            ActivationData customerID = dataSource.getActivationData().getValue();
             JSONObject jsonObject = new JSONObject();
 
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
                     ActionTypeEnum.DB_CALL.getType(),
-                    "",
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
-            data.put("SERVICENAME", "SELFREGISTRATION");
+
             data.put("HEADER", "OTPVERIFY");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();
@@ -240,13 +241,47 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     }
 
     @Override
+    public Single<DynamicResponse> registrationOnGO(JSONObject data, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.VALIDATE.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+            data.put("MerchantID", "SELFRAO");
+            data.put("BANKACCOUNTID", Constants.Data.BANK_ID);
+            jsonObject.put("Validate", data);
+            String validateRequest = jsonObject.toString();
+            AppLogger.Companion.getInstance().appLog("RAO:GO:", validateRequest);
+
+            return validateCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(validateRequest, device, iv)
+            ));
+
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public Single<DynamicResponse> pinForgotATM(JSONObject data, JSONObject encrypted,
                                                 Context context) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             String mobile = dataSource.getActivationData().getValue().getMobile();
-            String customerID = dataSource.getActivationData().getValue().getId();
+            ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
 
             JSONObject jsonObject = new JSONObject();
@@ -255,7 +290,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     context,
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
-                    customerID,
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
@@ -319,19 +354,17 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             String uniqueID = Constants.getUniqueID();
-
+            ActivationData customerID = dataSource.getActivationData().getValue();
             JSONObject jsonObject = new JSONObject();
 
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
                     ActionTypeEnum.DB_CALL.getType(),
-                    "",
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
-
-            data.put("SERVICENAME", "SELFREGISTRATION");
             data.put("HEADER", "CREATEOTP");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();
@@ -353,7 +386,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
-            String customerID = dataSource.getActivationData().getValue().getId();
+            ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
 
@@ -361,7 +394,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     context,
                     uniqueID,
                     ActionTypeEnum.VALIDATE.getType(),
-                    customerID,
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
@@ -392,7 +425,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             String uniqueID = Constants.getUniqueID();
-
             JSONObject jsonObject = new JSONObject();
 
             Constants.commonJSON(jsonObject,
@@ -409,6 +441,39 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             String newRequest = jsonObject.toString();
 
             new AppLogger().appLog("SELF:REG:CHECK:CUSTOMER", newRequest);
+
+            return dbCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> customerNumberExist(JSONObject data, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.DB_CALL.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+
+            data.put("HEADER", "CHECKCUSTOMEREXISTS");
+            jsonObject.put("DynamicForm", data);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("GO:REG:CHECK:CUSTOMER", newRequest);
 
             return dbCall(new PayloadData(
                     dataSource.getUniqueID().getValue(),

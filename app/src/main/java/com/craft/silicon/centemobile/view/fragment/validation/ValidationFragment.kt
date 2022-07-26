@@ -357,7 +357,6 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm {
                                     resData?.formID
                                 )
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
-                                LoadingFragment.show(requireActivity().supportFragmentManager)
                                 workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
                                     override fun workDone(b: Boolean) {
                                         setLoading(false)

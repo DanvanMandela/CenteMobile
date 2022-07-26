@@ -328,6 +328,17 @@ public class BaseClass {
         return "";
     }
 
+    public static boolean verifyEmail(String email) {
+        email = email.trim();
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9\\+_-]+(\\.[A-Za-z0-9\\+_-]+)*@"
+                + "[^-][A-Za-z0-9\\+-]+(\\.[A-Za-z0-9\\+-]+)*(\\.[A-Za-z]{2,})$";
+
+        if (email.equals(""))
+            return false;
+
+        return email.matches(regexPattern);
+    }
+
 
 
 

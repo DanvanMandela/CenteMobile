@@ -88,9 +88,12 @@ data class DynamicAPIResponse(
     var rData: MutableList<FormField>?,
     @field:SerializedName("AccountStatement")
     @field:Expose
-    var accountStatement: MutableList<HashMap<String, String>>?
+    var accountStatement: MutableList<HashMap<String, String>>?,
+    @field:SerializedName("NotificationData")
+    @field:Expose
+    var notificationdata: MutableList<Notifications>?,
 
-) : Parcelable
+    ) : Parcelable
 
 @Parcelize
 data class Notifications(
@@ -106,7 +109,11 @@ data class Notifications(
     @field:SerializedName("NotifyText")
     @field:Expose
     var notifyText: String?,
-) : Parcelable
+    @field:SerializedName("NotifySMSText")
+    @field:Expose
+    var notifySMSText: String?,
+
+    ) : Parcelable
 
 
 @Parcelize

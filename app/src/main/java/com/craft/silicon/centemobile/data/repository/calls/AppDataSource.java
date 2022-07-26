@@ -24,6 +24,16 @@ public interface AppDataSource {
         return null;
     }
 
+    default Single<DynamicResponse> customerNumberExist(JSONObject jsonObject,
+                                                        Context context) {
+        return null;
+    }
+
+    default Single<DynamicResponse> registrationOnGO(JSONObject jsonObject,
+                                                     Context context) {
+        return null;
+    }
+
     default Single<DynamicResponse> ocr(JSONObject jsonObject,
                                         Context context) {
         return null;

@@ -12,6 +12,9 @@ import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.view.fragment.go.OnTheGoConverter
+import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
+import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -317,6 +320,351 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _recommend =
+        MutableStateFlow(
+            HearAboutStateConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_RECOMMEND_STATE,
+                        ""
+                    )
+                )
+            )
+        )
+    override val recommendState: StateFlow<HearAboutState?>
+        get() = _recommend
+
+    override fun setRecommendState(value: HearAboutState?) {
+        _recommend.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_RECOMMEND_STATE,
+                BaseClass.encrypt(HearAboutStateConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteRecommendState() {
+        _recommend.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_RECOMMEND_STATE)
+        }
+    }
+
+
+    private val _onTheGoData =
+        MutableStateFlow(
+            OnTheGoConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_ON_THE_GO,
+                        ""
+                    )
+                )
+            )
+        )
+
+    override val onTheGoData: StateFlow<OnTheGoData?>
+        get() = _onTheGoData
+
+    override fun setOnTheGoData(value: OnTheGoData?) {
+        _onTheGoData.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_ON_THE_GO,
+                BaseClass.encrypt(OnTheGoConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteOnTheGoData() {
+        _onTheGoData.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_ON_THE_GO)
+        }
+    }
+
+    private val _currentPosition =
+        MutableStateFlow(
+            sharedPreferences.getInt(
+                TAG_ON_THE_GO_POSITION, 0
+            )
+        )
+
+    override val currentPosition: StateFlow<Int?>
+        get() = _currentPosition
+
+    override fun deletePosition() {
+        _currentPosition.value = 0
+        with(sharedPreferences.edit()) {
+            remove(TAG_ON_THE_GO_POSITION)
+        }
+    }
+
+    override fun setCurrentPosition(value: Int?) {
+        _currentPosition.value = value!!
+        with(sharedPreferences.edit()) {
+            putInt(TAG_ON_THE_GO_POSITION, value)
+            apply()
+        }
+    }
+
+    private val _addressState =
+        MutableStateFlow(
+            AddressStateTypeConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_ADDRESS_STATE,
+                        ""
+                    )
+                )
+            )
+        )
+
+    override val addressState: StateFlow<AddressState?>
+        get() = _addressState
+
+    override fun setAddressState(value: AddressState?) {
+        _addressState.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_ADDRESS_STATE,
+                BaseClass.encrypt(AddressStateTypeConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteAddress() {
+        _addressState.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_ADDRESS_STATE)
+        }
+    }
+
+    private val _idDetails =
+        MutableStateFlow(
+            IDDetailsConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_ID_DETAILS,
+                        ""
+                    )
+                )
+            )
+        )
+    override val onIDDetails: StateFlow<IDDetails?>
+        get() = _idDetails
+
+    override fun setIDDetails(value: IDDetails?) {
+        _idDetails.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_ID_DETAILS,
+                BaseClass.encrypt(IDDetailsConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteIDDetails() {
+        _idDetails.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_ID_DETAILS)
+        }
+    }
+
+    private val _parentDetails =
+        MutableStateFlow(
+            ParentDetailsConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_PARENT_DETAILS,
+                        ""
+                    )
+                )
+            )
+        )
+    override val parentDetails: StateFlow<ParentDetails?>
+        get() = _parentDetails
+
+    override fun setParentDetails(value: ParentDetails?) {
+        _parentDetails.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_PARENT_DETAILS,
+                BaseClass.encrypt(ParentDetailsConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteParentDetails() {
+        _parentDetails.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_PARENT_DETAILS)
+        }
+    }
+
+    private val _customerProduct =
+        MutableStateFlow(
+            CustomerProductConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_PRODUCT,
+                        ""
+                    )
+                )
+            )
+        )
+
+    override fun setCustomerProduct(value: CustomerProduct?) {
+        _customerProduct.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_PRODUCT,
+                BaseClass.encrypt(CustomerProductConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override val customerProduct: StateFlow<CustomerProduct?>
+        get() = _customerProduct
+
+    override fun deleteCustomerProduct() {
+        _customerProduct.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_PRODUCT)
+        }
+    }
+
+    private val _incomeSource =
+        MutableStateFlow(
+            IncomeDataConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_INCOME_SOURCE,
+                        ""
+                    )
+                )
+            )
+        )
+    override val incomeSource: StateFlow<IncomeData?>
+        get() = _incomeSource
+
+    override fun setIncomeSource(value: IncomeData?) {
+        _incomeSource.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_INCOME_SOURCE,
+                BaseClass.encrypt(IncomeDataConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteIncomeSource() {
+        _incomeSource.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_INCOME_SOURCE)
+        }
+    }
+
+    private val _nextKinData =
+        MutableStateFlow(
+            NextKinDataConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_NOK,
+                        ""
+                    )
+                )
+            )
+        )
+    override val nextOfKin: StateFlow<NextKinData?>
+        get() = _nextKinData
+
+    override fun setNKData(value: NextKinData?) {
+        _nextKinData.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_NOK,
+                BaseClass.encrypt(NextKinDataConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteNOK() {
+        _nextKinData.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_NOK)
+        }
+    }
+
+    private val _otherServices =
+        MutableStateFlow(
+            OtherServiceConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_OTHER_SERVICE,
+                        ""
+                    )
+                )
+            )
+        )
+
+    override val otherServices: StateFlow<OtherServiceData?>
+        get() = _otherServices
+
+    override fun setOtherServices(value: OtherServiceData?) {
+        _otherServices.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_OTHER_SERVICE,
+                BaseClass.encrypt(OtherServiceConverter().from(value))
+            )
+            apply()
+        }
+    }
+
+    override fun deleteOtherServices() {
+        _otherServices.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_OTHER_SERVICE)
+        }
+    }
+
+    private val _otpState =
+        MutableStateFlow(
+            sharedPreferences.getLong(
+                TAG_OTP_STATE,
+                0L
+            )
+        )
+    override val otpState: StateFlow<Long?>
+        get() = _otpState
+
+    override fun setOTPState(value: Long?) {
+        _otpState.value = value!!
+        with(sharedPreferences.edit()) {
+            putLong(
+                TAG_OTP_STATE,
+                value
+            )
+            apply()
+        }
+    }
+
+    override fun deleteOTPState() {
+        _otpState.value = 0L
+        with(sharedPreferences.edit()) {
+            remove(TAG_OTP_STATE)
+        }
+    }
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -336,5 +684,24 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_UNIQUE_ID = "uniqueID"
         private const val TAG_ACCOUNT_PRODUCT = "accountProduct"
         private const val TAG_BRANCH = "branch"
+
+        private const val TAG_RECOMMEND_STATE = "recommend"
+        private const val TAG_ON_THE_GO = "onTheGo"
+        private const val TAG_ON_THE_GO_POSITION = "onTheGoPos"
+        private const val TAG_ADDRESS_STATE = "addressState"
+
+        private const val TAG_ID_DETAILS = "idDetails"
+
+        private const val TAG_PARENT_DETAILS = "parentDetails"
+
+        private const val TAG_PRODUCT = "customerProduct"
+
+        private const val TAG_INCOME_SOURCE = "incomeData"
+
+        private const val TAG_NOK = "nextKinData"
+
+        private const val TAG_OTHER_SERVICE = "otherService"
+
+        private const val TAG_OTP_STATE = "otpState"
     }
 }

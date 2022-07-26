@@ -16,7 +16,7 @@ import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.databinding.FragmentTermsAndConditionBinding;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
-import com.craft.silicon.centemobile.view.fragment.go.MovePager;
+import com.craft.silicon.centemobile.view.fragment.go.PagerData;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  */
 @AndroidEntryPoint
 public class TermsAndConditionFragment extends Fragment implements AppCallbacks, View.OnClickListener {
-    public MovePager movePager;
+    public PagerData pagerData;
 
     private FragmentTermsAndConditionBinding binding;
 
@@ -43,9 +43,9 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
      * @return A new instance of fragment TermsAndConditionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TermsAndConditionFragment newInstance(MovePager movePager) {
+    public static TermsAndConditionFragment newInstance(PagerData pagerData) {
         TermsAndConditionFragment fragment = new TermsAndConditionFragment();
-        fragment.movePager = movePager;
+        fragment.pagerData = pagerData;
         return fragment;
     }
 
@@ -103,9 +103,9 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
     @Override
     public void onClick(View view) {
         if (view.equals(binding.buttonNext)) {
-            if (validateFields()) movePager.onNext(3);
+            if (validateFields()) pagerData.onNext(3);
         } else if (view.equals(binding.buttonBack)) {
-            movePager.onBack(1);
+            pagerData.onBack(1);
         }
     }
 }

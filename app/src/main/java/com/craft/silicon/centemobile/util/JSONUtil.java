@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import com.craft.silicon.centemobile.data.model.DataResponse;
+import com.craft.silicon.centemobile.data.model.address.ExpressAddressResponse;
+import com.craft.silicon.centemobile.data.model.converter.AddressResponseTypeConverter;
 import com.craft.silicon.centemobile.data.model.converter.DataResponseTypeConverter;
 
 import java.io.IOException;
@@ -20,17 +22,17 @@ import java.util.regex.Pattern;
 public class JSONUtil {
 
     @SuppressLint("NewApi")
-    public DataResponse loadJSON(Activity activity) {
+    public ExpressAddressResponse loadJSONAddress(Activity activity) {
         String json;
-        DataResponse dataResponse;
+        ExpressAddressResponse dataResponse;
         try {
-            InputStream is = activity.getAssets().open("LocalDbNew.json");
+            InputStream is = activity.getAssets().open("AddressDb.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
             json = new String(buffer, StandardCharsets.UTF_8);
-            dataResponse = new DataResponseTypeConverter().to(json);
+            dataResponse = new AddressResponseTypeConverter().to(json);
 
         } catch (IOException ex) {
             ex.printStackTrace();

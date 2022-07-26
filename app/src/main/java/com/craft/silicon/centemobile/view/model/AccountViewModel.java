@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
+import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.repository.account.AccountDataSource;
 import com.craft.silicon.centemobile.data.repository.account.AccountRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
@@ -41,7 +42,7 @@ public class AccountViewModel extends ViewModel implements AccountDataSource {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
-            String customerID = dataSource.getActivationData().getValue().getId();
+            ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
 
@@ -49,8 +50,8 @@ public class AccountViewModel extends ViewModel implements AccountDataSource {
                     context,
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
-                    customerID,
-                    true,dataSource);
+                    customerID != null ? customerID.getId() : "",
+                    true, dataSource);
 
             jsonObject.put("ModuleID", moduleID);
             jsonObject.put("PayBill", data);

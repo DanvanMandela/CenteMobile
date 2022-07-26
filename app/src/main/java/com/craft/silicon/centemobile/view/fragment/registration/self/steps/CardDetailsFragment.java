@@ -222,6 +222,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
+            jsonObject.put("SERVICENAME", "SELFREGISTRATION");
             disposable.add(baseViewModel.createOTP(jsonObject, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -363,7 +364,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
             jsonObject.put("OTPKEY", string);
-
+            jsonObject.put("SERVICENAME", "SELFREGISTRATION");
             disposable.add(baseViewModel.validateOTP(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

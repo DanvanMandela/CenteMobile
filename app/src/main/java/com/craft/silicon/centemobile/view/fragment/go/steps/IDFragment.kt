@@ -1,45 +1,41 @@
 package com.craft.silicon.centemobile.view.fragment.go.steps
 
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
-import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentIDBinding
-import com.craft.silicon.centemobile.util.AppLogger
-import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.ShowToast
+import com.craft.silicon.centemobile.util.*
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.convert
-import com.craft.silicon.centemobile.util.image.writeBitmapToFile
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
-import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
-import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
-import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
-import com.craft.silicon.centemobile.view.ep.data.ReceiptList
-import com.craft.silicon.centemobile.view.fragment.go.MovePager
+import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
-import com.craft.silicon.centemobile.view.model.OCRViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +44,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
+import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,10 +57,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog {
+
     private lateinit var binding: FragmentIDBinding
     private var imageLive: ImageSelector? = null
     private var selfie: ImageData? = null
@@ -71,16 +66,58 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
     private var signature: ImageData? = null
 
     private val subscribe = CompositeDisposable()
-    private val ocrViewModel: OCRViewModel by viewModels()
     private val baseViewModel: BaseViewModel by viewModels()
+    private val widgetViewModel: WidgetViewModel by viewModels()
     private val workViewModel: WorkerViewModel by viewModels()
+    private lateinit var stateData: IDDetails
+    private var ocrData: OCRData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        activity?.onBackPressedDispatcher?.addCallback(this,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    ShowAlertDialog().showDialog(
+//                        requireContext(),
+//                        getString(R.string.exit_registration),
+//                        getString(R.string.proceed_registration),
+//                        this@IDFragment
+//                    )
+//                }
+//
+//            }
+//        )
+        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPositive() {
+        saveState()
+        pagerData?.currentPosition()
+        Handler(Looper.getMainLooper()).postDelayed({
+            (requireActivity() as MainActivity).provideNavigationGraph()
+                .navigate(widgetViewModel.navigation().navigateLanding())
+        }, 100)
+    }
+
+    override fun onNegative() {
+        pagerData?.clearState()
+        (requireActivity() as MainActivity).provideNavigationGraph()
+            .navigate(widgetViewModel.navigation().navigateLanding())
+    }
+
+    private fun saveState() {
+        statePersist()
+        baseViewModel.dataSource.setIDDetails(stateData)
+    }
+
+    private fun statePersist() {
+        stateData = IDDetails(
+            id = id,
+            selfie = selfie,
+            signature = signature,
+            data = ocrData,
+            title = binding.titleLay.autoEdit.editableText.toString()
+        )
     }
 
     override fun onCreateView(
@@ -92,7 +129,58 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
         setBinding()
         setOnClick()
         setTitle()
+        setToolbar()
+        setToolTitle()
         return binding.root.rootView
+    }
+
+    private fun setToolTitle() {
+        var state = ToolbarEnum.EXPANDED
+
+        binding.collapsedLay.apply {
+            setCollapsedTitleTypeface(
+                ResourcesCompat.getFont(
+                    requireContext(),
+                    R.font.poppins_medium
+                )
+            )
+            setExpandedTitleTypeface(
+                ResourcesCompat.getFont(
+                    requireContext(),
+                    R.font.poppins_bold
+                )
+            )
+        }
+
+        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == 0) {
+                if (state !== ToolbarEnum.EXPANDED) {
+                    state =
+                        ToolbarEnum.EXPANDED
+                    binding.collapsedLay.title = getString(R.string.national_id)
+
+                }
+            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                if (state !== ToolbarEnum.COLLAPSED) {
+                    val title = getString(R.string.national_id)
+                    title.replace("\n", " ")
+                    state =
+                        ToolbarEnum.COLLAPSED
+                    binding.collapsedLay.title = title
+                }
+            }
+        }
+    }
+
+    private fun setToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            ShowAlertDialog().showDialog(
+                requireContext(),
+                getString(R.string.exit_registration),
+                getString(R.string.proceed_registration),
+                this
+            )
+        }
     }
 
     private fun setTitle() {
@@ -123,11 +211,41 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
             binding.mainLay.visibility = VISIBLE
             stopShimmer()
             setStep()
+            setState()
         }, animationDuration.toLong())
     }
 
+    private fun setState() {
+        val sData = baseViewModel.dataSource.onIDDetails.value
+        if (sData != null) {
+            if (sData.selfie != null) sateSelfie(sData.selfie)
+            if (sData.id != null) stateId(sData.id)
+            if (sData.signature != null) stateSignature(sData.signature)
+            if (sData.title != null) stateTitle(sData.title)
+        }
+    }
+
+    private fun stateTitle(s: String) {
+        binding.titleLay.autoEdit.setText(s, false)
+    }
+
+    private fun stateSignature(data: ImageData) {
+        signature = data
+        binding.signatureLay.avatar.setImageBitmap(convert(data.image))
+    }
+
+    private fun stateId(data: ImageData) {
+        id = data
+        binding.idLay.avatar.setImageBitmap(convert(data.image))
+    }
+
+    private fun sateSelfie(data: ImageData) {
+        selfie = data
+        binding.selfieLay.avatar.setImageBitmap(convert(data.image))
+    }
+
     private fun setStep() {
-        binding.progressIndicator.setProgress(10, true)
+        binding.progressIndicator.setProgress(20, true)
     }
 
     private fun stopShimmer() {
@@ -139,36 +257,15 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
         if (imageLive != null) {
             when (imageLive) {
                 ImageSelector.SELFIE -> {
-
-                    selfie = ImageData(
-                        uri = writeBitmapToFile(
-                            requireContext(),
-                            bitmap = bitmap!!, id = "SELFIE", Constants.Data.GO
-                        ),
-                        image = convert(bitmap)
-                    )
+                    selfie = ImageData(image = convert(bitmap!!))
                     binding.selfieLay.avatar.setImageBitmap(bitmap)
-
                 }
                 ImageSelector.ID -> {
-                    id = ImageData(
-                        uri = writeBitmapToFile(
-                            requireContext(),
-                            bitmap = bitmap!!, id = "ID", Constants.Data.GO
-                        ),
-                        image = convert(bitmap)
-                    )
+                    id = ImageData(image = convert(bitmap!!))
                     binding.idLay.avatar.setImageBitmap(bitmap)
-
                 }
                 ImageSelector.SIGNATURE -> {
-                    signature = ImageData(
-                        uri = writeBitmapToFile(
-                            requireContext(),
-                            bitmap = bitmap!!, id = "SIGNATURE", Constants.Data.GO
-                        ),
-                        image = convert(bitmap)
-                    )
+                    signature = ImageData(image = convert(bitmap!!))
                     binding.signatureLay.avatar.setImageBitmap(bitmap)
                 }
                 else -> {}
@@ -199,7 +296,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
     }
 
     companion object {
-        private var movePager: MovePager? = null
+        private var pagerData: PagerData? = null
 
         /**
          * Use this factory method to create a new instance of
@@ -220,8 +317,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
             }
 
         @JvmStatic
-        fun onStep(movePager: MovePager) = IDFragment().apply {
-            this@Companion.movePager = movePager
+        fun onStep(pagerData: PagerData) = IDFragment().apply {
+            this@Companion.pagerData = pagerData
         }
     }
 
@@ -231,105 +328,140 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener {
                 uploadOCR()
             }
         } else if (p == binding.buttonBack)
-            movePager?.onBack(2)
+            pagerData?.onBack(2)
     }
 
     private fun uploadOCR() {
-
         val json = JSONObject()
         json.put("INFOFIELD3", id?.image)
         json.put("INFOFIELD4", signature?.image)
         json.put("INFOFIELD5", selfie?.image)
 
         setLoading(true)
+        ShowToast(requireContext(), getString(R.string.take_few_secs))
         subscribe.add(
             baseViewModel.ocr(json, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    try {
-                        AppLogger.instance.appLog(
-                            "OCR:Response", BaseClass.decryptLatest(
-                                it.response,
-                                baseViewModel.dataSource.deviceData.value!!.device,
-                                true,
-                                baseViewModel.dataSource.deviceData.value!!.run
-                            )
+                    AppLogger.instance.appLog(
+                        "OCR:", it.response!!
+                    )
+                    if (it.response == null) {
+                        setLoading(false)
+                        AlertDialogFragment.newInstance(
+                            DialogData(
+                                title = R.string.error,
+                                subTitle = getString(R.string.unable_to_process_id),
+                                R.drawable.warning_app
+                            ),
+                            requireActivity().supportFragmentManager
                         )
-                        if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                    } else {
+                        if (it.response == StatusEnum.ERROR.type) {
                             setLoading(false)
-                            val resData = DynamicAPIResponseConverter().to(
-                                BaseClass.decryptLatest(
-                                    it.response,
-                                    baseViewModel.dataSource.deviceData.value!!.device,
-                                    true,
-                                    baseViewModel.dataSource.deviceData.value!!.run
-                                )
+                            AlertDialogFragment.newInstance(
+                                DialogData(
+                                    title = R.string.error,
+                                    subTitle = getString(R.string.adjust_id_try),
+                                    R.drawable.warning_app
+                                ),
+                                requireActivity().supportFragmentManager
                             )
-                            AppLogger.instance.appLog("OCR:Res", Gson().toJson(resData))
-                            if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                setLoading(false)
-
-                                if (resData?.display!!.isNotEmpty()) {
-                                    val display = resData.display?.first()
-                                    val name = display?.get("First Name")?.split("")
-                                    val data = OCRData(
-                                        names = name!![0],
-                                        surname = display["SurName"]!!,
-                                        dob = display["Date Of Birth"]!!,
-                                        idNo = display["National ID Number"]!!,
-                                        otherName = name[1]
+                        } else {
+                            try {
+                                AppLogger.instance.appLog(
+                                    "OCR:Response", BaseClass.decryptLatest(
+                                        it.response,
+                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                        true,
+                                        baseViewModel.dataSource.deviceData.value!!.run
                                     )
-                                    AppLogger.instance.appLog("OCR:Res", Gson().toJson(data))
+                                )
+                                if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                                    setLoading(false)
+                                    val resData = DynamicAPIResponseConverter().to(
+                                        BaseClass.decryptLatest(
+                                            it.response,
+                                            baseViewModel.dataSource.deviceData.value!!.device,
+                                            true,
+                                            baseViewModel.dataSource.deviceData.value!!.run
+                                        )
+                                    )
+                                    AppLogger.instance.appLog("OCR:Res", Gson().toJson(resData))
+                                    if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                        setLoading(false)
 
+                                        if (resData?.display!!.isNotEmpty()) {
+                                            val display = resData.display?.first()
+                                            val name = display?.get("First Name")?.split(" ")
+                                            val data = OCRData(
+                                                names = name!![0],
+                                                surname = display["SurName"]!!,
+                                                dob = display["Date Of Birth"]!!,
+                                                idNo = display["National ID Number"]!!,
+                                                otherName = name[1]
+                                            )
+                                            AppLogger.instance.appLog(
+                                                "OCR:DATA",
+                                                Gson().toJson(data)
+                                            )
+
+                                            pagerData?.idDetails(
+                                                IDDetails(
+                                                    selfie = selfie!!,
+                                                    signature = signature!!,
+                                                    id = id!!,
+                                                    data = data,
+                                                    title = binding.titleLay
+                                                        .autoEdit.editableText.toString()
+                                                )
+                                            )
+                                            ocrData = data
+                                            saveState()
+                                            pagerData?.onNext(4)
+
+                                        }
+
+                                    } else if (BaseClass.nonCaps(resData?.status)
+                                        == StatusEnum.TOKEN.type
+                                    ) {
+                                        workViewModel.routeData(
+                                            viewLifecycleOwner,
+                                            object : WorkStatus {
+                                                override fun workDone(b: Boolean) {
+                                                    setLoading(false)
+                                                    if (b) uploadOCR()
+                                                }
+                                            })
+
+
+                                    } else {
+                                        setLoading(false)
+                                        AlertDialogFragment.newInstance(
+                                            DialogData(
+                                                title = R.string.error,
+                                                subTitle = resData?.message!!,
+                                                R.drawable.warning_app
+                                            ),
+                                            requireActivity().supportFragmentManager
+                                        )
+                                    }
                                 }
 
-                            } else if (BaseClass.nonCaps(resData?.status)
-                                == StatusEnum.TOKEN.type
-                            ) {
-                                workViewModel.routeData(
-                                    viewLifecycleOwner,
-                                    object : WorkStatus {
-                                        override fun workDone(b: Boolean) {
-                                            setLoading(false)
-                                            if (b) uploadOCR()
-                                        }
-                                    })
-
-
-                            } else {
+                            } catch (e: Exception) {
                                 setLoading(false)
                                 AlertDialogFragment.newInstance(
                                     DialogData(
                                         title = R.string.error,
-                                        subTitle = resData?.message!!,
+                                        subTitle = getString(R.string.something_),
                                         R.drawable.warning_app
                                     ),
                                     requireActivity().supportFragmentManager
                                 )
                             }
                         }
-
-                    } catch (e: Exception) {
-                        setLoading(false)
-                        AlertDialogFragment.newInstance(
-                            DialogData(
-                                title = R.string.error,
-                                subTitle = getString(R.string.something_),
-                                R.drawable.warning_app
-                            ),
-                            requireActivity().supportFragmentManager
-                        )
                     }
-
-                    AppLogger.instance.appLog(
-                        "OCR", BaseClass.decryptLatest(
-                            it.response,
-                            baseViewModel.dataSource.deviceData.value!!.device,
-                            true,
-                            baseViewModel.dataSource.deviceData.value!!.run
-                        )
-                    )
                 },
                     {
                         setLoading(false)
@@ -362,16 +494,18 @@ enum class ImageSelector {
 
 @Parcelize
 data class IDDetails(
+    @field:SerializedName("title")
+    val title: String?,
     @field:SerializedName("id")
-    val id: ImageData,
+    val id: ImageData?,
     @field:SerializedName("signature")
-    val signature: ImageData,
+    val signature: ImageData?,
     @field:SerializedName("selfie")
     @field:Expose
-    val selfie: ImageData,
-    @field:SerializedName("data")
+    val selfie: ImageData?,
+    @field:SerializedName("ocr")
     @field:Expose
-    val data: OCRData
+    var data: OCRData?
 ) : Parcelable
 
 @Parcelize
@@ -395,8 +529,6 @@ data class OCRData(
 
 @Parcelize
 data class ImageData(
-    @field:SerializedName("uri")
-    val uri: Uri?,
     @field:SerializedName("image")
     val image: String
 ) : Parcelable
@@ -427,5 +559,27 @@ data class OCRRequest(
     @field:SerializedName("Password")
     @field:Expose
     val password: String = "R00PK1RANI"
+}
+
+
+class IDDetailsConverter {
+    @TypeConverter
+    fun from(data: IDDetails?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, IDDetails::class.java)
+    }
+
+    @TypeConverter
+    fun to(data: String?): IDDetails? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, IDDetails::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().create()
+    }
 }
 

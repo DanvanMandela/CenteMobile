@@ -38,6 +38,7 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.MyActivityResult
 import com.craft.silicon.centemobile.util.ScreenHelper.fullScreen
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.image.compressImage
 import com.craft.silicon.centemobile.view.fragment.home.HomeFragment
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -404,9 +405,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         private const val REQUEST_READ_CONTACTS_PERMISSION = 0
         private const val REQUEST_LOCATION = 100
         private const val REQUEST_LOCATION_BACKGROUND = 101
-
-        private const val REQUEST_IMAGE = 1003
-        private const val TO_SETTINGS = 102
     }
 
     override fun onNetwork(boolean: Boolean) {
@@ -485,11 +483,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         if (Build.VERSION.SDK_INT < 28) {
                             val bitmap =
                                 MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(bitmap)
+                            callbacks!!.onImage(compressImage(bitmap))
 
                         } else {
                             val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            // val bitmap = ImageDecoder.decodeBitmap(source)
                             val mutableBitmap = ImageDecoder.decodeBitmap(
                                 source
                             ) { decoder, _, _ ->
@@ -497,7 +494,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                                 decoder.isMutableRequired = true
                             }
 
-                            callbacks!!.onImage(mutableBitmap)
+                            callbacks!!.onImage(compressImage(mutableBitmap))
                         }
                     }
 
@@ -525,7 +522,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         if (Build.VERSION.SDK_INT < 28) {
                             val bitmap =
                                 MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(bitmap)
+                            callbacks!!.onImage(compressImage(bitmap))
 
                         } else {
                             val source = ImageDecoder.createSource(this.contentResolver, uri)
@@ -536,8 +533,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                                 decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
                                 decoder.isMutableRequired = true
                             }
-
-                            callbacks!!.onImage(mutableBitmap)
+                            callbacks!!.onImage(compressImage(mutableBitmap))
                         }
                     }
 

@@ -4,15 +4,15 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Base64
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.net.URL
 import java.util.*
 import java.util.regex.Matcher
@@ -98,6 +98,36 @@ fun drawableToBitmap(drawable: Drawable): Bitmap? {
     }
     if (canvas != null) {
         drawable.draw(canvas)
+    }
+    return bitmap
+}
+
+
+fun compressImage(image: Bitmap): Bitmap? {
+    val stream = ByteArrayOutputStream()
+    image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+    var options = 100
+    while (stream.toByteArray().size / 1024 > 100) { // 100kb,
+        stream.reset()
+        image.compress(Bitmap.CompressFormat.JPEG, options, stream)
+        options -= 10 // 10
+    }
+    val isBm = ByteArrayInputStream(
+        stream.toByteArray()
+    )
+    return BitmapFactory.decodeStream(isBm, null, null)
+}
+
+ fun bitmapFromUri(selectedPhotoUri: Uri, context: Context): Bitmap {
+    val bitmap = when {
+        Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
+            context.contentResolver,
+            selectedPhotoUri
+        )
+        else -> {
+            val source = ImageDecoder.createSource(context.contentResolver, selectedPhotoUri)
+            ImageDecoder.decodeBitmap(source)
+        }
     }
     return bitmap
 }

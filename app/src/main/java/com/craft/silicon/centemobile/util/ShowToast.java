@@ -10,13 +10,8 @@ public class ShowToast {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void vibration(Context context) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(200);
-    }
-
     public ShowToast(Context context, String message, boolean vibration) {
-        if (vibration) vibration(context);
+        if (vibration) new VibrationHelper().vibrate(context);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }

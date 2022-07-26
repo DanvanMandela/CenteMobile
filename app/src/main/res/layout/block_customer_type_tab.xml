@@ -5,7 +5,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dimens_150dp"
         android:clipToPadding="false"
         app:tabIndicator="@null"
         app:tabMode="fixed"
@@ -13,4 +13,5 @@
         app:tabPaddingTop="@dimen/dimens_8dp"
         app:tabRippleColor="@null"
         app:tabTextColor="@color/chip_text_color" />
+
 </layout>

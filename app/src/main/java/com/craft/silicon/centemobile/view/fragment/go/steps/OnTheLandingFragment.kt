@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentOnTheLandingBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.fragment.go.MovePager
+import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -125,7 +125,7 @@ class OnTheLandingFragment : Fragment(), AppCallbacks, View.OnClickListener {
     }
 
     companion object {
-        private var movePager: MovePager? = null
+        private var pagerData: PagerData? = null
 
         /**
          * Use this factory method to create a new instance of
@@ -146,14 +146,14 @@ class OnTheLandingFragment : Fragment(), AppCallbacks, View.OnClickListener {
             }
 
         @JvmStatic
-        fun onStep(movePager: MovePager) = OnTheLandingFragment().apply {
-            this@Companion.movePager = movePager
+        fun onStep(pagerData: PagerData) = OnTheLandingFragment().apply {
+            this@Companion.pagerData = pagerData
         }
     }
 
     override fun onClick(view: View?) {
         if (view == binding.materialButton) {
-            movePager?.onNext(1)
+            pagerData?.onNext(1)
         }
     }
 }

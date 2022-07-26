@@ -8,8 +8,9 @@ import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
+import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
+import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.StateFlow
 
 interface StorageDataSource {
@@ -62,4 +63,52 @@ interface StorageDataSource {
 
     fun setBranchData(value: MutableList<OnlineAccountProduct>)
     val branchData: StateFlow<List<OnlineAccountProduct?>?>
+
+    fun setRecommendState(value: HearAboutState?)
+    val recommendState: StateFlow<HearAboutState?>
+    fun deleteRecommendState()
+
+
+    fun setAddressState(value: AddressState?)
+    val addressState: StateFlow<AddressState?>
+    fun deleteAddress()
+
+    fun setOnTheGoData(value: OnTheGoData?)
+    val onTheGoData: StateFlow<OnTheGoData?>
+    fun deleteOnTheGoData()
+
+    fun setCurrentPosition(value: Int?)
+    val currentPosition: StateFlow<Int?>
+    fun deletePosition()
+
+    fun setIDDetails(value: IDDetails?)
+    val onIDDetails: StateFlow<IDDetails?>
+    fun deleteIDDetails()
+
+    fun setParentDetails(value: ParentDetails?)
+    val parentDetails: StateFlow<ParentDetails?>
+    fun deleteParentDetails()
+
+    fun setCustomerProduct(value: CustomerProduct?)
+    val customerProduct: StateFlow<CustomerProduct?>
+    fun deleteCustomerProduct()
+
+    fun setIncomeSource(value: IncomeData?)
+    val incomeSource: StateFlow<IncomeData?>
+    fun deleteIncomeSource()
+
+    fun setOtherServices(value: OtherServiceData?)
+    val otherServices: StateFlow<OtherServiceData?>
+    fun deleteOtherServices()
+
+
+    fun setNKData(value: NextKinData?)
+    val nextOfKin: StateFlow<NextKinData?>
+    fun deleteNOK()
+
+
+    fun setOTPState(value: Long?)
+    val otpState: StateFlow<Long?>
+    fun deleteOTPState()
+
 }
