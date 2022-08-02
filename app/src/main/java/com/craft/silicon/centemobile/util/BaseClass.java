@@ -295,7 +295,7 @@ public class BaseClass {
         System.out.println(maskedLength);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < maskedLength; i++) {
-            sb.append("#");
+            sb.append("X");
         }
 
         return cardNumber.substring(0, START_LENGTH) + sb + cardNumber.substring(cardNumber.length() - END_LENGTH);

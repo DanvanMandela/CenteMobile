@@ -2,12 +2,10 @@ package com.craft.silicon.centemobile.data.source.pref
 
 import android.content.SharedPreferences
 import com.craft.silicon.centemobile.data.model.DeviceData
+import com.craft.silicon.centemobile.data.model.converter.IVData
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
-import com.craft.silicon.centemobile.data.model.user.Accounts
-import com.craft.silicon.centemobile.data.model.user.ActivationData
-import com.craft.silicon.centemobile.data.model.user.AlertServices
-import com.craft.silicon.centemobile.data.model.user.Beneficiary
+import com.craft.silicon.centemobile.data.model.user.*
 import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
@@ -27,9 +25,15 @@ interface StorageDataSource {
     fun setDeviceData(value: DeviceData)
     val deviceData: StateFlow<DeviceData?>
 
+    fun setHiddenModule(value: List<ModuleHide?>)
+    val hiddenModule: StateFlow<List<ModuleHide?>?>
+
+    fun clearDevice()
+
 
     fun setActivationData(value: ActivationData)
     val activationData: StateFlow<ActivationData?>
+    fun deleteActivationData()
 
     fun setActivated(value: Boolean)
     val isActivated: StateFlow<Boolean?>
@@ -40,15 +44,19 @@ interface StorageDataSource {
 
     fun setStaticData(value: MutableList<StaticDataDetails>)
     val staticData: StateFlow<List<StaticDataDetails?>?>
+    fun deleteStaticData()
 
     fun setBeneficiary(value: MutableList<Beneficiary>)
     val beneficiary: StateFlow<List<Beneficiary?>?>
+    fun deleteBeneficiary()
 
     fun setAccounts(value: MutableList<Accounts>)
     val accounts: StateFlow<List<Accounts?>?>
+    fun deleteAccounts()
 
     fun setAlerts(value: MutableList<AlertServices>)
     val alerts: StateFlow<List<AlertServices?>?>
+    fun deleteAlerts()
 
 
     fun setLatLng(value: MapData)
@@ -73,9 +81,6 @@ interface StorageDataSource {
     val addressState: StateFlow<AddressState?>
     fun deleteAddress()
 
-    fun setOnTheGoData(value: OnTheGoData?)
-    val onTheGoData: StateFlow<OnTheGoData?>
-    fun deleteOnTheGoData()
 
     fun setCurrentPosition(value: Int?)
     val currentPosition: StateFlow<Int?>
@@ -110,5 +115,12 @@ interface StorageDataSource {
     fun setOTPState(value: Long?)
     val otpState: StateFlow<Long?>
     fun deleteOTPState()
+
+    fun setBio(value: Boolean?)
+    val bio: StateFlow<Boolean?>
+    fun deleteBio()
+
+    fun setIv(value: IVData?)
+    val iv: StateFlow<IVData?>
 
 }

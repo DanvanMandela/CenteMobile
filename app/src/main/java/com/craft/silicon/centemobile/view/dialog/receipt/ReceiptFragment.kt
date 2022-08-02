@@ -1,13 +1,16 @@
 package com.craft.silicon.centemobile.view.dialog.receipt
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentReceiptBinding
+import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.ReceiptFormController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
@@ -56,6 +59,24 @@ class ReceiptFragment : BottomSheetDialogFragment(), AppCallbacks {
             dialog?.dismiss()
             confirm?.onCancel()
         }
+        binding.shareButton.setOnClickListener {
+            shareData()
+        }
+    }
+
+    private fun shareData() {
+        if (data?.notification != null) {
+            val share = data?.notification
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, share!![0].notifyText)
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        } else ShowToast(requireContext(), getString(R.string.nothing_to_share), true)
+
+
     }
 
     override fun setBinding() {

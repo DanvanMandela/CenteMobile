@@ -208,22 +208,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_60dp"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:layout_marginEnd="24dp"
-                    android:textAllCaps="true"
+                    android:layout_marginBottom="24dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/proceed"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/subTitleThree" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
 
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimens_40dp"
-                    app:layout_constraintBottom_toTopOf="@+id/imageView2"
-                    app:layout_constraintTop_toBottomOf="@+id/materialButton2" />
+                    app:layout_constraintBottom_toTopOf="@+id/materialButton2"
+                    app:layout_constraintTop_toBottomOf="@+id/subTitleThree" />
 
                 <ImageView
                     android:id="@+id/imageView2"

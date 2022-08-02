@@ -9,15 +9,9 @@
         android:layout_gravity="center"
         android:contentDescription="@string/loading"
         android:padding="@dimen/dimens_8dp"
-        android:src="@drawable/sands_of_time" />
+        android:src="@drawable/icon_logo" />
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_30dp"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/dimens_24dp"
-        android:contentDescription="@string/logo"
-        android:src="@drawable/logo" />
+
 
 </FrameLayout>

@@ -8,6 +8,7 @@ import com.craft.silicon.centemobile.data.model.control.ControlIDEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
@@ -19,11 +20,11 @@ class NewFormController(val callbacks: AppCallbacks) :
 
 
         for (d in data?.forms?.form!!) {
-            if (BaseClass.nonCaps(d.controlType)
-                != BaseClass.nonCaps(ControlTypeEnum.CONTAINER.type)
+            if (nonCaps(d.controlType)
+                != nonCaps(ControlTypeEnum.CONTAINER.type)
             ) {
-                when (BaseClass.nonCaps(d.controlType)) {
-                    BaseClass.nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
+                when (nonCaps(d.controlType)) {
+                    nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             val children =
                                 data.forms.form?.filter { it -> it.linkedToControl == d.controlID }
@@ -47,7 +48,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                             }
                         }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.DYNAMICDROPDOWN.type) -> {
+                    nonCaps(ControlTypeEnum.DYNAMICDROPDOWN.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             val children =
                                 data.forms.form?.filter { it -> it.linkedToControl == d.controlID }
@@ -71,7 +72,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                             }
                         }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.BUTTON.type) -> {
+                    nonCaps(ControlTypeEnum.BUTTON.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             buttonLayout {
                                 id(d.controlID)
@@ -80,10 +81,10 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 callback(this@NewFormController.callbacks)
                             }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
+                    nonCaps(ControlTypeEnum.TEXT.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
-                            when (BaseClass.nonCaps(d.controlFormat)) {
-                                BaseClass.nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
+                            when (nonCaps(d.controlFormat)) {
+                                nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
                                     id(d.controlID)
                                     data(d)
                                     callback(this@NewFormController.callbacks)
@@ -96,7 +97,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 }
                             }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.CHECKBOX.type) -> {
+                    nonCaps(ControlTypeEnum.CHECKBOX.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             checkBoxLayout {
                                 id(d.controlID)
@@ -105,14 +106,14 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 callback(this@NewFormController.callbacks)
                             }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
+                    nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             phoneContacts(
                                 vault = ChildVault(container = d, mainData = data),
                                 appCallbacks = this@NewFormController.callbacks
                             )
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> {
+                    nonCaps(ControlTypeEnum.HIDDEN.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             hiddenInputLayout {
                                 id(d.controlID)
@@ -120,14 +121,14 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 callback(this@NewFormController.callbacks)
                             }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.DATE.type) -> {
+                    nonCaps(ControlTypeEnum.DATE.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             dateSelect(
                                 vault = ChildVault(container = d, mainData = data),
                                 appCallbacks = this@NewFormController.callbacks
                             )
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
+                    nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             textDisplay {
                                 id(d.controlID)
@@ -135,20 +136,26 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 callback(this@NewFormController.callbacks)
                             }
                     }
-                    BaseClass.nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
+                    nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
 
-                    BaseClass.nonCaps(ControlTypeEnum.IMAGE.type) -> imageButtonLayout {
-                        id(d.controlID)
-                        data(d)
-                        callback(this@NewFormController.callbacks)
+                    nonCaps(ControlTypeEnum.IMAGE.type) -> {
+                        when (nonCaps(d.controlFormat)) {
+                            nonCaps(ControlFormatEnum.IMAGE_PANEL.type) -> imageButtonLayout {
+                                id(d.controlID)
+                                data(d)
+                                callback(this@NewFormController.callbacks)
+                            }
+                            else -> {}
+                        }
+
                     }
                 }
 
             } else {
-                when (BaseClass.nonCaps(d.controlType)) {
-                    BaseClass.nonCaps(ControlTypeEnum.CONTAINER.type) -> {
-                        when (BaseClass.nonCaps(d.controlFormat)) {
-                            BaseClass.nonCaps(ControlFormatEnum.HORIZONTAL_SCROLL.type) -> {
+                when (nonCaps(d.controlType)) {
+                    nonCaps(ControlTypeEnum.CONTAINER.type) -> {
+                        when (nonCaps(d.controlFormat)) {
+                            nonCaps(ControlFormatEnum.HORIZONTAL_SCROLL.type) -> {
                                 val children =
                                     data.forms.form?.filter { a -> a.containerID == d.controlID }
                                 horizontalContainer(
@@ -160,7 +167,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                                     appCallbacks = this@NewFormController.callbacks
                                 )
                             }
-                            BaseClass.nonCaps(ControlFormatEnum.RADIO_GROUPS.type) -> {
+                            nonCaps(ControlFormatEnum.RADIO_GROUPS.type) -> {
                                 val children =
                                     data.forms.form?.filter { a -> a.containerID == d.controlID }
                                 toggleLayout(
@@ -172,7 +179,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                                     appCallbacks = this@NewFormController.callbacks
                                 )
                             }
-                            BaseClass.nonCaps(ControlFormatEnum.TAB_LAYOUT.type) -> {
+                            nonCaps(ControlFormatEnum.TAB_LAYOUT.type) -> {
                                 val children =
                                     data.forms.form?.filter { a -> a.containerID == d.controlID }
                                 tabLayoutGroup(
@@ -194,12 +201,22 @@ class NewFormController(val callbacks: AppCallbacks) :
     }
 
     private fun setList(d: FormControl, data: GroupForm) {
-        when (BaseClass.nonCaps(d.controlID)) {
-            BaseClass.nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
+        when (nonCaps(d.controlID)) {
+            nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
                 id(d.controlID)
                 data(d)
                 module(data.module)
                 callback(this@NewFormController.callbacks)
+            }
+            else -> {
+                when (nonCaps(d.controlFormat)) {
+                    nonCaps(ControlFormatEnum.LIST_WITH_OPTIONS.type) -> listWithOptionLayout {
+                        id(d.controlID)
+                        data(d)
+                        module(data.module)
+                        callback(this@NewFormController.callbacks)
+                    }
+                }
             }
         }
     }

@@ -27,6 +27,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 
 import java.util.Objects;
@@ -95,8 +96,12 @@ public class LoginFragment extends Fragment implements AppCallbacks {
             isValid = false;
         } else if (TextUtils.isEmpty(binding.editPin.getText())) {
             new ShowToast(requireContext(), getString(R.string.enter_pin), true);
+        } else {
+            if (Objects.requireNonNull(binding.editPin.getText()).length() < 6) {
+                new ShowToast(requireContext(), getString(R.string.invalid_pin), true);
+                isValid = false;
+            }
         }
-
         return isValid;
     }
 
@@ -156,9 +161,17 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                         ), getChildFragmentManager());
                     } else if (Objects.equals(responseDetails.getStatus(),
                             StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) authAccount();
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) authAccount();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);

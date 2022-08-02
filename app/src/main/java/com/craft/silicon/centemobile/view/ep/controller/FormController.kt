@@ -93,6 +93,12 @@ class FormController(val callbacks: AppCallbacks) :
                 module(data.module)
                 callback(this@FormController.callbacks)
             }
+            else -> listLayout {
+                id(d.controlID)
+                data(d)
+                module(data.module)
+                callback(this@FormController.callbacks)
+            }
         }
     }
 

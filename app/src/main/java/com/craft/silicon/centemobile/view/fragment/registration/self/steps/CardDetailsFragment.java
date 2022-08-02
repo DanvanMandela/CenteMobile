@@ -39,6 +39,7 @@ import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
+import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 
 import org.json.JSONException;
@@ -200,10 +201,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
                         generateOTP();
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) checkCustomer();
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) checkCustomer();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }
@@ -263,10 +271,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                         showError(resData.getMessage());
                         setLoading(false);
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) generateOTP();
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) generateOTP();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }
@@ -407,10 +422,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                         setLoading(false);
                         showError(resData.getMessage());
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) validateOTP(otp);
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) validateOTP(otp);
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }
@@ -477,10 +499,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                         showError(resData.getMessage());
                         setLoading(false);
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) validateCard();
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) validateCard();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }
@@ -547,10 +576,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                         showError(resData.getMessage());
                         setLoading(false);
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) saveUserData();
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) saveUserData();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }

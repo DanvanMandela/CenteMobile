@@ -32,9 +32,17 @@ public interface BaseView {
     default void navigateUp() {
     }
 
+    default void timeOut() {
+    }
+
     default void onImage(Bitmap bitmap) {
     }
 
+    default void onBiometric(){}
+
     default void imageSelector(ImageSelector selector) {
+    }
+
+    default void logOut() {
     }
 }

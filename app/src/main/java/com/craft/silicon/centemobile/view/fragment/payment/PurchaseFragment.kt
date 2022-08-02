@@ -18,7 +18,9 @@ import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.GlobalResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.InsuranceTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.LoanTypeConverter
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
@@ -37,6 +39,7 @@ import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
+import com.craft.silicon.centemobile.view.dialog.InfoFragment
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
 import com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment
@@ -50,6 +53,7 @@ import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.ep.data.ReceiptList
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.global.GlobalFragment
 import com.craft.silicon.centemobile.view.model.*
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -84,7 +88,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
 
     private var actionControls = MutableLiveData<MutableList<ActionControls>>()
 
-    private val workViewModel: WorkerViewModel by viewModels()
 
     private val liveFormData = MutableLiveData<DynamicData>()
 
@@ -144,32 +147,32 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     }
 
     override fun onForm(formControl: FormControl?, modules: Modules?) {
-        if (nonCaps(formControl?.controlFormat)
-            == nonCaps(ControlFormatEnum.END.type)
-        ) (requireActivity().onBackPressed())
-        else {
-            try {
-                subscribe.add(
-                    widgetViewModel.getActionControlCID(formControl?.controlID).subscribe({
-                        if (it.isNotEmpty()) {
-                            val merchantID = it.map { a -> a.merchantID }
-                            AppLogger.instance.appLog(
-                                "PURCHASE:MERCHANT:ID",
-                                Gson().toJson(merchantID)
-                            )
-                            AppLogger.instance.appLog(
-                                "PURCHASE:ACTIONS",
-                                Gson().toJson(it)
-                            )
+        when (nonCaps(formControl?.controlFormat)) {
+            nonCaps(ControlFormatEnum.END.type) -> (requireActivity()).onBackPressed()
+            else -> {
+                try {
+                    subscribe.add(
+                        widgetViewModel.getActionControlCID(formControl?.controlID).subscribe({
+                            if (it.isNotEmpty()) {
+                                val merchantID = it.map { a -> a.merchantID }
+                                AppLogger.instance.appLog(
+                                    "PURCHASE:MERCHANT:ID",
+                                    Gson().toJson(merchantID)
+                                )
+                                AppLogger.instance.appLog(
+                                    "PURCHASE:ACTIONS",
+                                    Gson().toJson(it)
+                                )
 
-                            val action = it.first { a -> a.moduleID == formControl?.moduleID }
-                            apiCall(action, formControl, modules)
+                                val action = it.first { a -> a.moduleID == formControl?.moduleID }
+                                apiCall(action, formControl, modules)
 
-                        }
-                    }, { it.printStackTrace() })
-                )
-            } catch (e: Exception) {
-                e.localizedMessage?.let { AppLogger.instance.appLog("PURCHASE:onForm", it) }
+                            }
+                        }, { it.printStackTrace() })
+                    )
+                } catch (e: Exception) {
+                    e.localizedMessage?.let { AppLogger.instance.appLog("PURCHASE:onForm", it) }
+                }
             }
         }
     }
@@ -189,25 +192,40 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                 encrypted = encrypted
             )
         ) {
-            if (action.confirmationModuleID != null)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    ConfirmFragment.showDialog(
-                        manager = this.childFragmentManager,
-                        json = json,
-                        encrypted = encrypted,
-                        inputList = inputList,
-                        module = modules,
-                        action = action,
-                        formControl,
-                        this,
+            when (nonCaps(formControl?.controlFormat)) {
+                nonCaps(ControlFormatEnum.NEXT.type) -> {
+                    setOnNextModule(
+                        formControl = formControl,
+                        next = null,
+                        modules = modules,
+                        formID = modules?.moduleID
                     )
-                }, 200)
-            else
-                onPay(
-                    json = json, encrypted = encrypted,
-                    inputList = inputList, module = modules,
-                    action = action, formControl = formControl
-                )
+                }
+                else -> {
+                    if (action.confirmationModuleID != null)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            ConfirmFragment.showDialog(
+                                manager = this.childFragmentManager,
+                                json = json,
+                                encrypted = encrypted,
+                                inputList = inputList,
+                                module = modules,
+                                action = action,
+                                formControl,
+                                this,
+                            )
+                        }, 200)
+                    else
+                        onPay(
+                            json = json, encrypted = encrypted,
+                            inputList = inputList, module = modules,
+                            action = action, formControl = formControl
+                        )
+                }
+
+            }
+
+
         }
     }
 
@@ -274,7 +292,8 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                                 ReceiptFragment.newInstance(
                                     this, ReceiptList(
                                         receipt = resData?.receipt!!
-                                            .toMutableList()
+                                            .toMutableList(),
+                                        notification = resData.notifications
                                     )
                                 )
                                 (requireActivity() as MainActivity)
@@ -284,27 +303,30 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                                             .navigateReceipt(
                                                 ReceiptList(
                                                     receipt = resData.receipt!!
-                                                        .toMutableList()
+                                                        .toMutableList(),
+                                                    notification = resData.notifications
                                                 )
                                             )
                                     )
+                            } else if (nonCaps(resData?.formID) == nonCaps("RELIGION")) {
+                                val mData = GlobalResponseTypeConverter().to(
+                                    BaseClass.decryptLatest(
+                                        it.response,
+                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                        true,
+                                        baseViewModel.dataSource.deviceData.value!!.run
+                                    )
+                                )
+                                DisplayDialogFragment.showDialog(
+                                    manager = this.parentFragmentManager,
+                                    data = mData?.data,
+                                    modules = module
+                                )
                             }
 
                         } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
-                            workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
-                                override fun workDone(b: Boolean) {
-                                    setLoading(false)
-                                    if (b) onPay(
-                                        json,
-                                        encrypted,
-                                        inputList,
-                                        module,
-                                        action,
-                                        formControl
-                                    )
-                                }
-                            })
-
+                            setLoading(false)
+                            InfoFragment.showDialog(this.childFragmentManager)
                         } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
                             setOnNextModule(
                                 formControl,
@@ -352,6 +374,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
         } else formControl?.formSequence?.toInt()?.plus(1)
 
 
+
         subscribe.add(widgetViewModel.getFormControl(
             formID, sequence.toString()
         )
@@ -363,9 +386,20 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     }
 
     override fun setFormNavigation(forms: MutableList<FormControl>?, modules: Modules?) {
+        AppLogger.instance.appLog("NEXT:purchase", Gson().toJson(forms))
         try {
-            val destination = forms?.map { it.formID }?.first()
-            onGlobal(forms, modules)
+            when (forms?.map { it.formID }?.first()) {
+                nonCaps(FormNavigation.VALIDATE.name) -> {
+                    when (nonCaps(modules?.moduleID)) {
+                        nonCaps(FormNavigation.FINGERPRINT.name) -> onBiometric(
+                            forms,
+                            modules
+                        )
+                        else -> onGlobal(forms, modules)
+                    }
+                }
+                else -> onGlobal(forms, modules)
+            }
         } catch (e: Exception) {
             onGlobal(forms, modules)
         }
@@ -548,6 +582,42 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
         }
     }
 
+    override fun globalAutoLiking(value: String?, editText: TextInputEditText?) {
+        try {
+            if (response != null)
+                if (!response?.resultsData.isNullOrEmpty()) {
+                    for (s in response?.resultsData!!) {
+                        if (s.controlID == "LOANS") {
+                            val packages = LoanTypeConverter().from(s.controlValue)
+                            for (p in packages!!) {
+                                when (value) {
+                                    "FULLINSTALMENTPAYMENT" -> editText?.setText(p?.installmentAmount)
+                                    "TOTALINSTALMENTPAYMENT" -> editText?.setText(p?.totalAmount)
+                                    else -> editText?.setText("")
+                                }
+                            }
+                        }
+                    }
+
+                } else if (!response?.formField.isNullOrEmpty()) {
+                    for (s in response?.formField!!) {
+                        if (s.controlID == "LOANS") {
+                            val packages = LoanTypeConverter().from(s.controlValue)
+                            for (p in packages!!) {
+                                when (value) {
+                                    "FULLINSTALMENTPAYMENT" -> editText?.setText(p?.installmentAmount)
+                                    "TOTALINSTALMENTPAYMENT" -> editText?.setText(p?.totalAmount)
+                                    else -> editText?.setText("")
+                                }
+                            }
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onServerValue(formControl: FormControl?, view: TextInputEditText?) {
         try {
@@ -701,6 +771,18 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
 
             }
         })
+    }
+
+    private fun onBiometric(forms: MutableList<FormControl>?, modules: Modules?) {
+        BiometricFragment.setData(
+            form = forms,
+            module = modules
+        )
+        ((requireActivity()) as MainActivity)
+            .provideNavigationGraph()
+            .navigate(
+                widgetViewModel.navigation().navigationBio()
+            )
     }
 
 

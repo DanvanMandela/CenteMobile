@@ -18,6 +18,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavDirections
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
+import androidx.viewbinding.ViewBinding
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -35,6 +36,7 @@ import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import java.util.*
 
@@ -90,7 +92,8 @@ class LandingPageFragment : Fragment(), AppCallbacks {
                     it.forEach { a ->
                         itemList.add(
                             CarouselItem(
-                                imageUrl = a.imageURL
+                                imageUrl = a.imageURL,
+                                caption = a.imageInfoURL
                             )
                         )
                     }
@@ -164,6 +167,27 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         adverts.observe(viewLifecycleOwner) {
             binding.carousel.setData(it)
         }
+
+        binding.carousel.carouselListener = object : CarouselListener {
+            override fun onCreateViewHolder(
+                layoutInflater: LayoutInflater,
+                parent: ViewGroup
+            ): ViewBinding? {
+                return null
+            }
+
+            override fun onBindViewHolder(
+                binding: ViewBinding,
+                item: CarouselItem, position: Int
+            ) {
+            }
+
+            override fun onClick(position: Int, carouselItem: CarouselItem) {
+                if (carouselItem.caption != null) openUrl(carouselItem.caption)
+            }
+
+            override fun onLongClick(position: Int, carouselItem: CarouselItem) {}
+        }
     }
 
 
@@ -172,8 +196,13 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     }
 
     override fun setBinding() {
+        val landing = LandingData.landingData
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.data = GroupLanding(LandingData.landingData)
+        val active = widgetViewModel.storageDataSource.activationData.value
+        if (active != null) landing.forEach {
+            if (it.enum == LandingPageEnum.REGISTRATION) it.visible = false
+        }
+        binding.data = GroupLanding(landing)
         binding.callback = this
     }
 

@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.binding
 
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
@@ -99,10 +100,12 @@ fun AutoCompleteTextView.linkedToInput(
                                 mandatory = formControl.isMandatory
                             )
                         )
-
-                        view?.setText(adapter.getItem(p2)?.extraField)
+                        if (TextUtils.isEmpty(adapter.getItem(p2)!!.extraField)) {
+                            callbacks.globalAutoLiking(adapter.getItem(p2)!!.subCodeID, view)
+                        } else {
+                            view?.setText(adapter.getItem(p2)?.extraField)
+                        }
                     }
-
             }
         }
     }
@@ -185,14 +188,59 @@ fun setLinkedDropDown(
                     mandatory = view.data.isMandatory
                 )
             )
+            if (view.child != null)
+                setChildToChildDropLink(
+                    view.child,
+                    adapter.getItem(p2),
+                    callbacks,
+                    storage
+                )
 
 
         }
 }
 
+fun setChildToChildDropLink(
+    child: DropDownView?,
+    item: StaticDataDetails?,
+    callbacks: AppCallbacks,
+    storage: StorageDataSource
+) {
+    child!!.dropDown.setText("")
+    setDefaultValue(child.data, callbacks)
+    when (BaseClass.nonCaps(child.data.controlFormat)) {
+        BaseClass.nonCaps(ControlFormatEnum.BENEFICIARY.type) -> {
+            if (storage.beneficiary.value != null) {
+                val beneficiaries =
+                    storage.beneficiary.value!!
+                        .filter { a -> a?.merchantID == item?.subCodeID }
+                        .map { it?.accountAlias }
+
+                val adapter = NameBaseAdapter(child.dropDown.context, 1, beneficiaries)
+                child.dropDown.setAdapter(adapter)
+                child.dropDown.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, p2, _ ->
+                        callbacks.userInput(
+                            InputData(
+                                name = child.data.controlText,
+                                key = child.data.serviceParamID,
+                                value = adapter.getItem(p2),
+                                encrypted = child.data.isEncrypted,
+                                mandatory = child.data.isMandatory
+                            )
+                        )
+                    }
+            }
+        }
+    }
+
+
+}
+
 data class DropDownView(
     val dropDown: AutoCompleteTextView,
-    val data: FormControl
+    val data: FormControl,
+    val child: DropDownView?
 )
 
 

@@ -180,5 +180,6 @@ data class FormControl(
 
 enum class FormNavigation {
     VALIDATE,
-    PAYMENT
+    PAYMENT,
+    FINGERPRINT
 }

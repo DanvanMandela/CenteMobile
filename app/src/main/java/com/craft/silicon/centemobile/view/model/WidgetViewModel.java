@@ -17,6 +17,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.Beneficiary;
+import com.craft.silicon.centemobile.data.model.user.ModuleHide;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
@@ -31,6 +32,7 @@ import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,7 +79,22 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
 
     @Override
     public Observable<List<Modules>> getModules(String moduleID) {
-        return widgetRepository.getModules(moduleID);
+        return widgetRepository.getModules(moduleID).map(modules -> {
+            List<ModuleHide> moduleHides = storageDataSource.getHiddenModule().getValue();
+            List<Modules> modulesList = new ArrayList<>();
+            modules.forEach(module -> {
+                if (!moduleHides.isEmpty()) {
+                    boolean hide = moduleHides.stream()
+                            .map(ModuleHide::getId)
+                            .filter(Objects::nonNull)
+                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
+                    if (!hide) modulesList.add(module);
+                } else {
+                    modulesList.add(module);
+                }
+            });
+            return modulesList;
+        });
     }
 
     @Override

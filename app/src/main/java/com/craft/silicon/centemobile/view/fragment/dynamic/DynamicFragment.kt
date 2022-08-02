@@ -24,6 +24,7 @@ import com.craft.silicon.centemobile.view.binding.setDynamic
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.ep.data.GroupModule
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment
 import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -110,7 +111,16 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
     override fun setFormNavigation(forms: MutableList<FormControl>?, modules: Modules?) {
         val destination = forms?.map { it.formID }?.first()
         when (BaseClass.nonCaps(destination)) {
-            BaseClass.nonCaps(FormNavigation.VALIDATE.name) -> onValidate(forms, modules)
+            BaseClass.nonCaps(FormNavigation.VALIDATE.name) -> {
+                when (BaseClass.nonCaps(modules?.moduleID)) {
+                    BaseClass.nonCaps(FormNavigation.FINGERPRINT.name) -> onBiometric(
+                        forms,
+                        modules
+                    )
+                    else -> onValidate(forms, modules)
+                }
+            }
+
             BaseClass.nonCaps(FormNavigation.PAYMENT.name) -> onPayment(forms, modules)
             else -> {
                 throw Exception("No page implemented")
@@ -167,6 +177,18 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     override fun openUrl(url: String?) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+    private fun onBiometric(forms: MutableList<FormControl>?, modules: Modules?) {
+        BiometricFragment.setData(
+            form = forms,
+            module = modules
+        )
+        ((requireActivity()) as MainActivity)
+            .provideNavigationGraph()
+            .navigate(
+                widgetViewModel.navigation().navigationBio()
+            )
     }
 
     private fun navigate(modules: Modules?) {

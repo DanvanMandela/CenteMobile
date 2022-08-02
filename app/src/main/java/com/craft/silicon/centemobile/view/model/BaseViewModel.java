@@ -99,10 +99,13 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
 
                 String dbRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
+
                 return dbCall(new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(dbRequest, device, iv)
                 ));
+
+
             } else if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.VALIDATE.getType()))) {
                 jsonObject.put("MerchantID", !TextUtils.isEmpty(action.getMerchantID()) ?
@@ -163,7 +166,28 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(payBillRequest, device, iv)
                 ));
-            } else return null;
+
+            } else if (BaseClass.nonCaps(action.getActionType())
+                    .equals(BaseClass.nonCaps(ActionTypeEnum.CHANGE_PIN.getType()))) {
+                jsonObject.put("MerchantID", !TextUtils.isEmpty(action.getMerchantID()) ?
+                        action.getMerchantID() : modules.getMerchantID());
+                data.put("MerchantID", !TextUtils.isEmpty(action.getMerchantID()) ?
+                        action.getMerchantID() : modules.getMerchantID());
+                jsonObject.put("ModuleID", modules.getModuleID());
+                data.put("ModuleID", modules.getModuleID());
+                data.put("PINTYPE", "PIN");
+                jsonObject.put("CHANGEPIN", data);
+                jsonObject.put("EncryptedFields", encrypted);
+                String changePinRequest = jsonObject.toString();
+                AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
+
+                return dbCall(new PayloadData(
+                        dataSource.getUniqueID().getValue(),
+                        BaseClass.encryptString(changePinRequest, device, iv)
+                ));
+
+            }
+            return null;
 
         } catch (JSONException exception) {
             exception.printStackTrace();

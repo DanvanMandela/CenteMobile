@@ -76,4 +76,8 @@ public interface NavigationDataSource {
     default NavDirections navigateReceipt(DynamicData data) {
         return null;
     }
+
+    default NavDirections navigationBio(){return null;}
+
+    default NavDirections navigateToLoading(){return null;}
 }

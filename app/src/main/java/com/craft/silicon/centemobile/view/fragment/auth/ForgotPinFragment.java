@@ -37,6 +37,7 @@ import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
+import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 
 import org.json.JSONException;
@@ -240,11 +241,18 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
                         showError(resData.getMessage());
                     } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        setLoading(true);
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) restPin();
-                            else showError(getString(R.string.something_));
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) restPin();
+                                else showError(getString(R.string.something_));
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     }
                 }

@@ -20,10 +20,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.control.FormNavigation
-import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
-import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.InsuranceTypeConverter
-import com.craft.silicon.centemobile.data.model.converter.LoanTypeConverter
+import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.input.InputData
@@ -33,36 +30,28 @@ import com.craft.silicon.centemobile.databinding.FragmentGlobalBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
-import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.JSONUtil.cleanData
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
-import com.craft.silicon.centemobile.view.binding.serviceAlerts
-import com.craft.silicon.centemobile.view.binding.setDisplayController
-import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
-import com.craft.silicon.centemobile.view.dialog.DialogData
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment
-import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
+import com.craft.silicon.centemobile.view.dialog.*
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
 import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.InsuranceAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.LoanAdapterItem
 import com.craft.silicon.centemobile.view.ep.controller.DisplayData
 import com.craft.silicon.centemobile.view.ep.controller.DisplayVault
-import com.craft.silicon.centemobile.view.ep.controller.DisplayVaultData
 import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.ep.data.ReceiptList
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.payment.Confirm
 import com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
-import com.craft.silicon.centemobile.view.model.WorkStatus
-import com.craft.silicon.centemobile.view.model.WorkerViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -77,7 +66,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 // TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
@@ -102,7 +90,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
     private var dynamicResponse = MutableLiveData<DynamicAPIResponse>()
     private var actionControls = MutableLiveData<MutableList<ActionControls>>()
 
-    private val workViewModel: WorkerViewModel by viewModels()
     private var moduleDataRes = MutableLiveData<DynamicDataResponse>()
     private val liveFormData = MutableLiveData<DynamicData>()
 
@@ -314,7 +301,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
         val params = action.serviceParamIDs?.split(",")
         val json = JSONObject()
         val encrypted = JSONObject()
-
         if (FieldValidationHelper.instance.validateFields(
                 inputList = inputList,
                 params = params!!,
@@ -324,16 +310,37 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             )
         ) {
             Handler(Looper.getMainLooper()).postDelayed({
-                validateModule(
-                    jsonObject = json,
-                    encrypted = encrypted,
-                    modules = modules,
-                    formControl = formControl,
-                    action = action
-                )
+                when (nonCaps(formControl?.controlFormat)) {
+                    nonCaps(ControlFormatEnum.NEXT.type) -> {
+                        setOnNextModule(
+                            formControl = formControl,
+                            next = null,
+                            modules = modules,
+                            formID = modules?.moduleID
+                        )
+                    }
+                    else -> validateModule(
+                        jsonObject = json,
+                        encrypted = encrypted,
+                        modules = modules,
+                        formControl = formControl,
+                        action = action
+                    )
+                }
             }, 200)
-
         }
+    }
+
+
+    override fun onRecent(formControl: FormControl) {
+        subscribe.add(
+            widgetViewModel.getActionControlCID(formControl.controlID).subscribe({
+                if (it.isNotEmpty()) {
+                    val action = it.first { a -> a.moduleID == formControl.moduleID }
+                    fetchRecent(action)
+                }
+            }, { it.printStackTrace() })
+        )
     }
 
 
@@ -365,15 +372,15 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                             AppLogger.instance.appLog("RECENT", Gson().toJson(moduleData))
                             if (nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
                                 moduleDataRes.value = moduleData
+                                val recent: MenuItem =
+                                    binding.toolbar.menu.findItem(R.id.actionRecent)
+                                if (!recent.isVisible) {
+                                    recent.isVisible = true
+                                }
                             }
-                            val recent: MenuItem = binding.toolbar.menu.findItem(R.id.actionRecent)
-                            if (!recent.isVisible) {
-                                recent.isVisible = true
-                                actionControls.removeObservers(this)
-                            }
+
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            ShowToast(requireContext(), getString(R.string.error_fetching_recent))
                         }
                     }
                 }, { it.printStackTrace() })
@@ -433,8 +440,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                     )
                                 )
                                 AppLogger.instance.appLog("Validation", Gson().toJson(resData))
-                                if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type)
-                                {
+                                if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     setLoading(false)
                                     dynamicResponse.value = resData
                                     if (!resData?.formID.isNullOrEmpty()
@@ -447,7 +453,9 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                             ReceiptFragment.newInstance(
                                                 this, ReceiptList(
                                                     receipt = resData?.receipt!!
-                                                        .toMutableList()
+                                                        .toMutableList(),
+                                                    notification = resData.notifications
+
                                                 )
                                             )
                                             (requireActivity() as MainActivity)
@@ -457,7 +465,8 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                                         .navigateReceipt(
                                                             ReceiptList(
                                                                 receipt = resData.receipt!!
-                                                                    .toMutableList()
+                                                                    .toMutableList(),
+                                                                notification = resData.notifications
                                                             )
                                                         )
                                                 )
@@ -467,6 +476,22 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                             DisplayDialogFragment.showDialog(
                                                 manager = this.parentFragmentManager,
                                                 data = resData?.accountStatement,
+                                                modules = modules
+                                            )
+                                        } else if (nonCaps(resData?.formID)
+                                            == nonCaps("RELIGION")
+                                        ) {
+                                            val mData = GlobalResponseTypeConverter().to(
+                                                BaseClass.decryptLatest(
+                                                    it.response,
+                                                    baseViewModel.dataSource.deviceData.value!!.device,
+                                                    true,
+                                                    baseViewModel.dataSource.deviceData.value!!.run
+                                                )
+                                            )
+                                            DisplayDialogFragment.showDialog(
+                                                manager = this.parentFragmentManager,
+                                                data = mData?.data,
                                                 modules = modules
                                             )
                                         } else {
@@ -492,23 +517,15 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 } else if (nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {
-                                    workViewModel.routeData(
-                                        viewLifecycleOwner,
-                                        object : WorkStatus {
-                                            override fun workDone(b: Boolean) {
-                                                setLoading(false)
-                                                if (b) validateModule(
-                                                    jsonObject,
-                                                    encrypted,
-                                                    modules,
-                                                    formControl,
-                                                    action
-
-                                                )
-                                            }
-                                        })
-
-
+                                    setLoading(false)
+                                    InfoFragment.showDialog(this.childFragmentManager)
+                                } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
+                                    setOnNextModule(
+                                        formControl,
+                                        resData?.next,
+                                        modules,
+                                        resData?.formID
+                                    )
                                 } else {
                                     setLoading(false)
                                     AlertDialogFragment.newInstance(
@@ -598,11 +615,55 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
         }
     }
 
+    override fun globalAutoLiking(value: String?, editText: TextInputEditText?) {
+        try {
+            if (response != null)
+                if (!response?.resultsData.isNullOrEmpty()) {
+                    for (s in response?.resultsData!!) {
+                        if (s.controlID == "LOANS") {
+                            val packages = LoanTypeConverter().from(s.controlValue)
+                            for (p in packages!!) {
+                                when (value) {
+                                    "FULLINSTALMENTPAYMENT" -> editText?.setText(p?.installmentAmount)
+                                    "TOTALINSTALMENTPAYMENT" -> editText?.setText(p?.totalAmount)
+                                    else -> editText?.setText("")
+                                }
+                            }
+                        }
+                    }
+
+                } else if (!response?.formField.isNullOrEmpty()) {
+                    for (s in response?.formField!!) {
+                        if (s.controlID == "LOANS") {
+                            val packages = LoanTypeConverter().from(s.controlValue)
+                            for (p in packages!!) {
+                                when (value) {
+                                    "FULLINSTALMENTPAYMENT" -> editText?.setText(p?.installmentAmount)
+                                    "TOTALINSTALMENTPAYMENT" -> editText?.setText(p?.totalAmount)
+                                    else -> editText?.setText("")
+                                }
+                            }
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun setFormNavigation(forms: MutableList<FormControl>?, modules: Modules?) {
         try {
             val destination = forms?.map { it.formID }?.first()
             when (nonCaps(destination)) {
                 nonCaps(FormNavigation.PAYMENT.name) -> onPayment(forms, modules)
+                nonCaps(FormNavigation.VALIDATE.name) -> {
+                    when (nonCaps(modules?.moduleID)) {
+                        nonCaps(FormNavigation.FINGERPRINT.name) -> onBiometric(
+                            forms,
+                            modules
+                        )
+                    }
+                }
                 else -> onPayment(forms, modules)
             }
         } catch (e: Exception) {
@@ -623,6 +684,18 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             .provideNavigationGraph()
             .navigate(
                 widgetViewModel.navigation().navigateGlobal()
+            )
+    }
+
+    private fun onBiometric(forms: MutableList<FormControl>?, modules: Modules?) {
+        BiometricFragment.setData(
+            form = forms,
+            module = modules
+        )
+        ((requireActivity()) as MainActivity)
+            .provideNavigationGraph()
+            .navigate(
+                widgetViewModel.navigation().navigationBio()
             )
     }
 

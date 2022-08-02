@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,6 +24,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -31,6 +34,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.pref.CryptoManager
 import com.craft.silicon.centemobile.data.source.remote.helper.NetworkIsh
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -39,6 +43,9 @@ import com.craft.silicon.centemobile.util.MyActivityResult
 import com.craft.silicon.centemobile.util.ScreenHelper.fullScreen
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.compressImage
+import com.craft.silicon.centemobile.view.dialog.LoadingFragment
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.home.HomeFragment
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -53,6 +60,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
+import javax.crypto.Cipher
 
 
 @AndroidEntryPoint
@@ -68,6 +76,14 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private val widgetViewModel: WidgetViewModel by viewModels()
     private var callbacks: AppCallbacks? = null
 
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var cryptographyManager: CryptoManager
+    private lateinit var secretKeyName: String
+    private lateinit var ciphertext: ByteArray
+    private lateinit var initializationVector: ByteArray
+    private lateinit var biometricPrompt: BiometricPrompt
+    private var bioInterface: BioInterface? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +92,90 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         setNavigation()
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
         checkLocationPermission()
+        setCrypto()
 
     }
+
+    private fun createBiometricPrompt(): BiometricPrompt {
+        val executor = ContextCompat.getMainExecutor(this)
+
+        val callback = object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                AppLogger.instance.appLog(
+                    BiometricFragment::class.java.simpleName,
+                    "$errorCode :: $errString"
+                )
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                AppLogger.instance.appLog(
+                    BiometricFragment::class.java.simpleName,
+                    "Authentication failed for an unknown reason"
+                )
+            }
+
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                AppLogger.instance.appLog(
+                    BiometricFragment::class.java.simpleName,
+                    "Authentication success"
+                )
+                processData(result.cryptoObject)
+            }
+        }
+        return BiometricPrompt(this, executor, callback)
+    }
+
+    private fun setCrypto() {
+        cryptographyManager = CryptoManager()
+        secretKeyName = getString(R.string.secret_key_name)
+        biometricPrompt = createBiometricPrompt()
+        promptInfo = createPromptInfo()
+    }
+
+
+    private fun processData(cryptoObject: BiometricPrompt.CryptoObject?) {
+        val s = widgetViewModel.storageDataSource.iv.value
+        val data = cryptographyManager.decryptData(s!!.cipherText, cryptoObject?.cipher!!)
+        bioInterface?.onPin(data)
+    }
+
+    fun authenticateTo(bioInterface: BioInterface) {
+        this.bioInterface = bioInterface
+        when (BiometricManager.from(applicationContext)
+            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                val data = widgetViewModel.storageDataSource.iv.value
+                val cipher = cryptographyManager.getInitializedCipherForDecryption(
+                    secretKeyName,
+                    data!!.iv
+                )
+                biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+            }
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+
+            }
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                //hw  unavailable
+            }
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                //no hw found
+            }
+        }
+    }
+
+
+    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
+        return BiometricPrompt.PromptInfo.Builder()
+            .setTitle("${getString(R.string.app_name)} ${getString(R.string.auth_)}")
+            .setDescription(getString(R.string.auth_finger))
+            .setConfirmationRequired(false)
+            .setNegativeButtonText(getString(R.string.use_password))
+            .build()
+    }
+
 
     private fun listenToConnection() {
         val animationDuration =
@@ -92,12 +190,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     override fun setBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
-        HomeFragment.newInstance(this)
     }
 
     fun provideNavigationGraph(): NavController {
         return navController!!
     }
+
 
     override fun setViewModel() {
         val version = widgetViewModel.storageDataSource.version.value
@@ -106,10 +204,27 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 if (b) {
                     AppLogger.instance.appLog("DATA:Version", version!!)
                     if (TextUtils.isEmpty(version))
-                        workViewModel.onWidgetData()
+                        workViewModel.onWidgetData(this@MainActivity, this)
+                }
+            }
+            override fun progress(p: Int) {
+                AppLogger.instance.appLog("DATA:Progress", "$p")
+                if (provideNavigationGraph().currentDestination?.id == R.id.landingPageFragment) {
+//                    if (p ==100) setLoading(false)
+//                    else setLoading(true)
                 }
             }
         })
+    }
+
+    private fun setLoading(b: Boolean) {
+        if (b) runOnUiThread {
+            if (provideNavigationGraph().currentDestination?.id != R.id.loadingFragment)
+                provideNavigationGraph().navigate(
+                    widgetViewModel.navigation().navigateToLoading()
+                )
+        } else if (provideNavigationGraph().currentDestination?.id == R.id.loadingFragment)
+            provideNavigationGraph().navigateUp()
     }
 
 
@@ -554,6 +669,27 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 launchGalleryIntent()
             }
         })
+    }
+
+    fun isBiometric(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT < 29) {
+                val keyguardManager: KeyguardManager =
+                    applicationContext.getSystemService(KEYGUARD_SERVICE)
+                            as KeyguardManager
+                val packageManager: PackageManager =
+                    applicationContext.packageManager
+                packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
+                keyguardManager.isKeyguardSecure
+            } else {
+                BiometricManager
+                    .from(applicationContext)
+                    .canAuthenticate(
+                        BiometricManager
+                            .Authenticators.BIOMETRIC_WEAK
+                    ) == BiometricManager.BIOMETRIC_SUCCESS
+            }
+        } else true
     }
 
 }

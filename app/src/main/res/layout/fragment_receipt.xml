@@ -28,19 +28,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/app_blue_light" />
 
-            <ImageButton
-                android:id="@+id/downloadButton"
-                android:layout_width="@dimen/dimens_60dp"
-                android:layout_height="@dimen/dimens_60dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:contentDescription="@string/download"
-                android:src="@drawable/ic_baseline_arrow_downward_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/app_blue_light" />
-
             <ImageView
                 android:id="@+id/successImage"
                 android:layout_width="@dimen/dimens_80dp"

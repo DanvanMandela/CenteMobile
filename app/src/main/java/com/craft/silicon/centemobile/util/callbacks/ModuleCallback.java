@@ -2,6 +2,7 @@ package com.craft.silicon.centemobile.util.callbacks;
 
 import android.widget.LinearLayout;
 
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
@@ -45,8 +46,6 @@ public interface ModuleCallback {
 
     }
 
-    default void inputData(HashMap<String, String> map) {
-    }
 
     default void onLanding(LandingPageItem data) {
     }
@@ -57,6 +56,13 @@ public interface ModuleCallback {
     default void onRecent(FormControl formControl) {
 
     }
+
+    default void onList(FormControl formControl,
+                        EpoxyRecyclerView linearLayout,
+                        Modules modules) {
+
+    }
+    default void onListOption(FormControl control,Modules modules){}
 
     default void onDisplay(FormControl formControl) {
 

@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/poppins_semi_bold"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:textColor="@color/white"
@@ -83,6 +83,7 @@
 
 
                 <TextView
+                    android:layout_marginEnd="@dimen/dimens_40dp"
                     android:id="@+id/info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +93,7 @@
                     android:text="@string/view_balance"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/white"
-                    app:drawableStartCompat="@drawable/ic_baseline_remove_red_eye_24"
+                    app:drawableEndCompat="@drawable/ic_baseline_remove_red_eye_24"
                     app:drawableTint="@color/white" />
             </LinearLayout>
 
@@ -117,6 +118,9 @@
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_regular"
                 android:maxLines="1"
+                tools:text="1234324567"
+                android:letterSpacing="0.6"
+                android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/aspectRatioImageView"

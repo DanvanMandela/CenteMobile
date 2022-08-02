@@ -42,7 +42,7 @@ enum class ControlFormatEnum(var type: String) {
 
     ACCOUNT_BANK("SELECTBANKACCOUNT"),
     BENEFICIARY("SELECTBENEFICIARY"),
-    END("END")
-
-
+    END("END"),
+    NEXT("NEXT"),
+    LIST_WITH_OPTIONS("ListWithOptions")
 }

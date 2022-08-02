@@ -81,7 +81,11 @@ data class LoginUserData(
     @field:SerializedName("ServiceAlerts")
     @field:ColumnInfo(name = "serviceAlerts")
     @field:Expose
-    var serviceAlerts: MutableList<AlertServices>?
+    var serviceAlerts: MutableList<AlertServices>?,
+    @field:SerializedName("ModulesToHide")
+    @field:ColumnInfo(name = "modulesToHide")
+    @field:Expose
+    var hideModule: MutableList<ModuleHide>?
 ) : Parcelable
 
 @Parcelize
@@ -243,6 +247,14 @@ data class Beneficiary(
         return accountAlias!!
     }
 }
+
+
+@Parcelize
+data class ModuleHide(
+    @field:SerializedName("ModuleID")
+    @field:Expose
+    var id: String?,
+) : Parcelable
 
 
 data class ActivationData(

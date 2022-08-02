@@ -8,6 +8,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
@@ -25,12 +26,16 @@ public class WidgetRepository implements WidgetDataSource {
 
     private final WidgetDataSource remoteData;
     private final WidgetDataSource localData;
+    private final StorageDataSource dataSource;
 
 
     @Inject
-    public WidgetRepository(@Remote WidgetDataSource remoteData, @Local WidgetDataSource localData) {
+    public WidgetRepository(@Remote WidgetDataSource remoteData,
+                            @Local WidgetDataSource localData,
+                            StorageDataSource dataSource) {
         this.remoteData = remoteData;
         this.localData = localData;
+        this.dataSource = dataSource;
     }
 
 

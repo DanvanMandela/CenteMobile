@@ -131,4 +131,12 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
             }
         }
     }
+
+    override fun navigationBio(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_bio)
+    }
+
+    override fun navigateToLoading(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_loading)
+    }
 }

@@ -25,4 +25,5 @@ class CleanDBWorker @AssistedInject constructor(
             Result.failure()
         }
     }
+
 }

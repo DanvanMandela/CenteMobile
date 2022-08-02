@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
@@ -158,6 +159,10 @@ class ConfirmFragment : BottomSheetDialogFragment(), AppCallbacks {
                 this@Companion.form = formControl
                 show(manager, TAG)
             }
+    }
+
+    override fun getTheme(): Int {
+        return R.style.ThemeOverlay_Demo_BottomSheetDialog
     }
 
 }

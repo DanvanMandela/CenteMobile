@@ -38,7 +38,8 @@ fun TextInputEditText.setHidden(
                 )
             )
             callbacks?.onServerValue(formControl, this)
-        }
+        } else callbacks?.onServerValue(formControl, this)
+    else callbacks?.onServerValue(formControl, this)
 }
 
 @BindingAdapter("callback", "form")

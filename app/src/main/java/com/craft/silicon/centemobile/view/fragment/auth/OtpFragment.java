@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +31,15 @@ import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTP;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.BaseViewModel;
+import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
-import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -51,16 +56,17 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @AndroidEntryPoint
-public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickListener, SMSData {
+public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickListener, SMSData, OTP {
 
     private FragmentOtpBinding binding;
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
-
+    private CountDownTimer countDownTimer;
     private final SMSReceiver smsReceiver = new SMSReceiver();
     private static final String ARG_MOBILE = "mobile";
     private String mobile;
+    private BaseViewModel baseViewModel;
 
     public OtpFragment() {
         // Required empty public constructor
@@ -98,18 +104,21 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         setBinding();
         setOnClick();
         setBroadcastListener();
+        setTimer();
         return binding.getRoot().getRootView();
     }
 
     @Override
     public void setOnClick() {
         binding.materialButton.setOnClickListener(this);
+        binding.resendButton.setOnClickListener(this);
     }
 
     @Override
     public void setViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
+        baseViewModel = new ViewModelProvider(this).get(BaseViewModel.class);
     }
 
     @Override
@@ -130,17 +139,73 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     public void onClick(View view) {
         if (binding.materialButton.equals(view)) {
             if (validateFields()) verifyOTP();
-        } else if (binding.resendOTP.equals(view)) {
+        } else if (binding.resendButton.equals(view)) {
             resendOTP();
         }
     }
 
     private void resendOTP() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            setLoading(true);
+            jsonObject.put("MOBILENUMBER", mobile);
+            jsonObject.put("SERVICENAME", "ACTIVATION");
+            subscribe.add(baseViewModel.createOTP(jsonObject, requireContext())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(v -> {
+                        new AppLogger().appLog("OTP:Response",
+                                BaseClass.decryptLatest(v.getResponse(),
+                                        authViewModel.storage.getDeviceData()
+                                                .getValue().getDevice(),
+                                        true,
+                                        authViewModel.storage.getDeviceData()
+                                                .getValue().getRun()
+                                ));
 
+                        if (v.getResponse() != null) {
+                            if (!v.getResponse().equals(StatusEnum.ERROR.getType())) {
+                                setLoading(false);
+                                ResponseDetails responseDetails = new ResponseTypeConverter()
+                                        .to(BaseClass.decryptLatest(v.getResponse(),
+                                                authViewModel.storage
+                                                        .getDeviceData().getValue().getDevice(),
+                                                true,
+                                                authViewModel.storage.getDeviceData().getValue().getRun()
+                                        ));
+                                if (responseDetails != null) {
+                                    if (responseDetails.getStatus().equals(StatusEnum.SUCCESS
+                                            .getType())) {
+                                        setLoading(false);
+                                        setTimer();
+                                    } else if (Objects.equals(responseDetails.getStatus(),
+                                            StatusEnum.TOKEN.getType())) {
+                                        workerViewModel.routeData(getViewLifecycleOwner(),
+                                                new WorkStatus() {
+                                                    @Override
+                                                    public void workDone(boolean b) {
+                                                        setLoading(false);
+                                                        if (b) resendOTP();
+                                                    }
+
+                                                    @Override
+                                                    public void progress(int p) {
+
+                                                    }
+                                                });
+                                    }
+                                } else setLoading(false);
+                            }
+                            setLoading(false);
+                        } else setLoading(false);
+                    }, Throwable::printStackTrace));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            new ShowToast(requireContext(), getString(R.string.something_));
+        }
     }
 
     private void verifyOTP() {
-        setTimer();
         setLoading(true);
         subscribe.add(authViewModel.verifyOTP(String.valueOf(binding.verificationCodeEditText.getText()),
                         requireActivity(),
@@ -192,9 +257,17 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                                 R.drawable.warning_app
                         ), getChildFragmentManager());
                     } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-                            setLoading(false);
-                            if (b) verifyOTP();
+                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                            @Override
+                            public void workDone(boolean b) {
+                                setLoading(false);
+                                if (b) verifyOTP();
+                            }
+
+                            @Override
+                            public void progress(int p) {
+
+                            }
                         });
                     } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
@@ -222,24 +295,6 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         }
     }
 
-
-    private void setTimer() {
-        binding.counter.setVisibility(View.VISIBLE);
-        long maxCounter = 30000;
-        long diff = 1000;
-        new CountDownTimer(maxCounter, diff) {
-
-            public void onTick(long millisUntilFinished) {
-                long diff = maxCounter - millisUntilFinished;
-                binding.counter.setText(String.valueOf(diff / 1000));
-            }
-
-            public void onFinish() {
-                binding.resendOTP.setVisibility(View.VISIBLE);
-                binding.counter.setVisibility(View.GONE);
-            }
-        }.start();
-    }
 
     @Override
     public void setBroadcastListener() {
@@ -280,5 +335,44 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         super.onDestroy();
     }
 
+    private void setTimer() {
+        binding.resendLay.setVisibility(View.VISIBLE);
+        long sData = authViewModel.storage.getOtpState().getValue();
+        long startTime = (120 * 1000);
+        long interval = 1000;
+        if (sData != 0L) {
+            countDownTimer = new OTPCountDownTimer(sData, interval, this);
+        } else countDownTimer = new OTPCountDownTimer(startTime, interval, this);
 
+        timerControl(true);
+        done(false);
+    }
+
+    private void timerControl(boolean b) {
+        if (b) {
+            countDownTimer.start();
+        } else {
+            countDownTimer.cancel();
+        }
+    }
+
+
+    @Override
+    public void timer(@NonNull String str) {
+        binding.otpTimer.setText(str);
+    }
+
+    @Override
+    public void done(boolean b) {
+        if (b) {
+            timerControl(false);
+            binding.resendButton.setVisibility(View.VISIBLE);
+        } else binding.resendButton.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void otp(@NonNull String str) {
+
+    }
 }

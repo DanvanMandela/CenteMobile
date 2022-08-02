@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.craft.silicon.centemobile.data.worker.CleanDBWorker
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSource) : ViewModel() {
 
 
-    fun onWidgetData() {
+    fun onWidgetData(owner: LifecycleOwner?, status: WorkStatus?) {
         val workWorker = OneTimeWorkRequestBuilder<CleanDBWorker>()
         var continuation = worker.getWorkManger()
             .beginUniqueWork(
@@ -69,6 +70,22 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
 
         continuation.enqueue()
 
+        continuation.workInfosLiveData.observe(owner!!) { workInfo ->
+            if (workInfo.isNotEmpty()) {
+                var progress: Double
+                workInfo.forEachIndexed { index, info ->
+                    val state = info.state
+                    if (state.isFinished && state == WorkInfo.State.SUCCEEDED) {
+                        val start = index.plus(1).toDouble()
+                        progress = (start.div(workInfo.size)).times(100)
+                        status?.progress(progress.toInt())
+                    }
+                }
+
+            }
+        }
+
+
     }
 
     fun routeData(owner: LifecycleOwner, status: WorkStatus) {
@@ -90,6 +107,12 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
 }
 
 interface WorkStatus {
-    fun workDone(b: Boolean)
+    fun workDone(b: Boolean) {
+        throw Exception("Not implemented")
+    }
+
+    fun progress(p: Int) {
+        throw Exception("Not implemented")
+    }
 }
 

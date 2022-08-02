@@ -10,6 +10,7 @@ import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.input.InputData;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
+import com.craft.silicon.centemobile.data.model.user.AlertServices;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -24,7 +25,9 @@ public interface FormCallback {
 
     }
 
-    default void onBalance(TextView textView, Accounts accounts) {
+    default void onBalance(TextView textView,
+                           Accounts accounts, TextView info,
+                           Boolean b) {
     }
 
     default void onToggleButton(FormControl formControl) {
@@ -63,6 +66,12 @@ public interface FormCallback {
 
     }
 
+
+    default void onAlertService(AlertServices services) {
+
+    }
+
+
     default void onDynamicDropDown(AutoCompleteTextView view,
                                    FormControl formControl,
                                    List<TextInputEditText> editTextList) {
@@ -73,5 +82,7 @@ public interface FormCallback {
 
     }
 
+    default void globalAutoLiking(String value, TextInputEditText editText) {
+    }
 
 }

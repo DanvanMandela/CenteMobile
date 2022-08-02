@@ -146,7 +146,7 @@
                     android:fontFamily="@font/poppins_medium"
                     android:hint="@string/pin"
                     android:inputType="numberPassword"
-                    android:maxLength="4"
+                    android:maxLength="6"
                     android:paddingHorizontal="@dimen/dimens_5dp"
                     android:paddingVertical="@dimen/dimens_0dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />

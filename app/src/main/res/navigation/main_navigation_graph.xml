@@ -112,6 +112,20 @@
         android:id="@+id/action_nav_connection"
         app:destination="@+id/connectionFragment"
         app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_nav_loading"
+        app:destination="@+id/loadingFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_bio"
+        app:destination="@+id/biometricFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
     <!--    End-->
 
 
@@ -205,6 +219,8 @@
             app:popEnterAnim="@anim/anim_slide_in_right"
             app:popExitAnim="@anim/anim_slide_out_right"
             app:popUpToInclusive="true" />
+
+
     </fragment>
     <fragment
         android:id="@+id/validationFragment"
@@ -293,6 +309,16 @@
         android:name="com.craft.silicon.centemobile.view.fragment.map.MapBottomSheetFragment"
         android:label="fragment_map_bottom_sheet"
         tools:layout="@layout/fragment_map_bottom_sheet" />
+    <fragment
+        android:id="@+id/biometricFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment"
+        android:label="fragment_biometric"
+        tools:layout="@layout/fragment_biometric" />
+    <dialog
+        android:id="@+id/loadingFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" />
 
     <!--    Dialog-->
 </navigation>

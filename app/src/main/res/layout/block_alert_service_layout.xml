@@ -18,7 +18,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless">
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="@{()->callback.onAlertService(data)}">
 
         <FrameLayout
             android:id="@+id/frameLayout2"
@@ -69,7 +70,7 @@
             android:layout_marginTop="-5dp"
             android:layout_marginEnd="16dp"
             android:autoSizeTextType="uniform"
-            android:fontFamily="@font/poppins_semi_bold"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/days_remaining"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintEnd_toEndOf="parent"

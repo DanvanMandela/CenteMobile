@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CenteMobile</string>
+    <string name="app_name">CB Mobile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logo">Logo</string>
@@ -277,4 +277,33 @@
     <string name="view_balance">Show Balance</string>
     <string name="unable_to_get_balance">Unable to get balance at the moment</string>
     <string name="hide_balance">Hide Balance</string>
+    <string name="session">Session</string>
+    <string name="your_session_has_ex">Your session has expired,please login again to continue</string>
+    <string name="timed_out">Timed out</string>
+    <string name="payments_alerts">Payment Alerts</string>
+    <string name="no_service_alert">You have no service alert on the\nselected account</string>
+    <string name="use_touch_id">Use fingerprint  for faster and easy access\nto your  Account</string>
+    <string name="enable_touch_id_login">Enable Fingerprint Login</string>
+    <string name="disable_touch_id_login">Disable Fingerprint Login</string>
+    <string name="login_touch">Login with Fingerprint</string>
+    <string name="Biometric">biometric</string>
+    <string name="enter_pin_enable_touch">Enter your PIN to enable fingerprint\nLogin</string>
+    <string name="enter_pin_disable_touch">Enter your PIN to disable fingerprint\nLogin</string>
+    <string name="enable_">Enable</string>
+    <string name="pin_required_invalid">"Pin must be more that 3 characters"</string>
+    <string name="disable_">Disable</string>
+    <string name="secret_key_name">dooms@day4400</string>
+    <string name="auth_">Authentication</string>
+    <string name="disable_fingerprint">Disable fingerprint authentication</string>
+    <string name="enable_fingerprint">Enable fingerprint authentication</string>
+    <string name="invalid_pin">Pin provided is invalid</string>
+    <string name="auth_finger">Login with  Fingerprint ID</string>
+    <string name="use_password">Use your Centenary Pin</string>
+    <string name="fingerprint_enabled">Fingerprint enabled successfully</string>
+    <string name="fingerprint_disabled">Fingerprint disabled successfully</string>
+    <string name="device_no_biometric">Your device doe v s\'t support this service</string>
+    <string name="nothing_to_share">Nothing available to share</string>
+    <string name="are_you_sure">Do you want to log out?</string>
+    <string name="loading_">Loading…</string>
+
 </resources>

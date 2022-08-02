@@ -4,23 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.dialog.LoadingFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:padding="@dimen/dimens_100dp"
         android:layout_height="match_parent">
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/spin_kit"
-            style="@style/SpinKitView.FadingCircle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:SpinKit_Color="@color/white"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.github.ybq.android.spinkit.SpinKitView
+                    android:id="@+id/spin_kit"
+                    style="@style/SpinKitView.Small.FadingCircle"
+                    android:layout_width="@dimen/dimens_80dp"
+                    android:layout_height="@dimen/dimens_80dp"
+                    android:layout_gravity="center"
+                    app:SpinKit_Color="@color/app_blue_light" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/dimens_50dp"
+                    android:layout_height="@dimen/dimens_50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_logo" />
+            </FrameLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
 
 </layout>

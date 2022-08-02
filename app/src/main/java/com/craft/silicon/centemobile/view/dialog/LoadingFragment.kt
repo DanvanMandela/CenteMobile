@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.dialog
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -12,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLoadingBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -22,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 
 @AndroidEntryPoint
-class LoadingFragment : DialogFragment() {
+class LoadingFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentLoadingBinding
 
@@ -36,14 +40,11 @@ class LoadingFragment : DialogFragment() {
         return binding.root.rootView
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog!!.setCancelable(false)
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
-
-    override fun getTheme(): Int {
-        return R.style.mytheme
+        // dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
 
@@ -75,13 +76,26 @@ class LoadingFragment : DialogFragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (dialog != null && dialog!!.window != null) {
-            dialog!!.window!!.setLayout(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
-            )
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            val parentLayout =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            parentLayout?.let { data ->
+                val behaviour = BottomSheetBehavior.from(data)
+                setupFullHeight(data)
+                behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
+            }
         }
+        return dialog
+    }
+
+    private fun setupFullHeight(bottomSheet: View) {
+        val layoutParams = bottomSheet.layoutParams
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        bottomSheet.layoutParams = layoutParams
     }
 }

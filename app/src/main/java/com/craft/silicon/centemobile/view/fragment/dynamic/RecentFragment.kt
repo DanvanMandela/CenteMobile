@@ -71,13 +71,18 @@ class RecentFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     private fun getData() {
+        if (data != null) {
+            if (data?.resultsData != null) {
+                val s = data!!.resultsData!!.sortedBy { it.date }
+                controller?.setData(
+                    ResultDataList(
+                        1,
+                        s.toMutableList()
+                    )
+                )
+            }
+        }
 
-        controller?.setData(
-            ResultDataList(
-                1,
-                data!!.resultsData!!
-            )
-        )
         binding.container.setController(controller!!)
 
     }
@@ -102,6 +107,7 @@ class RecentFragment : BottomSheetDialogFragment(), AppCallbacks {
                 val behaviour = BottomSheetBehavior.from(data)
                 setupFullHeight(data)
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
             }
         }
         return dialog

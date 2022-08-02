@@ -73,13 +73,35 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
     ) {
         binding.data = s
         parent.childContainer.addView(binding.root)
+        val children =
+            data.mainData.forms.form?.filter { it -> it.linkedToControl == s.controlID }
+        val child: BlockDropDownLayoutBinding
+        var childData: DropDownView? = null
+
+        if (children!!.isNotEmpty()) {
+            val drop = children.single()
+            child = BlockDropDownLayoutBinding.inflate(
+                LayoutInflater
+                    .from(parent.root.context)
+            )
+            child.data = drop
+            child.callback = callbacks
+            parent.childContainer.addView(child.root)
+            childData = DropDownView(
+                dropDown = child.autoEdit,
+                data = drop,
+                child = null
+            )
+        }
+
         parent.autoEdit.linkedDropDown(
             callbacks = callbacks,
             formControl = data.container,
             storage = data.mainData.storage,
             view = DropDownView(
                 dropDown = binding.autoEdit,
-                data = s
+                data = s,
+                child = childData
             )
         )
     }

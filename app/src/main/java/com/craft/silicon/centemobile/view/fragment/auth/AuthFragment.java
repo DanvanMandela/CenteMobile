@@ -28,7 +28,9 @@ import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 import com.google.gson.Gson;
 
@@ -91,9 +93,18 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         binding.setData(authViewModel.storage.getActivationData().getValue());
     }
 
+    private void bioLogin() {
+        boolean state = authViewModel.storage.getBio().getValue();
+        if (state)
+            if (((MainActivity) requireActivity()).isBiometric()) {
+                ((MainActivity) requireActivity()).authenticateTo(this::authUser);
+            }
+    }
+
     @Override
     public void setBinding() {
         binding.setLifecycleOwner(getViewLifecycleOwner());
+        new Handler(Looper.getMainLooper()).postDelayed(this::bioLogin, 600);
     }
 
     @Override
@@ -107,13 +118,19 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         if (TextUtils.isEmpty(Objects.requireNonNull(binding.editPin.getText()).toString())) {
             new ShowToast(requireContext(), getString(R.string.pin_required), true);
             return false;
-        } else return true;
+        } else {
+            if (binding.editPin.getText().length() < 6) {
+                new ShowToast(requireContext(), getString(R.string.invalid_pin), true);
+                return false;
+            } else return true;
+        }
     }
 
     @Override
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
-            if (validateFields()) authUser();
+            if (validateFields())
+                authUser(Objects.requireNonNull(binding.editPin.getText()).toString());
         } else if (view.equals(binding.forgotPin)) {
             ((MainActivity) requireActivity())
                     .provideNavigationGraph()
@@ -121,13 +138,13 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         }
     }
 
-    private void authUser() {
+    private void authUser(String pin) {
         setLoading(true);
-        subscribe.add(authViewModel.loginAccount(Objects.requireNonNull(binding.editPin.getText()).toString(),
+        subscribe.add(authViewModel.loginAccount(pin,
                         requireActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setOnSuccess, Throwable::printStackTrace));
+                .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
     }
 
     @Override
@@ -136,7 +153,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
     }
 
-    private void setOnSuccess(DynamicResponse data) {
+    private void setOnSuccess(DynamicResponse data, String pin) {
         try {
             new AppLogger().appLog("LOGIN:Response", BaseClass.decryptLatest(data.getResponse(),
                     authViewModel.storage.getDeviceData().getValue().getDevice(),
@@ -167,25 +184,37 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                                     authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
 
-                    assert responseDetails != null;
-                    if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
-                        setLoading(false);
-                        showError(Objects.requireNonNull(responseDetails.getMessage()));
-                    } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), b -> {
+
+                    if (responseDetails != null) {
+                        if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
                             setLoading(false);
-                            if (b) authUser();
-                        });
+                            showError(Objects.requireNonNull(responseDetails.getMessage()));
+                        } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                                @Override
+                                public void progress(int p) {
+
+                                }
+
+                                @Override
+                                public void workDone(boolean b) {
+                                    setLoading(false);
+                                    if (b) authUser(pin);
+                                }
+                            });
+                        } else {
+                            new ShowToast(requireContext(), getString(R.string.welcome_back));
+                            AppLogger.Companion.getInstance().appLog("AUTH",
+                                    new Gson().toJson(responseDetails));
+                            saveUserData(responseDetails);
+
+
+                        }
                     } else {
                         setLoading(false);
-                        new ShowToast(requireContext(), getString(R.string.welcome_back));
-                        AppLogger.Companion.getInstance().appLog("AUTH",
-                                new Gson().toJson(responseDetails));
-                        saveUserData(responseDetails);
-                        new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
-                                .provideNavigationGraph()
-                                .navigate(authViewModel.navigationDataSource.navigateToHome()), 300);
+                        showError(getString(R.string.parsing_error));
                     }
+
                 }
             }
         } catch (Exception e) {
@@ -196,34 +225,61 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     }
 
+    private void navigate() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            setLoading(false);
+            ((MainActivity) requireActivity())
+                    .provideNavigationGraph()
+                    .navigate(authViewModel.navigationDataSource.navigateToHome());
+        }, 1500);
+    }
+
     private void setLoading(boolean b) {
         if (b) LoadingFragment.show(getChildFragmentManager());
         else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
-    private void saveUserData(LoginUserData responseDetails) {
-        updateActivationData(responseDetails);
-        if (responseDetails.getVersion() != null)
-            updateWidgets(responseDetails.getVersion());
-        if (responseDetails.getAccounts() != null)
-            authViewModel.storage.setAccounts(responseDetails.getAccounts());
-        if (responseDetails.getBeneficiary() != null)
-            authViewModel.storage.setBeneficiary(responseDetails.getBeneficiary());
+    private void saveUserData(LoginUserData res) {
+        updateActivationData(res);
+        if (res.getVersion() != null)
+            updateWidgets(res.getVersion());
+        if (res.getAccounts() != null)
+            authViewModel.storage.setAccounts(res.getAccounts());
+        if (res.getBeneficiary() != null)
+            authViewModel.storage.setBeneficiary(res.getBeneficiary());
 
-        if (responseDetails.getModules() != null)
-            authViewModel.saveFrequentModule(responseDetails.getModules());
-        if (responseDetails.getServiceAlerts() != null)
-            authViewModel.storage.setAlerts(responseDetails.getServiceAlerts());
+        if (res.getModules() != null)
+            authViewModel.saveFrequentModule(res.getModules());
+        if (res.getServiceAlerts() != null)
+            authViewModel.storage.setAlerts(res.getServiceAlerts());
+        if (res.getHideModule() != null)
+            authViewModel.storage.setHiddenModule(res.getHideModule());
 
     }
 
     private void updateWidgets(String version) {
         if (!TextUtils.isEmpty(version)) {
-            if (!authViewModel.storage.getVersion().getValue().equals(version))
-                workerViewModel.onWidgetData();
-            authViewModel.storage.setVersion(version);
-        } else
+            if (!authViewModel.storage.getVersion().getValue().equals(version)) {
+                workerViewModel.onWidgetData(getViewLifecycleOwner(), new WorkStatus() {
+                    @Override
+                    public void progress(int p) {
+                        if (p > 60) {
+                            navigate();
+                        }
+                    }
+
+                    @Override
+                    public void workDone(boolean b) {
+
+                    }
+                });
+                authViewModel.storage.setVersion(version);
+            } else navigate();
+
+        } else {
             authViewModel.storage.setVersion("1");
+            navigate();
+        }
     }
 
     private void updateActivationData(LoginUserData data) {
@@ -235,7 +291,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         userData.setIDNumber(data.getIDNumber());
         userData.setLoginDate(data.getLoginDate());
         if (userData.getMessage() != null)
-            userData.setMessage(data.getMessage());
+            if (!TextUtils.isEmpty(userData.getMessage()))
+                userData.setMessage(data.getMessage());
         authViewModel.storage.setActivationData(userData);
     }
 

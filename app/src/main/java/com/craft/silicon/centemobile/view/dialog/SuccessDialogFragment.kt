@@ -23,9 +23,11 @@ private const val ARG_DATA = "data"
  * Use the [SuccessDialogFragment.showDialog] factory method to
  * create an instance of this fragment.
  */
+
 class SuccessDialogFragment : DialogFragment(), AppCallbacks {
     private lateinit var binding: FragmentSuccessDialogBinding
     private var dialogData: DialogData? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +98,8 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
             )
         }
     }
+
+
 
     override fun onDialog() {
         dialog?.dismiss()

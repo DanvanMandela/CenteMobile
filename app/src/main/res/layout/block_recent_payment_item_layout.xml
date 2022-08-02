@@ -10,126 +10,135 @@
             type="com.craft.silicon.centemobile.data.model.dynamic.ResultsData" />
     </data>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_100dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dimens_16dp"
         android:layout_marginTop="@dimen/dimens_8dp"
-        android:background="@color/ghost_white"
-        android:orientation="horizontal">
+       >
 
-        <View
-            android:layout_width="@dimen/dimens_2dp"
-            android:layout_height="match_parent"
-            android:background="@color/app_blue_light" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_100dp"
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:background="@color/white"
+            android:orientation="horizontal">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView2"
-                android:layout_width="@dimen/dimens_70dp"
-                android:layout_height="@dimen/dimens_70dp"
-                android:layout_marginStart="24dp"
-                app:cardCornerRadius="@dimen/dimens_5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <View
+                android:layout_width="@dimen/dimens_2dp"
+                android:layout_height="match_parent"
+                android:background="@color/app_blue_light" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                    <TextView
-                        android:id="@+id/dayText"
-                        dateM="@{data.date}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        tools:ignore="UnusedAttribute"
-                        tools:text="29" />
+                <com.google.android.material.card.MaterialCardView
+                    app:cardBackgroundColor="@color/ghost_white"
+                    android:id="@+id/materialCardView2"
+                    android:layout_width="@dimen/dimens_70dp"
+                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_marginStart="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/monthText"
-                        month="@{data.date}"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/dimens_minus_10dp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/poppins_medium"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        tools:ignore="UnusedAttribute"
-                        tools:text="June" />
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/dayText"
+                            dateM="@{data.date}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                            tools:ignore="UnusedAttribute"
+                            tools:text="29" />
 
+                        <TextView
+                            android:id="@+id/monthText"
+                            month="@{data.date}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/dimens_minus_10dp"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            tools:ignore="UnusedAttribute"
+                            tools:text="June" />
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:id="@+id/beneficiary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_medium"
-                android:maxLines="1"
-                android:text="@{data.beneficiary}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                app:layout_constraintEnd_toStartOf="@+id/amount"
-                app:layout_constraintStart_toEndOf="@+id/materialCardView2"
-                app:layout_constraintTop_toBottomOf="@+id/token"
-                tools:targetApi="o"
-                tools:text="Beneficiary : 1111" />
-
-
-            <TextView
-                android:id="@+id/token"
-                name="@{data.refToken}"
-                ap="@{@string/refresh_token}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:alpha="0.8"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_medium"
-                android:maxLines="1"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                app:layout_constraintEnd_toStartOf="@+id/amount"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/materialCardView2"
-                app:layout_constraintTop_toTopOf="@+id/materialCardView2"
-                tools:targetApi="o"
-                tools:text="Refresh Token : 15825" />
-
-            <TextView
-                android:id="@+id/amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/poppins_bold"
-                android:maxLines="1"
-                android:padding="@dimen/dimens_10dp"
-                android:text="@{data.amount}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                app:layout_constraintBottom_toBottomOf="@+id/token"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/beneficiary"
-                tools:targetApi="o"
-                tools:text="GUX.450" />
+                    </LinearLayout>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/beneficiary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/poppins_medium"
+                    android:maxLines="1"
+                    android:text="@{data.beneficiary}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+                    app:layout_constraintTop_toTopOf="@+id/materialCardView2"
+                    tools:targetApi="o"
+                    tools:text="Beneficiary : 1111" />
+
+
+                <TextView
+                    android:id="@+id/token"
+                    name="@{data.refToken}"
+                    ap="@{@string/refresh_token}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeTextType="uniform"
+
+                    android:fontFamily="@font/poppins_regular"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="@color/dar_color_one"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+                    app:layout_constraintTop_toBottomOf="@+id/amount"
+                    tools:targetApi="o"
+                    tools:text="Refresh Token : 15825" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/poppins_bold"
+                    android:maxLines="1"
+                    android:text="@{data.amount}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+                    app:layout_constraintTop_toBottomOf="@+id/beneficiary"
+                    tools:targetApi="o"
+                    tools:text="GUX.450" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
 </layout>

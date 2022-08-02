@@ -406,17 +406,6 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                                                 "OCR:DATA",
                                                 Gson().toJson(data)
                                             )
-
-                                            pagerData?.idDetails(
-                                                IDDetails(
-                                                    selfie = selfie!!,
-                                                    signature = signature!!,
-                                                    id = id!!,
-                                                    data = data,
-                                                    title = binding.titleLay
-                                                        .autoEdit.editableText.toString()
-                                                )
-                                            )
                                             ocrData = data
                                             saveState()
                                             pagerData?.onNext(4)

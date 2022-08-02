@@ -60,7 +60,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
     private var param2: String? = null
     private lateinit var binding: FragmentOnTheGoBinding
     private var adapter: ONTHGFragmentAdapter? = null
-    private val onTheGoData = MutableLiveData<OnTheGoData>()
     private val widgetViewModel: WidgetViewModel by viewModels()
 
 
@@ -80,7 +79,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
         // Inflate the layout for this fragment
         binding = FragmentOnTheGoBinding.inflate(inflater, container, false)
         setBinding()
-        setSateData()
         return binding.root.rootView
     }
 
@@ -120,11 +118,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
     }
 
 
-    private fun setSateData() {
-        val state = widgetViewModel.storageDataSource.onTheGoData.value
-        if (state != null) onTheGoData.value = state
-    }
-
     override fun setBinding() {
         val animationDuration = requireContext()
             .resources.getInteger(R.integer.animation_duration)
@@ -140,15 +133,8 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
         binding.shimmerContainer.visibility = View.GONE
     }
 
-    private fun startShimmer() {
-        binding.shimmerContainer.visibility = View.VISIBLE
-        binding.shimmerContainer.startShimmer()
-    }
-
 
     companion object {
-        var ocrData = MutableLiveData<OCRData>()
-
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -212,36 +198,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
         state.deleteIncomeSource()
     }
 
-    override fun customerProduct(data: CustomerProduct) {
-        val onData = onTheGoData.value
-        onData?.customer = data
-        onTheGoData.value = onData
-    }
-
-
-    override fun incomeData(data: IncomeData) {
-        val onData = onTheGoData.value
-        onData?.incomeData = data
-        onTheGoData.value = onData
-    }
-
-    override fun parentDetails(data: ParentDetails) {
-        val onData = onTheGoData.value
-        onData?.parentDetails = data
-        onTheGoData.value = onData
-    }
-
-    override fun addressData(data: AddressData) {
-        val onData = onTheGoData.value
-        onData?.addressData = data
-        onTheGoData.value = onData
-    }
-
-    override fun kinData(data: NextKinData) {
-        val onData = onTheGoData.value
-        onData?.nextKinData = data
-        onTheGoData.value = onData
-    }
 
     override fun finish() {
         clearState()
@@ -249,17 +205,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
             (requireActivity() as MainActivity)
                 .provideNavigationGraph().navigateUp()
         }, 200)
-    }
-
-
-    override fun idDetails(data: IDDetails) {
-        ocrData.value = data.data
-    }
-
-    override fun ocrData(data: OCRData) {
-        val onData = onTheGoData.value
-        onData?.oCRData = data
-        onTheGoData.value = onData
     }
 
 
@@ -324,44 +269,12 @@ interface PagerData {
         throw Exception("Not implemented")
     }
 
-    fun customerProduct(data: CustomerProduct) {
-        throw Exception("Not implemented")
-    }
-
-    fun idDetails(data: IDDetails) {
-        throw Exception("Not implemented")
-    }
-
-    fun parentDetails(data: ParentDetails) {
-        throw Exception("Not implemented")
-    }
-
-    fun incomeData(data: IncomeData) {
-        throw Exception("Not implemented")
-    }
-
-    fun kinData(data: NextKinData) {
-        throw Exception("Not implemented")
-    }
-
-    fun addressData(data: AddressData) {
-        throw Exception("Not implemented")
-    }
-
-    fun onService(data: OtherService, boolean: Boolean) {
-        throw Exception("Not implemented")
-    }
-
 
     fun currentPosition() {
         throw Exception("Not implemented")
     }
 
     fun clearState() {
-        throw Exception("Not implemented")
-    }
-
-    fun ocrData(data: OCRData) {
         throw Exception("Not implemented")
     }
 
@@ -382,6 +295,10 @@ interface PagerData {
     }
 
     fun finish() {
+        throw Exception("Not implemented")
+    }
+
+    fun onService(data: OtherService, boolean: Boolean) {
         throw Exception("Not implemented")
     }
 }

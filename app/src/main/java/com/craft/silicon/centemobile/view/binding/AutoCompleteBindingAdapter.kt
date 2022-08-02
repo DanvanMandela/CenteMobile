@@ -138,6 +138,5 @@ fun AutoCompleteTextView.setDynamicDropDown(
 ) {
     this.setText("")
     setDefaultValue(formControl, callbacks)
-
 }
 

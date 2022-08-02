@@ -12,6 +12,7 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.GroupFormTypeConverter
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
+import com.craft.silicon.centemobile.data.model.dynamic.Notifications
 import com.craft.silicon.centemobile.data.model.dynamic.ResultsData
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
@@ -87,10 +88,17 @@ data class LayoutData(
 }
 
 data class LandingPageItem(
+    @field:SerializedName("title")
     @StringRes val title: Int,
+    @field:SerializedName("avatar")
     @DrawableRes val avatar: Int,
-    val enum: LandingPageEnum
-)
+    @field:SerializedName("enum")
+    val enum: LandingPageEnum,
+) {
+    @field:SerializedName("active")
+    @field:Expose
+    var visible: Boolean? = null
+}
 
 enum class LandingPageEnum {
     BRANCH, LOGIN, ONLINE_BANKING, REGISTRATION, ON_THE_GO
@@ -108,7 +116,7 @@ object LandingData {
         ),
         LandingPageItem(
             title = R.string.cente_login,
-            avatar = R.drawable.login_icon,
+            avatar = R.drawable.enter,
             enum = LandingPageEnum.LOGIN
         ),
         LandingPageItem(
@@ -168,7 +176,9 @@ data class HashMapWrapper(val hashMap: HashMap<String, String>?) :
     Parcelable
 
 @Parcelize
-data class ReceiptList(val receipt: MutableList<ReceiptDetails>) : DynamicData()
+data class ReceiptList(val receipt: MutableList<ReceiptDetails>,
+                       val notification: MutableList<Notifications>?
+) : DynamicData()
 
 
 @Parcelize

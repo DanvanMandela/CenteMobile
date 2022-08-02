@@ -4,71 +4,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.dialog.confirm.ConfirmFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/transparent">
 
-        <TextView
-            android:id="@+id/textView8"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_54dp"
-            android:background="@color/app_blue_light"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:gravity="center"
-            android:text="@string/trans_module"
-            android:textColor="@color/ghost_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/container">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <TextView
+                android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_60dp"
-                android:layout_margin="@dimen/dimens_10dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/poppins_medium"
-                android:text="@string/cancel"
-                android:textColor="@color/red_app"
-                app:cornerRadius="@dimen/dimens_30dp"
-                app:strokeColor="@color/red_app" />
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center"
+                android:text="@string/trans_module"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/confirm"
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/parent"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_60dp"
-                android:layout_margin="@dimen/dimens_10dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/poppins_medium"
-                android:text="@string/confirm"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/app_blue_light"
-                app:cornerRadius="@dimen/dimens_30dp"
-                app:strokeColor="@color/app_blue_light" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_8dp"
+                app:cardBackgroundColor="@color/ghost_white"
+                app:cardCornerRadius="@dimen/dimens_16dp"
+                app:cardElevation="@dimen/dimens_0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical" />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancel"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_60dp"
+                    android:layout_margin="@dimen/dimens_10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/cancel"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/dar_color_one"
+                    app:backgroundTint="@color/ghost_white"
+                    app:cornerRadius="@dimen/dimens_30dp"
+                    app:strokeColor="@color/ghost_white" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_60dp"
+                    android:layout_margin="@dimen/dimens_10dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/confirm"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/app_blue_light"
+                    app:cornerRadius="@dimen/dimens_30dp" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </FrameLayout>
+
 
 </layout>

@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:autoSizeTextType="uniform"
-            android:fontFamily="@font/poppins_semi_bold"
+            android:fontFamily="@font/poppins_medium"
             android:gravity="center"
             android:maxLines="2"
             android:minLines="2"

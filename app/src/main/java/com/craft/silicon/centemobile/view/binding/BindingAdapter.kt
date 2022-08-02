@@ -2,7 +2,9 @@ package com.craft.silicon.centemobile.view.binding
 
 import android.content.Context
 import android.graphics.BlurMaskFilter
+import android.graphics.Color
 import android.graphics.MaskFilter
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
@@ -10,12 +12,14 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.MaskFilterSpan
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
@@ -47,6 +51,7 @@ import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
+import com.craft.silicon.centemobile.util.ColorUtil
 import com.craft.silicon.centemobile.util.HorizontalMarginItemDecoration
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AccountAdapterItem
@@ -57,6 +62,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
@@ -136,6 +142,15 @@ fun MaterialToolbar.setToolbar(callbacks: AppCallbacks) {
     title.typeface = this.context.getFont(R.font.poppins_semi_bold)
     subTitle.typeface = this.context.getFont(R.font.poppins_medium)
 
+    this.setOnMenuItemClickListener { item ->
+        when (item?.itemId) {
+            R.id.actionLogout -> {
+                callbacks.logOut()
+                true
+            }
+            else -> false
+        }
+    }
 }
 
 @BindingAdapter("imageUri")
@@ -232,10 +247,9 @@ fun TextView.setAccountNumber(text: String?) {
             this.text = text
             Handler(Looper.getMainLooper()).postDelayed({
                 this.text = BaseClass.maskCardNumber(text)
-            }, 1500)
+            }, 3500)
         }
     }
-
 }
 
 @BindingAdapter("account", "callbacks")
@@ -252,35 +266,17 @@ fun LinearLayout.setBalance(account: Accounts?, callbacks: AppCallbacks) {
     balanceText.text = string
     this.setOnClickListener {
         if (!isVisible) {
-            setInfo(info, true)
-            callbacks.onBalance(balanceText, account)
+            callbacks.onBalance(balanceText, account, info, true)
             isVisible = true
         } else {
+            callbacks.onBalance(balanceText, account, info, false)
             isVisible = false
-            setInfo(info, false)
             balanceText.text = string
         }
     }
 
 }
 
-fun setInfo(info: TextView?, b: Boolean) {
-    if (b) {
-        info?.text = info!!.context.getString(R.string.hide_balance)
-        info.setCompoundDrawablesWithIntrinsicBounds(
-            ContextCompat.getDrawable(
-                info.context, R.drawable.ic_baseline_remove_red_eye_24
-            ), null, null, null
-        )
-    } else {
-        info?.text = info!!.context.getString(R.string.view_balance)
-        info.setCompoundDrawablesWithIntrinsicBounds(
-            ContextCompat.getDrawable(
-                info.context, R.drawable.ic_baseline_remove_red_eye_24
-            ), null, null, null
-        )
-    }
-}
 
 @BindingAdapter("username")
 fun TextView.setUsername(data: ActivationData?) {
@@ -490,8 +486,7 @@ fun EpoxyRecyclerView.setLandingPage(callbacks: AppCallbacks, data: GroupLanding
     val layoutManager = FlexboxLayoutManager(context)
     layoutManager.flexDirection = FlexDirection.COLUMN
     layoutManager.justifyContent = JustifyContent.FLEX_END
-
-    this.animation = AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
+    //this.animation = AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
     this.layoutManager = GridLayoutManager(this.context, 3)
     val controller = LandingPageController(callbacks)
     controller.setData(data)
@@ -559,6 +554,18 @@ fun View.setRecentList(
         callbacks.onRecent(formControl)
     }
 }
+
+@BindingAdapter("callback", "list", "module")
+fun EpoxyRecyclerView.setList(
+    callbacks: AppCallbacks,
+    formControl: FormControl?,
+    modules: Modules
+) {
+    if (formControl != null) {
+        callbacks.onList(formControl, this, modules)
+    }
+}
+
 
 @BindingAdapter("callback", "display")
 fun TextView.setDisplay(
@@ -643,28 +650,64 @@ fun setIndicatorColor(indicator: CircularProgressIndicator, maxDay: Int) {
     val forth = maxDay.div(4)
     val current = indicator.progress
 
+
+
     if (current >= half) {
+        val color = R.color.green_indicator
+        val lightColor =
+            ColorUtil().lightenColor(ContextCompat.getColor(indicator.context, color), 0.35f)
+        indicator.trackColor = ColorDrawable(lightColor).color
+
         indicator.setIndicatorColor(
             ContextCompat.getColor(
                 indicator.context,
-                R.color.green_indicator
+                color
             )
         )
+
+
     } else if (current in third until half) {
+        val color = R.color.yellow_indicator
+        val lightColor =
+            ColorUtil().lightenColor(ContextCompat.getColor(indicator.context, color), 0.35f)
+        indicator.trackColor = ColorDrawable(lightColor).color
+
         indicator.setIndicatorColor(
             ContextCompat.getColor(
                 indicator.context,
-                R.color.yellow_indicator
+                color
             )
         )
-    } else if (current <= forth) {
+
+    } else if (current <=forth) {
+        val color = R.color.red_app
+        val lightColor =
+            ColorUtil().lightenColor(ContextCompat.getColor(indicator.context, color), 0.35f)
+        indicator.trackColor = ColorDrawable(lightColor).color
+
         indicator.setIndicatorColor(
             ContextCompat.getColor(
                 indicator.context,
-                R.color.red_app
+                color
             )
         )
     }
+}
+
+@BindingAdapter("active")
+fun MaterialCardView.setActiveGrid(data: LandingPageItem?) {
+    if (data!!.visible != null) {
+        if (!data.visible!!) this.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("form", "module", "callback")
+fun FrameLayout.listOption(
+    data: FormControl?,
+    modules: Modules?,
+    callbacks: AppCallbacks
+) {
+    callbacks.onListOption(data, modules)
 }
 
 

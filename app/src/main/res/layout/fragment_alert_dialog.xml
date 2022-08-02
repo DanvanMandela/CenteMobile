@@ -17,7 +17,7 @@
 
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
@@ -33,8 +33,9 @@
                 <ImageView
                     android:id="@+id/banner"
                     imageRes="@{data.avatar}"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_180dp"
+                    android:layout_width="@dimen/dimens_80dp"
+                    android:layout_height="@dimen/dimens_80dp"
+                    android:layout_marginTop="24dp"
                     android:contentDescription="@string/image"
                     android:src="@drawable/warning_app"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -46,33 +47,47 @@
                     textStrRes="@{data.title}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/poppins_semi_bold"
                     android:gravity="center"
                     android:padding="@dimen/dimens_5dp"
-                    android:autoSizeTextType="uniform"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/banner"
-                    tools:text="Error"
-                    tools:ignore="UnusedAttribute" />
+                    tools:ignore="UnusedAttribute"
+                    tools:text="Success" />
 
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/subTitle"
-                    textSet="@{data.subTitle}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dimens_5dp"
-                    android:maxLines="4"
-                    android:autoSizeTextType="uniform"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:cardBackgroundColor="@color/ghost_white"
+                    app:cardCornerRadius="@dimen/dimens_16dp"
+                    app:cardElevation="@dimen/dimens_0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title"
-                    tools:text="Opps something went wrong"
-                    tools:ignore="UnusedAttribute" />
+                    app:layout_constraintTop_toBottomOf="@+id/title">
+
+                    <TextView
+                        textSet="@{data.subTitle}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/dimens_5dp"
+                        android:paddingVertical="@dimen/dimens_10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="Your transaction success" />
+                </com.google.android.material.card.MaterialCardView>
 
 
                 <com.google.android.material.button.MaterialButton

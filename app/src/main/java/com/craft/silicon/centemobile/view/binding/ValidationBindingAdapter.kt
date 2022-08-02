@@ -104,8 +104,6 @@ fun EpoxyRecyclerView.setChildren(
     callbacks: AppCallbacks, dynamic: DynamicData?,
     storage: StorageDataSource?
 ) {
-//    this.animation =
-//        AnimationUtils.loadAnimation(this.context, R.anim.anim_slide_in_right)
     var controller: EpoxyController? = null
     if (storage != null)
         if (dynamic != null) {

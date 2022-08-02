@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="module"
+            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/container"
+        callback="@{callback}"
+        form="@{data}"
+        module="@{module}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</layout>

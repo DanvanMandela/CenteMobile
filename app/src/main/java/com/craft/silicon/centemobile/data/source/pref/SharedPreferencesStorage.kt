@@ -7,10 +7,7 @@ import com.craft.silicon.centemobile.data.model.DeviceDataTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
-import com.craft.silicon.centemobile.data.model.user.Accounts
-import com.craft.silicon.centemobile.data.model.user.ActivationData
-import com.craft.silicon.centemobile.data.model.user.AlertServices
-import com.craft.silicon.centemobile.data.model.user.Beneficiary
+import com.craft.silicon.centemobile.data.model.user.*
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.view.fragment.go.OnTheGoConverter
 import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
@@ -28,6 +25,24 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
     override val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+
+
+    override fun clearDevice() {
+        deleteActivationData()
+        deleteStaticData()
+        deleteNOK()
+        deleteAddress()
+        deleteCustomerProduct()
+        deleteIDDetails()
+        deleteParentDetails()
+        deleteIncomeSource()
+        deleteCustomerProduct()
+        deleteOtherServices()
+        deleteRecommendState()
+        deleteBeneficiary()
+        deleteAccounts()
+        deleteAlerts()
+    }
 
     private val _login = MutableStateFlow(sharedPreferences.getBoolean(TAG_LOGIN, false))
     override val login: StateFlow<Boolean>
@@ -107,6 +122,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    override fun deleteActivationData() {
+        _activationData.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_ACTIVATION_DATA)
+        }
+    }
+
     override val activationData: StateFlow<ActivationData?>
         get() = _activationData
 
@@ -169,6 +191,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    override fun deleteStaticData() {
+        _staticData.value = null
+        with(sharedPreferences.edit()) {
+            remove(STATIC_DATA)
+        }
+    }
+
     private val _beneficiary =
         MutableStateFlow(
             BeneficiaryTypeConverter().from(
@@ -188,6 +217,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         with(sharedPreferences.edit()) {
             putString(BENEFICIARY_DATA, BaseClass.encrypt(BeneficiaryTypeConverter().to(value)))
             apply()
+        }
+    }
+
+    override fun deleteBeneficiary() {
+        _beneficiary.value = null
+        with(sharedPreferences.edit()) {
+            remove(BENEFICIARY_DATA)
         }
     }
 
@@ -214,6 +250,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    override fun deleteAccounts() {
+        _accounts.value = null
+        with(sharedPreferences.edit()) {
+            remove(ACCOUNTS_DATA)
+        }
+    }
+
     private val _alerts =
         MutableStateFlow(
             AlertsTypeConverter().from(
@@ -233,6 +276,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         with(sharedPreferences.edit()) {
             putString(ALERTS_DATA, BaseClass.encrypt(AlertsTypeConverter().to(value)))
             apply()
+        }
+    }
+
+    override fun deleteAlerts() {
+        _alerts.value = null
+        with(sharedPreferences.edit()) {
+            remove(ALERTS_DATA)
         }
     }
 
@@ -365,26 +415,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             )
         )
 
-    override val onTheGoData: StateFlow<OnTheGoData?>
-        get() = _onTheGoData
-
-    override fun setOnTheGoData(value: OnTheGoData?) {
-        _onTheGoData.value = value
-        with(sharedPreferences.edit()) {
-            putString(
-                TAG_ON_THE_GO,
-                BaseClass.encrypt(OnTheGoConverter().from(value))
-            )
-            apply()
-        }
-    }
-
-    override fun deleteOnTheGoData() {
-        _onTheGoData.value = null
-        with(sharedPreferences.edit()) {
-            remove(TAG_ON_THE_GO)
-        }
-    }
 
     private val _currentPosition =
         MutableStateFlow(
@@ -666,6 +696,81 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _bio =
+        MutableStateFlow(
+            sharedPreferences.getBoolean(
+                TAG_BIO,
+                false
+            )
+        )
+    override val bio: StateFlow<Boolean?>
+        get() = _bio
+
+    override fun setBio(value: Boolean?) {
+        _bio.value = value!!
+        with(sharedPreferences.edit()) {
+            putBoolean(
+                TAG_BIO,
+                value
+            )
+            apply()
+        }
+    }
+
+    override fun deleteBio() {
+        _bio.value = false
+        with(sharedPreferences.edit()) {
+            remove(TAG_BIO)
+        }
+    }
+
+    private val _iv =
+        MutableStateFlow(
+            IVTypeConverter().to(
+                sharedPreferences.getString(
+                    TAG_IV,
+                    ""
+                )
+            )
+        )
+
+    override fun setIv(value: IVData?) {
+        _iv.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_IV,
+                IVTypeConverter().from(value)
+            )
+            apply()
+        }
+    }
+
+    override val iv: StateFlow<IVData?>
+        get() = _iv
+
+    private val _hiddenModule = MutableStateFlow(
+        HiddenModules().from(
+            sharedPreferences.getString(
+                TAG_HIDDEN_MODULE,
+                ""
+            )
+        )
+    )
+    override val hiddenModule: StateFlow<List<ModuleHide?>?>
+        get() = _hiddenModule
+
+    override fun setHiddenModule(value: List<ModuleHide?>) {
+        _hiddenModule.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_HIDDEN_MODULE,
+                HiddenModules().to(value)
+            )
+            apply()
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val TAG_LOGIN = "auth"
@@ -703,5 +808,10 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_OTHER_SERVICE = "otherService"
 
         private const val TAG_OTP_STATE = "otpState"
+
+        private const val TAG_BIO = "bio"
+
+        private const val TAG_IV = "iv"
+        private const val TAG_HIDDEN_MODULE = "hiddenModule"
     }
 }
