@@ -139,12 +139,14 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void authUser(String pin) {
-        setLoading(true);
         subscribe.add(authViewModel.loginAccount(pin,
                         requireActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
+        subscribe.add(authViewModel.loading.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setLoading, Throwable::printStackTrace));
     }
 
     @Override
@@ -183,11 +185,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                                     true,
                                     authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
-
-
                     if (responseDetails != null) {
                         if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
-                            setLoading(false);
                             showError(Objects.requireNonNull(responseDetails.getMessage()));
                         } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
                             workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
@@ -198,7 +197,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
                                 @Override
                                 public void workDone(boolean b) {
-                                    setLoading(false);
                                     if (b) authUser(pin);
                                 }
                             });
@@ -207,8 +205,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                             AppLogger.Companion.getInstance().appLog("AUTH",
                                     new Gson().toJson(responseDetails));
                             saveUserData(responseDetails);
-
-
                         }
                     } else {
                         setLoading(false);
@@ -226,17 +222,14 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void navigate() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            setLoading(false);
-            ((MainActivity) requireActivity())
-                    .provideNavigationGraph()
-                    .navigate(authViewModel.navigationDataSource.navigateToHome());
-        }, 1500);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
+                .provideNavigationGraph()
+                .navigate(authViewModel.navigationDataSource.navigateToHome()), 1500);
     }
 
     private void setLoading(boolean b) {
-        if (b) LoadingFragment.show(getChildFragmentManager());
-        else LoadingFragment.dismiss(getChildFragmentManager());
+        if (b) binding.motionContainer.setTransition(R.id.loadingState, R.id.userState);
+        else binding.motionContainer.setTransition(R.id.userState, R.id.loadingState);
     }
 
     private void saveUserData(LoginUserData res) {
@@ -263,7 +256,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 workerViewModel.onWidgetData(getViewLifecycleOwner(), new WorkStatus() {
                     @Override
                     public void progress(int p) {
-                        if (p > 60) {
+                        new AppLogger().appLog("PROGRESS", String.valueOf(p));
+                        if (p == 100) {
                             navigate();
                         }
                     }
@@ -275,7 +269,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 });
                 authViewModel.storage.setVersion(version);
             } else navigate();
-
         } else {
             authViewModel.storage.setVersion("1");
             navigate();

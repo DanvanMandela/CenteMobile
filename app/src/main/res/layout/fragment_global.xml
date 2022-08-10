@@ -21,98 +21,112 @@
     </data>
 
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene_loading">
 
+        <include
+            android:id="@+id/loadingFrame"
+            layout="@layout/fragment_loading" />
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/userFrame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                style="@style/Widget.App.Toolbar"
-                callback="@{callback}"
-                modules="@{data}"
+
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/dimens_0dp"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/validation_menu"
-                app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
-        </com.google.android.material.appbar.AppBarLayout>
+                android:layout_height="wrap_content">
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:overScrollMode="never"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    style="@style/Widget.App.Toolbar"
+                    callback="@{callback}"
+                    modules="@{data}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/dimens_0dp"
+                    app:layout_collapseMode="pin"
+                    app:menu="@menu/validation_menu"
+                    app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
+            </com.google.android.material.appbar.AppBarLayout>
 
-            <FrameLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <com.airbnb.epoxy.EpoxyRecyclerView
-                        android:id="@+id/displayContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingBottom="@dimen/dimens_16dp"
-                        android:visibility="gone"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-                    <com.airbnb.epoxy.EpoxyRecyclerView
-                        android:id="@+id/detailsContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingBottom="@dimen/dimens_16dp"
-                        android:visibility="gone"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-                    <com.airbnb.epoxy.EpoxyRecyclerView
-                        android:id="@+id/container"
-                        callback="@{callback}"
-                        storage="@{storage}"
-                        validation="@{data}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingBottom="@dimen/dimens_16dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-
-                </LinearLayout>
-
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmerContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:shimmer_repeat_mode="restart"
-                    app:shimmer_shape="radial">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <include layout="@layout/block_sand_of_time_layout" />
+                        <com.airbnb.epoxy.EpoxyRecyclerView
+                            android:id="@+id/displayContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingBottom="@dimen/dimens_16dp"
+                            android:visibility="gone"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <com.airbnb.epoxy.EpoxyRecyclerView
+                            android:id="@+id/detailsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingBottom="@dimen/dimens_16dp"
+                            android:visibility="gone"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <com.airbnb.epoxy.EpoxyRecyclerView
+                            android:id="@+id/container"
+                            callback="@{callback}"
+                            storage="@{storage}"
+                            validation="@{data}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingBottom="@dimen/dimens_16dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
                     </LinearLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-            </FrameLayout>
-        </androidx.core.widget.NestedScrollView>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmerContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:shimmer_repeat_mode="restart"
+                        app:shimmer_shape="radial">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <include layout="@layout/block_sand_of_time_layout" />
+
+
+                        </LinearLayout>
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+                </FrameLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
 
 </layout>

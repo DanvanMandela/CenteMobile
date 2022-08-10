@@ -40,7 +40,6 @@ import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.InfoFragment
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
 import com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
@@ -245,7 +244,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
         action?.merchantID?.let { AppLogger.instance.appLog("MERCHANT:ID:ACTION", it) }
         module?.merchantID?.let { AppLogger.instance.appLog("MERCHANT:ID:MODULE", it) }
 
-        setLoading(true)
         subscribe.add(
             baseViewModel.dynamicCall(
                 action,
@@ -257,115 +255,124 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    AppLogger.instance.appLog(
-                        "Pay", BaseClass.decryptLatest(
-                            it.response,
-                            paymentViewModel.dataSource.deviceData.value!!.device,
-                            true,
-                            paymentViewModel.dataSource.deviceData.value!!.run
-                        )
-                    )
-                    if (nonCaps(it.response) != "ok") {
-                        setLoading(false)
-                        val resData = DynamicDataResponseTypeConverter().to(
-                            BaseClass.decryptLatest(
+                    try {
+                        AppLogger.instance.appLog(
+                            "Pay", BaseClass.decryptLatest(
                                 it.response,
                                 paymentViewModel.dataSource.deviceData.value!!.device,
                                 true,
                                 paymentViewModel.dataSource.deviceData.value!!.run
                             )
                         )
-                        if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                            setLoading(false)
-                            if (nonCaps(resData?.formID)
-                                == nonCaps("STATEMENT")
-                            ) {
-                                DisplayDialogFragment.showDialog(
-                                    manager = this.parentFragmentManager,
-                                    data = resData?.accountStatement,
-                                    modules = module
+                        if (nonCaps(it.response) != "ok") {
+                            val resData = DynamicDataResponseTypeConverter().to(
+                                BaseClass.decryptLatest(
+                                    it.response,
+                                    paymentViewModel.dataSource.deviceData.value!!.device,
+                                    true,
+                                    paymentViewModel.dataSource.deviceData.value!!.run
                                 )
-                            } else if (nonCaps(resData?.formID)
-                                == nonCaps("PAYMENTCONFIRMATIONFORM")
-                            ) {
-                                AppLogger.instance.appLog("Pay", Gson().toJson(resData))
-                                ReceiptFragment.newInstance(
-                                    this, ReceiptList(
-                                        receipt = resData?.receipt!!
-                                            .toMutableList(),
-                                        notification = resData.notifications
-                                    )
-                                )
-                                (requireActivity() as MainActivity)
-                                    .provideNavigationGraph()
-                                    .navigate(
-                                        widgetViewModel.navigation()
-                                            .navigateReceipt(
-                                                ReceiptList(
-                                                    receipt = resData.receipt!!
-                                                        .toMutableList(),
-                                                    notification = resData.notifications
-                                                )
-                                            )
-                                    )
-                            } else if (nonCaps(resData?.formID) == nonCaps("RELIGION")) {
-                                val mData = GlobalResponseTypeConverter().to(
-                                    BaseClass.decryptLatest(
-                                        it.response,
-                                        baseViewModel.dataSource.deviceData.value!!.device,
-                                        true,
-                                        baseViewModel.dataSource.deviceData.value!!.run
-                                    )
-                                )
-                                DisplayDialogFragment.showDialog(
-                                    manager = this.parentFragmentManager,
-                                    data = mData?.data,
-                                    modules = module
-                                )
-                            }
-
-                        } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
-                            setLoading(false)
-                            InfoFragment.showDialog(this.childFragmentManager)
-                        } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
-                            setOnNextModule(
-                                formControl,
-                                resData?.next,
-                                module,
-                                resData?.formID
                             )
-                        } else {
-                            AppLogger.instance.appLog("Pay", Gson().toJson(resData))
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                AlertDialogFragment.newInstance(
-                                    DialogData(
-                                        title = R.string.error,
-                                        subTitle = resData?.message,
-                                        R.drawable.warning_app
-                                    ),
-                                    this.childFragmentManager
+                            if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                if (nonCaps(resData?.formID)
+                                    == nonCaps("STATEMENT")
+                                ) {
+                                    DisplayDialogFragment.showDialog(
+                                        manager = this.parentFragmentManager,
+                                        data = resData?.accountStatement,
+                                        modules = module,
+                                        controller = formControl
+                                    )
+                                } else if (nonCaps(resData?.formID)
+                                    == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                ) {
+                                    AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                    ReceiptFragment.newInstance(
+                                        this, ReceiptList(
+                                            receipt = resData?.receipt!!
+                                                .toMutableList(),
+                                            notification = resData.notifications
+                                        )
+                                    )
+                                    (requireActivity() as MainActivity)
+                                        .provideNavigationGraph()
+                                        .navigate(
+                                            widgetViewModel.navigation()
+                                                .navigateReceipt(
+                                                    ReceiptList(
+                                                        receipt = resData.receipt!!
+                                                            .toMutableList(),
+                                                        notification = resData.notifications
+                                                    )
+                                                )
+                                        )
+                                } else if (nonCaps(resData?.formID) == nonCaps("RELIGION")) {
+                                    val mData = GlobalResponseTypeConverter().to(
+                                        BaseClass.decryptLatest(
+                                            it.response,
+                                            baseViewModel.dataSource.deviceData.value!!.device,
+                                            true,
+                                            baseViewModel.dataSource.deviceData.value!!.run
+                                        )
+                                    )
+                                    DisplayDialogFragment.showDialog(
+                                        manager = this.parentFragmentManager,
+                                        data = mData?.data,
+                                        modules = module,
+                                        controller = formControl
+                                    )
+                                }
+
+                            } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
+                                InfoFragment.showDialog(this.childFragmentManager)
+                            } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
+                                setOnNextModule(
+                                    formControl,
+                                    resData?.next,
+                                    module,
+                                    resData?.formID
                                 )
-                            }, 200)
+                            } else {
+                                AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    AlertDialogFragment.newInstance(
+                                        DialogData(
+                                            title = R.string.error,
+                                            subTitle = resData?.message,
+                                            R.drawable.warning_app
+                                        ),
+                                        this.childFragmentManager
+                                    )
+                                }, 200)
+                            }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }, { it.printStackTrace() })
         )
-
+        subscribe.add(
+            baseViewModel.loading.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ setLoading(it) }, { it.printStackTrace() })
+        )
     }
 
-    private fun setLoading(it: Boolean) {
-        if (it) {
-            LoadingFragment.show(requireActivity().supportFragmentManager)
-        } else {
-            LoadingFragment.dismiss(requireActivity().supportFragmentManager)
-        }
+
+    private fun setLoading(b: Boolean) {
+        if (b) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
     }
 
 
     private fun setOnNextModule(
         formControl: FormControl?,
         next: Int?,
-        modules: Modules?, formID: String?
+        modules: Modules?,
+        formID: String?
     ) {
         val sequence = if (next != null) {
             if (next == 0) {
@@ -373,8 +380,9 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
             } else next
         } else formControl?.formSequence?.toInt()?.plus(1)
 
-
-
+        AppLogger.instance.appLog("P:NEXT:FORM:ID", formControl?.formID!!)
+        AppLogger.instance.appLog("P:NEXT:MODULE:ID", formID!!)
+        AppLogger.instance.appLog("P:NEXT:SEQUENCE", "$sequence")
         subscribe.add(widgetViewModel.getFormControl(
             formID, sequence.toString()
         )
@@ -529,12 +537,12 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     }
 
 
-    override fun onDisplay(formControl: FormControl?) {
+    override fun onDisplay(formControl: FormControl?, modules: Modules?) {
         AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
         if (nonCaps(formControl?.controlID) == nonCaps("DISPLAY")) {
             if (!response?.display.isNullOrEmpty()) {
                 val controller = MainDisplayController(this)
-                controller.setData(DisplayData(response?.display))
+                controller.setData(DisplayData(response?.display, formControl, modules))
                 binding.displayContainer.setController(controller)
                 binding.displayContainer.visibility = VISIBLE
             }
@@ -542,12 +550,16 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
             if (nonCaps(formControl?.controlFormat)
                 == nonCaps(ControlFormatEnum.JSON.type)
             ) {
-                response?.let { setJsonFormatData(it, formControl) }
+                response?.let { setJsonFormatData(it, formControl, modules) }
             }
         }
     }
 
-    private fun setJsonFormatData(data: DynamicAPIResponse?, form: FormControl?) {
+    private fun setJsonFormatData(
+        data: DynamicAPIResponse?,
+        form: FormControl?,
+        modules: Modules?
+    ) {
         displayData.clear()
         try {
             if (data != null) {
@@ -562,7 +574,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                     val hashMaps: ArrayList<HashMap<String, String>> =
                         JSONUtil.cleanData(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps))
+                    controller.setData(DisplayData(hashMaps, form, modules))
                     binding.detailsContainer.setController(controller)
 
                 } else if (!data.formField.isNullOrEmpty()) {
@@ -572,7 +584,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                     val hashMaps: ArrayList<HashMap<String, String>> =
                         JSONUtil.cleanData(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps))
+                    controller.setData(DisplayData(hashMaps, form, modules))
                     binding.detailsContainer.setController(controller)
 
                 }

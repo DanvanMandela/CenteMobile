@@ -64,6 +64,7 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
@@ -298,8 +299,8 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         if (modules.getModuleURLTwo() != null) {
             if (!TextUtils.isEmpty(modules.getModuleURLTwo())) {
                 openUrl(modules.getModuleURLTwo());
-            } else navigate(modules);
-        } else navigate(modules);
+            } else navigateTo(modules);
+        } else navigateTo(modules);
 
     }
 
@@ -308,7 +309,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
-    private void navigate(Modules modules) {
+    private void navigateTo(Modules modules) {
         if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
             subscribe.add(widgetViewModel.getModules(modules.getModuleID())
                     .subscribeOn(Schedulers.io())
@@ -350,12 +351,14 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void currentAccount(Accounts accounts) {
-
         try {
             List<AlertServices> servicesList = authViewModel
                     .storage.getAlerts().getValue().stream()
                     .filter(a -> a.getBankAccountID().equals(accounts.getId()))
                     .collect(Collectors.toList());
+            if (!servicesList.isEmpty()) {
+                servicesList.sort(Comparator.comparing(AlertServices::getDueDate));
+            }
             binding.headerItem.headerAux.utilPager
                     .setData(servicesList.isEmpty() ? null : new AlertList(servicesList));
             binding.headerItem.headerAux.utilPager.setCallback(this);

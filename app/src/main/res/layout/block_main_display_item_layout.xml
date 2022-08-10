@@ -11,6 +11,7 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/mainLay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -22,11 +23,13 @@
 
             <TextView
                 android:id="@+id/key"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_semi_bold"
-                android:padding="@dimen/dimens_5dp"
+                android:paddingVertical="@dimen/dimens_5dp"
+                android:paddingEnd="@dimen/dimens_8dp"
+                android:paddingStart="@dimen/dimens_5dp"
                 android:text="@{data.key}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_one"

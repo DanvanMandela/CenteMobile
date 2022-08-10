@@ -20,6 +20,7 @@ import com.craft.silicon.centemobile.databinding.FragmentDynamicBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.binding.navigate
 import com.craft.silicon.centemobile.view.binding.setDynamic
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
@@ -137,9 +138,7 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
             response = null,
             map = null
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(widgetViewModel.navigation().navigatePurchase())
+        navigate(widgetViewModel.navigation().navigatePurchase())
     }
 
     private fun onValidate(form: List<FormControl>?, modules: Modules?) {
@@ -149,9 +148,7 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
                 form = form?.toMutableList()
             )
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(widgetViewModel.navigation().navigateValidation())
+        navigate(widgetViewModel.navigation().navigateValidation())
     }
 
     override fun navigateUp() {
@@ -162,8 +159,8 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
         if (modules!!.moduleURLTwo != null) {
             if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
                 openUrl(modules.moduleURLTwo)
-            } else navigate(modules)
-        } else navigate(modules)
+            } else navigateTo(modules)
+        } else navigateTo(modules)
     }
 
     private fun getFormControl(modules: Modules) {
@@ -184,23 +181,17 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
             form = forms,
             module = modules
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigationBio()
-            )
+        navigate(widgetViewModel.navigation().navigationBio())
     }
 
-    private fun navigate(modules: Modules?) {
+    private fun navigateTo(modules: Modules?) {
         if (modules!!.ModuleCategory == ModuleCategory.BLOCK.type) {
             subscribe.add(widgetViewModel.getModules(modules.moduleID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ f: List<Modules> ->
                     setData(GroupModule(modules, f.toMutableList()))
-                    (requireActivity() as MainActivity)
-                        .provideNavigationGraph()
-                        .navigate(widgetViewModel.navigation().navigateDynamic())
+                    navigate(widgetViewModel.navigation().navigateDynamic())
                 }) { obj: Throwable -> obj.printStackTrace() })
         } else getFormControl(modules)
     }

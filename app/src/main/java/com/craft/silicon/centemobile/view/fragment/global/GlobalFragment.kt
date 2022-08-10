@@ -36,7 +36,11 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
-import com.craft.silicon.centemobile.view.dialog.*
+import com.craft.silicon.centemobile.view.binding.navigate
+import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
+import com.craft.silicon.centemobile.view.dialog.DialogData
+import com.craft.silicon.centemobile.view.dialog.InfoFragment
+import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
 import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.InsuranceAdapterItem
@@ -79,6 +83,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
 
     private lateinit var binding: FragmentGlobalBinding
 
@@ -408,7 +413,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             action?.merchantID?.let { AppLogger.instance.appLog("MERCHANT:ID:ACTION", it) }
             modules?.merchantID?.let { AppLogger.instance.appLog("MERCHANT:ID:MODULE", it) }
 
-            setLoading(true)
             subscribe.add(
                 baseViewModel.dynamicCall(
                     action,
@@ -430,7 +434,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(it.response) != StatusEnum.ERROR.type) {
-                                setLoading(false)
+
                                 val resData = DynamicAPIResponseConverter().to(
                                     BaseClass.decryptLatest(
                                         it.response,
@@ -441,7 +445,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                                 AppLogger.instance.appLog("Validation", Gson().toJson(resData))
                                 if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                    setLoading(false)
                                     dynamicResponse.value = resData
                                     if (!resData?.formID.isNullOrEmpty()
                                         || !resData?.formID.isNullOrBlank()
@@ -458,25 +461,24 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
 
                                                 )
                                             )
-                                            (requireActivity() as MainActivity)
-                                                .provideNavigationGraph()
-                                                .navigate(
-                                                    widgetViewModel.navigation()
-                                                        .navigateReceipt(
-                                                            ReceiptList(
-                                                                receipt = resData.receipt!!
-                                                                    .toMutableList(),
-                                                                notification = resData.notifications
-                                                            )
+                                            navigate(
+                                                widgetViewModel.navigation()
+                                                    .navigateReceipt(
+                                                        ReceiptList(
+                                                            receipt = resData.receipt!!
+                                                                .toMutableList(),
+                                                            notification = resData.notifications
                                                         )
-                                                )
+                                                    )
+                                            )
                                         } else if (nonCaps(resData?.formID)
                                             == nonCaps("STATEMENT")
                                         ) {
                                             DisplayDialogFragment.showDialog(
                                                 manager = this.parentFragmentManager,
                                                 data = resData?.accountStatement,
-                                                modules = modules
+                                                modules = modules,
+                                                controller = formControl
                                             )
                                         } else if (nonCaps(resData?.formID)
                                             == nonCaps("RELIGION")
@@ -492,7 +494,8 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                             DisplayDialogFragment.showDialog(
                                                 manager = this.parentFragmentManager,
                                                 data = mData?.data,
-                                                modules = modules
+                                                modules = modules,
+                                                controller = formControl
                                             )
                                         } else {
                                             ShowToast(requireContext(), resData?.message)
@@ -517,7 +520,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                 } else if (nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {
-                                    setLoading(false)
                                     InfoFragment.showDialog(this.childFragmentManager)
                                 } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
                                     setOnNextModule(
@@ -527,7 +529,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                         resData?.formID
                                     )
                                 } else {
-                                    setLoading(false)
                                     AlertDialogFragment.newInstance(
                                         DialogData(
                                             title = R.string.error,
@@ -540,7 +541,6 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                             }
 
                         } catch (e: Exception) {
-                            setLoading(false)
                             AlertDialogFragment.newInstance(
                                 DialogData(
                                     title = R.string.error,
@@ -552,25 +552,29 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                         }
 
                     }, {
-                        setLoading(false)
                         it.printStackTrace()
                     })
             )
+            subscribe.add(
+                baseViewModel.loading.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ setLoading(it) }, { it.printStackTrace() })
+            )
 
         } catch (e: Exception) {
-            setLoading(false)
             e.printStackTrace()
         }
 
 
     }
 
-    private fun setLoading(it: Boolean) {
-        if (it) {
-            LoadingFragment.show(requireActivity().supportFragmentManager)
-        } else {
-            LoadingFragment.dismiss(requireActivity().supportFragmentManager)
-        }
+
+    private fun setLoading(b: Boolean) {
+        if (b) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
     }
 
     private fun setOnNextModule(
@@ -584,7 +588,9 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             } else next
         } else formControl?.formSequence?.toInt()?.plus(1)
 
-        AppLogger.instance.appLog("NEXT:Sequence", sequence.toString())
+        AppLogger.instance.appLog("G:NEXT:FORM:ID", formControl?.formID!!)
+        AppLogger.instance.appLog("G:NEXT:MODULE:ID", formID!!)
+        AppLogger.instance.appLog("G:NEXT:SEQUENCE", "$sequence")
 
         subscribe.add(widgetViewModel.getFormControl(
             formID, sequence.toString()
@@ -597,20 +603,20 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
     }
 
 
-    override fun onDisplay(formControl: FormControl?) {
+    override fun onDisplay(formControl: FormControl?, modules: Modules?) {
         AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
         if (nonCaps(formControl?.controlID) == nonCaps("DISPLAY")) {
             if (!response?.display.isNullOrEmpty()) {
                 binding.displayContainer.visibility = VISIBLE
                 val controller = MainDisplayController(this)
-                controller.setData(DisplayData(response?.display))
+                controller.setData(DisplayData(response?.display, formControl, modules))
                 binding.displayContainer.setController(controller)
             }
         } else {
             if (nonCaps(formControl?.controlFormat)
                 == nonCaps(ControlFormatEnum.JSON.type)
             ) {
-                response?.let { setJsonFormatData(it, formControl) }
+                response?.let { setJsonFormatData(it, formControl, modules) }
             }
         }
     }
@@ -662,6 +668,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                             forms,
                             modules
                         )
+                        else -> onPayment(forms, modules)
                     }
                 }
                 else -> onPayment(forms, modules)
@@ -680,23 +687,12 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             response = dynamicResponse.value,
             map = inputList
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigateGlobal()
-            )
+        navigate(widgetViewModel.navigation().navigateGlobal())
     }
 
     private fun onBiometric(forms: MutableList<FormControl>?, modules: Modules?) {
-        BiometricFragment.setData(
-            form = forms,
-            module = modules
-        )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigationBio()
-            )
+        BiometricFragment.setData(form = forms, module = modules)
+        navigate(widgetViewModel.navigation().navigationBio())
     }
 
     private fun onPayment(form: List<FormControl>?, modules: Modules?) {
@@ -708,11 +704,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             response = dynamicResponse.value,
             map = inputList
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigatePurchase()
-            )
+        navigate(widgetViewModel.navigation().navigatePurchase())
     }
 
     override fun onCancel() {
@@ -720,7 +712,11 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
     }
 
 
-    private fun setJsonFormatData(data: DynamicAPIResponse?, form: FormControl?) {
+    private fun setJsonFormatData(
+        data: DynamicAPIResponse?,
+        form: FormControl?,
+        modules: Modules?
+    ) {
         displayData.clear()
         try {
             if (data != null) {
@@ -735,7 +731,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                     val hashMaps: ArrayList<HashMap<String, String>> =
                         cleanData(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps))
+                    controller.setData(DisplayData(hashMaps, form, modules))
                     binding.detailsContainer.setController(controller)
 
                 } else if (!data.formField.isNullOrEmpty()) {
@@ -745,7 +741,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                     val hashMaps: ArrayList<HashMap<String, String>> =
                         cleanData(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps))
+                    controller.setData(DisplayData(hashMaps, form, modules))
                     binding.detailsContainer.setController(controller)
 
                 }
@@ -888,6 +884,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
             }
         })
     }
+
 
 
 }

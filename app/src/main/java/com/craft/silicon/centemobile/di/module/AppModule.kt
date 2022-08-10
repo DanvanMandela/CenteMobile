@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.craft.silicon.centemobile.data.source.pref.SharedPreferencesStorage
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
-import com.craft.silicon.centemobile.data.source.remote.helper.NetworkDataSource
-import com.craft.silicon.centemobile.data.source.remote.helper.NetworkMonitor
+import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionMonitor
+import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
 import com.craft.silicon.centemobile.data.worker.WorkManagerApp
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.util.provider.ResourceProvider
@@ -29,8 +29,9 @@ abstract class AppModule {
     @Binds
     abstract fun provideStorage(storage: SharedPreferencesStorage): StorageDataSource
 
+
     @Binds
-    abstract fun provideNetworkMonitor(monitor: NetworkMonitor): NetworkDataSource
+    abstract fun provideConnectionMonitor(connectionMonitor: ConnectionMonitor): ConnectionObserver
 
     @Binds
     abstract fun provideScheduler(scheduler: SchedulerProvider): BaseSchedulerProvider

@@ -48,6 +48,7 @@
                     callback="@{callback}"
                     subTitle="@{userData}"
                     title="@{userData}"
+                    style="@style/HomeToolBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:contentInsetStart="@dimen/dimens_8dp"

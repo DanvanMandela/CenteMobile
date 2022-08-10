@@ -26,15 +26,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
+import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
 import com.craft.silicon.centemobile.data.source.remote.helper.NetworkIsh
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -43,10 +47,8 @@ import com.craft.silicon.centemobile.util.MyActivityResult
 import com.craft.silicon.centemobile.util.ScreenHelper.fullScreen
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.compressImage
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
-import com.craft.silicon.centemobile.view.fragment.home.HomeFragment
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
@@ -60,15 +62,14 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
-import javax.crypto.Cipher
+import java.util.concurrent.ExecutorService
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AppCallbacks,
-    NavController.OnDestinationChangedListener, NetworkIsh {
+    NavController.OnDestinationChangedListener {
     private val activityLauncher: MyActivityResult<Intent, ActivityResult> =
         MyActivityResult.registerActivityForResult(this)
-
     private var fusedLocationProvider: FusedLocationProviderClient? = null
     private lateinit var binding: ActivityMainBinding
     private var navController: NavController? = null
@@ -79,8 +80,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var cryptographyManager: CryptoManager
     private lateinit var secretKeyName: String
-    private lateinit var ciphertext: ByteArray
-    private lateinit var initializationVector: ByteArray
     private lateinit var biometricPrompt: BiometricPrompt
     private var bioInterface: BioInterface? = null
 
@@ -93,8 +92,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
         checkLocationPermission()
         setCrypto()
-
+        listenToConnection()
     }
+
 
     private fun createBiometricPrompt(): BiometricPrompt {
         val executor = ContextCompat.getMainExecutor(this)
@@ -181,8 +181,26 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         val animationDuration =
             resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
-            widgetViewModel.networkDataSource.connection(this)
-            widgetViewModel.networkDataSource.enable()
+            val status = widgetViewModel.connectionObserver.observe().asLiveData()
+            status.observe(this) {
+                when (it) {
+                    ConnectionObserver.ConnectionEnum.Available -> {
+                        if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
+                            provideNavigationGraph().navigateUp()
+                    }
+                    ConnectionObserver.ConnectionEnum.UnAvailable,
+                    ConnectionObserver.ConnectionEnum.Lost -> {
+                        runOnUiThread {
+                            if (provideNavigationGraph().currentDestination?.id != R.id.connectionFragment)
+                                provideNavigationGraph().navigate(
+                                    widgetViewModel.navigation().navigateConnection()
+                                )
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
         }, animationDuration.toLong())
     }
 
@@ -207,6 +225,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         workViewModel.onWidgetData(this@MainActivity, this)
                 }
             }
+
             override fun progress(p: Int) {
                 AppLogger.instance.appLog("DATA:Progress", "$p")
                 if (provideNavigationGraph().currentDestination?.id == R.id.landingPageFragment) {
@@ -522,35 +541,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         private const val REQUEST_LOCATION_BACKGROUND = 101
     }
 
-    override fun onNetwork(boolean: Boolean) {
-        AppLogger.instance.appLog("Connection:is:", "$boolean")
-        if (!boolean) {
-            runOnUiThread {
-                if (provideNavigationGraph().currentDestination?.id != R.id.connectionFragment)
-                    provideNavigationGraph().navigate(
-                        widgetViewModel.navigation().navigateConnection()
-                    )
-            }
-        } else runOnUiThread {
-            if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
-                provideNavigationGraph().navigateUp()
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        listenToConnection()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        listenToConnection()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        widgetViewModel.networkDataSource.disable()
-    }
 
     fun onImagePicker(callbacks: AppCallbacks) {
         this.callbacks = callbacks
@@ -691,5 +683,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             }
         } else true
     }
+
 
 }

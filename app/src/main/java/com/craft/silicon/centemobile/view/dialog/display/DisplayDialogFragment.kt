@@ -13,13 +13,16 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.FragmentDisplayDialogBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.DisplayData
+import com.craft.silicon.centemobile.view.ep.controller.FormController
 import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
+import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -78,8 +81,11 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     private fun setDisplayData() {
         val controller = MainDisplayController(this)
-        controller.setData(data?.let { DisplayData(it) })
         binding.container.setController(controller)
+        if (data!!.isNotEmpty()) {
+            controller.setData(DisplayData(data, form, module))
+        } else controller.setData(Nothing())
+
     }
 
     private fun stopShimmer() {
@@ -94,6 +100,7 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     companion object {
         private var data: MutableList<HashMap<String, String>>? = null
         private var module: Modules? = null
+        private var form: FormControl? = null
 
         /**
          * Use this factory method to create a new instance of
@@ -116,11 +123,13 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
         fun showDialog(
             manager: FragmentManager,
             data: MutableList<HashMap<String, String>>?,
-            modules: Modules?
+            modules: Modules?,
+            controller: FormControl?
         ) =
             DisplayDialogFragment().apply {
                 this@Companion.data = data
                 this@Companion.module = modules
+                this@Companion.form = controller
                 show(manager, DialogFragment::class.java.simpleName)
             }
     }

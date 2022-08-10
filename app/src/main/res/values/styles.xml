@@ -30,24 +30,7 @@
     </style>
 
 
-    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
-        <item name="tabTextAppearance">@style/TabTextAppearance</item>
-    </style>
 
-    <style name="ThemeOverlay.App.TabLayout" parent="">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorSurface">@color/app_blue_light</item>
-        <item name="colorOnSurface">@color/dar_color_one</item>
-    </style>
-
-    <style name="customTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabTextAppearance">@style/TabTextAppearance</item>
-    </style>
-
-    <style name="TabTextAppearance" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textAllCaps">false</item>
-    </style>
 
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.CenteMobile">

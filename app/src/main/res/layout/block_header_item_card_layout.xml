@@ -98,35 +98,28 @@
             </LinearLayout>
 
 
-            <View
-                android:id="@+id/viewOne"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_1dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/balanceLay" />
-
             <TextView
                 android:id="@+id/textView6"
                 accountNumber="@{data.id}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_regular"
-                android:maxLines="1"
-                tools:text="1234324567"
                 android:letterSpacing="0.6"
+                android:maxLines="1"
                 android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/aspectRatioImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="UnusedAttribute" />
+                app:layout_constraintTop_toBottomOf="@+id/balanceLay"
+                tools:ignore="UnusedAttribute"
+                tools:text="1234324567" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

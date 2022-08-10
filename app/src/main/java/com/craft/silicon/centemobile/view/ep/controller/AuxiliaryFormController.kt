@@ -139,16 +139,47 @@ class NewFormController(val callbacks: AppCallbacks) :
                     nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
 
                     nonCaps(ControlTypeEnum.IMAGE.type) -> {
-                        when (nonCaps(d.controlFormat)) {
-                            nonCaps(ControlFormatEnum.IMAGE_PANEL.type) -> imageButtonLayout {
-                                id(d.controlID)
-                                data(d)
-                                callback(this@NewFormController.callbacks)
+                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+                            when (nonCaps(d.controlFormat)) {
+                                nonCaps(ControlFormatEnum.IMAGE_PANEL.type) -> imageButtonLayout {
+                                    id(d.controlID)
+                                    data(d)
+                                    callback(this@NewFormController.callbacks)
+                                }
+                                else -> {}
                             }
-                            else -> {}
-                        }
 
                     }
+                    nonCaps(ControlTypeEnum.QR_SCANNER.type) -> {
+                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+                            qRLayout {
+                                id(d.controlID)
+                                data(d)
+                                module(data.forms.module)
+                                callback(this@NewFormController.callbacks)
+                            }
+                    }
+
+                    nonCaps(ControlTypeEnum.LABEL.type) -> {
+                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+                            when (nonCaps(d.controlFormat)) {
+                                nonCaps(ControlFormatEnum.LIST_DATA.type) -> labelListLayout {
+                                    id(d.controlID)
+                                    data(d)
+                                    module(data.forms.module)
+                                    callback(this@NewFormController.callbacks)
+                                }
+                                else -> labelLayout {
+                                    id(d.controlID)
+                                    data(d)
+                                    callback(this@NewFormController.callbacks)
+                                }
+                            }
+
+
+                    }
+
+
                 }
 
             } else {
@@ -201,24 +232,25 @@ class NewFormController(val callbacks: AppCallbacks) :
     }
 
     private fun setList(d: FormControl, data: GroupForm) {
-        when (nonCaps(d.controlID)) {
-            nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
-                id(d.controlID)
-                data(d)
-                module(data.module)
-                callback(this@NewFormController.callbacks)
-            }
-            else -> {
-                when (nonCaps(d.controlFormat)) {
-                    nonCaps(ControlFormatEnum.LIST_WITH_OPTIONS.type) -> listWithOptionLayout {
-                        id(d.controlID)
-                        data(d)
-                        module(data.module)
-                        callback(this@NewFormController.callbacks)
+        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+            when (nonCaps(d.controlID)) {
+                nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
+                    id(d.controlID)
+                    data(d)
+                    module(data.module)
+                    callback(this@NewFormController.callbacks)
+                }
+                else -> {
+                    when (nonCaps(d.controlFormat)) {
+                        nonCaps(ControlFormatEnum.LIST_WITH_OPTIONS.type) -> listWithOptionLayout {
+                            id(d.controlID)
+                            data(d)
+                            module(data.module)
+                            callback(this@NewFormController.callbacks)
+                        }
                     }
                 }
             }
-        }
     }
 
 }

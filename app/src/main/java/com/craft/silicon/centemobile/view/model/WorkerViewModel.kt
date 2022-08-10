@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.model
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -72,16 +73,20 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
 
         continuation.workInfosLiveData.observe(owner!!) { workInfo ->
             if (workInfo.isNotEmpty()) {
-                var progress: Double
+                val progress = MutableLiveData(0.0)
                 workInfo.forEachIndexed { index, info ->
                     val state = info.state
+                    val start = index.plus(1).toDouble()
                     if (state.isFinished && state == WorkInfo.State.SUCCEEDED) {
-                        val start = index.plus(1).toDouble()
-                        progress = (start.div(workInfo.size)).times(100)
-                        status?.progress(progress.toInt())
+                        progress.value = (start.div(workInfo.size)).times(100)
+                        if (info == workInfo.first()) {
+                            progress.observe(owner) {
+                                status?.progress(it.toInt())
+                            }
+                        }
+
                     }
                 }
-
             }
         }
 

@@ -31,6 +31,8 @@ data class AccountData(
     val account: MutableList<Accounts>
 ) : AppData()
 
+open class Nothing : AppData()
+
 
 data class BodyData(
     val module: MutableList<Modules>,
@@ -176,8 +178,9 @@ data class HashMapWrapper(val hashMap: HashMap<String, String>?) :
     Parcelable
 
 @Parcelize
-data class ReceiptList(val receipt: MutableList<ReceiptDetails>,
-                       val notification: MutableList<Notifications>?
+data class ReceiptList(
+    val receipt: MutableList<ReceiptDetails>,
+    val notification: MutableList<Notifications>?
 ) : DynamicData()
 
 

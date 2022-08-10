@@ -8,12 +8,12 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
-import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,16 +26,13 @@ public class WidgetRepository implements WidgetDataSource {
 
     private final WidgetDataSource remoteData;
     private final WidgetDataSource localData;
-    private final StorageDataSource dataSource;
 
 
     @Inject
     public WidgetRepository(@Remote WidgetDataSource remoteData,
-                            @Local WidgetDataSource localData,
-                            StorageDataSource dataSource) {
+                            @Local WidgetDataSource localData) {
         this.remoteData = remoteData;
         this.localData = localData;
-        this.dataSource = dataSource;
     }
 
 
@@ -61,7 +58,8 @@ public class WidgetRepository implements WidgetDataSource {
 
     @Override
     public Observable<List<Modules>> getModules(String moduleID) {
-        return localData.getModules(moduleID);
+        return localData.getModules(moduleID).map(modules ->
+                modules.stream().filter(v -> !v.isDisabled()).collect(Collectors.toList()));
     }
 
     @Override

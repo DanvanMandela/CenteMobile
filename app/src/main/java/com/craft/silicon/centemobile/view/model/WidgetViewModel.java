@@ -24,7 +24,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
-import com.craft.silicon.centemobile.data.source.remote.helper.NetworkDataSource;
+import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
@@ -41,25 +41,30 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.subjects.BehaviorSubject;
 
 @HiltViewModel
 public class WidgetViewModel extends ViewModel implements WidgetDataSource {
 
     private final WidgetRepository widgetRepository;
     public final StorageDataSource storageDataSource;
-    public final NetworkDataSource networkDataSource;
     private final NavigationDataSource navigationDataSource;
+    public final ConnectionObserver connectionObserver;
+
+
+    private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
+    public Observable<Boolean> loading = loadingUi.hide();
 
 
     @Inject
     public WidgetViewModel(WidgetRepository widgetRepository,
                            StorageDataSource storageDataSource,
-                           NetworkDataSource networkDataSource,
-                           NavigationDataSource navigationDataSource) {
+                           NavigationDataSource navigationDataSource,
+                           ConnectionObserver connectionObserver) {
         this.widgetRepository = widgetRepository;
         this.storageDataSource = storageDataSource;
-        this.networkDataSource = networkDataSource;
         this.navigationDataSource = navigationDataSource;
+        this.connectionObserver = connectionObserver;
     }
 
     @Override
@@ -161,10 +166,12 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
                     .getDeviceData().getValue().getOther())).getPath();
 
             return widgetRepository.requestWidget(
-                    new PayloadData(
-                            storageDataSource.getUniqueID().getValue(),
-                            BaseClass.encryptString(newRequest, device, iv)
-                    ), path);
+                            new PayloadData(
+                                    storageDataSource.getUniqueID().getValue(),
+                                    BaseClass.encryptString(newRequest, device, iv)
+                            ), path).doOnSubscribe(disposable -> loadingUi.onNext(true))
+                    .doOnSuccess(disposable -> loadingUi.onNext(false))
+                    .doOnError(disposable -> loadingUi.onNext(false));
 
         } catch (JSONException exception) {
             exception.printStackTrace();

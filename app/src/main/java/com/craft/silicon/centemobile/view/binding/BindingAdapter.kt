@@ -2,7 +2,6 @@ package com.craft.silicon.centemobile.view.binding
 
 import android.content.Context
 import android.graphics.BlurMaskFilter
-import android.graphics.Color
 import android.graphics.MaskFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -10,20 +9,22 @@ import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.MaskFilterSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.*
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.epoxy.EpoxyController
@@ -46,6 +47,7 @@ import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
 import com.craft.silicon.centemobile.databinding.RectangleILayoutBinding
@@ -566,14 +568,26 @@ fun EpoxyRecyclerView.setList(
     }
 }
 
-
-@BindingAdapter("callback", "display")
-fun TextView.setDisplay(
+@BindingAdapter("callback", "list_label", "module")
+fun EpoxyRecyclerView.setLabelList(
     callbacks: AppCallbacks,
-    formControl: FormControl?
+    formControl: FormControl?,
+    modules: Modules
 ) {
     if (formControl != null) {
-        callbacks.onDisplay(formControl)
+        callbacks.onLabelList(this, formControl, modules)
+    }
+}
+
+
+@BindingAdapter("callback", "display", "module")
+fun TextView.setDisplay(
+    callbacks: AppCallbacks,
+    formControl: FormControl?,
+    modules: Modules?
+) {
+    if (formControl != null) {
+        callbacks.onDisplay(formControl, modules)
     }
 }
 
@@ -679,7 +693,7 @@ fun setIndicatorColor(indicator: CircularProgressIndicator, maxDay: Int) {
             )
         )
 
-    } else if (current <=forth) {
+    } else if (current <= forth) {
         val color = R.color.red_app
         val lightColor =
             ColorUtil().lightenColor(ContextCompat.getColor(indicator.context, color), 0.35f)
@@ -710,6 +724,57 @@ fun FrameLayout.listOption(
     callbacks.onListOption(data, modules)
 }
 
+
+@BindingAdapter("preview", "module", "callback")
+fun LinearLayout.setPreviewWindow(
+    formControl: FormControl?,
+    modules: Modules,
+    callbacks: AppCallbacks
+) {
+    val binding = BlockCardReaderLayoutBinding.inflate(LayoutInflater.from(this.context))
+    this.removeAllViews()
+    val layoutParams = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams.MATCH_PARENT
+    )
+    binding.parent.layoutParams = layoutParams
+    this.addView(binding.root)
+    callbacks.onQRCode(binding, formControl, modules)
+}
+
+
+@BindingAdapter("label", "callback", "data")
+fun TextView.setLabel(
+    formControl: FormControl?,
+    callbacks: AppCallbacks?,
+    data: String?
+) {
+
+    if (data != null) {
+        this.text = data
+    }
+
+    if (formControl != null)
+        if (formControl.controlValue != null)
+            if (!TextUtils.isEmpty(formControl.controlValue)) {
+                callbacks?.userInput(
+                    InputData(
+                        name = formControl.controlText,
+                        key = formControl.serviceParamID,
+                        value = formControl.controlValue,
+                        encrypted = formControl.isEncrypted,
+                        mandatory = formControl.isMandatory
+                    )
+                )
+                this.text = formControl.controlValue
+            }
+}
+
+
+
+fun Fragment.navigate(directions: NavDirections) {
+    NavHostFragment.findNavController(this).navigate(directions)
+}
 
 
 

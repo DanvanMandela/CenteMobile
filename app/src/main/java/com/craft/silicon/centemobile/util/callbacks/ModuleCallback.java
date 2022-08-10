@@ -7,13 +7,11 @@ import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
+import com.craft.silicon.centemobile.view.ep.data.DisplayContent;
 import com.craft.silicon.centemobile.view.ep.data.DynamicData;
 import com.craft.silicon.centemobile.view.ep.data.LandingPageItem;
 
 import java.util.HashMap;
-import java.util.List;
-
-import kotlinx.parcelize.RawValue;
 
 public interface ModuleCallback {
 
@@ -62,13 +60,20 @@ public interface ModuleCallback {
                         Modules modules) {
 
     }
-    default void onListOption(FormControl control,Modules modules){}
 
-    default void onDisplay(FormControl formControl) {
+    default void onListOption(FormControl control, Modules modules) {
+    }
+
+    default void onDisplay(FormControl formControl, Modules modules) {
 
     }
 
     default void currentAccount(Accounts accounts) {
+    }
+
+    default void onDisplay(FormControl formControl,
+                           Modules modules,
+                           HashMap<String, String> data) {
     }
 
 }

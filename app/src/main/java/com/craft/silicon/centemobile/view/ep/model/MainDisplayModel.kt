@@ -8,6 +8,8 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.BlockDisplayContainerBinding
 import com.craft.silicon.centemobile.databinding.BlockMainDisplayItemLayoutBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -21,6 +23,13 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
 
     @EpoxyAttribute
     lateinit var data: HashMap<String, String>
+
+
+    @EpoxyAttribute
+    lateinit var form: FormControl
+
+    @EpoxyAttribute
+    lateinit var module: Modules
 
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
     lateinit var callbacks: AppCallbacks
@@ -46,20 +55,33 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
                 val m = DisplayContent(key = e.key, value = e.value)
                 display.data = m
                 binding.displayLay.addView(display.root)
+
             }
 
+
         }
+        if (form.nextFormID != null)
+            if (!TextUtils.isEmpty(form.nextFormID))
+                binding.displayLay.setOnClickListener {
+                    val holderModule = module
+                    callbacks.onDisplay(form, holderModule, data)
+                }
 
     }
 }
 
 fun TypedEpoxyController<*>.mainDisplayLay(
     data: HashMap<String, String>,
+    form: FormControl?,
+    modules: Modules?,
     appCallbacks: AppCallbacks
 ) {
     mainDisplay {
         id(generateAlphaNumericString(4))
         data(data)
         callbacks(appCallbacks)
+        form(form)
+        module(modules)
+
     }
 }

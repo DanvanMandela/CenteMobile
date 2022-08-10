@@ -3,6 +3,9 @@ package com.craft.silicon.centemobile.view.binding
 import android.text.*
 import android.text.InputFilter.LengthFilter
 import android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+import android.text.method.DigitsKeyListener
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.databinding.BindingAdapter
 import com.chaos.view.PinView
@@ -13,9 +16,14 @@ import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
+import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
+import java.text.ParseException
+import java.util.*
 
 
 @BindingAdapter("callback", "hidden")
@@ -120,6 +128,7 @@ fun TextInputEditText.setInput(input: String?) {
     else
         if (nonCaps(input) == nonCaps(ControlFormatEnum.AMOUNT.type)) {
             this.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            this.addTextChangedListener(NumberTextWatcherForThousand(this))
         } else if (nonCaps(input) == nonCaps(ControlFormatEnum.PIN_NUMBER.type)) {
             this.inputType = InputType.TYPE_CLASS_NUMBER or TYPE_NUMBER_VARIATION_PASSWORD
         } else if (nonCaps(input) == nonCaps(ControlFormatEnum.PIN.type)) {
@@ -257,5 +266,10 @@ fun PinView.setOTP(callbacks: AppCallbacks?, formControl: FormControl?, modules:
     })
 
 }
+
+
+
+
+
 
 

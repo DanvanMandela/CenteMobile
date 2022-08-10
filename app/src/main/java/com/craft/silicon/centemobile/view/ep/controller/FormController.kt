@@ -81,6 +81,29 @@ class FormController(val callbacks: AppCallbacks) :
                 }
 
                 BaseClass.nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
+
+                BaseClass.nonCaps(ControlTypeEnum.QR_SCANNER.type) -> qRLayout {
+                    id(d.controlID)
+                    data(d)
+                    module(data.forms.module)
+                    callback(this@FormController.callbacks)
+                }
+                BaseClass.nonCaps(ControlTypeEnum.LABEL.type) -> {
+
+                    when (BaseClass.nonCaps(d.controlFormat)) {
+                        BaseClass.nonCaps(ControlFormatEnum.LIST_DATA.type) -> labelListLayout {
+                            id(d.controlID)
+                            data(d)
+                            module(data.forms.module)
+                            callback(this@FormController.callbacks)
+                        }
+                        else -> labelLayout {
+                            id(d.controlID)
+                            data(d)
+                            callback(this@FormController.callbacks)
+                        }
+                    }
+                }
             }
         }
     }

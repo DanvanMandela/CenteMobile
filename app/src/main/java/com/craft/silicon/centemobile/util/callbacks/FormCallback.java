@@ -5,12 +5,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.chaos.view.PinView;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.input.InputData;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.AlertServices;
+import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -83,6 +85,13 @@ public interface FormCallback {
     }
 
     default void globalAutoLiking(String value, TextInputEditText editText) {
+    }
+
+    default void onQRCode(BlockCardReaderLayoutBinding binding,
+                          FormControl formControl, Modules modules) {
+    }
+
+    default void onLabelList(EpoxyRecyclerView view, FormControl formControl, Modules modules) {
     }
 
 }

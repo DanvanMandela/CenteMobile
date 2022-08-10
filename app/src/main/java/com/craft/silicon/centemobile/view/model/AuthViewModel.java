@@ -180,7 +180,6 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                             BaseClass.encryptString(newRequest, device, iv)
                     ), path)
                     .doOnSubscribe(disposable -> loadingUi.onNext(true))
-                    .doOnSuccess(disposable -> loadingUi.onNext(false))
                     .doOnError(disposable -> loadingUi.onNext(false));
 
         } catch (JSONException exception) {
