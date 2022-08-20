@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -9,6 +10,7 @@ import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.repository.account.AccountRepository;
 import com.craft.silicon.centemobile.data.repository.auth.AuthRepository;
@@ -22,6 +24,8 @@ import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
+import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +48,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     private final AccountRepository accountRepository;
 
     public final StorageDataSource dataSource;
+    public final NavigationDataSource navigationData;
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
@@ -54,27 +59,110 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                          PaymentRepository paymentRepository,
                          AuthRepository authRepository,
                          AccountRepository accountRepository,
-                         StorageDataSource dataSource) {
+                         StorageDataSource dataSource, NavigationDataSource navigationData) {
         this.repository = repository;
         this.widgetRepository = widgetRepository;
         this.paymentRepository = paymentRepository;
         this.authRepository = authRepository;
         this.accountRepository = accountRepository;
         this.dataSource = dataSource;
+        this.navigationData = navigationData;
     }
 
+
+    @Override
+    public Single<DynamicResponse> checkMiniStatement(Accounts accounts, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+
+            JSONObject jsonObject = new JSONObject();
+            JSONObject json = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.PAY_BILL.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+            json.put("BANKACCOUNTID", accounts.getId());
+            json.put("MerchantID", "STATEMENT");
+            jsonObject.put("MerchantID", "STATEMENT");
+            jsonObject.put("ModuleID", "STATEMENT");
+            jsonObject.put("PayBill", json);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("Mini:statement", newRequest);
+
+            return accountCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> transactionCenter(Modules modules, Context context) {
+        String iv = dataSource.getDeviceData().getValue().getRun();
+        String device = dataSource.getDeviceData().getValue().getDevice();
+        ActivationData customerID = dataSource.getActivationData().getValue();
+        String uniqueID = Constants.getUniqueID();
+        JSONObject jsonObject = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        AppLogger.Companion.getInstance().appLog("TC:UniqueID",
+                dataSource.getUniqueID().getValue());
+
+        Constants.commonJSON(jsonObject,
+                context,
+                uniqueID,
+                ActionTypeEnum.DB_CALL.getType(),
+                customerID != null ? customerID.getId() : "",
+                true,
+                dataSource);
+
+        try {
+            data.put("HEADER", "GETTRXLIST");
+            jsonObject.put("ModuleID", "TRANSACTIONSCENTER");
+            jsonObject.put("DynamicForm", data);
+
+            String dbRequest = jsonObject.toString();
+            AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
+
+            PayloadData payloadData = new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(dbRequest, device, iv)
+            );
+
+            return dbCall(payloadData);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
     @Override
     public Single<DynamicResponse> dynamicCall(ActionControls action,
                                                JSONObject data,
                                                JSONObject encrypted,
-                                               Modules modules, Context context) {
+                                               Modules modules, Activity context) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
             JSONObject jsonObject = new JSONObject();
+
+            AppLogger.Companion.getInstance().appLog("GLOBAL:UniqueID",
+                    dataSource.getUniqueID().getValue());
 
             Constants.commonJSON(jsonObject,
                     context,
@@ -100,10 +188,13 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 String dbRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
 
-                return dbCall(new PayloadData(
+                PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(dbRequest, device, iv)
-                ));
+                );
+                new AppLogger().logTXT(new Gson().toJson(payloadData), (context));
+
+                return dbCall(payloadData);
 
 
             } else if (BaseClass.nonCaps(action.getActionType())
@@ -116,23 +207,19 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("Validate", data);
                 String validateRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("Validation", validateRequest);
+                PayloadData payloadData = new PayloadData(
+                        dataSource.getUniqueID().getValue(),
+                        BaseClass.encryptString(validateRequest, device, iv)
+                );
+                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
 
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("auth")) {
-                        return authCall(new PayloadData(
-                                dataSource.getUniqueID().getValue(),
-                                BaseClass.encryptString(validateRequest, device, iv)
-                        ));
+                        return authCall(payloadData);
                     } else if (action.getWebHeader().equalsIgnoreCase("validate")) {
-                        return validateCall(new PayloadData(
-                                dataSource.getUniqueID().getValue(),
-                                BaseClass.encryptString(validateRequest, device, iv)
-                        ));
+                        return validateCall(payloadData);
                     } else return null;
-                } else return validateCall(new PayloadData(
-                        dataSource.getUniqueID().getValue(),
-                        BaseClass.encryptString(validateRequest, device, iv)
-                ));
+                } else return validateCall(payloadData);
             } else if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.PAY_BILL.getType()))) {
                 jsonObject.put("MerchantID", !TextUtils.isEmpty(action.getMerchantID()) ?
@@ -145,27 +232,24 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 String payBillRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
 
+                PayloadData payloadData = new PayloadData(
+                        dataSource.getUniqueID().getValue(),
+                        BaseClass.encryptString(payBillRequest, device, iv)
+                );
+                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
+
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("account")) {
                         AppLogger.Companion.getInstance().appLog("PayBill:account",
                                 payBillRequest);
-                        return accountCall(new PayloadData(
-                                dataSource.getUniqueID().getValue(),
-                                BaseClass.encryptString(payBillRequest, device, iv)
-                        ));
+                        return accountCall(payloadData);
                     } else if (action.getWebHeader().equalsIgnoreCase("purchase")) {
                         AppLogger.Companion.getInstance().appLog("PayBill:purchase",
                                 payBillRequest);
 
-                        return payBillCall(new PayloadData(
-                                dataSource.getUniqueID().getValue(),
-                                BaseClass.encryptString(payBillRequest, device, iv)
-                        ));
+                        return payBillCall(payloadData);
                     } else return null;
-                } else return payBillCall(new PayloadData(
-                        dataSource.getUniqueID().getValue(),
-                        BaseClass.encryptString(payBillRequest, device, iv)
-                ));
+                } else return payBillCall(payloadData);
 
             } else if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.CHANGE_PIN.getType()))) {
@@ -181,11 +265,12 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 String changePinRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
 
-                return dbCall(new PayloadData(
+                PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(changePinRequest, device, iv)
-                ));
-
+                );
+                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
+                return dbCall(payloadData);
             }
             return null;
 
@@ -194,6 +279,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             return null;
         }
     }
+
 
     @Override
     public Single<DynamicResponse> validateOTP(JSONObject data, JSONObject encrypted,

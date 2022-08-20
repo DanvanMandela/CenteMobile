@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.annotations.Expose
@@ -109,5 +110,18 @@ class Modules(
     fun generateID() {
         id = "M-${BaseClass.generateAlphaNumericString(10)}"
     }
+
+
+    @IgnoredOnParcel
+    @Ignore
+    @field:SerializedName("notAvailable")
+    @field:Expose
+    var available: Boolean? = true
+
+    @IgnoredOnParcel
+    @Ignore
+    @field:SerializedName("message")
+    @field:Expose
+    var message: String? = "Module disabled"
 
 }

@@ -6,11 +6,14 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +108,7 @@ public class WidgetRepository implements WidgetDataSource {
 
     @Override
     public Single<DynamicResponse> requestWidget(PayloadData data, String path) {
+        AppLogger.Companion.getInstance().appLog("MAIN:DATA", new Gson().toJson(data));
         return remoteData.requestWidget(data, path);
     }
 
@@ -168,5 +172,26 @@ public class WidgetRepository implements WidgetDataSource {
     @Override
     public Observable<List<AtmData>> getATMBranch(boolean b) {
         return localData.getATMBranch(b);
+    }
+
+
+    @Override
+    public void saveNotifications(NotificationData data) {
+        localData.saveNotifications(data);
+    }
+
+    @Override
+    public Observable<List<NotificationData>> getNotification() {
+        return localData.getNotification();
+    }
+
+    @Override
+    public void deleteNotifications() {
+        localData.deleteNotifications();
+    }
+
+    @Override
+    public void deleteNotification(int id) {
+        localData.deleteNotification(id);
     }
 }

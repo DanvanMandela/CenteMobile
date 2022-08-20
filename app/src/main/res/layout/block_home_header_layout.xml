@@ -48,7 +48,7 @@
                 android:layout_width="@dimen/dimens_60dp"
                 android:layout_height="@dimen/dimens_60dp"
                 app:cornerRadius="@dimen/dimens_8dp"
-                app:icon="@drawable/notification" />
+                app:icon="@drawable/alarm_clock" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 

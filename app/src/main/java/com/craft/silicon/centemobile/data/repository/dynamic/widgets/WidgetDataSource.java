@@ -13,6 +13,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.Beneficiary;
+import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.util.callbacks.NavigationCallback;
@@ -162,4 +163,18 @@ public interface WidgetDataSource extends NavigationCallback {
     }
 
 
+    default void saveNotifications(NotificationData data) {
+
+    }
+
+    default Observable<List<NotificationData>> getNotification() {
+        return null;
+    }
+
+    default void deleteNotifications() {
+    }
+
+    default void deleteNotification(int id) {
+
+    }
 }

@@ -83,8 +83,48 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_level_one"
+        app:destination="@+id/levelOneFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_level_two"
+        app:destination="@+id/levelTwoFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_transaction_center"
+        app:destination="@+id/transactionCenterFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_nav_purchase"
         app:destination="@+id/purchaseFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_notification"
+        app:destination="@+id/notificationFragment"
         app:enterAnim="@anim/anim_slide_in_right"
         app:exitAnim="@anim/anim_slide_out_right"
         app:launchSingleTop="true"
@@ -109,12 +149,22 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_global_otp"
+        app:destination="@+id/globalOTPFragment"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_nav_connection"
         app:destination="@+id/connectionFragment"
         app:popUpToInclusive="true" />
     <action
         android:id="@+id/action_nav_loading"
         app:destination="@+id/loadingFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_disclaimer"
+        app:destination="@+id/disclaimerFragment"
         app:popUpToInclusive="true" />
 
     <action
@@ -319,6 +369,46 @@
         android:name="com.craft.silicon.centemobile.view.dialog.LoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" />
+    <dialog
+        android:id="@+id/disclaimerFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.DisclaimerFragment"
+        android:label="fragment_disclaimer"
+        tools:layout="@layout/fragment_disclaimer" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.notifications.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <dialog
+        android:id="@+id/globalOTPFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.global.GlobalOTPFragment"
+        android:label="fragment_global_o_t_p"
+        tools:layout="@layout/fragment_global_o_t_p" />
+    <fragment
+        android:id="@+id/levelOneFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment"
+        android:label="fragment_level_one"
+        tools:layout="@layout/fragment_level_one" />
+    <fragment
+        android:id="@+id/levelTwoFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.levels.LevelTwoFragment"
+        android:label="fragment_level_two"
+        tools:layout="@layout/fragment_level_two" />
+    <fragment
+        android:id="@+id/transactionCenterFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.TransactionCenterFragment"
+        android:label="fragment_transaction_center"
+        tools:layout="@layout/fragment_transaction_center">
+        <action
+            android:id="@+id/action_nav_transaction_details"
+            app:destination="@+id/transactionDetailsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/transactionDetailsFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.TransactionDetailsFragment"
+        android:label="fragment_transaction_details"
+        tools:layout="@layout/fragment_transaction_details" />
 
     <!--    Dialog-->
 </navigation>

@@ -7,12 +7,17 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.databinding.BlockAmountTextInputLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockLinkedDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockTextInputLayoutBinding
+import com.craft.silicon.centemobile.otpLayout
+import com.craft.silicon.centemobile.textInputLayout
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.DropDownView
 import com.craft.silicon.centemobile.view.binding.linkedDropDown
@@ -43,15 +48,38 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
         for (s in data.children) {
             when (BaseClass.nonCaps(s.controlType)) {
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
-                    val binding =
-                        BlockTextInputLayoutBinding.inflate(
-                            LayoutInflater
-                                .from(parent.root.context)
-                        )
-                    binding.data = s
-                    binding.callback = callbacks
-                    parent.childContainer.addView(binding.root)
-                    setLinkedToInput(parent, binding.child)
+                    when (BaseClass.nonCaps(s.controlFormat)) {
+                        BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
+                            val binding =
+                                BlockAmountTextInputLayoutBinding.inflate(
+                                    LayoutInflater.from(parent.root.context)
+                                )
+                            binding.data = s
+                            binding.callback = callbacks
+                            parent.childContainer.addView(binding.root)
+                            binding.child.addTextChangedListener(
+                                NumberTextWatcherForThousand(
+                                    binding.child,
+                                    callbacks,
+                                    s
+                                )
+                            )
+                            setLinkedToInput(parent, binding.child)
+                        }
+                        else -> {
+                            val binding =
+                                BlockTextInputLayoutBinding.inflate(
+                                    LayoutInflater
+                                        .from(parent.root.context)
+                                )
+                            binding.data = s
+                            binding.callback = callbacks
+                            parent.childContainer.addView(binding.root)
+                            setLinkedToInput(parent, binding.child)
+                        }
+                    }
+
+
                 }
                 BaseClass.nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
                     val binding =
@@ -107,8 +135,7 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
     }
 
     private fun setLinkedToInput(
-        parent: BlockLinkedDropDownLayoutBinding,
-        s: TextInputEditText
+        parent: BlockLinkedDropDownLayoutBinding, s: TextInputEditText
     ) {
         parent.autoEdit.linkedToInput(
             callbacks = callbacks,

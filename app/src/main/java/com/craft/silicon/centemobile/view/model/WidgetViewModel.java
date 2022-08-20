@@ -18,6 +18,7 @@ import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.ModuleHide;
+import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
@@ -88,15 +89,17 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
             List<ModuleHide> moduleHides = storageDataSource.getHiddenModule().getValue();
             List<Modules> modulesList = new ArrayList<>();
             modules.forEach(module -> {
-                if (!moduleHides.isEmpty()) {
-                    boolean hide = moduleHides.stream()
-                            .map(ModuleHide::getId)
-                            .filter(Objects::nonNull)
-                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
-                    if (!hide) modulesList.add(module);
-                } else {
-                    modulesList.add(module);
-                }
+                if (moduleHides != null)
+                    if (!moduleHides.isEmpty()) {
+                        boolean hide = moduleHides.stream()
+                                .map(ModuleHide::getId)
+                                .filter(Objects::nonNull)
+                                .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
+                        if (!hide) modulesList.add(module);
+                    } else {
+                        modulesList.add(module);
+                    }
+                else modulesList.add(module);
             });
             return modulesList;
         });
@@ -212,5 +215,22 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     @Override
     public Observable<List<AtmData>> getATMBranch(boolean b) {
         return widgetRepository.getATMBranch(b);
+    }
+
+    @Override
+    public Observable<List<NotificationData>> getNotification() {
+
+
+        return widgetRepository.getNotification();
+    }
+
+    @Override
+    public void deleteNotifications() {
+        widgetRepository.deleteNotifications();
+    }
+
+    @Override
+    public void deleteNotification(int id) {
+        widgetRepository.deleteNotification(id);
     }
 }

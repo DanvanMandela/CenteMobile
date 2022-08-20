@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
@@ -81,10 +83,17 @@ class RecentFragment : BottomSheetDialogFragment(), AppCallbacks {
                     )
                 )
             }
+
+            setNoData(data?.resultsData.isNullOrEmpty())
         }
 
         binding.container.setController(controller!!)
 
+    }
+
+    private fun setNoData(empty: Boolean) {
+        if (empty) binding.noData.root.visibility = VISIBLE
+        else binding.noData.root.visibility = GONE
     }
 
     override fun setBinding() {

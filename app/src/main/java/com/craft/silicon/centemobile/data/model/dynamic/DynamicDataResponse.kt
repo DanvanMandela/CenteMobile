@@ -1,12 +1,15 @@
 package com.craft.silicon.centemobile.data.model.dynamic
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.data.source.remote.callback.ReceiptDetails
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.util.*
 import javax.annotation.Nullable
+import kotlin.collections.HashMap
 
 @Parcelize
 data class DynamicDataResponse(
@@ -91,9 +94,9 @@ data class DynamicAPIResponse(
     var accountStatement: MutableList<HashMap<String, String>>?,
     @field:SerializedName("NotificationData")
     @field:Expose
-    var notificationdata: MutableList<Notifications>?,
+    var notificationdata: MutableList<Notifications>?
 
-    ) : Parcelable
+) : Parcelable
 
 @Parcelize
 data class Notifications(
@@ -131,6 +134,7 @@ data class GlobalResponse(
     @field:Expose
     var data: MutableList<HashMap<String, String>>?
 ) : Parcelable
+
 
 
 

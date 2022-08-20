@@ -1,9 +1,11 @@
 package com.craft.silicon.centemobile.data.repository.calls;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 
@@ -87,7 +89,15 @@ public interface AppDataSource {
             JSONObject data,
             JSONObject encrypted,
             Modules modules,
-            Context context) {
+            Activity context) {
+        return null;
+    }
+
+    default Single<DynamicResponse> checkMiniStatement(Accounts accounts, Context context) {
+        return null;
+    }
+
+    default Single<DynamicResponse> transactionCenter(Modules modules, Context context) {
         return null;
     }
 }

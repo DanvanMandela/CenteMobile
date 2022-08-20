@@ -36,6 +36,7 @@ public class AccountRemoteDataModule {
                         .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)
                         .readTimeout(Constants.Timeout.read, TimeUnit.SECONDS)
+                        .addInterceptor(httpLoggingInterceptor)
                         .addInterceptor(chain -> {
                             HttpUrl url = chain.request().url().newBuilder().build();
                             return chain.proceed(chain.request()

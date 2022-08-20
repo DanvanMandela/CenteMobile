@@ -76,4 +76,11 @@ public interface ModuleCallback {
                            HashMap<String, String> data) {
     }
 
+    default void checkMiniStatement(Accounts accounts) {
+
+    }
+
+    default void navigateToNotification() {
+    }
+
 }

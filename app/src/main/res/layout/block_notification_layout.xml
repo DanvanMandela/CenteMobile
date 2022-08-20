@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.data.receiver.NotificationData" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/dimens_16dp">
+
+
+        <ImageView
+            android:id="@+id/circleImageView"
+            android:layout_width="@dimen/dimens_24dp"
+            android:layout_height="@dimen/dimens_24dp"
+            android:contentDescription="@string/image"
+            android:src="@drawable/cente" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/dimens_5dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:text="@{data.title}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    tools:text="Notification" />
+
+                <View
+                    android:layout_width="@dimen/dimens_2dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/dimens_5dp"
+                    android:background="@color/dar_color_two" />
+
+                <TextView
+                    android:id="@+id/timeDate"
+                    setDateTime="@{data.time}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/dar_color_one"
+                    tools:text="July 14 2020" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:layout_width="@dimen/dimens_24dp"
+                        android:layout_height="@dimen/dimens_24dp"
+                        android:layout_gravity="end"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/delete"
+                        android:onClick="@{()->callback.deleteNotification(data)}"
+                        android:padding="@dimen/dimens_3dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/delete"
+                        app:tint="@color/dar_color_two" />
+                </FrameLayout>
+
+
+            </LinearLayout>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_8dp"
+                app:cardBackgroundColor="@color/ghost_white"
+                app:cardCornerRadius="@dimen/dimens_8dp"
+                app:cardElevation="@dimen/dimens_0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/subTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:padding="@dimen/dimens_5dp"
+                        android:paddingVertical="@dimen/dimens_5dp"
+                        android:text="@{data.body}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textColor="@color/dar_color_two"
+                        tools:text="@string/lorem" />
+
+
+                    <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
+                        android:id="@+id/image"
+                        image="@{data.image}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@{data.title}" />
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</layout>

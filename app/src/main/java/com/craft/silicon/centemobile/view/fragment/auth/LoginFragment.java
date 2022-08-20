@@ -1,6 +1,10 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
+import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +27,7 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
@@ -96,16 +101,12 @@ public class LoginFragment extends Fragment implements AppCallbacks {
             isValid = false;
         } else if (TextUtils.isEmpty(binding.editPin.getText())) {
             new ShowToast(requireContext(), getString(R.string.enter_pin), true);
-        } else {
-            if (Objects.requireNonNull(binding.editPin.getText()).length() < 6) {
-                new ShowToast(requireContext(), getString(R.string.invalid_pin), true);
-                isValid = false;
-            }
         }
         return isValid;
     }
 
     private void authAccount() {
+        hideSoftKeyboard(requireActivity(),binding.getRoot());
         setLoading(true);
         CompositeDisposable subscribe = new CompositeDisposable();
         subscribe.add(authViewModel.activateAccount(Constants.
@@ -176,18 +177,20 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                     } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
                         new ShowToast(requireContext(), responseDetails.getMessage());
-                        ((MainActivity) requireActivity())
-                                .provideNavigationGraph()
-                                .navigate(authViewModel.navigationDataSource
-                                        .navigateToOTP(Constants
+
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                BindingAdapterKt.navigate(this,
+                                        authViewModel.navigationDataSource.navigateToOTP(Constants
                                                 .setMobile(binding.countryCodeHolder
                                                                 .getSelectedCountryCode(),
                                                         Objects.requireNonNull(binding
-                                                                .editMobile.getText()).toString())));
+                                                                        .editMobile.getText())
+                                                                .toString()))), 1500);
+
+
                     }
                 }
             }
-
 
         } catch (Exception e) {
             setLoading(false);

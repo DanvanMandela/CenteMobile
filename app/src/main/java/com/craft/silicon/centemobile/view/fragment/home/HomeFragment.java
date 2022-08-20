@@ -24,7 +24,6 @@ import androidx.viewbinding.ViewBinding;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
-import com.craft.silicon.centemobile.data.model.control.FormNavigation;
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter;
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse;
 import com.craft.silicon.centemobile.data.model.dynamic.FormField;
@@ -34,6 +33,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.AlertServices;
 import com.craft.silicon.centemobile.data.model.user.FrequentModules;
+import com.craft.silicon.centemobile.data.model.user.ModuleDisable;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.databinding.FragmentHomeBinding;
@@ -44,18 +44,23 @@ import com.craft.silicon.centemobile.util.ShowAlertDialog;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
+import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
+import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.InfoFragment;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment;
 import com.craft.silicon.centemobile.view.ep.controller.AlertList;
 import com.craft.silicon.centemobile.view.ep.data.AccountData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
 import com.craft.silicon.centemobile.view.ep.data.GroupForm;
 import com.craft.silicon.centemobile.view.ep.data.GroupModule;
-import com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment;
 import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment;
 import com.craft.silicon.centemobile.view.model.AccountViewModel;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.BaseViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
+import com.google.gson.Gson;
 
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
@@ -88,6 +93,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     private WidgetViewModel widgetViewModel;
     private AccountViewModel accountViewModel;
     private MotionLayout motionLayout;
+    private BaseViewModel baseViewModel;
 
 
     private final CompositeDisposable subscribe = new CompositeDisposable();
@@ -164,9 +170,15 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
     @Override
+    public void navigateToNotification() {
+        BindingAdapterKt.navigate(this,
+                widgetViewModel.navigation().navigateToNotification());
+    }
+
+    @Override
     public void onPositive() {
         setLoading(true);
-        widgetViewModel.storageDataSource.clearDevice();
+        //widgetViewModel.storageDataSource.clearDevice();
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             setLoading(false);
             ((MainActivity) requireActivity()).provideNavigationGraph()
@@ -257,6 +269,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
         accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
+        baseViewModel = new ViewModelProvider(this).get(BaseViewModel.class);
     }
 
     private void setHomeData() {
@@ -295,7 +308,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void onModule(Modules modules) {
-
         if (modules.getModuleURLTwo() != null) {
             if (!TextUtils.isEmpty(modules.getModuleURLTwo())) {
                 openUrl(modules.getModuleURLTwo());
@@ -310,15 +322,40 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
     private void navigateTo(Modules modules) {
-        if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
+        if (nonCaps(modules.getModuleID()).equals(nonCaps("TRANSACTIONSCENTER")))
+            BindingAdapterKt.navigate(this, widgetViewModel
+                    .navigation().navigateToTransactionCenter(modules));
+        else if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
             subscribe.add(widgetViewModel.getModules(modules.getModuleID())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(m -> {
-                        DynamicFragment.setData(new GroupModule(modules, m));
-                        onDestination();
-                    }, Throwable::printStackTrace));
+                    .subscribe(m -> setDynamicModules(m, modules), Throwable::printStackTrace));
         } else getFormControl(modules);
+    }
+
+    private void setDynamicModules(List<Modules> m, Modules modules) {
+        List<Modules> filterModules = new ArrayList<>();
+        List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
+        if (moduleDisables != null) {
+            if (!moduleDisables.isEmpty()) {
+                for (Modules ms : m) {
+                    for (ModuleDisable moduleDisable : moduleDisables) {
+                        if (Objects.requireNonNull(ms.getModuleID()).equals(moduleDisable.getId())) {
+                            ms.setAvailable(false);
+                            ms.setMessage(moduleDisable.getMessage());
+                        }
+                        filterModules.add(ms);
+                    }
+                }
+
+                BindingAdapterKt.navigate(this, widgetViewModel.navigation()
+                        .navigateToLevelOne(new GroupModule(modules, filterModules)));
+
+            } else BindingAdapterKt.navigate(this, widgetViewModel.navigation()
+                    .navigateToLevelOne(new GroupModule(modules, m)));
+        } else BindingAdapterKt.navigate(this, widgetViewModel.navigation()
+                .navigateToLevelOne(new GroupModule(modules, m)));
+
     }
 
 
@@ -337,12 +374,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                 .subscribe(f -> setFormNavigation(f, modules), Throwable::printStackTrace));
     }
 
-    @Override
-    public void onDestination() {
-        ((MainActivity) requireActivity())
-                .provideNavigationGraph()
-                .navigate(widgetViewModel.navigation().navigateDynamic());
-    }
 
     public void setAccountData(List<Accounts> accountData) {
         binding.headerItem.headerAux.accountPager.setCallback(this);
@@ -351,8 +382,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void currentAccount(Accounts accounts) {
-        try {
-            List<AlertServices> servicesList = authViewModel
+        List<AlertServices> servicesList = authViewModel
+                .storage.getAlerts().getValue();
+        if (servicesList != null) {
+            servicesList = authViewModel
                     .storage.getAlerts().getValue().stream()
                     .filter(a -> a.getBankAccountID().equals(accounts.getId()))
                     .collect(Collectors.toList());
@@ -361,10 +394,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
             }
             binding.headerItem.headerAux.utilPager
                     .setData(servicesList.isEmpty() ? null : new AlertList(servicesList));
-            binding.headerItem.headerAux.utilPager.setCallback(this);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            binding.headerItem.headerAux.utilPager
+                    .setData(null);
         }
+        binding.headerItem.headerAux.utilPager.setCallback(this);
 
     }
 
@@ -471,10 +505,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                             } else new ShowToast(requireContext(), getString(R.string.something_));
 
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-//                            workerViewModel.routeData(getViewLifecycleOwner(), b -> {
-//                                setLoading(false);
-//                                if (b) onBalance(textView, accounts, info, c);
-//                            });
                             setLoading(false);
                             InfoFragment.showDialog(this.getChildFragmentManager());
                         } else {
@@ -496,24 +526,16 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         }
     }
 
+
     @Override
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
-        String destination = forms.stream()
-                .map(FormControl::getFormID)
-                .collect(Collectors.toList())
-                .stream().findFirst().get();
-        if (nonCaps(destination)
-                .equals(nonCaps(FormNavigation.VALIDATE.name())))
-            validate(forms, modules);
-        else if (nonCaps(destination)
-                .equals(nonCaps(FormNavigation.VALIDATE.name())))
-            payment(forms, modules);
-    }
-
-
-    private void payment(List<FormControl> forms, Modules modules) {
+        AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
+                new Gson().toJson(modules));
+        BindingAdapterKt.navigate(this,
+                widgetViewModel.navigation().navigateToLevelOne(new GroupForm(modules, forms)));
 
     }
+
 
     private void validate(List<FormControl> forms, Modules modules) {
         ValidationFragment.setData(new GroupForm(
@@ -528,5 +550,60 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         else LoadingFragment.dismiss(getChildFragmentManager());
     }
 
+    @Override
+    public void checkMiniStatement(Accounts accounts) {
+        setLoading(true);
+        subscribe.add(baseViewModel.checkMiniStatement(accounts, requireContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setOnMini, Throwable::printStackTrace));
 
+
+    }
+
+    private void setOnMini(DynamicResponse v) {
+        setLoading(false);
+        AppLogger.Companion.getInstance().appLog("Mini", new Gson().toJson(v.getResponse()));
+        if (!nonCaps(v.getResponse()).equals(nonCaps(StatusEnum.ERROR.getType()))) {
+            try {
+                DynamicAPIResponse response = new DynamicAPIResponseConverter().to(
+                        BaseClass.decryptLatest(
+                                v.getResponse(),
+                                baseViewModel.dataSource.getDeviceData().getValue().getDevice(),
+                                true,
+                                baseViewModel.dataSource.getDeviceData().getValue().getRun()));
+
+                AppLogger.Companion.getInstance().appLog("Mini", new Gson().toJson(response));
+
+                assert response != null;
+                if (nonCaps(response.getStatus()).equals(nonCaps(StatusEnum.SUCCESS.getType()))) {
+                    DisplayDialogFragment.showDialog(
+                            getParentFragmentManager(),
+                            response.getAccountStatement(),
+                            null,
+                            null
+                    );
+                } else if (Objects.equals(response.getStatus(), StatusEnum.TOKEN.getType())) {
+                    setLoading(false);
+                    InfoFragment.showDialog(this.getChildFragmentManager());
+                } else {
+                    AlertDialogFragment.newInstance(
+                            new DialogData(
+                                    R.string.error,
+                                    response.getMessage(),
+                                    R.drawable.warning_app
+                            ),
+                            getChildFragmentManager()
+                    );
+                }
+
+            } catch (Exception e) {
+                new ShowToast(requireContext(), getString(R.string.error_fetching_mini));
+                e.printStackTrace();
+            }
+
+        } else {
+            new ShowToast(requireContext(), getString(R.string.error_fetching_mini));
+        }
+    }
 }

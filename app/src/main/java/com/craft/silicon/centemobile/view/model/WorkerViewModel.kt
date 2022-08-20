@@ -9,6 +9,7 @@ import androidx.work.WorkInfo
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.craft.silicon.centemobile.data.worker.CleanDBWorker
+import com.craft.silicon.centemobile.data.worker.SessionWorkManager
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.data.worker.WorkerCommons.IS_WORK_DONE
@@ -109,7 +110,25 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
             }
     }
 
+    fun timeOut(owner: LifecycleOwner, status: WorkStatus) {
+        val routeWorker = OneTimeWorkRequestBuilder<SessionWorkManager>()
+            .addTag(WorkerCommons.TAG_TIME_OUT_WORKER).build()
+        worker.getWorkManger().enqueue(routeWorker)
+        AppLogger.instance.appLog("workInfo:id", Gson().toJson(routeWorker.id))
+        worker.getWorkManger().getWorkInfoByIdLiveData(routeWorker.id)
+            .observe(owner) { workInfo ->
+                if (workInfo != null) {
+                    val output = workInfo.outputData
+                    val value = output.getBoolean(IS_WORK_DONE, false)
+                    AppLogger.instance.appLog("workInfo:value", Gson().toJson(value))
+                    status.workDone(value)
+                }
+            }
+    }
+
 }
+
+
 
 interface WorkStatus {
     fun workDone(b: Boolean) {
@@ -120,4 +139,6 @@ interface WorkStatus {
         throw Exception("Not implemented")
     }
 }
+
+
 

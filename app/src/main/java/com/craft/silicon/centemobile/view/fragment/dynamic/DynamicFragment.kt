@@ -17,7 +17,9 @@ import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.module.ModuleCategory
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.FragmentDynamicBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.navigate
@@ -30,6 +32,7 @@ import com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment
 import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -156,11 +159,13 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun onModule(modules: Modules?) {
-        if (modules!!.moduleURLTwo != null) {
-            if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
-                openUrl(modules.moduleURLTwo)
+        if (modules?.available!!)
+            if (modules.moduleURLTwo != null) {
+                if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
+                    openUrl(modules.moduleURLTwo)
+                } else navigateTo(modules)
             } else navigateTo(modules)
-        } else navigateTo(modules)
+        else ShowToast(requireContext(), modules.message)
     }
 
     private fun getFormControl(modules: Modules) {
@@ -185,15 +190,44 @@ class DynamicFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     private fun navigateTo(modules: Modules?) {
+        AppLogger.instance.appLog("Module", Gson().toJson(modules))
         if (modules!!.ModuleCategory == ModuleCategory.BLOCK.type) {
             subscribe.add(widgetViewModel.getModules(modules.moduleID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ f: List<Modules> ->
-                    setData(GroupModule(modules, f.toMutableList()))
-                    navigate(widgetViewModel.navigation().navigateDynamic())
+                    filterModules(f, modules)
                 }) { obj: Throwable -> obj.printStackTrace() })
         } else getFormControl(modules)
+    }
+
+    private fun filterModules(f: List<Modules>, modules: Modules) {
+        val filterModule = mutableListOf<Modules>()
+        val moduleList =
+            widgetViewModel.storageDataSource.disableModule.value
+        if (moduleList != null) {
+            if (moduleList.isNotEmpty()) {
+                f.forEach { s ->
+                    moduleList.forEach { i ->
+                        if (s.moduleID == i?.id) {
+                            s.available = false
+                            s.message = i?.message
+                        }
+                    }
+                    filterModule.add(s)
+                }
+                navigate(
+                    widgetViewModel.navigation()
+                        .navigateToLevelOne(GroupModule(modules, filterModule))
+                )
+            } else navigate(
+                widgetViewModel.navigation()
+                    .navigateToLevelOne(GroupModule(modules, f.toMutableList()))
+            )
+        } else navigate(
+            widgetViewModel.navigation()
+                .navigateToLevelOne(GroupModule(modules, f.toMutableList()))
+        )
     }
 
 

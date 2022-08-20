@@ -35,6 +35,7 @@ import com.craft.silicon.centemobile.view.model.SplashViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
@@ -61,6 +62,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
     private val adverts = MutableLiveData<List<CarouselItem>>()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +85,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     }
 
     private fun getAdverts() {
-        widgetViewModel.carousel
+        compositeDisposable.add(widgetViewModel.carousel
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -100,6 +102,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
                     adverts.value = itemList
                 }
             }, { it.printStackTrace() })
+        )
     }
 
     private fun setTimeOfDay() {

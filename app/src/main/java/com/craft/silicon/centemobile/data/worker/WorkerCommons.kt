@@ -7,10 +7,15 @@ object WorkerCommons {
 
     const val TAG_ROUTE_WORKER = "routeWorker"
 
+    const val TAG_TIME_OUT_WORKER = "timeout"
+
+    const val TAG_NOTIFICATION_WORKER = "notWorker"
+
     const val PROGRESS = "PROGRESS"
     const val IS_WORK_DONE = "isWorKDone"
     const val DELAY = 1000L
 
+    const val TAG_NOTIFICATION_DATA = "notificationData"
 
     const val DYNAMIC_REQUEST_ID = "dynamicID"
 }

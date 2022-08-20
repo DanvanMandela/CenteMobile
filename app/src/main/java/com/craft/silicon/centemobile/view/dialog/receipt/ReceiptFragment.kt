@@ -12,10 +12,11 @@ import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentReceiptBinding
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.view.ep.controller.ReceiptFormController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.ReceiptList
-import com.craft.silicon.centemobile.view.fragment.payment.Confirm
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "140981809081",
+    "project_id": "centemobile-a5126",
+    "storage_bucket": "centemobile-a5126.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140981809081:android:f8532240183ceb9f5c9068",
+        "android_client_info": {
+          "package_name": "com.craft.silicon.centemobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140981809081-q9mvnkdmckrs5a27fdd93sbc8kd2jgh8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLdN9HRl1HqZjr3yoKaOt_XgZtbHC6zBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140981809081-q9mvnkdmckrs5a27fdd93sbc8kd2jgh8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

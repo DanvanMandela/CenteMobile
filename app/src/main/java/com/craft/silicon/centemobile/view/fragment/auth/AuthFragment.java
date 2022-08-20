@@ -1,5 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
+import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.converter.LoginDataTypeConverter;
@@ -25,10 +29,10 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
-import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface;
+import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
@@ -48,12 +52,14 @@ import io.reactivex.schedulers.Schedulers;
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-public class AuthFragment extends Fragment implements AppCallbacks, View.OnClickListener {
+public class AuthFragment extends Fragment implements AppCallbacks, View.OnClickListener,
+        BiometricAuthListener {
 
     private FragmentAuthBinding binding;
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
+    private boolean isBioDialog = false;
 
 
     public AuthFragment() {
@@ -86,7 +92,21 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         setOnClick();
         setViewModel();
         setData();
+        setFingerPrint();
+        bioLogin();
         return binding.getRoot().getRootView();
+    }
+
+    private void setFingerPrint() {
+        boolean state = authViewModel.storage.getBio().getValue();
+        if (state) {
+            binding.bioButton.setVisibility(View.VISIBLE);
+            if (((MainActivity) requireActivity()).isBiometric()) {
+                ((MainActivity) requireActivity()).authenticateTo(this::authUser);
+            }
+        }
+
+
     }
 
     private void setData() {
@@ -94,17 +114,21 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void bioLogin() {
-        boolean state = authViewModel.storage.getBio().getValue();
-        if (state)
-            if (((MainActivity) requireActivity()).isBiometric()) {
-                ((MainActivity) requireActivity()).authenticateTo(this::authUser);
-            }
+
+        binding.bioButton.setOnClickListener(view -> {
+            setFingerPrint();
+        });
     }
 
     @Override
     public void setBinding() {
         binding.setLifecycleOwner(getViewLifecycleOwner());
-        new Handler(Looper.getMainLooper()).postDelayed(this::bioLogin, 600);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -119,10 +143,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             new ShowToast(requireContext(), getString(R.string.pin_required), true);
             return false;
         } else {
-            if (binding.editPin.getText().length() < 6) {
-                new ShowToast(requireContext(), getString(R.string.invalid_pin), true);
-                return false;
-            } else return true;
+            return true;
         }
     }
 
@@ -139,6 +160,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void authUser(String pin) {
+        hideSoftKeyboard(requireActivity(), binding.getRoot());
         subscribe.add(authViewModel.loginAccount(pin,
                         requireActivity())
                 .subscribeOn(Schedulers.io())
@@ -186,25 +208,37 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                                     authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
                     if (responseDetails != null) {
-                        if (Objects.equals(responseDetails.getStatus(), StatusEnum.FAILED.getType())) {
+                        if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.FAILED.getType())) {
                             showError(Objects.requireNonNull(responseDetails.getMessage()));
-                        } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
-                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
-                                @Override
-                                public void progress(int p) {
+                            setLoading(false);
+                        } else if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(),
+                                    new WorkStatus() {
+                                        @Override
+                                        public void progress(int p) {
 
-                                }
+                                        }
 
-                                @Override
-                                public void workDone(boolean b) {
-                                    if (b) authUser(pin);
-                                }
-                            });
-                        } else {
+                                        @Override
+                                        public void workDone(boolean b) {
+                                            if (b) authUser(pin);
+                                        }
+                                    });
+                        } else if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.SUCCESS.getType())) {
                             new ShowToast(requireContext(), getString(R.string.welcome_back));
                             AppLogger.Companion.getInstance().appLog("AUTH",
                                     new Gson().toJson(responseDetails));
                             saveUserData(responseDetails);
+                        } else if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.PHONE_REG.getType())) {
+                            setLoading(false);
+                            BindingAdapterKt.navigate(this,
+                                    authViewModel.navigationDataSource.navigateToDisclaimer());
+                        } else {
+                            setLoading(false);
                         }
                     } else {
                         setLoading(false);
@@ -221,10 +255,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     }
 
+
     private void navigate() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> ((MainActivity) requireActivity())
-                .provideNavigationGraph()
-                .navigate(authViewModel.navigationDataSource.navigateToHome()), 1500);
+        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                BindingAdapterKt.navigate(this,
+                        authViewModel.navigationDataSource.navigateToHome()), 1500);
     }
 
     private void setLoading(boolean b) {
@@ -299,8 +334,25 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     @Override
+    public void onDialog() {
+
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
     }
+
+    @Override
+    public void onBiometricAuthenticationSuccess(@NonNull BiometricPrompt.AuthenticationResult result) {
+
+    }
+
+    @Override
+    public void onBiometricAuthenticationError(int errorCode, @NonNull String errorMessage) {
+
+    }
+
+
 }

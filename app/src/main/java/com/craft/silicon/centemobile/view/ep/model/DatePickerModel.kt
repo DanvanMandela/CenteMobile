@@ -30,7 +30,6 @@ open class DatePickerModel : DataBindingEpoxyModel() {
     private fun addChildren(binding: BlockDatePickerLayoutBinding) {
         binding.callback = callbacks
         binding.data = data.container
-
         binding.autoInput.setEndIconOnClickListener {
             callbacks.onDateSelect(binding.autoEdit, data.container)
         }
@@ -38,7 +37,6 @@ open class DatePickerModel : DataBindingEpoxyModel() {
             callbacks.onDateSelect(binding.autoEdit, data.container)
         }
     }
-
 }
 
 fun TypedEpoxyController<*>.dateSelect(

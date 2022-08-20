@@ -32,6 +32,15 @@
                     android:layout_height="@dimen/dimens_50dp"
                     android:layout_gravity="center"
                     android:src="@drawable/icon_logo" />
+
+
+                <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
+                    android:layout_margin="@dimen/dimens_16dp"
+                    android:layout_gravity="bottom|center"
+                    android:src="@drawable/cs_logo_powered"
+                    android:padding="@dimen/dimens_20dp"
+                    android:layout_width="@dimen/dimens_100dp"
+                    android:layout_height="@dimen/dimens_100dp"/>
             </FrameLayout>
 
 

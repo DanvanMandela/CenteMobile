@@ -6,7 +6,9 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.ImageDecoder
@@ -26,35 +28,39 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.receiver.SMSMonitor
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
-import com.craft.silicon.centemobile.data.source.remote.helper.NetworkIsh
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.MyActivityResult
 import com.craft.silicon.centemobile.util.ScreenHelper.fullScreen
+import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.compressImage
+import com.craft.silicon.centemobile.view.fragment.auth.OtpFragment
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
-import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
+import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
+import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
+import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -62,12 +68,11 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
-import java.util.concurrent.ExecutorService
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AppCallbacks,
-    NavController.OnDestinationChangedListener {
+    NavController.OnDestinationChangedListener, BiometricAuthListener {
     private val activityLauncher: MyActivityResult<Intent, ActivityResult> =
         MyActivityResult.registerActivityForResult(this)
     private var fusedLocationProvider: FusedLocationProviderClient? = null
@@ -76,12 +81,43 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private val workViewModel: WorkerViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private var callbacks: AppCallbacks? = null
-
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private lateinit var cryptographyManager: CryptoManager
-    private lateinit var secretKeyName: String
-    private lateinit var biometricPrompt: BiometricPrompt
+    private var cryptographyManager = CryptoManager()
     private var bioInterface: BioInterface? = null
+    private var intentFilter: IntentFilter? = null
+    private var smsMonitor: SMSMonitor? = null
+    private val otpSMS = MutableLiveData<String?>()
+
+
+    private lateinit var mHandler: Handler
+    private lateinit var mRunnable: Runnable
+    private var mTime: Long = 60000
+
+
+    private fun initSMSBroadCast() {
+        intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
+        smsMonitor = SMSMonitor()
+        smsMonitor?.setOTPListener(object : SMSMonitor.OTPObserver {
+            override fun onReceived(otp: String?) {
+                AppLogger.instance.appLog("OTP", otp!!)
+                otpSMS.value = otp
+            }
+        })
+    }
+
+    private fun initSmsListener() {
+        val client = SmsRetriever.getClient(this)
+        client.startSmsRetriever()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        widgetViewModel.storageDataSource.deleteOtp()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        widgetViewModel.storageDataSource.deleteOtp()
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,49 +126,131 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         setViewModel()
         setNavigation()
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
-        checkLocationPermission()
-        setCrypto()
+        requestPermissions()
+        setCallbacks()
         listenToConnection()
+        initSmsListener()
+        initSMSBroadCast()
+        subscribePush()
+        inactivityMonitor()
+
     }
 
-
-    private fun createBiometricPrompt(): BiometricPrompt {
-        val executor = ContextCompat.getMainExecutor(this)
-
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "$errorCode :: $errString"
+    private fun inactivityMonitor() {
+        mHandler = Handler(Looper.getMainLooper())
+        mRunnable = Runnable {
+            when (provideNavigationGraph().currentDestination?.id) {
+                R.id.loadingFragment,
+                R.id.mapsFragment,
+                R.id.onTheGoFragment,
+                R.id.splashFragment,
+                R.id.landingPageFragment,
+                R.id.authFragment,
+                R.id.loginFragment,
+                R.id.selfRegistrationFragment,
+                R.id.otpFragment -> {
+                    AppLogger.instance.appLog("Timeout:", "Not here")
+                }
+                else -> provideNavigationGraph().navigate(
+                    widgetViewModel.navigation().navigateLanding()
                 )
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "Authentication failed for an unknown reason"
-                )
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "Authentication success"
-                )
-                processData(result.cryptoObject)
             }
         }
-        return BiometricPrompt(this, executor, callback)
+        startHandler()
+
+
+        workViewModel.timeOut(this, object : WorkStatus {
+            override fun workDone(b: Boolean) {
+                if (b) {
+                    when (provideNavigationGraph().currentDestination?.id) {
+                        R.id.loadingFragment,
+                        R.id.mapsFragment,
+                        R.id.onTheGoFragment,
+                        R.id.splashFragment,
+                        R.id.landingPageFragment,
+                        R.id.authFragment,
+                        R.id.loginFragment,
+                        R.id.selfRegistrationFragment,
+                        R.id.otpFragment -> {
+                            AppLogger.instance.appLog("Timeout:", "Not here")
+                        }
+                        else -> provideNavigationGraph().navigate(
+                            widgetViewModel.navigation().navigateLanding()
+                        )
+                    }
+                }
+            }
+        })
+
+
+//        ProcessLifecycleOwner.get()
+//            .lifecycle
+//            .addObserver(
+//                AppLifecycleListener()
+//                    .also { it })
+
     }
 
-    private fun setCrypto() {
-        cryptographyManager = CryptoManager()
-        secretKeyName = getString(R.string.secret_key_name)
-        biometricPrompt = createBiometricPrompt()
-        promptInfo = createPromptInfo()
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        stopHandler()
+        startHandler()
+    }
+
+
+    private fun startHandler() {
+        mHandler.postDelayed(mRunnable, mTime)
+    }
+
+
+    private fun stopHandler() {
+        mHandler.removeCallbacks(mRunnable)
+    }
+
+    private fun subscribePush() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.printStackTrace()
+                    return@OnCompleteListener
+                }
+                val token = task.result
+
+                widgetViewModel.storageDataSource.setNotificationToken(token)
+                AppLogger.instance.appLog(
+                    "Token",
+                    token
+                )
+            })
+
+
+    }
+
+    private fun setCallbacks() {
+        otpSMS.observe(this) {
+            if (!TextUtils.isEmpty(it)) {
+                OtpFragment.onOtp(MutableLiveData(it))
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(smsMonitor, intentFilter)
+        startHandler()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(smsMonitor)
+        stopHandler()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        smsMonitor = null
+        stopHandler()
     }
 
 
@@ -144,36 +262,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     fun authenticateTo(bioInterface: BioInterface) {
         this.bioInterface = bioInterface
-        when (BiometricManager.from(applicationContext)
-            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                val data = widgetViewModel.storageDataSource.iv.value
-                val cipher = cryptographyManager.getInitializedCipherForDecryption(
-                    secretKeyName,
-                    data!!.iv
-                )
-                biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                //hw  unavailable
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                //no hw found
-            }
-        }
-    }
-
-
-    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-        return BiometricPrompt.PromptInfo.Builder()
-            .setTitle("${getString(R.string.app_name)} ${getString(R.string.auth_)}")
-            .setDescription(getString(R.string.auth_finger))
-            .setConfirmationRequired(false)
-            .setNegativeButtonText(getString(R.string.use_password))
-            .build()
+        showBiometricLoginOption()
     }
 
 
@@ -189,6 +278,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                             provideNavigationGraph().navigateUp()
                     }
                     ConnectionObserver.ConnectionEnum.UnAvailable,
+                    ConnectionObserver.ConnectionEnum.Losing,
                     ConnectionObserver.ConnectionEnum.Lost -> {
                         runOnUiThread {
                             if (provideNavigationGraph().currentDestination?.id != R.id.connectionFragment)
@@ -228,10 +318,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
             override fun progress(p: Int) {
                 AppLogger.instance.appLog("DATA:Progress", "$p")
-                if (provideNavigationGraph().currentDestination?.id == R.id.landingPageFragment) {
-//                    if (p ==100) setLoading(false)
-//                    else setLoading(true)
-                }
             }
         })
     }
@@ -264,13 +350,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
         when (destination.id) {
             R.id.landingPageFragment -> {
-                fullScreen(this, true, true)
+                //fullScreen(this, true, true)
             }
             else -> {
-                fullScreen(this, false, false)
+                // fullScreen(this, false, false)
                 if (destination.id == R.id.landingPageFragment) {
                     Handler(Looper.getMainLooper()).postDelayed({
-                        checkLocationPermission()
+                        requestPermissions()
                     }, 600)
                 }
             }
@@ -542,8 +628,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-
-
     fun onImagePicker(callbacks: AppCallbacks) {
         this.callbacks = callbacks
         ImagePicker.clearCache(this)
@@ -663,6 +747,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         })
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     fun isBiometric(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Build.VERSION.SDK_INT < 29) {
@@ -684,5 +769,76 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         } else true
     }
 
+    override fun onBiometricAuthenticationSuccess(result: BiometricPrompt.AuthenticationResult) {
+        processData(result.cryptoObject)
+    }
 
+    override fun onBiometricAuthenticationError(errorCode: Int, errorMessage: String) {
+        ShowToast(this, errorMessage)
+    }
+
+    private fun showBiometricLoginOption() {
+        val data = widgetViewModel.storageDataSource.iv.value
+        val cipher = cryptographyManager.getInitializedCipherForDecryption(
+            getString(R.string.secret_key_name),
+            data!!.iv
+        )
+        BiometricUtil.showBiometricPrompt(
+            getString(R.string.app_name) + getString(R.string.auth_),
+            getString(R.string.use_password),
+            getString(R.string.auth_finger),
+            this,
+            this,
+            BiometricPrompt.CryptoObject(cipher)
+        )
+    }
+
+
+    private fun requestPermissions() {
+        Dexter.withContext(this)
+            .withPermissions(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
+                    if (multiplePermissionsReport.areAllPermissionsGranted()) {
+
+                    }
+                    if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "All the permissions are Denied...",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    list: List<PermissionRequest?>?,
+                    permissionToken: PermissionToken
+                ) {
+                    permissionToken.continuePermissionRequest()
+                }
+            }).withErrorListener {
+                Toast.makeText(applicationContext, "Error occurred! ", Toast.LENGTH_SHORT).show()
+            }
+            .onSameThread().check()
+    }
+
+
+}
+
+class AppLifecycleListener : DefaultLifecycleObserver {
+
+    override fun onStart(owner: LifecycleOwner) {
+
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+
+    }
 }

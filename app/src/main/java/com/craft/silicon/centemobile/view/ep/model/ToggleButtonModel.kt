@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.ep.model
 
 import android.view.LayoutInflater
+import android.view.View.VISIBLE
 import androidx.compose.runtime.mutableStateListOf
 import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.*
@@ -36,6 +37,7 @@ open class ToggleButtonModel : DataBindingEpoxyModel() {
 
         val group = binding.toggle
         group.removeAllViews()
+
 
         data.children.forEachIndexed { index, formControl ->
             val inflater = LayoutInflater.from(group.context)

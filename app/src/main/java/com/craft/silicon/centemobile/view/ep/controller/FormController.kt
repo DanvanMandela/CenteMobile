@@ -7,25 +7,24 @@ import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlIDEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
-import com.craft.silicon.centemobile.view.ep.model.dateSelect
-import com.craft.silicon.centemobile.view.ep.model.phoneContacts
-import com.craft.silicon.centemobile.view.ep.model.radioGroup
+import com.craft.silicon.centemobile.view.ep.model.*
 
-class FormController(val callbacks: AppCallbacks) :
+class FormController(
+    val callbacks: AppCallbacks,
+    val storage: StorageDataSource?
+) :
     TypedEpoxyController<FormData>() {
 
     override fun buildModels(data: FormData?) {
         for (d in data?.forms?.form!!) {
             when (BaseClass.nonCaps(d.controlType)) {
-                BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> textInputLayout {
-                    id(d.controlID)
-                    data(d)
-                    callback(this@FormController.callbacks)
-                }
+
+                BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> setTextInputLayout(d, data)
 
                 BaseClass.nonCaps(ControlTypeEnum.BUTTON.type) -> buttonLayout {
                     id(d.controlID)
@@ -89,7 +88,6 @@ class FormController(val callbacks: AppCallbacks) :
                     callback(this@FormController.callbacks)
                 }
                 BaseClass.nonCaps(ControlTypeEnum.LABEL.type) -> {
-
                     when (BaseClass.nonCaps(d.controlFormat)) {
                         BaseClass.nonCaps(ControlFormatEnum.LIST_DATA.type) -> labelListLayout {
                             id(d.controlID)
@@ -133,6 +131,32 @@ class FormController(val callbacks: AppCallbacks) :
                 callbacks(this@FormController.callbacks)
             }
         }
+    }
+
+    private fun setTextInputLayout(d: FormControl, data: FormData) {
+        when (BaseClass.nonCaps(d.controlFormat)) {
+            BaseClass.nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
+                id(d.controlID)
+                data(d)
+                callback(this@FormController.callbacks)
+                module(data.forms.module)
+                storage(this@FormController.storage)
+            }
+            BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> amountModel(
+                form = d, storage = storage, callbacks = callbacks
+            )
+            BaseClass.nonCaps(ControlFormatEnum.PIN_NUMBER.type),
+            BaseClass.nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
+                form = d, storage = storage, callbacks = callbacks
+            )
+            else -> textInputLayout {
+                id(d.controlID)
+                data(d)
+                storage(data.storage)
+                callback(this@FormController.callbacks)
+            }
+        }
+
     }
 
 }

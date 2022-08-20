@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
@@ -56,17 +57,17 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @AndroidEntryPoint
-public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickListener, SMSData, OTP {
+public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickListener, OTP {
 
     private FragmentOtpBinding binding;
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
     private CountDownTimer countDownTimer;
-    private final SMSReceiver smsReceiver = new SMSReceiver();
     private static final String ARG_MOBILE = "mobile";
     private String mobile;
     private BaseViewModel baseViewModel;
+    private MutableLiveData<String> otp;
 
     public OtpFragment() {
         // Required empty public constructor
@@ -84,6 +85,12 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         Bundle args = new Bundle();
         args.putString(ARG_MOBILE, mobile);
         fragment.setArguments(args);
+        return new OtpFragment();
+    }
+
+    public static OtpFragment onOtp(MutableLiveData<String> otp) {
+        OtpFragment fragment = new OtpFragment();
+        fragment.otp = otp;
         return new OtpFragment();
     }
 
@@ -105,8 +112,19 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         setOnClick();
         setBroadcastListener();
         setTimer();
+        setOTP();
         return binding.getRoot().getRootView();
     }
+
+    private void setOTP() {
+        if (otp != null)
+            otp.observe(getViewLifecycleOwner(), o -> {
+                if (!TextUtils.isEmpty(o)) {
+                    binding.verificationCodeEditText.setText(o);
+                }
+            });
+    }
+
 
     @Override
     public void setOnClick() {
@@ -295,35 +313,6 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         }
     }
 
-
-    @Override
-    public void setBroadcastListener() {
-        smsReceiver.setOnSMS(this);
-        requireActivity().registerReceiver(smsReceiver, new IntentFilter("SMSReceived"));
-    }
-
-    @Override
-    public void onSMS(@NonNull String sms) {
-        binding.verificationCodeEditText.setText(sms);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setBroadcastListener();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        setBroadcastListener();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        requireActivity().unregisterReceiver(smsReceiver);
-    }
 
     private void setLoading(boolean b) {
         if (b) LoadingFragment.show(getChildFragmentManager());

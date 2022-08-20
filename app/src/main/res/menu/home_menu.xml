@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <item
+        android:id="@+id/actionNotification"
+        android:icon="@drawable/ic_baseline_notifications_none_24"
+        android:iconTint="@color/dar_color_one"
+        android:title="@string/notification"
+        app:showAsAction="ifRoom"
+        tools:targetApi="o" />
+
+    <item
         android:id="@+id/actionLogout"
-        android:icon="@drawable/log_out"
+        android:icon="@drawable/ic_baseline_power_settings_new_24"
+        android:iconTint="@color/dar_color_one"
         android:title="@string/log_out"
-       />
+        app:showAsAction="always"
+        tools:targetApi="o" />
 </menu>

@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
-import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.FragmentDisplayDialogBinding
-import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.DisplayData
-import com.craft.silicon.centemobile.view.ep.controller.FormController
 import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
 import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -82,9 +77,11 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     private fun setDisplayData() {
         val controller = MainDisplayController(this)
         binding.container.setController(controller)
-        if (data!!.isNotEmpty()) {
-            controller.setData(DisplayData(data, form, module))
-        } else controller.setData(Nothing())
+        if (data != null)
+            if (data!!.isNotEmpty()) {
+                controller.setData(DisplayData(data, form, module))
+            } else controller.setData(Nothing())
+        else controller.setData(Nothing())
 
     }
 
@@ -120,6 +117,7 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                 }
             }
 
+        @JvmStatic
         fun showDialog(
             manager: FragmentManager,
             data: MutableList<HashMap<String, String>>?,

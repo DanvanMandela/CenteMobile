@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CB Mobile</string>
+    <string name="app_name">CenteMobile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logo">Logo</string>
@@ -77,7 +77,7 @@
     <string name="os">OS</string>
     <string name="link_device_account">Would you like to link this device to\nyour account?</string>
     <string name="proceed">Proceed</string>
-    <string name="disclaimer_explain">Dear, in order to continue accessing mobile banking securely,\nYou will be required to register your device.Kindly press \'PROCEED\' to register this device.\nTo cancel this prompt,go back to the previous step</string>
+    <string name="disclaimer_explain">Dear customer, in order to continue accessing mobile banking securely,You will be required to register your device.Kindly press \'PROCEED\' to register this device.</string>
     <string name="total_amount">Total Amount</string>
     <string name="welcome_to_self">Welcome To\nSelf Registration</string>
     <string name="lets_start_with_card_details">Almost done.Now enter your card details so that we can verify you are you</string>
@@ -117,7 +117,7 @@
     <string name="select_currency">Select currency</string>
     <string name="select_branch">Select branch</string>
     <string name="terms_condition"><![CDATA[Terms & Conditions]]></string>
-    <string name="agree_terms">I Agree with terms and coditions</string>
+    <string name="agree_terms">I Agree with terms and conditions</string>
     <string name="back_">Back</string>
     <string name="next">Next</string>
 
@@ -272,7 +272,7 @@
     <string name="resend_code">Resend code in</string>
     <string name="registered_success">Registered Successfully</string>
     <string name="done">Done</string>
-    <string name="lorem">Lorem ipsum dolor sit amet,consectetur adipiscing elit. Sed in placerat diam. Fusce luctus, tellus id eleifend sodales, risus lacus vulputate nunc, vitae faucibus metus metus quis lectus. Aenean vel ligula id sem porttitor interdum. Mauris id neque id risus vulputate tempus volutpat sit amet tortor. Suspendisse potenti. Nunc sapien ipsum, egestas in egestas eget, pharetra nec urna. Donec ut quam in leo porttitor varius.</string>
+    <string name="lorem">Lorem ipsum dolor sit amet,consectetur adipiscing elit. Sed in placerat diam. Fusce luctus, tellus id eleifend sodales, risus lacus vulputate nunc, vitae faucibus metus quis lectus. Aenean vel ligula id sem porttitor interdum. Mauris id neque id risus vulputate tempus volutpat sit amet tortor. Suspendisse potenti. Nunc sapien ipsum, egestas in egestas eget, pharetra nec urna. Donec ut quam in leo porttitor varius.</string>
     <string name="days_remaining">Days to go</string>
     <string name="view_balance">Show Balance</string>
     <string name="unable_to_get_balance">Unable to get balance at the moment</string>
@@ -282,6 +282,7 @@
     <string name="timed_out">Timed out</string>
     <string name="payments_alerts">Payment Alerts</string>
     <string name="no_service_alert">You have no service alert on the\nselected account</string>
+    <string name="no_service_frequent">You have no frequent services</string>
     <string name="use_touch_id">Use fingerprint  for faster and easy access\nto your  Account</string>
     <string name="enable_touch_id_login">Enable Fingerprint Login</string>
     <string name="disable_touch_id_login">Disable Fingerprint Login</string>
@@ -313,6 +314,27 @@
     <string name="scan_cancel">User has canceled scan</string>
     <string name="permision_camera">Camera permission  missing</string>
     <string name="scan_qr_code_tap">Tap on the above image to start scanning</string>
+    <string name="notification">Notifications</string>
+    <string name="frequent_module">Frequent Services</string>
+    <string name="view_statement">Mini statement</string>
+    <string name="balance_available">Available Balance</string>
+    <string name="error_fetching_mini">Error fetching mini statement</string>
+    <string name="delete">Delete</string>
+    <string name="no_notification">No notifications yet!</string>
+    <string name="will_inform_you">Will inform you when something arrives</string>
+    <string name="clear_notification">Clear notifications</string>
+    <string name="bill">Bill</string>
+    <string name="transaction_type">Transaction type</string>
+    <string name="status">Status</string>
+    <string name="pref_">Reference number</string>
+    <string name="message_">Message</string>
+    <string name="error_fetching_transactions">Error fetching transactions</string>
+    <string name="amount_">Amount</string>
+    <string name="no_data">No Data</string>
+    <string name="no_data_later">No data,please try again later</string>
+    <string name="trans_details">TRANSACTION DETAILS</string>
+    <string name="ugx">UGX</string>
+    <string name="welcome_to_cente">Welcome To\nCentenary Bank</string>
 
 
 </resources>

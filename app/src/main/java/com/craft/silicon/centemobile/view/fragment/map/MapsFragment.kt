@@ -149,7 +149,7 @@ class MapsFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
                 it.forEach { data ->
                     moveCamera(
                         LatLng(data.latitude!!, data.longitude!!),
-                        15f,
+                        8f,
                         data.location!!
                     )
                 }

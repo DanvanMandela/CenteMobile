@@ -10,7 +10,6 @@ import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.*
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.view.fragment.go.OnTheGoConverter
-import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,6 +27,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
 
     override fun clearDevice() {
+        setActivated(false)
         deleteActivationData()
         deleteStaticData()
         deleteNOK()
@@ -770,6 +770,103 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _disableModule = MutableStateFlow(
+        DisableModulesConverter().from(
+            sharedPreferences.getString(
+                TAG_DISABLED_MODULE,
+                ""
+            )
+        )
+    )
+    override val disableModule: StateFlow<List<ModuleDisable?>?>
+        get() = _disableModule
+
+    override fun setDisableModule(value: List<ModuleDisable?>) {
+        _disableModule.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_DISABLED_MODULE,
+                DisableModulesConverter().to(value)
+            )
+            apply()
+        }
+    }
+
+    override fun setNotificationToken(value: String) {
+        _pushToken.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_NOTIFICATION_TOKEN,
+                value
+            )
+            apply()
+        }
+    }
+
+    private val _pushToken = MutableStateFlow(
+        sharedPreferences.getString(
+            TAG_NOTIFICATION_TOKEN,
+            ""
+        )
+    )
+    override val notificationToken: StateFlow<String?>
+        get() = _pushToken
+
+
+    private val _otp = MutableStateFlow(
+        sharedPreferences.getString(
+            TAG_OTP,
+            ""
+        )
+    )
+    override val otp: StateFlow<String?>
+        get() = _otp
+
+    override fun setOtp(value: String?) {
+        _otp.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_OTP,
+                value
+            )
+            apply()
+        }
+    }
+
+    override fun deleteOtp() {
+        _otp.value = ""
+        with(sharedPreferences.edit()) {
+            remove(TAG_OTP)
+        }
+    }
+
+    private val _timeout = MutableStateFlow(
+        sharedPreferences.getInt(
+            TAG_TIME_OUT,
+            600
+        )
+    )
+    override val timeout: StateFlow<Int?>
+        get() = _timeout
+
+    override fun setTimeout(value: Int?) {
+        _timeout.value = value!!
+        with(sharedPreferences.edit()) {
+            putInt(
+                TAG_TIME_OUT,
+                value
+            )
+            apply()
+        }
+    }
+
+    override fun deleteTimeout() {
+        _timeout.value = 0
+        with(sharedPreferences.edit()) {
+            remove(TAG_TIME_OUT)
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -812,6 +909,15 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_BIO = "bio"
 
         private const val TAG_IV = "iv"
+
         private const val TAG_HIDDEN_MODULE = "hiddenModule"
+
+        private const val TAG_NOTIFICATION_TOKEN = "pushToken"
+
+        private const val TAG_DISABLED_MODULE = "hiddenModule"
+
+        private const val TAG_OTP = "otpTag"
+
+        private const val TAG_TIME_OUT = "timeout"
     }
 }

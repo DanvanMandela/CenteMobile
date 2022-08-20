@@ -20,6 +20,7 @@ import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
+import javax.inject.Inject
 
 
 @BindingAdapter("callback", "form")
@@ -66,7 +67,7 @@ fun EpoxyRecyclerView.validationForm(
         if (dynamic != null) {
             when (dynamic) {
                 is GroupForm -> {
-                    controller = NewFormController(callbacks)
+                    controller = NewFormController(callbacks, storage)
                     controller.setData(FormData(forms = dynamic, storage = storage))
                 }
             }
@@ -99,23 +100,20 @@ fun MaterialButton.setToggle(callbacks: AppCallbacks?, data: FormControl?) {
             )
 }
 
+
 @BindingAdapter("callback", "linked", "storage")
 fun EpoxyRecyclerView.setChildren(
     callbacks: AppCallbacks, dynamic: DynamicData?,
     storage: StorageDataSource?
 ) {
-    var controller: EpoxyController? = null
-    if (storage != null)
-        if (dynamic != null) {
-            when (dynamic) {
-                is GroupForm -> {
-                    controller = FormController(callbacks)
-                    controller.setData(FormData(forms = dynamic, storage = storage))
-                }
-            }
-            if (controller != null) {
-                this.setController(controller)
+    val controller = FormController(callbacks, storage)
+    this.setController(controller)
+    if (dynamic != null) {
+        when (dynamic) {
+            is GroupForm -> {
+                controller.setData(FormData(forms = dynamic, storage = storage))
             }
         }
+    }
 }
 

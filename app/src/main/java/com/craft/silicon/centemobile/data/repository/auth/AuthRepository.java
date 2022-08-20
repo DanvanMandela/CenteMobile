@@ -8,6 +8,8 @@ import com.craft.silicon.centemobile.data.scope.Remote;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.util.AppLogger;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class AuthRepository implements AuthDataSource {
 
     @Override
     public Single<DynamicResponse> authRequest(PayloadData data, String path) {
+        AppLogger.Companion.getInstance().appLog("MAIN:DATA", new Gson().toJson(data));
         return remoteData.authRequest(data, path);
     }
 

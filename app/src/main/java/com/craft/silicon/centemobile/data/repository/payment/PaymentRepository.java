@@ -3,6 +3,8 @@ package com.craft.silicon.centemobile.data.repository.payment;
 import com.craft.silicon.centemobile.data.scope.Remote;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
+import com.craft.silicon.centemobile.util.AppLogger;
+import com.google.gson.Gson;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,6 +22,7 @@ public class PaymentRepository implements PaymentDataSource {
 
     @Override
     public Single<DynamicResponse> paymentRequest(String token, PayloadData data, String path) {
+        AppLogger.Companion.getInstance().appLog("MAIN:DATA", new Gson().toJson(data));
         return remoteData.paymentRequest(token, data, path);
     }
 }

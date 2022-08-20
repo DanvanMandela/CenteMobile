@@ -2,6 +2,8 @@ package com.craft.silicon.centemobile.view.navigation;
 
 import androidx.navigation.NavDirections;
 
+import com.craft.silicon.centemobile.data.model.dynamic.TransactionData;
+import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.view.ep.data.DynamicData;
 
 public interface NavigationDataSource {
@@ -45,6 +47,10 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateDynamicTwo() {
+        return null;
+    }
+
     default NavDirections navigateResetPinATM() {
         return null;
     }
@@ -77,7 +83,39 @@ public interface NavigationDataSource {
         return null;
     }
 
-    default NavDirections navigationBio(){return null;}
+    default NavDirections navigationBio() {
+        return null;
+    }
 
-    default NavDirections navigateToLoading(){return null;}
+    default NavDirections navigateToLoading() {
+        return null;
+    }
+
+    default NavDirections navigateToDisclaimer() {
+        return null;
+    }
+
+    default NavDirections navigateToGlobalOtp() {
+        return null;
+    }
+
+    default NavDirections navigateToNotification() {
+        return null;
+    }
+
+    default NavDirections navigateToLevelOne(DynamicData dynamicData) {
+        return null;
+    }
+
+    default NavDirections navigateToLevelTwo(DynamicData dynamicData) {
+        return null;
+    }
+
+    default NavDirections navigateToTransactionCenter(Modules modules) {
+        return null;
+    }
+
+    default NavDirections navigateToTransactionDetails(TransactionData data){return null;}
+
+
 }

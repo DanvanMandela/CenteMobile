@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.craft.silicon.centemobile.databinding.FragmentSplashBinding;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.model.SplashViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 
@@ -93,9 +94,8 @@ public class SplashFragment extends Fragment implements AppCallbacks {
     @Override
     public void setViewModel() {
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ((MainActivity) requireActivity()).provideNavigationGraph()
-                    .navigate(widgetViewModel.navigation().navigateLanding());
-        }, 300);
+        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                BindingAdapterKt.navigate(this, widgetViewModel
+                        .navigation().navigateLanding()), 300);
     }
 }

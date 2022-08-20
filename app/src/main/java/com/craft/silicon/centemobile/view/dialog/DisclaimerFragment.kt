@@ -9,11 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
+import com.craft.silicon.centemobile.data.source.constants.Constants
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentDisclaimerBinding
+import com.craft.silicon.centemobile.util.AppLogger
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.model.AuthViewModel
+import com.craft.silicon.centemobile.view.model.WorkStatus
+import com.craft.silicon.centemobile.view.model.WorkerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,11 +41,16 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DisclaimerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class DisclaimerFragment : BottomSheetDialogFragment(), AppCallbacks {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentDisclaimerBinding
+    private val compositeDisposable = CompositeDisposable()
+    private val authViewModel: AuthViewModel by viewModels()
+
+    private val workerViewModel: WorkerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,17 +67,112 @@ class DisclaimerFragment : BottomSheetDialogFragment(), AppCallbacks {
         // Inflate the layout for this fragment
         binding = FragmentDisclaimerBinding.inflate(inflater, container, false)
         setBinding()
+        setOnClick()
+        setBinding()
         return binding.root.rootView
     }
 
+    override fun setOnClick() {
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
+        binding.materialButton2.setOnClickListener {
+            saveDeviceData()
+        }
+    }
+
+    private fun saveDeviceData() {
+        val json = JSONObject()
+        json.put("DeviceID", Constants.getIMEIDeviceId(requireContext()))
+        json.put("DeviceName", Build.BRAND)
+        json.put("DeviceMake", Build.BRAND)
+        json.put("DeviceModel", Build.MODEL)
+        json.put(
+            "DeviceOSVersion",
+            VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
+        )
+        compositeDisposable.add(
+            authViewModel.deviceRegister(json, requireActivity())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    try {
+                        AppLogger.instance.appLog(
+                            "Device:REG:Response", BaseClass.decryptLatest(
+                                it.response,
+                                authViewModel.storage.deviceData.value!!.device,
+                                true,
+                                authViewModel.storage.deviceData.value!!.run
+                            )
+                        )
+                        if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            val resData = DynamicAPIResponseConverter().to(
+                                BaseClass.decryptLatest(
+                                    it.response,
+                                    authViewModel.storage.deviceData.value!!.device,
+                                    true,
+                                    authViewModel.storage.deviceData.value!!.run
+                                )
+                            )
+                            AppLogger.instance.appLog("DeviceREg", Gson().toJson(resData))
+                            if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                (requireActivity()).onBackPressed()
+                            } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
+                                workerViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
+                                    override fun workDone(b: Boolean) {
+                                        if (b) saveDeviceData()
+                                    }
+                                })
+                            } else {
+                                AlertDialogFragment.newInstance(
+                                    DialogData(
+                                        title = R.string.error,
+                                        subTitle = resData?.message!!,
+                                        R.drawable.warning_app
+                                    ),
+                                    requireActivity().supportFragmentManager
+                                )
+                            }
+                        }
+
+                    } catch (e: Exception) {
+                        setLoading(false)
+                        AlertDialogFragment.newInstance(
+                            DialogData(
+                                title = R.string.error,
+                                subTitle = getString(R.string.something_),
+                                R.drawable.warning_app
+                            ),
+                            requireActivity().supportFragmentManager
+                        )
+                    }
+                }, { it.printStackTrace() })
+        )
+        compositeDisposable.add(
+            authViewModel.loading.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ setLoading(it) }, { it.printStackTrace() })
+        )
+    }
+
+    private fun setLoading(b: Boolean) {
+        if (b) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
+    }
+
     override fun setBinding() {
-//        binding.deviceMake.text = Build.BRAND
-//        binding.deviceModel.text = Build.MODEL
-//        binding.deviceOS.text =
-//            VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
+        binding.deviceMake.text = Build.BRAND
+        binding.deviceModel.text = Build.MODEL
+        binding.deviceOS.text =
+            VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
     }
 
     companion object {
+        private lateinit var callbacks: AppCallbacks
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -74,7 +190,10 @@ class DisclaimerFragment : BottomSheetDialogFragment(), AppCallbacks {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
     }
+
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)

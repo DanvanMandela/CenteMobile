@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="storage"
+            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
+
+        <variable
             name="module"
             type="com.craft.silicon.centemobile.data.model.module.Modules" />
 
@@ -43,6 +47,7 @@
             callback="@{callback}"
             module="@{module}"
             otp="@{data}"
+            storage="@{storage}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

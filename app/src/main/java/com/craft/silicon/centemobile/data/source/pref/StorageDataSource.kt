@@ -6,7 +6,6 @@ import com.craft.silicon.centemobile.data.model.converter.IVData
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.*
-import com.craft.silicon.centemobile.view.fragment.go.OnTheGoData
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +26,9 @@ interface StorageDataSource {
 
     fun setHiddenModule(value: List<ModuleHide?>)
     val hiddenModule: StateFlow<List<ModuleHide?>?>
+
+    fun setDisableModule(value: List<ModuleDisable?>)
+    val disableModule: StateFlow<List<ModuleDisable?>?>
 
     fun clearDevice()
 
@@ -122,5 +124,19 @@ interface StorageDataSource {
 
     fun setIv(value: IVData?)
     val iv: StateFlow<IVData?>
+
+
+    fun setNotificationToken(value: String)
+    val notificationToken: StateFlow<String?>
+
+
+    fun setOtp(value: String?)
+    val otp: StateFlow<String?>
+    fun deleteOtp()
+
+
+    fun setTimeout(value: Int?)
+    val timeout: StateFlow<Int?>
+    fun deleteTimeout()
 
 }

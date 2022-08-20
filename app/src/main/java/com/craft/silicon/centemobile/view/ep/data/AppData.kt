@@ -63,7 +63,7 @@ data class FormData(
     var forms: GroupForm,
     @field:SerializedName("storage")
     @field:Expose
-    var storage: StorageDataSource,
+    var storage: StorageDataSource?,
 ) : DynamicData()
 
 

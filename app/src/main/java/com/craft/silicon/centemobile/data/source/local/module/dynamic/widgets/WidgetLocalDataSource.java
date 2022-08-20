@@ -6,6 +6,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
@@ -186,5 +187,35 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     @Override
     public Observable<List<AtmData>> getATMBranch(boolean b) {
         return widgetDao.getATMBranch(b);
+    }
+
+
+    @Override
+    public void saveNotifications(NotificationData data) {
+        Completable.fromRunnable(() -> widgetDao.saveNotifications(data))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteNotifications() {
+        Completable.fromRunnable(widgetDao::deleteNotifications)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public Observable<List<NotificationData>> getNotification() {
+        return widgetDao.getNotification();
+    }
+
+    @Override
+    public void deleteNotification(int id) {
+        Completable.fromRunnable(() -> widgetDao.deleteNotification(id))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
     }
 }

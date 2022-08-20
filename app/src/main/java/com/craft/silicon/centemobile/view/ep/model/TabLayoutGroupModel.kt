@@ -9,6 +9,7 @@ import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.*
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockTabGroupLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockTabItemBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -19,12 +20,17 @@ import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
+import javax.inject.Inject
 
 
 @EpoxyModelClass
 open class TabLayoutGroupModel : DataBindingEpoxyModel() {
+
     @EpoxyAttribute
     lateinit var data: LinkedVault
+
+    @EpoxyAttribute
+    lateinit var storage: StorageDataSource
 
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
     lateinit var callbacks: AppCallbacks
@@ -59,27 +65,26 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
         tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 callbacks.clearInputData()
-                val list = mutableStateListOf<FormControl>()
                 val linked =
                     data.mainData.forms.form?.filter { a ->
                         a.linkedToControl == tab?.tag.toString()
                     }
-
+                AppLogger.instance.appLog("TAB:Data", Gson().toJson(data))
                 AppLogger.instance.appLog("TAB:Linked", Gson().toJson(linked))
                 AppLogger.instance.appLog("TAB:Tag", Gson().toJson(tab?.tag))
+                AppLogger.instance.appLog("TAB:Storage", Gson().toJson(storage))
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    linked?.let { list.addAll(it) }
-                    if (list.isNotEmpty())
+                if (linked!!.isNotEmpty())
+                    Handler(Looper.getMainLooper()).postDelayed({
                         binding.setChildren(
                             callbacks = callbacks,
                             dynamic = GroupForm(
                                 module = data.mainData.forms.module,
-                                form = list
+                                form = linked.toMutableList()
                             ),
-                            storage = data.mainData.storage
+                            storage = storage
                         )
-                }, 40)
+                    }, 40)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -96,11 +101,13 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
 
 fun TypedEpoxyController<*>.tabLayoutGroup(
     vault: LinkedVault,
-    appCallbacks: AppCallbacks
+    appCallbacks: AppCallbacks,
+    storage: StorageDataSource
 ) {
     tabLayoutGroup {
         id(vault.container.controlID)
         data(vault)
         callbacks(appCallbacks)
+        storage(storage)
     }
 }

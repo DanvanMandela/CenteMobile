@@ -34,6 +34,7 @@ open class RadioGroupModel : DataBindingEpoxyModel() {
     }
 
     private fun addChildren(parent: RadioGroup) {
+
         val s =
             data.form?.filter { a -> nonCaps(a.controlType) == nonCaps(ControlTypeEnum.R_BUTTON.type) }
         parent.removeAllViews()

@@ -6,4 +6,7 @@ enum class StatusEnum(val type: String) {
     ERROR("ok"),
     TOKEN("099"),
     OTP("093"),
+    PHONE_REG("105"),
+    PHONE_CHANGE("102"),
+    PIN_CHANGE("101"),
 }

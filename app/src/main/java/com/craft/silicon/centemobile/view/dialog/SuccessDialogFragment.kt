@@ -32,7 +32,7 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            dialogData = arguments!!.getParcelable(ARG_DATA)
+            dialogData = requireArguments().getParcelable(ARG_DATA)
         }
     }
 

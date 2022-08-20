@@ -27,21 +27,24 @@ import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
-import com.craft.silicon.centemobile.data.source.remote.helper.NetworkIsh
 import com.craft.silicon.centemobile.databinding.FragmentPurchaseBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
+import com.craft.silicon.centemobile.view.binding.calendarToDate
+import com.craft.silicon.centemobile.view.binding.hideSoftKeyboard
+import com.craft.silicon.centemobile.view.binding.navigate
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.InfoFragment
+import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
-import com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
 import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.InsuranceAdapterItem
@@ -52,9 +55,13 @@ import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.ep.data.ReceiptList
+import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.global.GlobalFragment
-import com.craft.silicon.centemobile.view.model.*
+import com.craft.silicon.centemobile.view.fragment.global.GlobalOTPFragment
+import com.craft.silicon.centemobile.view.model.BaseViewModel
+import com.craft.silicon.centemobile.view.model.PaymentViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -63,10 +70,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 /**
@@ -75,7 +79,7 @@ import java.time.format.DateTimeFormatter
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
+class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
 
     private lateinit var binding: FragmentPurchaseBinding
     private val inputList = mutableListOf<InputData>()
@@ -88,11 +92,11 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     private var actionControls = MutableLiveData<MutableList<ActionControls>>()
 
 
-    private val liveFormData = MutableLiveData<DynamicData>()
+    private val liveFormData = MutableLiveData<DynamicData?>()
 
     private val baseViewModel: BaseViewModel by viewModels()
 
-    private val contactLiveData = MutableLiveData<String>()
+    private val contactLiveData = MutableLiveData<String?>()
     private val displayData = mutableListOf<DisplayVault>()
 
 
@@ -146,6 +150,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     }
 
     override fun onForm(formControl: FormControl?, modules: Modules?) {
+        requireActivity().hideSoftKeyboard(binding.root)
         when (nonCaps(formControl?.controlFormat)) {
             nonCaps(ControlFormatEnum.END.type) -> (requireActivity()).onBackPressed()
             else -> {
@@ -250,7 +255,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                 json,
                 encrypted,
                 module,
-                requireContext()
+                requireActivity()
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -274,29 +279,30 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                                 )
                             )
                             if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                if (nonCaps(resData?.formID)
-                                    == nonCaps("STATEMENT")
-                                ) {
-                                    DisplayDialogFragment.showDialog(
-                                        manager = this.parentFragmentManager,
-                                        data = resData?.accountStatement,
-                                        modules = module,
-                                        controller = formControl
-                                    )
-                                } else if (nonCaps(resData?.formID)
-                                    == nonCaps("PAYMENTCONFIRMATIONFORM")
-                                ) {
-                                    AppLogger.instance.appLog("Pay", Gson().toJson(resData))
-                                    ReceiptFragment.newInstance(
-                                        this, ReceiptList(
-                                            receipt = resData?.receipt!!
-                                                .toMutableList(),
-                                            notification = resData.notifications
+
+                                if (resData?.formID != null) {
+                                    if (nonCaps(resData.formID)
+                                        == nonCaps("STATEMENT")
+                                    ) {
+                                        DisplayDialogFragment.showDialog(
+                                            manager = this.parentFragmentManager,
+                                            data = resData?.accountStatement,
+                                            modules = module,
+                                            controller = formControl
                                         )
-                                    )
-                                    (requireActivity() as MainActivity)
-                                        .provideNavigationGraph()
-                                        .navigate(
+                                    } else if (nonCaps(resData.formID)
+                                        == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                    ) {
+                                        AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                        ReceiptFragment.newInstance(
+                                            this, ReceiptList(
+                                                receipt = resData?.receipt!!
+                                                    .toMutableList(),
+                                                notification = resData.notifications
+                                            )
+                                        )
+
+                                        navigate(
                                             widgetViewModel.navigation()
                                                 .navigateReceipt(
                                                     ReceiptList(
@@ -306,32 +312,48 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
                                                     )
                                                 )
                                         )
-                                } else if (nonCaps(resData?.formID) == nonCaps("RELIGION")) {
-                                    val mData = GlobalResponseTypeConverter().to(
-                                        BaseClass.decryptLatest(
-                                            it.response,
-                                            baseViewModel.dataSource.deviceData.value!!.device,
-                                            true,
-                                            baseViewModel.dataSource.deviceData.value!!.run
+                                    } else if (nonCaps(resData.formID) == nonCaps("RELIGION")) {
+                                        val mData = GlobalResponseTypeConverter().to(
+                                            BaseClass.decryptLatest(
+                                                it.response,
+                                                baseViewModel.dataSource.deviceData.value!!.device,
+                                                true,
+                                                baseViewModel.dataSource.deviceData.value!!.run
+                                            )
                                         )
-                                    )
-                                    DisplayDialogFragment.showDialog(
-                                        manager = this.parentFragmentManager,
-                                        data = mData?.data,
-                                        modules = module,
-                                        controller = formControl
-                                    )
-                                }
+                                        DisplayDialogFragment.showDialog(
+                                            manager = this.parentFragmentManager,
+                                            data = mData?.data,
+                                            modules = module,
+                                            controller = formControl
+                                        )
+                                    }
+                                } else SuccessDialogFragment.showDialog(
+                                    DialogData(
+                                        title = R.string.success,
+                                        subTitle = resData?.message!!,
+                                        R.drawable.success
+                                    ),
+                                    requireActivity().supportFragmentManager, this
+                                )
+
 
                             } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
                             } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
-                                setOnNextModule(
+                                GlobalOTPFragment.setData(
+                                    json = json,
+                                    encrypted = encrypted,
+                                    inputList = inputList,
+                                    module = module,
+                                    action = action,
                                     formControl,
-                                    resData?.next,
-                                    module,
-                                    resData?.formID
+                                    this,
                                 )
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    navigate(widgetViewModel.navigation().navigateToGlobalOtp())
+                                }, 200)
+
                             } else {
                                 AppLogger.instance.appLog("Pay", Gson().toJson(resData))
                                 Handler(Looper.getMainLooper()).postDelayed({
@@ -422,11 +444,8 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
             response = null,
             map = inputList
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigateGlobal()
-            )
+
+        navigate(widgetViewModel.navigation().navigateGlobal())
     }
 
 
@@ -516,23 +535,23 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
     }
 
     override fun onDateSelect(view: AutoCompleteTextView?, formControl: FormControl?) {
-        val datePattern = "dd MMM YYYY"
-        val datePicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(formControl?.controlText)
+        try {
+            val picker = MaterialDatePicker.Builder.datePicker()
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        datePicker.show(this.childFragmentManager, this::class.java.simpleName)
-
-        datePicker.addOnPositiveButtonClickListener {
-            val dateTime: LocalDateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(it),
-                ZoneId.systemDefault()
-            )
-            val dateFormatted: String =
-                dateTime.format(DateTimeFormatter.ofPattern(datePattern))
-            view?.setText(dateFormatted)
+            picker.addOnPositiveButtonClickListener { selection: Long? ->
+                val utc: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                if (selection != null) {
+                    utc.timeInMillis = selection
+                }
+                val date: String? = calendarToDate(utc)
+                view?.setText(date)
+            }
+            picker.show(this.childFragmentManager, picker.tag)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
+
 
     }
 
@@ -751,21 +770,6 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
         return map
     }
 
-    override fun onNetwork(boolean: Boolean) {
-        if (!boolean) ConnectionFragment.showDialog(this.childFragmentManager)
-        else ConnectionFragment.dismiss(this.childFragmentManager)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        widgetViewModel.networkDataSource.connection(this)
-        widgetViewModel.networkDataSource.enable()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        widgetViewModel.networkDataSource.disable()
-    }
 
     override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
         (requireActivity() as MainActivity).onImagePicker(object : AppCallbacks {
@@ -790,35 +794,17 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm, NetworkIsh {
             form = forms,
             module = modules
         )
-        ((requireActivity()) as MainActivity)
-            .provideNavigationGraph()
-            .navigate(
-                widgetViewModel.navigation().navigationBio()
-            )
+        navigate(widgetViewModel.navigation().navigationBio())
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        widgetViewModel.storageDataSource.deleteOtp()
+    }
+
+
+
 
 
 }
 
-interface Confirm {
-    fun onPay(data: MutableList<InputData>) {
-        throw Exception("Not implemented")
-    }
-
-    fun onPay(
-        json: JSONObject?,
-        encrypted: JSONObject?,
-        inputList: MutableList<InputData>,
-        module: Modules?,
-        action: ActionControls?,
-        formControl: FormControl?
-    ) {
-        throw Exception("Not implemented")
-    }
-
-    fun onCancel() {
-        throw Exception("Not implemented")
-    }
-
-
-}

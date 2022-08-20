@@ -1,24 +1,46 @@
 package com.craft.silicon.centemobile.util;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.pdf.PdfDocument;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -340,6 +362,123 @@ public class BaseClass {
     }
 
 
+    public static String formatMobile(String mobile) {
+        Pattern pattern = Pattern.compile(" ");
+        String[] number = pattern.split(mobile);
+        return number[1].replace(" ", "");
+    }
+
+
+    public static void createPdf(Activity activity, Bitmap bitmap) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        float height = displaymetrics.heightPixels;
+        float width = displaymetrics.widthPixels;
+
+        int convertHeight = (int) height, convertWidth = (int) width;
+
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(convertWidth,
+                convertHeight, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+
+        Canvas canvas = page.getCanvas();
+
+        Paint paint = new Paint();
+        canvas.drawPaint(paint);
+
+        bitmap = Bitmap.createScaledBitmap(bitmap, convertWidth, convertHeight, true);
+
+        paint.setColor(Color.BLUE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        document.finishPage(page);
+
+        AppLogger.Companion.getInstance().writePDF(document,
+                "transaction" + BaseClass.generateAlphaNumericString(5), activity);
+
+    }
+
+
+    @Nullable
+    public static Bitmap drawToBitmap(final View viewToDrawFrom, int width, int height) {
+
+        boolean wasDrawingCacheEnabled = viewToDrawFrom.isDrawingCacheEnabled();
+        if (!wasDrawingCacheEnabled)
+            viewToDrawFrom.setDrawingCacheEnabled(true);
+        if (width <= 0 || height <= 0) {
+            if (viewToDrawFrom.getWidth() <= 0 || viewToDrawFrom.getHeight() <= 0) {
+                viewToDrawFrom.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                width = viewToDrawFrom.getMeasuredWidth();
+                height = viewToDrawFrom.getMeasuredHeight();
+            }
+            if (width <= 0 || height <= 0) {
+                final Bitmap bmp = viewToDrawFrom.getDrawingCache();
+                final Bitmap result = bmp == null ? null : Bitmap.createBitmap(bmp);
+                if (!wasDrawingCacheEnabled)
+                    viewToDrawFrom.setDrawingCacheEnabled(false);
+                return result;
+            }
+            viewToDrawFrom.layout(0, 0, width, height);
+        } else {
+            viewToDrawFrom.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+            viewToDrawFrom.layout(0, 0, viewToDrawFrom.getMeasuredWidth(), viewToDrawFrom.getMeasuredHeight());
+        }
+        final Bitmap drawingCache = viewToDrawFrom.getDrawingCache();
+        final Bitmap bmp = ThumbnailUtils.extractThumbnail(drawingCache, width, height);
+        final Bitmap result = bmp == null || bmp != drawingCache ? bmp : Bitmap.createBitmap(bmp);
+        if (!wasDrawingCacheEnabled)
+            viewToDrawFrom.setDrawingCacheEnabled(false);
+        return result;
+    }
+
+    public static Bitmap createLayoutBitmap(Context ctx, View view) {
+        view.setLayoutParams(new
+                FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT));
+        DisplayMetrics dm = ctx.getResources().getDisplayMetrics();
+        view.measure(View.MeasureSpec.makeMeasureSpec(dm.widthPixels,
+                        View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(dm.heightPixels,
+                        View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(),
+                view.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    public static Bitmap createBitmapFromLayout(View tv) {
+        int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        tv.measure(spec, spec);
+        tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
+        Bitmap b = Bitmap.createBitmap(tv.getMeasuredWidth(), tv.getMeasuredWidth(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        c.translate((-tv.getScrollX()), (-tv.getScrollY()));
+        tv.draw(c);
+        return b;
+    }
+
+    public static Bitmap loadLayoutImage(View v, int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        v.draw(canvas);
+        return bitmap;
+    }
+
+
+    public static Bitmap takeScreenshot(View view) {
+        view.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
 
 
 }

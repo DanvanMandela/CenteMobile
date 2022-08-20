@@ -6,6 +6,14 @@
     <data>
 
         <variable
+            name="value"
+            type="String" />
+
+        <variable
+            name="storage"
+            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
+
+        <variable
             name="data"
             type="com.craft.silicon.centemobile.data.model.control.FormControl" />
 
@@ -37,9 +45,11 @@
                 callback="@{callback}"
                 form="@{data}"
                 setTag="@{data.controlID}"
+                value="@{value}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins_medium"
+                android:imeOptions="actionDone"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 tools:ignore="SpeakableTextPresentCheck" />
 

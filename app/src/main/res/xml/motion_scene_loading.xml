@@ -17,6 +17,7 @@
 
     <ConstraintSet android:id="@+id/userState">
         <Constraint
+
             android:id="@id/userFrame">
             <CustomAttribute
                 motion:attributeName="alpha"
@@ -24,7 +25,9 @@
 
         </Constraint>
 
-        <Constraint android:id="@id/loadingFrame">
+        <Constraint
+            android:id="@id/loadingFrame"
+            android:visibility="gone">
             <CustomAttribute
                 motion:attributeName="alpha"
                 motion:customFloatValue="0.0" />
@@ -33,9 +36,7 @@
 
 
     <ConstraintSet android:id="@+id/loadingState">
-        <Constraint
-            android:id="@id/userFrame"
-            android:visibility="gone">
+        <Constraint android:id="@id/userFrame">
             <CustomAttribute
                 motion:attributeName="alpha"
                 motion:customFloatValue="0.0" />

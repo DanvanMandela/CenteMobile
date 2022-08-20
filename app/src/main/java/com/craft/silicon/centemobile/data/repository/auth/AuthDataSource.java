@@ -37,7 +37,9 @@ public interface AuthDataSource {
         return null;
     }
 
-
+    default Single<DynamicResponse> deviceRegister(JSONObject json, Activity activity) {
+        return null;
+    }
 
 
     default Single<DynamicResponse> verifyOTP(String otp, Activity activity, String mobile) {

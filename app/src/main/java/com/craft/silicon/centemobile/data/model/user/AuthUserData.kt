@@ -85,7 +85,12 @@ data class LoginUserData(
     @field:SerializedName("ModulesToHide")
     @field:ColumnInfo(name = "modulesToHide")
     @field:Expose
-    var hideModule: MutableList<ModuleHide>?
+    var hideModule: MutableList<ModuleHide>?,
+
+    @field:SerializedName("modulesToDisable")
+    @field:ColumnInfo(name = "modulesToDisable")
+    @field:Expose
+    var disableModule: MutableList<ModuleDisable>?
 ) : Parcelable
 
 @Parcelize
@@ -254,6 +259,16 @@ data class ModuleHide(
     @field:SerializedName("ModuleID")
     @field:Expose
     var id: String?,
+) : Parcelable
+
+@Parcelize
+data class ModuleDisable(
+    @field:SerializedName("ModuleID")
+    @field:Expose
+    var id: String?,
+    @field:SerializedName("Message")
+    @field:Expose
+    var message: String?,
 ) : Parcelable
 
 

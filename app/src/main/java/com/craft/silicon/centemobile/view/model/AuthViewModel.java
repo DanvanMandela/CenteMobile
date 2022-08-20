@@ -59,6 +59,45 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
 
 
     @Override
+    public Single<DynamicResponse> deviceRegister(JSONObject json, Activity activity) {
+        try {
+            String iv = storage.getDeviceData().getValue().getRun();
+            String device = storage.getDeviceData().getValue().getDevice();
+            String customerID = storage.getActivationData().getValue().getId();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    activity,
+                    uniqueID,
+                    ActionTypeEnum.DEVICE_REGISTER.getType(),
+                    customerID,
+                    true,
+                    storage);
+
+            jsonObject.put("RegisterDevice", json);
+
+
+            String newRequest = jsonObject.toString();
+
+            String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+
+            new AppLogger().appLog("Device", newRequest);
+
+            return authRepository.authRequest(new PayloadData(
+                            storage.getUniqueID().getValue(),
+                            BaseClass.encryptString(newRequest, device, iv)
+                    ), path)
+                    .doOnSubscribe(disposable -> loadingUi.onNext(true))
+                    .doOnError(disposable -> loadingUi.onNext(false));
+
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public Single<DynamicResponse> activateAccount(String mobile, String pin, Activity activity) {
         try {
             String iv = storage.getDeviceData().getValue().getRun();
@@ -76,6 +115,8 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     storage);
 
             jsonObject.put("MobileNumber", mobile);
+
+            //jsonObject.put("DeviceNotificationID", mobile);
             JSONObject jsonObject1 = new JSONObject();
             jsonObject.put("Activation", jsonObject1);
             JSONObject encryptedFieldsJsonObject = new JSONObject();
@@ -162,6 +203,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
                     storage);
 
             jsonObject.put("MobileNumber", mobile);
+            jsonObject.put("AppNotificationID", storage.getNotificationToken().getValue());
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("LoginType", "PIN");
             jsonObject.put("Login", jsonObject1);

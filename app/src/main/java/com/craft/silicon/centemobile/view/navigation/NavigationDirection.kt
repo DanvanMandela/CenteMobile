@@ -5,6 +5,8 @@ import android.os.Parcelable
 import androidx.navigation.ActionOnlyNavDirections
 import androidx.navigation.NavDirections
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
+import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import java.io.Serializable
 import javax.inject.Inject
@@ -35,6 +37,10 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateGlobal(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_global)
+    }
+
+    override fun navigateToDisclaimer(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_disclaimer)
     }
 
     override fun navigateToOTP(mobile: String?): NavDirections {
@@ -139,4 +145,86 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
     override fun navigateToLoading(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_loading)
     }
+
+    override fun navigateToGlobalOtp(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_global_otp)
+    }
+
+    override fun navigateToNotification(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_notification)
+    }
+
+    override fun navigateToLevelOne(dynamicData: DynamicData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_level_one
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(DynamicData::class.java)) {
+                    result.putParcelable("data", dynamicData as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToLevelTwo(dynamicData: DynamicData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_level_two
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(DynamicData::class.java)) {
+                    result.putParcelable("data", dynamicData as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToTransactionCenter(modules: Modules?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_transaction_center
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(Modules::class.java)) {
+                    result.putParcelable("module", modules as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToTransactionDetails(data: TransactionData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_transaction_details
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(Modules::class.java)) {
+                    result.putParcelable("transaction", data as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+
 }

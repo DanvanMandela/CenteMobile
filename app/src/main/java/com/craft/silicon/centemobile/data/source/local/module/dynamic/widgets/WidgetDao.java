@@ -12,6 +12,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 
@@ -119,4 +120,21 @@ public interface WidgetDao extends WidgetDataSource {
     @Override
     @Query("SELECT * FROM atm_branch_tbl WHERE type=:b")
     Observable<List<AtmData>> getATMBranch(boolean b);
+
+
+    @Insert(onConflict = REPLACE)
+    @Override
+    void saveNotifications(NotificationData data);
+
+    @Query("SELECT * FROM notifications ORDER BY time DESC")
+    @Override
+    Observable<List<NotificationData>> getNotification();
+
+    @Query("DELETE FROM notifications")
+    @Override
+    void deleteNotifications();
+
+    @Query("DELETE FROM notifications WHERE id=:id")
+    @Override
+    void deleteNotification(int id);
 }

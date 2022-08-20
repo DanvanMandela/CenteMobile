@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.validation
 
+
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -38,11 +39,10 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
-import com.craft.silicon.centemobile.view.binding.FieldValidationHelper
-import com.craft.silicon.centemobile.view.binding.navigate
-import com.craft.silicon.centemobile.view.binding.setDynamicToolbar
+import com.craft.silicon.centemobile.view.binding.*
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.InfoFragment
@@ -57,7 +57,7 @@ import com.craft.silicon.centemobile.view.ep.data.ReceiptList
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.dynamic.RecentFragment
 import com.craft.silicon.centemobile.view.fragment.global.GlobalFragment
-import com.craft.silicon.centemobile.view.fragment.payment.Confirm
+import com.craft.silicon.centemobile.view.fragment.global.GlobalOTPFragment
 import com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -66,6 +66,7 @@ import com.craft.silicon.centemobile.view.qr.QRResult
 import com.craft.silicon.centemobile.view.qr.ScanCode
 import com.craft.silicon.centemobile.view.qr.ScanQRCode
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -74,10 +75,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 /**
@@ -96,17 +94,17 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
     private val inputList = mutableListOf<InputData>()
     private var actionControls = MutableLiveData<MutableList<ActionControls>>()
 
-    private var dynamicResponse = MutableLiveData<DynamicAPIResponse>()
-    private var moduleDataRes = MutableLiveData<DynamicDataResponse>()
+    private var dynamicResponse = MutableLiveData<DynamicAPIResponse?>()
+    private var moduleDataRes = MutableLiveData<DynamicDataResponse?>()
 
     private val scanQrCode = registerForActivityResult(ScanQRCode(), ::scanSuccess)
 
-    private val liveFormData = MutableLiveData<DynamicData>()
+    private val liveFormData = MutableLiveData<DynamicData?>()
     private val fetchRecentLive = MutableLiveData<FormControl>()
 
     private val baseViewModel: BaseViewModel by viewModels()
 
-    private val contactLiveData = MutableLiveData<String>()
+    private val contactLiveData = MutableLiveData<String?>()
 
     private val listState = mutableListOf<DisplayState>()
     private lateinit var scanControl: FormControl
@@ -136,7 +134,6 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
         startShimmer()
         binding.lifecycleOwner = viewLifecycleOwner
         binding.storage = widgetViewModel.storageDataSource
-        liveFormData.value = navigationData
         binding.callback = this
         getActionControl(navigationData as GroupForm)
         AppLogger.instance.appLog("OnValidation", Gson().toJson(navigationData))
@@ -147,10 +144,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
             .resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
             stopShimmer()
-            liveFormData.observe(viewLifecycleOwner) {
-                if (it != null)
-                    binding.data = it
-            }
+            binding.data = navigationData
         }, animationDuration.toLong())
     }
 
@@ -186,6 +180,8 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
     }
 
     override fun onForm(formControl: FormControl?, modules: Modules?) {
+
+        requireActivity().hideSoftKeyboard(binding.root)
         AppLogger.instance.appLog("FORM", Gson().toJson(formControl))
         when (nonCaps(formControl?.controlFormat)) {
             nonCaps(ControlFormatEnum.END.type) -> (requireActivity()).onBackPressed()
@@ -275,7 +271,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 jsonObject,
                 encrypted,
                 modules,
-                requireContext()
+                requireActivity()
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -328,75 +324,88 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
 
                                     }
                                 else {
-                                    if (!resData?.formID.isNullOrEmpty()
-                                        || !resData?.formID.isNullOrBlank()
-                                    ) {
-                                        if (nonCaps(resData?.formID)
-                                            == nonCaps("PAYMENTCONFIRMATIONFORM")
-                                        ) {
-                                            AppLogger.instance.appLog(
-                                                "Pay",
-                                                Gson().toJson(resData)
-                                            )
-                                            ReceiptFragment.newInstance(
-                                                this, ReceiptList(
-                                                    receipt = resData?.receipt!!
-                                                        .toMutableList(),
-                                                    notification = resData.notifications
-                                                )
-                                            )
-//                                            (requireActivity() as MainActivity)
-//                                                .provideNavigationGraph()
-//                                                .navigate(
-//                                                    widgetViewModel.navigation()
-//                                                        .navigateReceipt(
-//                                                            ReceiptList(
-//                                                                receipt = resData.receipt!!
-//                                                                    .toMutableList(),
-//                                                                notification = resData.notifications
-//                                                            )
-//                                                        )
-//                                                )
 
-                                            navigate(
-                                                widgetViewModel.navigation()
-                                                    .navigateReceipt(
-                                                        ReceiptList(
-                                                            receipt = resData.receipt!!
-                                                                .toMutableList(),
-                                                            notification = resData.notifications
-                                                        )
+                                    if (resData?.formID != null) {
+                                        if (!TextUtils.isEmpty(resData.formID)
+                                        ) {
+                                            if (nonCaps(resData.formID)
+                                                == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                            ) {
+                                                AppLogger.instance.appLog(
+                                                    "Pay",
+                                                    Gson().toJson(resData)
+                                                )
+                                                ReceiptFragment.newInstance(
+                                                    this, ReceiptList(
+                                                        receipt = resData.receipt!!
+                                                            .toMutableList(),
+                                                        notification = resData.notifications
                                                     )
-                                            )
+                                                )
+                                                navigate(
+                                                    widgetViewModel.navigation()
+                                                        .navigateReceipt(
+                                                            ReceiptList(
+                                                                receipt = resData.receipt!!
+                                                                    .toMutableList(),
+                                                                notification = resData.notifications
+                                                            )
+                                                        )
+                                                )
+                                            } else if (nonCaps(resData.formID) == nonCaps("EMAIL")) {
+                                                SuccessDialogFragment.showDialog(
+                                                    DialogData(
+                                                        title = R.string.success,
+                                                        subTitle = resData.message!!,
+                                                        R.drawable.success
+                                                    ),
+                                                    requireActivity().supportFragmentManager, this
+                                                )
+                                            } else {
+                                                ShowToast(requireContext(), resData.message)
+                                                setOnNextModule(
+                                                    formControl,
+                                                    resData.next,
+                                                    modules,
+                                                    resData.formID
+                                                )
+                                            }
+
                                         } else {
-                                            ShowToast(requireContext(), resData?.message)
-                                            setOnNextModule(
-                                                formControl,
-                                                resData?.next,
-                                                modules,
-                                                resData?.formID
+                                            SuccessDialogFragment.showDialog(
+                                                DialogData(
+                                                    title = R.string.success,
+                                                    subTitle = resData.message!!,
+                                                    R.drawable.success
+                                                ),
+                                                requireActivity().supportFragmentManager, this
                                             )
                                         }
 
-                                    } else {
-                                        SuccessDialogFragment.showDialog(
-                                            DialogData(
-                                                title = R.string.success,
-                                                subTitle = resData?.message!!,
-                                                R.drawable.success
-                                            ),
-                                            requireActivity().supportFragmentManager, this
-                                        )
-                                    }
+                                    } else SuccessDialogFragment.showDialog(
+                                        DialogData(
+                                            title = R.string.success,
+                                            subTitle = resData?.message!!,
+                                            R.drawable.success
+                                        ),
+                                        requireActivity().supportFragmentManager, this
+                                    )
+
                                 }
 
                             } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
-                                setOnNextModule(
+                                GlobalOTPFragment.setData(
+                                    json = jsonObject,
+                                    encrypted = encrypted,
+                                    inputList = inputList,
+                                    module = modules,
+                                    action = action,
                                     formControl,
-                                    resData?.next,
-                                    modules,
-                                    resData?.formID
+                                    this,
                                 )
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    navigate(widgetViewModel.navigation().navigateToGlobalOtp())
+                                }, 200)
                             } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
 
@@ -640,26 +649,27 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
         contactLiveData.value = contact
     }
 
+
     override fun onDateSelect(view: AutoCompleteTextView?, formControl: FormControl?) {
-        val datePattern = "dd MMM YYYY"
-        val datePicker =
-            MaterialDatePicker.Builder.datePicker()
-                .setTitleText(formControl?.controlText)
+        try {
+            val picker = MaterialDatePicker.Builder.datePicker()
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
-        datePicker.show(this.childFragmentManager, this::class.java.simpleName)
-
-        datePicker.addOnPositiveButtonClickListener {
-            val dateTime: LocalDateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(it),
-                ZoneId.systemDefault()
-            )
-            val dateFormatted: String =
-                dateTime.format(DateTimeFormatter.ofPattern(datePattern))
-            view?.setText(dateFormatted)
+            picker.addOnPositiveButtonClickListener { selection: Long? ->
+                val utc: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                if (selection != null) {
+                    utc.timeInMillis = selection
+                }
+                val date: String? = calendarToDate(utc)
+                view?.setText(date)
+            }
+            picker.show(this.childFragmentManager, picker.tag)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
 
     }
+
 
     override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
         (requireActivity() as MainActivity).onImagePicker(object : AppCallbacks {
@@ -734,7 +744,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 action,
                 json,
                 encrypted,
-                modules, requireContext()
+                modules, requireActivity()
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -853,7 +863,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 }
             }, 200)
         } else {
-            ShowToast(requireContext(), text, true)
+            AppLogger.instance.appLog("SCAN:QR", text)
         }
     }
 
@@ -892,7 +902,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 action,
                 json,
                 encrypted,
-                modules, requireContext()
+                modules, requireActivity()
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -968,13 +978,28 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
         data: HashMap<String, String>?
     ) {
         val values = formControl!!.controlValue?.split(",")
-        modules?.moduleName = data!![values!![0]]
+        // modules?.moduleName = data!![values!![0]]
+        userInput(
+            InputData(
+                name = formControl.controlText,
+                key = values?.get(1),
+                value = data!![values!![0]],
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
         setOnNextModule(
             formControl = formControl,
             next = 0,
             modules = modules,
             formID = modules?.moduleID
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        widgetViewModel.storageDataSource.deleteOtp()
     }
 
 

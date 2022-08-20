@@ -26,7 +26,7 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
 
 
     @EpoxyAttribute
-    lateinit var form: FormControl
+    var form: FormControl? = null
 
     @EpoxyAttribute
     lateinit var module: Modules
@@ -60,12 +60,14 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
 
 
         }
-        if (form.nextFormID != null)
-            if (!TextUtils.isEmpty(form.nextFormID))
-                binding.displayLay.setOnClickListener {
-                    val holderModule = module
-                    callbacks.onDisplay(form, holderModule, data)
-                }
+        if (form != null) {
+            if (form?.nextFormID != null)
+                if (!TextUtils.isEmpty(form?.nextFormID))
+                    binding.displayLay.setOnClickListener {
+                        val holderModule = module
+                        callbacks.onDisplay(form, holderModule, data)
+                    }
+        }
 
     }
 }

@@ -7,6 +7,7 @@ import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlIDEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
@@ -14,7 +15,10 @@ import com.craft.silicon.centemobile.view.ep.data.FormData
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.ep.model.*
 
-class NewFormController(val callbacks: AppCallbacks) :
+class NewFormController(
+    val callbacks: AppCallbacks,
+    val storageDataSource: StorageDataSource
+) :
     TypedEpoxyController<FormData>() {
     override fun buildModels(data: FormData?) {
 
@@ -81,22 +85,7 @@ class NewFormController(val callbacks: AppCallbacks) :
                                 callback(this@NewFormController.callbacks)
                             }
                     }
-                    nonCaps(ControlTypeEnum.TEXT.type) -> {
-                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
-                            when (nonCaps(d.controlFormat)) {
-                                nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
-                                    id(d.controlID)
-                                    data(d)
-                                    callback(this@NewFormController.callbacks)
-                                    module(data.forms.module)
-                                }
-                                else -> textInputLayout {
-                                    id(d.controlID)
-                                    data(d)
-                                    callback(this@NewFormController.callbacks)
-                                }
-                            }
-                    }
+                    nonCaps(ControlTypeEnum.TEXT.type) -> setTextInputLayout(d, data)
                     nonCaps(ControlTypeEnum.CHECKBOX.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             checkBoxLayout {
@@ -219,7 +208,8 @@ class NewFormController(val callbacks: AppCallbacks) :
                                         children = children!!.toMutableList(),
                                         mainData = data
                                     ),
-                                    appCallbacks = this@NewFormController.callbacks
+                                    appCallbacks = this@NewFormController.callbacks,
+                                    storage = this@NewFormController.storageDataSource
                                 )
                             }
 
@@ -229,6 +219,33 @@ class NewFormController(val callbacks: AppCallbacks) :
                 }
             }
         }
+    }
+
+    private fun setTextInputLayout(d: FormControl, data: FormData) {
+        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+            when (nonCaps(d.controlFormat)) {
+                nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
+                    id(d.controlID)
+                    data(d)
+                    callback(this@NewFormController.callbacks)
+                    module(data.forms.module)
+                    storage(this@NewFormController.storageDataSource)
+                }
+                nonCaps(ControlFormatEnum.AMOUNT.type) -> amountModel(
+                    form = d, storage = storageDataSource, callbacks = callbacks
+                )
+                nonCaps(ControlFormatEnum.PIN_NUMBER.type),
+                nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
+                    form = d, storage = storageDataSource, callbacks = callbacks
+                )
+                else -> textInputLayout {
+                    id(d.controlID)
+                    data(d)
+                    storage(data.storage)
+                    callback(this@NewFormController.callbacks)
+                }
+            }
+
     }
 
     private fun setList(d: FormControl, data: GroupForm) {

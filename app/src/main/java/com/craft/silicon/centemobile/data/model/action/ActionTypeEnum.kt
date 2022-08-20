@@ -6,6 +6,7 @@ enum class ActionTypeEnum(val type: String) {
     PAY_BILL("PAYBILL"),
     VALIDATE("VALIDATE"),
     LOGIN("LOGIN"),
+    DEVICE_REGISTER("REGISTERDEVICE"),
     CHANGE_PIN("CHANGEPIN"),
     ACTIVATE("ACTIVATE"),
     REQUEST_BASE("O-GetLatestVersion"),

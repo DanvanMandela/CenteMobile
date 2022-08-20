@@ -1,10 +1,13 @@
 package com.craft.silicon.centemobile.view.binding
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.BlurMaskFilter
 import android.graphics.MaskFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
@@ -14,18 +17,25 @@ import android.text.style.MaskFilterSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
@@ -66,8 +76,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import java.text.DateFormatSymbols
-import java.text.SimpleDateFormat
+import java.text.*
 import java.time.LocalDate
 import java.util.*
 
@@ -76,8 +85,6 @@ import java.util.*
 fun EpoxyRecyclerView.setHeader(callbacks: AppCallbacks, data: AccountData, @IdRes indicator: Int) {
     this.animation =
         AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
-    val helper: SnapHelper = LinearSnapHelper()
-    // helper.attachToRecyclerView(this)
     val controller = HeaderController(callbacks)
     controller.setData(data)
     this.setController(controller)
@@ -150,6 +157,10 @@ fun MaterialToolbar.setToolbar(callbacks: AppCallbacks) {
                 callbacks.logOut()
                 true
             }
+            R.id.actionNotification -> {
+                callbacks.navigateToNotification()
+                true
+            }
             else -> false
         }
     }
@@ -188,13 +199,48 @@ fun ImageView.setImageUri(imageURL: String?) {
         .into(this)
 }
 
+@BindingAdapter("image")
+fun ImageView.setImage(imageURL: String?) {
+    if (imageURL != null) {
+        val options: RequestOptions = RequestOptions()
+            .placeholder(R.drawable.photos)
+            .error(R.drawable.warning)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .priority(Priority.HIGH)
+        Glide.with(this)
+            .load(imageURL)
+            .apply(options)
+            .listener(object : RequestListener<Drawable?> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable?>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable?>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+            })
+            .into(this)
+    }
+}
+
 @BindingAdapter("callback", "module")
 fun EpoxyRecyclerView.setModule(callbacks: AppCallbacks, module: BodyData?) {
     this.animation =
         AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
     this.layoutManager = GridLayoutManager(this.context, 3)
     val controller = ModuleController(callbacks)
-    controller.setData(module?.module)
+    controller.setData(ModuleData(module?.module, true))
     this.setController(controller)
 }
 
@@ -202,7 +248,9 @@ fun EpoxyRecyclerView.setModule(callbacks: AppCallbacks, module: BodyData?) {
 fun EpoxyRecyclerView.setFrequent(callbacks: AppCallbacks, frequent: BodyData?) {
     this.animation =
         AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
-    this.layoutManager = GridLayoutManager(this.context, 4)
+    if (frequent != null)
+        if (frequent.frequentList.isNotEmpty())
+            this.layoutManager = GridLayoutManager(this.context, 4)
     val controller = FrequentController(callbacks)
     controller.setData(frequent?.frequentList)
     this.setController(controller)
@@ -241,6 +289,7 @@ fun ImageView.setImageRes(@DrawableRes res: Int?) {
         .into(this)
 }
 
+
 @BindingAdapter("accountNumber")
 fun TextView.setAccountNumber(text: String?) {
     if (text != null) {
@@ -251,6 +300,18 @@ fun TextView.setAccountNumber(text: String?) {
                 this.text = BaseClass.maskCardNumber(text)
             }, 3500)
         }
+    }
+}
+
+@BindingAdapter("amountSet")
+fun TextView.setAmount(amount: String?) {
+    val format = NumberFormat.getCurrencyInstance()
+    format.maximumFractionDigits = 0
+    format.currency = Currency.getInstance("UGX")
+    if (amount != null) {
+        val s = amount.replace(",", "")
+        s.replace(".00", "")
+        this.text = s
     }
 }
 
@@ -355,21 +416,21 @@ fun EpoxyRecyclerView.setDynamic(
     dynamic: DynamicData?,
     storage: StorageDataSource?
 ) {
-    this.animation =
-        AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
     var layout: RecyclerView.LayoutManager? = null
     var controller: EpoxyController? = null
     if (dynamic != null) {
         when (dynamic) {
             is GroupModule -> {
+                this.animation =
+                    AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
                 layout = GridLayoutManager(this.context, 3)
                 controller = ModuleController(callbacks)
-                controller.setData(dynamic.module)
+                controller.setData(ModuleData(dynamic.module, false))
             }
             is GroupForm -> {
                 layout = LinearLayoutManager(this.context)
-                controller = FormController(callbacks)
-                controller.setData(FormData(forms = dynamic, storage = storage!!))
+                controller = NewFormController(callbacks, storage!!)
+                controller.setData(FormData(forms = dynamic, storage = storage))
             }
         }
         this.layoutManager = layout
@@ -510,7 +571,7 @@ fun EpoxyRecyclerView.setForm(
             when (dynamic) {
                 is GroupForm -> {
                     layout = LinearLayoutManager(this.context)
-                    controller = FormController(callbacks)
+                    controller = FormController(callbacks, storage)
                     controller.setData(FormData(forms = dynamic, storage = storage))
                 }
             }
@@ -646,6 +707,7 @@ fun ImageButton.imageSelect(callbacks: AppCallbacks?, data: FormControl?) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O) //TODO CHECK API LEVEL O
 @BindingAdapter("period")
 fun CircularProgressIndicator.setPeriod(data: AlertServices?) {
     val editTime = data!!.dueDate.split("T")
@@ -771,15 +833,47 @@ fun TextView.setLabel(
 }
 
 
-
 fun Fragment.navigate(directions: NavDirections) {
-    NavHostFragment.findNavController(this).navigate(directions)
+    lifecycleScope.launchWhenResumed {
+        NavHostFragment.findNavController(this@navigate).navigate(directions)
+    }
 }
 
+@SuppressLint("WeekBasedYear")
+fun calendarToDate(calendar: Calendar?): String? {
+    val datePattern = "dd MMM YYYY"
+    if (calendar == null) {
+        return null
+    }
+    val df: DateFormat = SimpleDateFormat(datePattern, Locale.getDefault())
+    val timeZone: TimeZone = TimeZone.getTimeZone("UTC")
+    df.timeZone = timeZone
+    val d: Date = calendar.time
+    return df.format(d)
+}
+
+fun View.findViewTreeLifecycleOwner(): LifecycleOwner? = ViewTreeLifecycleOwner.get(this)
 
 
+fun Activity.hideSoftKeyboard(view: View) {
+    val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    manager.hideSoftInputFromWindow(view.windowToken, 0)
+}
 
+@BindingAdapter("setDateTime")
+fun TextView.setDateTime(date: Date?) {
+    if (date != null) {
+        val dateFormatter: Format = SimpleDateFormat(
+            android.text.format.DateFormat.getBestDateTimePattern(
+                Locale.getDefault(),
+                "dMMyyjjmmss"
+            ),
+            Locale.getDefault()
+        )
+        this.text = dateFormatter.format(date)
 
+    }
+}
 
 
 

@@ -10,11 +10,13 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.BeneficiaryArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
+import com.google.gson.Gson
 
 @BindingAdapter("callback", "auto_date")
 fun AutoCompleteTextView.contacts(
@@ -36,13 +38,15 @@ fun AutoCompleteTextView.contacts(
                 InputData(
                     name = formControl?.controlText,
                     key = formControl?.serviceParamID,
-                    value = e.toString(),
+                    value = e.toString().replace("+", "")
+                        .replace(" ", ""),
                     encrypted = formControl?.isEncrypted!!,
                     mandatory = formControl.isMandatory
                 )
             )
         }
     })
+
 
 }
 
@@ -53,6 +57,8 @@ fun AutoCompleteTextView.setDropDownData(
     storage: StorageDataSource?,
     modules: Modules?
 ) {
+    AppLogger.instance.appLog("DROP:MERCHANT", Gson().toJson(modules))
+    AppLogger.instance.appLog("DROP:BENEFICIARY", Gson().toJson(storage?.beneficiary?.value))
     this.setText("")
     setDefaultValue(formControl, callbacks)
     when (BaseClass.nonCaps(formControl?.controlFormat)) {

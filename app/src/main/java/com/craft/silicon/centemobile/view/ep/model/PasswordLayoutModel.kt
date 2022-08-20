@@ -1,0 +1,90 @@
+package com.craft.silicon.centemobile.view.ep.model
+
+import android.text.InputType
+import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
+import androidx.databinding.ViewDataBinding
+import com.airbnb.epoxy.DataBindingEpoxyModel
+import com.airbnb.epoxy.EpoxyAttribute
+import com.airbnb.epoxy.EpoxyModelClass
+import com.airbnb.epoxy.TypedEpoxyController
+import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.control.FormControl
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.craft.silicon.centemobile.databinding.BlockPasswordTextInputLayoutBinding
+import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.binding.setDefaultValue
+import com.craft.silicon.centemobile.view.binding.setDefaultWatcher
+import com.craft.silicon.centemobile.view.binding.setInputLayout
+import com.google.android.material.textfield.TextInputEditText
+
+@EpoxyModelClass
+open class PasswordLayoutModel : DataBindingEpoxyModel() {
+
+    @EpoxyAttribute
+    lateinit var form: FormControl
+
+    @EpoxyAttribute
+    lateinit var storage: StorageDataSource
+
+    @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
+    lateinit var callbacks: AppCallbacks
+
+    override fun getDefaultLayout(): Int = R.layout.block_password_text_input_layout
+
+    override fun setDataBindingVariables(binding: ViewDataBinding?) {
+        (binding as? BlockPasswordTextInputLayoutBinding)?.apply {
+            addChildren(this)
+        }
+    }
+
+    private fun addChildren(binding: BlockPasswordTextInputLayoutBinding) {
+        binding.data = form
+        binding.callback = callbacks
+        binding.storage = storage
+        setDefaultWatcher(binding.child, callbacks, form)
+        val state = storage.bio.value
+        if (BaseClass.nonCaps(form.controlText) == BaseClass.nonCaps("PIN") || BaseClass.nonCaps(
+                form.controlText
+            ) == BaseClass.nonCaps("OLD PIN") || BaseClass.nonCaps(form.controlText)
+            == BaseClass.nonCaps("PASSWORD")
+        )
+            if (state != null) {
+                if (state) {
+                    binding.parent.startIconDrawable = ContextCompat.getDrawable(
+                        binding.root.context,
+                        R.drawable.fingerprint_small
+                    )
+                }
+            }
+        binding.child.inputType =
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        binding.parent.setStartIconOnClickListener {
+            callbacks.bioPayment(binding.child)
+        }
+    }
+}
+
+fun TypedEpoxyController<*>.passwordModel(
+    form: FormControl?,
+    storage: StorageDataSource?,
+    callbacks: AppCallbacks?
+) {
+    passwordLayout {
+        id(form?.controlID)
+        form(form)
+        storage(storage)
+        callbacks(callbacks)
+    }
+}
+
+@BindingAdapter("callback", "password")
+fun TextInputEditText.setPasswordInputLayout(
+    callbacks: AppCallbacks?,
+    formControl: FormControl?,
+) {
+    this.setText("")
+    setDefaultValue(formControl, callbacks)
+    callbacks?.onServerValue(formControl, this)
+}

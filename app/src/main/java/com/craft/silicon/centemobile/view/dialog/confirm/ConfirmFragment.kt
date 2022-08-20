@@ -16,9 +16,10 @@ import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.BlockDisplayItemLayoutBinding
 import com.craft.silicon.centemobile.databinding.FragmentConfirmBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.view.ep.data.DisplayContent
 import com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment
-import com.craft.silicon.centemobile.view.fragment.payment.Confirm
+
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint

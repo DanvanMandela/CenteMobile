@@ -41,12 +41,12 @@ class CarouselGETWorker @AssistedInject constructor(
             val jsonObject = JSONObject()
             val json = JSONObject()
 
-            val latLng: LatLng = storageDataSource.latLng.value!!.latLng
+            val latLng = storageDataSource.latLng.value
 
-            json.put("COUNTRY", Constants.Data.COUNTRY)
-            json.put("LON", latLng.longitude)
+            json.put("LON", latLng?.latLng?.longitude ?: 0.0)
             json.put("APPNAME", Constants.Data.APP_NAME)
-            json.put("LAT", latLng.latitude)
+            json.put("LAT",latLng?.latLng?.latitude ?: 0.0)
+            json.put("COUNTRY", Constants.Data.COUNTRY)
             json.put("BANKID", Constants.Data.BANK_ID)
             json.put("HEADER", "GetBankImages")
             jsonObject.put("DynamicForm", json)

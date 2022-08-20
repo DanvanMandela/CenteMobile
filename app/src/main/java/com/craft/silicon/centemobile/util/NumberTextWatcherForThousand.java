@@ -3,6 +3,9 @@ package com.craft.silicon.centemobile.util;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import com.craft.silicon.centemobile.data.model.control.FormControl;
+import com.craft.silicon.centemobile.data.model.input.InputData;
+import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
@@ -11,12 +14,15 @@ import java.util.StringTokenizer;
 public class NumberTextWatcherForThousand implements TextWatcher {
 
     TextInputEditText editText;
+    private final AppCallbacks appCallbacks;
+    private final FormControl formControl;
 
 
-    public NumberTextWatcherForThousand(TextInputEditText editText) {
+    public NumberTextWatcherForThousand(TextInputEditText editText,
+                                        AppCallbacks appCallbacks, FormControl formControl) {
         this.editText = editText;
-
-
+        this.appCallbacks = appCallbacks;
+        this.formControl = formControl;
     }
 
     @Override
@@ -25,7 +31,10 @@ public class NumberTextWatcherForThousand implements TextWatcher {
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(CharSequence s,
+                              int start,
+                              int before,
+                              int count) {
 
     }
 
@@ -34,27 +43,31 @@ public class NumberTextWatcherForThousand implements TextWatcher {
         try {
             editText.removeTextChangedListener(this);
             String value = Objects.requireNonNull(editText.getText()).toString();
-
-
             if (!value.equals("")) {
-
                 if (value.startsWith(".")) {
                     editText.setText("0.");
                 }
                 if (value.startsWith("0") && !value.startsWith("0.")) {
                     editText.setText("");
-
                 }
                 String str = editText.getText().toString().replaceAll(",", "");
                 editText.setText(getDecimalFormattedString(str));
                 editText.setSelection(editText.getText().toString().length());
             }
+            appCallbacks.userInput(
+                    new InputData(
+                            formControl.getControlText(),
+                            formControl.getServiceParamID(),
+                            trimCommaOfString(s.toString()),
+                            formControl.isEncrypted(),
+                            formControl.isMandatory()
+                    )
+            );
             editText.addTextChangedListener(this);
         } catch (Exception ex) {
             ex.printStackTrace();
             editText.addTextChangedListener(this);
         }
-
     }
 
     public static String getDecimalFormattedString(String value) {

@@ -3,26 +3,26 @@ package com.craft.silicon.centemobile.view.binding
 import android.text.*
 import android.text.InputFilter.LengthFilter
 import android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
-import android.text.method.DigitsKeyListener
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.asLiveData
 import com.chaos.view.PinView
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
+import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand.trimCommaOfString
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.ep.model.setAmountInputLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.text.DecimalFormatSymbols
-import java.text.NumberFormat
-import java.text.ParseException
 import java.util.*
 
 
@@ -33,7 +33,6 @@ fun TextInputEditText.setHidden(
 ) {
     if (!formControl?.controlValue.isNullOrBlank())
         this.setText(formControl?.controlValue)
-
     if (formControl?.controlValue != null)
         if (!TextUtils.isEmpty(formControl.controlValue)) {
             callbacks?.userInput(
@@ -50,27 +49,39 @@ fun TextInputEditText.setHidden(
     else callbacks?.onServerValue(formControl, this)
 }
 
-@BindingAdapter("callback", "form")
+@BindingAdapter("callback", "form", "value")
 fun TextInputEditText.setInputLayout(
     callbacks: AppCallbacks?,
     formControl: FormControl?,
+    value: String?
 ) {
     this.setText("")
     setDefaultValue(formControl, callbacks)
     callbacks?.onServerValue(formControl, this)
-
-    val parent = this.parent.parent as TextInputLayout
-    //parent.setFormat(formControl)
-
+    setDefaultWatcher(this, callbacks, formControl!!)
     setControl(this, formControl)
 
+    if (!TextUtils.isEmpty(value)) {
+        this.setText(value)
+        callbacks?.userInput(
+            InputData(
+                name = formControl.controlText,
+                key = formControl.serviceParamID,
+                value = NumberTextWatcherForThousand.trimCommaOfString(value),
+                encrypted = formControl.isEncrypted,
+                mandatory = formControl.isMandatory
+            )
+        )
+    }
+}
 
-    if (formControl?.controlFormat != null)
-        this.setInput(formControl.controlFormat)
-
-
-
-    this.addTextChangedListener(object : TextWatcher {
+fun setDefaultWatcher(
+    inputEdit: TextInputEditText,
+    callbacks: AppCallbacks?, formControl: FormControl
+) {
+    inputEdit.inputType =
+        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
+    inputEdit.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
         }
@@ -81,10 +92,38 @@ fun TextInputEditText.setInputLayout(
         override fun afterTextChanged(e: Editable?) {
             callbacks?.userInput(
                 InputData(
-                    name = formControl?.controlText,
-                    key = formControl?.serviceParamID,
+                    name = formControl.controlText,
+                    key = formControl.serviceParamID,
                     value = e.toString(),
-                    encrypted = formControl?.isEncrypted!!,
+                    encrypted = formControl.isEncrypted,
+                    mandatory = formControl.isMandatory
+                )
+            )
+        }
+    })
+}
+
+fun setPasswordWatcher(
+    inputEdit: TextInputEditText,
+    callbacks: AppCallbacks?,
+    formControl: FormControl
+) {
+    inputEdit.inputType = InputType.TYPE_CLASS_NUMBER or TYPE_NUMBER_VARIATION_PASSWORD
+    inputEdit.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+        }
+
+        override fun onTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(e: Editable?) {
+            callbacks?.userInput(
+                InputData(
+                    name = formControl.controlText,
+                    key = formControl.serviceParamID,
+                    value = trimCommaOfString(e.toString()),
+                    encrypted = formControl.isEncrypted,
                     mandatory = formControl.isMandatory
                 )
             )
@@ -121,20 +160,6 @@ fun TextInputLayout.setFormat(form: FormControl?) {
     }
 }
 
-@BindingAdapter("setInput")
-fun TextInputEditText.setInput(input: String?) {
-    if (TextUtils.isEmpty(input))
-        this.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
-    else
-        if (nonCaps(input) == nonCaps(ControlFormatEnum.AMOUNT.type)) {
-            this.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            this.addTextChangedListener(NumberTextWatcherForThousand(this))
-        } else if (nonCaps(input) == nonCaps(ControlFormatEnum.PIN_NUMBER.type)) {
-            this.inputType = InputType.TYPE_CLASS_NUMBER or TYPE_NUMBER_VARIATION_PASSWORD
-        } else if (nonCaps(input) == nonCaps(ControlFormatEnum.PIN.type)) {
-            this.inputType = InputType.TYPE_CLASS_NUMBER or TYPE_NUMBER_VARIATION_PASSWORD
-        } else this.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
-}
 
 val inputTypes = mutableListOf(
     InputTypeItem(
@@ -238,11 +263,24 @@ val inputTypes = mutableListOf(
 
 data class InputTypeItem(val name: String, val value: Int)
 
-@BindingAdapter("callback", "otp", "module")
-fun PinView.setOTP(callbacks: AppCallbacks?, formControl: FormControl?, modules: Modules) {
+@BindingAdapter("callback", "otp", "module", "storage")
+fun PinView.setOTP(
+    callbacks: AppCallbacks?,
+    formControl: FormControl?,
+    modules: Modules,
+    storage: StorageDataSource
+) {
     this.setText("")
     setDefaultValue(formControl, callbacks)
     callbacks?.onOTP(formControl, this)
+
+
+    val liveOtp = storage.otp.asLiveData()
+
+    if (liveOtp.value != null)
+        liveOtp.observe(findViewTreeLifecycleOwner()!!) {
+            this@setOTP.setText(it)
+        }
 
     this.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -266,6 +304,65 @@ fun PinView.setOTP(callbacks: AppCallbacks?, formControl: FormControl?, modules:
     })
 
 }
+
+fun TextInputEditText.addSuffix(suffix: String) {
+    val editText = this
+    val formattedSuffix = " $suffix"
+    var text = ""
+    var isSuffixModified = false
+
+    val setCursorPosition: () -> Unit =
+        { Selection.setSelection(editableText, editableText.length - formattedSuffix.length) }
+
+    val setEditText: () -> Unit = {
+        editText.setText(text)
+        setCursorPosition()
+    }
+
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+            val newText = editable.toString()
+
+            if (isSuffixModified) {
+                isSuffixModified = false
+                setEditText()
+            } else if (text.isNotEmpty() && newText.length < text.length && !newText.contains(
+                    formattedSuffix
+                )
+            ) {
+                setEditText()
+            } else if (!newText.contains(formattedSuffix)) {
+                text = "$formattedSuffix$newText"
+                setEditText()
+            } else {
+                text = newText
+            }
+        }
+
+        override fun beforeTextChanged(
+            charSequence: CharSequence?,
+            start: Int,
+            count: Int,
+            after: Int
+        ) {
+            charSequence?.let {
+                val textLengthWithoutSuffix = it.length - formattedSuffix.length
+                if (it.isNotEmpty() && start > textLengthWithoutSuffix) {
+                    isSuffixModified = true
+                }
+            }
+        }
+
+        override fun onTextChanged(
+            charSequence: CharSequence?,
+            start: Int,
+            before: Int,
+            count: Int
+        ) {
+        }
+    })
+}
+
 
 
 
