@@ -55,12 +55,13 @@
         <androidx.constraintlayout.motion.widget.MotionLayout
             android:id="@+id/motionContainer"
             android:layout_width="@dimen/dimens_0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:layoutDescription="@xml/motion_scene_header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/toggleGroup"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="16:8">
 
             <include
                 android:id="@+id/headerAux"

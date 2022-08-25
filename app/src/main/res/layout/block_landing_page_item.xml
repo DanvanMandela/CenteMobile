@@ -14,9 +14,11 @@
             type="com.craft.silicon.centemobile.view.ep.data.LandingPageItem" />
     </data>
 
+
+
     <com.google.android.material.card.MaterialCardView
-        active="@{data}"
-        android:layout_width="match_parent"
+        android:id="@+id/cardItem"
+        android:layout_width="@dimen/dimens_120dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimens_5dp"
         app:cardCornerRadius="@dimen/dimens_8dp"

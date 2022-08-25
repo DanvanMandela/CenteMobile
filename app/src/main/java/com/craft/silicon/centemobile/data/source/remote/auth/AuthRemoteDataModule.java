@@ -27,7 +27,8 @@ public class AuthRemoteDataModule {
     public AuthApiService provideRequestDynamicApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebAuthDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getBase();
+        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.URL : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getBase();
         String token = storage.getDeviceData().getValue() == null ? "" : storage.getDeviceData().getValue().getToken();
 
         Retrofit retrofit = new Retrofit.Builder()

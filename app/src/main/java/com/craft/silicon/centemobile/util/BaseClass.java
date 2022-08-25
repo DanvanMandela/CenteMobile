@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.util;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +9,23 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -372,8 +378,8 @@ public class BaseClass {
     public static void createPdf(Activity activity, Bitmap bitmap) {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        float height = displaymetrics.heightPixels;
-        float width = displaymetrics.widthPixels;
+        float height = bitmap.getHeight();
+        float width = bitmap.getWidth();
 
         int convertHeight = (int) height, convertWidth = (int) width;
 
@@ -397,6 +403,19 @@ public class BaseClass {
         AppLogger.Companion.getInstance().writePDF(document,
                 "transaction" + BaseClass.generateAlphaNumericString(5), activity);
 
+    }
+
+    public static void shareBitmap(Activity activity, Bitmap bmpMain) {
+        String title = "it works";
+
+
+        String bitmapPath = MediaStore.Images.Media.insertImage(activity.getContentResolver(), bmpMain, "title", null);
+        Uri bitmapUri = Uri.parse(bitmapPath);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+        intent.putExtra(Intent.EXTRA_TEXT, title);
+        activity.startActivity(Intent.createChooser(intent, "Share"));
     }
 
 
@@ -478,6 +497,36 @@ public class BaseClass {
         Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
         view.setDrawingCacheEnabled(false);
         return bitmap;
+    }
+
+
+    public static void addCommonOCR(JSONObject obj, Activity context) {
+        try {
+            obj.put("MobileNumber", "254720117033");
+            obj.put("PhoneModel", "");
+            obj.put("IMEI", "11aa9fa9255370c4");
+            obj.put("KeyID", "");
+            obj.put("CodeBase", "ANDROID");
+            obj.put("LL", "");//get from gps
+            obj.put("SoftwareVersion", "450");
+
+            obj.put("RiderLL", "");
+            obj.put("LatLong", "");
+            obj.put("CarrierName", "SAF FOR YOU");
+            obj.put("NetworkCountry", "ug");
+            obj.put("Country", "UGANDA");
+            obj.put("LanguageID", "en");
+            obj.put("DeviceName", "HUAWEI AQM-LX1");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void stopTimer(CountDownTimer logout) {
+        if (logout != null) {
+            logout.cancel();
+        }
     }
 
 

@@ -35,6 +35,12 @@ public class Constants {
     public static class BaseUrl {
 
         @NotNull
+        public static final String IMAGE_BASE_URL = "https://imageuploadv1.azurewebsites.net/api/ImageUpload_V1/?JSONData=";
+        @NotNull
+        public static final String IMAGE_PROCESSING_URL = "https://aicraftsilicon.azurewebsites.net/";
+
+
+        @NotNull
         public static final String UAT = "https://uat.craftsilicon.com/ElmaAuthDynamic/";
 
 
@@ -80,6 +86,11 @@ public class Constants {
         @NotNull
         public final static String GO = "cente";
     }
+
+    public enum ImageID {
+        NATIONALID, BANKSTATEMENT, BANKCODE
+    }
+
 
     public static void commonJSON(JSONObject jsonObject,
                                   Context activity,

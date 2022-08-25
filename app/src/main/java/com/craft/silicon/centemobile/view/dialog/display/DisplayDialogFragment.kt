@@ -26,8 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_DATA = "data"
 
 /**
  * A simple [Fragment] subclass.
@@ -37,15 +36,13 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var binding: FragmentDisplayDialogBinding
+    private var displayData: DisplayData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            displayData = it.getParcelable(ARG_DATA)
         }
     }
 
@@ -61,8 +58,10 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun setBinding() {
-        binding.toolbar.title = module?.moduleName
         binding.toolbar.setNavigationOnClickListener { dialog?.dismiss() }
+        if (displayData != null) {
+            binding.toolbar.title = displayData?.modules?.moduleName
+        }
     }
 
     override fun setController() {
@@ -103,17 +102,16 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
+         * @param displayData: DisplayData.
          * @param param2 Parameter 2.
          * @return A new instance of fragment DisplayDialogFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(displayData: DisplayData) =
             DisplayDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelable(ARG_DATA, displayData)
                 }
             }
 
@@ -130,6 +128,13 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                 this@Companion.form = controller
                 show(manager, DialogFragment::class.java.simpleName)
             }
+
+        @JvmStatic
+        fun setData(
+            data: MutableList<HashMap<String, String>>?,
+        ) = DisplayDialogFragment().apply {
+            this@Companion.data = data
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

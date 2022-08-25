@@ -8,7 +8,7 @@
         android:id="@+id/motionContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutDescription="@xml/motion_scene_loading">
+        app:layoutDescription="@xml/motion_scene_loading_new">
 
         <include
             android:id="@+id/loadingFrame"
@@ -42,7 +42,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/dimens_8dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

@@ -82,6 +82,8 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
         binding.setCallback(this);
     }
 
+
+
     @Override
     public void onDialog() {
         Objects.requireNonNull(getDialog()).dismiss();

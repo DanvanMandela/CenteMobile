@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
@@ -69,7 +67,7 @@ class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     private fun shareTransaction() {
-        BaseClass.createPdf(
+        BaseClass.shareBitmap(
             requireActivity(),
             BaseClass.takeScreenshot(
                 binding.receipt

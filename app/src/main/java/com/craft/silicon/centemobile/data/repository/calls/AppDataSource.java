@@ -20,6 +20,12 @@ public interface AppDataSource {
         return null;
     }
 
+    default Single<DynamicResponse> pinResetPre(JSONObject jsonObject,
+                                             JSONObject encrypted,
+                                             Context context) {
+        return null;
+    }
+
     default Single<DynamicResponse> customerExist(JSONObject jsonObject,
                                                   JSONObject encrypted,
                                                   Context context) {
@@ -67,6 +73,10 @@ public interface AppDataSource {
         return null;
     }
 
+    default Single<DynamicResponse> cardCall(PayloadData data) {
+        return null;
+    }
+
     default Single<DynamicResponse> validateCall(PayloadData data) {
         return null;
     }
@@ -98,6 +108,12 @@ public interface AppDataSource {
     }
 
     default Single<DynamicResponse> transactionCenter(Modules modules, Context context) {
+        return null;
+    }
+
+
+    default Single<DynamicResponse> createNSSFOTP(JSONObject jsonObject,
+                                                  Context context) {
         return null;
     }
 }

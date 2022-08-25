@@ -3,18 +3,27 @@ package com.craft.silicon.centemobile.view.model
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
+import com.craft.silicon.centemobile.data.model.ocr.ImageRequestData
+import com.craft.silicon.centemobile.data.model.ocr.ImageRequestDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
+import com.craft.silicon.centemobile.data.repository.ocr.worker.IDProcessingWorker
+import com.craft.silicon.centemobile.data.repository.ocr.worker.ImageProcessingWorker
 import com.craft.silicon.centemobile.data.worker.CleanDBWorker
 import com.craft.silicon.centemobile.data.worker.SessionWorkManager
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
 import com.craft.silicon.centemobile.data.worker.WorkerCommons
+import com.craft.silicon.centemobile.data.worker.WorkerCommons.IS_OCR_DONE
 import com.craft.silicon.centemobile.data.worker.WorkerCommons.IS_WORK_DONE
+import com.craft.silicon.centemobile.data.worker.WorkerCommons.IS_WORK_ERROR
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRConverter
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -126,9 +135,58 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
             }
     }
 
+
+    fun processID(data: ImageRequestData, owner: LifecycleOwner, status: WorkStatus) {
+        val processImage = OneTimeWorkRequestBuilder<ImageProcessingWorker>()
+            .addTag(WorkerCommons.TAG_OUTPUT)
+
+        processImage.setInputData(
+            Data.Builder()
+                .putString(WorkerCommons.ID_DATA, ImageRequestDataTypeConverter().from(data))
+                .build()
+        )
+        val workID = "${WorkerCommons.ID_WORKER}${BaseClass.generateAlphaNumericString(2)}"
+        var continuation = worker.getWorkManger()
+            .beginUniqueWork(
+                workID,
+                ExistingWorkPolicy.REPLACE,
+                processImage.build()
+            )
+        val processID = OneTimeWorkRequestBuilder<IDProcessingWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(processID.build())
+
+        continuation.enqueue()
+
+        continuation.workInfosLiveData.observe(owner) { workInfo ->
+            if (workInfo.isNotEmpty()) {
+                workInfo.forEachIndexed { _, info ->
+                    if (info != null) {
+                        val output = info.outputData
+                        val value = output.getBoolean(IS_WORK_DONE, false)
+                        AppLogger.instance.appLog("workInfo:value", Gson().toJson(value))
+                        status.workDone(value)
+                        val error = output.getString(IS_WORK_ERROR)
+                        if (!error.isNullOrEmpty()) {
+                            status.error(error)
+                            worker.getWorkManger().cancelUniqueWork(workID)
+                        }
+                        val ocrData = OCRConverter().to(output.getString(IS_OCR_DONE))
+                        if (ocrData != null) {
+                            AppLogger.instance.appLog("workInfo:ocr", Gson().toJson(ocrData))
+                            status.onOCRData(ocrData, false)
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+
 }
-
-
 
 interface WorkStatus {
     fun workDone(b: Boolean) {
@@ -138,6 +196,16 @@ interface WorkStatus {
     fun progress(p: Int) {
         throw Exception("Not implemented")
     }
+
+    fun error(p: String?) {
+        throw Exception("Not implemented")
+    }
+
+    fun onOCRData(data: OCRData, b: Boolean) {
+        throw Exception("Not implemented")
+    }
+
+
 }
 
 

@@ -4,7 +4,11 @@ import androidx.navigation.NavDirections;
 
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData;
 import com.craft.silicon.centemobile.data.model.module.Modules;
+import com.craft.silicon.centemobile.view.dialog.MainDialogData;
+import com.craft.silicon.centemobile.view.ep.controller.DisplayData;
 import com.craft.silicon.centemobile.view.ep.data.DynamicData;
+import com.craft.silicon.centemobile.view.ep.data.MiniList;
+import com.craft.silicon.centemobile.view.ep.data.MiniStatement;
 
 public interface NavigationDataSource {
     default NavDirections navigateToLogin() {
@@ -43,13 +47,6 @@ public interface NavigationDataSource {
         return null;
     }
 
-    default NavDirections navigateDynamic() {
-        return null;
-    }
-
-    default NavDirections navigateDynamicTwo() {
-        return null;
-    }
 
     default NavDirections navigateResetPinATM() {
         return null;
@@ -115,7 +112,24 @@ public interface NavigationDataSource {
         return null;
     }
 
-    default NavDirections navigateToTransactionDetails(TransactionData data){return null;}
+    default NavDirections navigateToTransactionDetails(TransactionData data) {
+        return null;
+    }
 
+    default NavDirections navigateToPreResetPin() {
+        return null;
+    }
+
+    default NavDirections navigateToAlertDialog(MainDialogData data) {
+        return null;
+    }
+
+    default NavDirections navigateToDisplayDialog(DisplayData data) {
+        return null;
+    }
+
+    default NavDirections navigateToMini() {
+        return null;
+    }
 
 }

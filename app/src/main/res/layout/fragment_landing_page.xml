@@ -20,6 +20,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:fillViewport="true"
         android:overScrollMode="never">
 
@@ -45,6 +46,7 @@
                 android:layout_below="@id/banner"
                 android:layout_marginTop="-40dp"
                 android:layout_marginBottom="-20dp"
+                app:cardBackgroundColor="@color/ghost_white"
                 app:cardCornerRadius="@dimen/dimens_24dp"
                 app:cardElevation="@dimen/dimens_0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -60,6 +62,7 @@
                         android:id="@+id/textView7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimens_16dp"
                         android:autoSizeTextType="uniform"
                         android:background="@drawable/text_corner_back_morning"
                         android:fontFamily="@font/poppins_medium"
@@ -68,7 +71,8 @@
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:targetApi="o" />
+                        tools:targetApi="o"
+                        tools:text="Good Evening" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -76,7 +80,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="@string/welcome_cente"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         app:layout_constraintBottom_toBottomOf="@+id/textView7"
@@ -86,18 +90,99 @@
                         tools:targetApi="o" />
 
 
-                    <com.airbnb.epoxy.EpoxyRecyclerView
-                        android:id="@+id/container"
-                        callback="@{callback}"
-                        controller="@{data}"
+                    <LinearLayout
+                        android:id="@+id/mainLay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:clipToPadding="false"
-                        android:padding="@dimen/dimens_5dp"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView7">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.craft.silicon.centemobile.util.ExpandableHeightGridView
+                                android:id="@+id/mainContainer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:clipToPadding="false"
+                                android:columnWidth="100dp"
+                                android:gravity="center"
+                                android:horizontalSpacing="@dimen/dimens_16dp"
+                                android:isScrollContainer="true"
+                                android:numColumns="3"
+                                android:overScrollMode="never"
+                                android:padding="@dimen/dimens_10dp"
+                                android:scrollbars="none"
+                                android:verticalSpacing="@dimen/dimens_16dp" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/container"
+                                android:layout_width="@dimen/dimens_0dp"
+                                android:layout_height="@dimen/dimens_0dp"
+                                android:visibility="gone"
+                                app:layout_constraintDimensionRatio="16:8"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/containerTwo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <LinearLayout
+                            android:id="@+id/selfReg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:autoSizeTextType="uniform"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/not_reg"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:targetApi="o" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="@dimen/dimens_16dp"
+                                android:onClick="@{()->callback.toSelf()}"
+                                android:paddingHorizontal="50dp"
+                                android:paddingVertical="@dimen/dimens_16dp"
+                                android:text="@string/register"
+                                app:cornerRadius="@dimen/dimens_30dp" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                    <!--                    <com.airbnb.epoxy.EpoxyRecyclerView-->
+                    <!--                        android:id="@+id/container"-->
+                    <!--                        callback="@{callback}"-->
+                    <!--                        controller="@{data}"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="24dp"-->
+                    <!--                        android:clipToPadding="false"-->
+                    <!--                        android:padding="@dimen/dimens_5dp"-->
+                    <!--                        android:visibility="gone"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/textView7" />-->
 
 
                     <com.google.android.material.card.MaterialCardView
@@ -105,13 +190,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_150dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         app:cardCornerRadius="@dimen/dimens_8dp"
-                        app:cardElevation="@dimen/dimens_0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/container">
+                        app:layout_constraintTop_toBottomOf="@+id/mainLay">
 
                         <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                             android:id="@+id/carousel"

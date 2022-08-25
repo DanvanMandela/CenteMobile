@@ -9,14 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.databinding.*
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.OnAlertDialog
@@ -32,7 +29,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,7 +88,6 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         setBinding()
         setOnClick()
         setToolbar()
-        setTitle()
         return binding.root.rootView
     }
 
@@ -238,7 +233,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                 )
             }
             else -> {
-                throw Exception("Not implemented")
+
             }
         }
     }
@@ -264,43 +259,6 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         }
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
-
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.how_you_hear)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.how_you_hear)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
 
     private fun setAgentState(data: HearAboutState) {
         binding.hearAbout.parent.check(data.data?.key!!)

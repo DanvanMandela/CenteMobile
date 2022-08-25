@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,6 +34,7 @@ import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
@@ -92,12 +94,20 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         setOnClick();
         setViewModel();
         setData();
-        setFingerPrint();
+        autoBio();
         bioLogin();
         return binding.getRoot().getRootView();
     }
 
+    private void autoBio() {
+        int animationDuration = requireContext()
+                .getResources().getInteger(R.integer.animation_duration);
+        new Handler(Looper.getMainLooper()).postDelayed(this::setFingerPrint, animationDuration);
+    }
+
     private void setFingerPrint() {
+
+
         boolean state = authViewModel.storage.getBio().getValue();
         if (state) {
             binding.bioButton.setVisibility(View.VISIBLE);
@@ -114,10 +124,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void bioLogin() {
-
-        binding.bioButton.setOnClickListener(view -> {
-            setFingerPrint();
-        });
+        binding.bioButton.setOnClickListener(view -> setFingerPrint());
     }
 
     @Override
@@ -135,6 +142,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     public void setOnClick() {
         binding.materialButton.setOnClickListener(this);
         binding.forgotPin.setOnClickListener(this);
+        binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
     }
 
     @Override
@@ -222,6 +230,16 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                                         }
 
                                         @Override
+                                        public void error(@Nullable String p) {
+
+                                        }
+
+                                        @Override
+                                        public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                                        }
+
+                                        @Override
                                         public void workDone(boolean b) {
                                             if (b) authUser(pin);
                                         }
@@ -298,7 +316,17 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     }
 
                     @Override
+                    public void error(@Nullable String p) {
+
+                    }
+
+                    @Override
                     public void workDone(boolean b) {
+
+                    }
+
+                    @Override
+                    public void onOCRData(@NonNull OCRData data, boolean b) {
 
                     }
                 });

@@ -18,16 +18,16 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:elevation="@dimen/dimens_0dp">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-                app:title="@string/forgot_pin_" />
+                app:navigationIconTint="@color/white"
+                app:title="@string/forgot_pin_"
+                app:titleTextColor="@color/white" />
 
 
         </com.google.android.material.appbar.AppBarLayout>

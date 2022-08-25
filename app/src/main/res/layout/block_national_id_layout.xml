@@ -60,7 +60,6 @@
                         android:background="?selectableItemBackgroundBorderless"
                         android:contentDescription="@string/id_front"
                         android:scaleType="centerCrop" />
-
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>
 

@@ -458,12 +458,12 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                         if (!TextUtils.isEmpty(resData.formID)
                                         ) {
 
-                                            if (nonCaps(resData?.formID)
+                                            if (nonCaps(resData.formID)
                                                 == nonCaps("PAYMENTCONFIRMATIONFORM")
                                             ) {
                                                 ReceiptFragment.newInstance(
                                                     this, ReceiptList(
-                                                        receipt = resData?.receipt!!
+                                                        receipt = resData.receipt!!
                                                             .toMutableList(),
                                                         notification = resData.notifications
 
@@ -479,16 +479,28 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                                             )
                                                         )
                                                 )
-                                            } else if (nonCaps(resData?.formID)
+                                            } else if (nonCaps(resData.formID)
                                                 == nonCaps("STATEMENT")
                                             ) {
-                                                DisplayDialogFragment.showDialog(
-                                                    manager = this.parentFragmentManager,
-                                                    data = resData?.accountStatement,
-                                                    modules = modules,
-                                                    controller = formControl
+
+
+                                                DisplayDialogFragment.setData(
+                                                    data = resData.accountStatement
                                                 )
-                                            } else if (nonCaps(resData?.formID)
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
+
+
+                                            } else if (nonCaps(resData.formID)
                                                 == nonCaps("RELIGION")
                                             ) {
                                                 val mData = GlobalResponseTypeConverter().to(
@@ -499,19 +511,30 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                                         baseViewModel.dataSource.deviceData.value!!.run
                                                     )
                                                 )
-                                                DisplayDialogFragment.showDialog(
-                                                    manager = this.parentFragmentManager,
-                                                    data = mData?.data,
-                                                    modules = modules,
-                                                    controller = formControl
+
+
+                                                DisplayDialogFragment.setData(
+                                                    data = mData?.data
                                                 )
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
+
                                             } else {
-                                                ShowToast(requireContext(), resData?.message)
+                                                ShowToast(requireContext(), resData.message)
                                                 setOnNextModule(
                                                     formControl,
-                                                    resData?.next,
+                                                    resData.next,
                                                     modules,
-                                                    resData?.formID
+                                                    resData.formID
                                                 )
                                             }
 

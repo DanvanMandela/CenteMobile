@@ -8,12 +8,14 @@ import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionMonitor
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
 import com.craft.silicon.centemobile.data.worker.WorkManagerApp
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
+import com.craft.silicon.centemobile.util.SimData
+import com.craft.silicon.centemobile.util.SimUtil
+import com.craft.silicon.centemobile.util.provider.BaseResourceProvider
 import com.craft.silicon.centemobile.util.provider.ResourceProvider
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider
 import com.craft.silicon.centemobile.util.scheduler.SchedulerProvider
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource
 import com.craft.silicon.centemobile.view.navigation.NavigationDirection
-import com.craft.silicon.centemobile.util.provider.BaseResourceProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -45,5 +47,8 @@ abstract class AppModule {
     @Binds
     abstract fun provideNavigation(navigationDirection: NavigationDirection): NavigationDataSource
 
+
+    @Binds
+    abstract fun provideSimDetails(simUtil: SimUtil): SimData
 
 }

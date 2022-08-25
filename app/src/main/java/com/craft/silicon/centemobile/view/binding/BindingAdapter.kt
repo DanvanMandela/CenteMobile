@@ -65,13 +65,11 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.ColorUtil
 import com.craft.silicon.centemobile.util.HorizontalMarginItemDecoration
+import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AccountAdapterItem
 import com.craft.silicon.centemobile.view.ep.controller.*
 import com.craft.silicon.centemobile.view.ep.data.*
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -315,6 +313,47 @@ fun TextView.setAmount(amount: String?) {
     }
 }
 
+@BindingAdapter("removeNegativeSet")
+fun TextView.setRemoveNegAmount(amount: String?) {
+    val format = NumberFormat.getCurrencyInstance()
+    format.maximumFractionDigits = 0
+    format.currency = Currency.getInstance("UGX")
+    if (amount != null) {
+        this.text = amount.replace("-", "")
+    }
+}
+
+@BindingAdapter("setArrow")
+fun ImageView.setArrow(amount: String?) {
+    if (amount != null) {
+        val newAmount = NumberTextWatcherForThousand.trimCommaOfString(amount)
+        if (amount.contains("-")) {
+            this.setImageRes(R.drawable.left_arrow_red)
+        } else this.setImageRes(R.drawable.left_arrow_green)
+    }
+}
+
+@BindingAdapter("amountSet", "type")
+fun TextView.setAmountColor(amount: String?, type: String?) {
+    val format = NumberFormat.getCurrencyInstance()
+    format.maximumFractionDigits = 0
+    format.currency = Currency.getInstance("UGX")
+    if (amount != null) {
+        this.text = amount
+        if (nonCaps(type) == nonCaps("C")) this.setTextColor(
+            ContextCompat.getColor(
+                this.context,
+                R.color.green_indicator
+            )
+        ) else this.setTextColor(
+            ContextCompat.getColor(
+                this.context,
+                R.color.red_app
+            )
+        )
+    }
+}
+
 @BindingAdapter("account", "callbacks")
 fun LinearLayout.setBalance(account: Accounts?, callbacks: AppCallbacks) {
     var isVisible = false
@@ -546,10 +585,7 @@ fun TextView.setMon(data: String?) {
 @BindingAdapter("callback", "controller")
 fun EpoxyRecyclerView.setLandingPage(callbacks: AppCallbacks, data: GroupLanding) {
 
-    val layoutManager = FlexboxLayoutManager(context)
-    layoutManager.flexDirection = FlexDirection.COLUMN
-    layoutManager.justifyContent = JustifyContent.FLEX_END
-    //this.animation = AnimationUtils.loadAnimation(this.context, R.anim.home_anim)
+
     this.layoutManager = GridLayoutManager(this.context, 3)
     val controller = LandingPageController(callbacks)
     controller.setData(data)
@@ -812,9 +848,12 @@ fun TextView.setLabel(
     data: String?
 ) {
 
+    this.text = formControl?.controlText
     if (data != null) {
         this.text = data
     }
+
+
 
     if (formControl != null)
         if (formControl.controlValue != null)

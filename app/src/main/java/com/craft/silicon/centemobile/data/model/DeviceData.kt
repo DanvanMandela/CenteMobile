@@ -32,11 +32,14 @@ data class DeviceData(
     @field:Expose
     @Nullable
     val other: String?,
+    @field:SerializedName("card")
+    @field:Expose
+    @Nullable
+    val card: String?,
     @field:SerializedName("balance")
     @field:Expose
     @Nullable
     val balance: String?,
-
     @field:SerializedName("run")
     @field:Expose
     @Nullable

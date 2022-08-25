@@ -29,7 +29,8 @@ public class ValidationRemoteDataModule {
     public ValidationApiService provideApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebAuthDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getValidate())).getBase();
+        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.URL : Objects.requireNonNull(storage.getDeviceData().getValue().getValidate())).getBase();
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,6 +31,7 @@ import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
@@ -84,14 +85,24 @@ public class LoginFragment extends Fragment implements AppCallbacks {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         setBinding();
         setViewModel();
+
+        setOnClick();
+        return binding.getRoot().getRootView();
+    }
+
+    @Override
+    public void setOnClick() {
         binding.materialButton.setOnClickListener(v ->
                 {
                     if (validateFields()) authAccount();
                 }
         );
-        return binding.getRoot().getRootView();
-    }
 
+        binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+
+        binding.forgotPin.setOnClickListener(view -> BindingAdapterKt.navigate(this,
+                authViewModel.navigationDataSource.navigateToPreResetPin()));
+    }
 
     @Override
     public boolean validateFields() {
@@ -106,7 +117,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     }
 
     private void authAccount() {
-        hideSoftKeyboard(requireActivity(),binding.getRoot());
+        hideSoftKeyboard(requireActivity(), binding.getRoot());
         setLoading(true);
         CompositeDisposable subscribe = new CompositeDisposable();
         subscribe.add(authViewModel.activateAccount(Constants.
@@ -121,6 +132,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     }
 
     private void setOnSuccess(DynamicResponse data) {
+        ((MainActivity) requireActivity()).initSMSBroadCast();
         try {
             new AppLogger().appLog("ACTIVATION:Response",
                     BaseClass.decryptLatest(data.getResponse(),
@@ -167,6 +179,16 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                             public void workDone(boolean b) {
                                 setLoading(false);
                                 if (b) authAccount();
+                            }
+
+                            @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
                             }
 
                             @Override

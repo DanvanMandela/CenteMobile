@@ -4,88 +4,266 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <FrameLayout
+    <data>
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/app_name"
-            android:scaleType="centerCrop"
-            android:src="@drawable/centenary_bank" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/translucent">
+        android:layout_height="wrap_content">
 
 
-            <TextView
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/cardItem"-->
+<!--            android:layout_width="@dimen/dimens_120dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/dimens_10dp"-->
+<!--            android:onClick="@{()->callback.toBranch}"-->
+<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
+<!--            app:cardElevation="@dimen/dimens_5dp"-->
+<!--            app:layout_constraintDimensionRatio="4:6"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/cardItemTwo"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
 
-                android:id="@+id/textView12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:padding="@dimen/dimens_16dp"
-                android:text="@string/welcome_to_cente"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textColor="@color/white"
-                app:drawableEndCompat="@drawable/cente"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:padding="@dimen/dimens_5dp">-->
 
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_150dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView5"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/dimens_150dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="@dimen/dimens_8dp"
-                app:cardElevation="@dimen/dimens_0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container">
-
-                <org.imaginativeworld.whynotimagecarousel.ImageCarousel
-                    android:id="@+id/carousel"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:autoPlay="true"
-                    app:autoPlayDelay="3000"
-                    app:autoWidthFixing="true"
-                    app:carouselType="BLOCK"
-                    app:imagePlaceholder="@drawable/logo"
-                    app:imageScaleType="fitXY"
-                    app:scaleOnScroll="false"
-                    app:scalingFactor="0.15"
-                    app:showBottomShadow="false"
-                    app:showCaption="false"
-                    app:showIndicator="true"
-                    app:showNavigationButtons="false"
-                    app:showTopShadow="false" />
-
-            </com.google.android.material.card.MaterialCardView>
+<!--                <ImageView-->
+<!--                    android:id="@+id/avatar"-->
+<!--                    android:layout_width="@dimen/dimens_60dp"-->
+<!--                    android:layout_height="@dimen/dimens_60dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:contentDescription="@string/avatar"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/atm_machine"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
 
+<!--                <TextView-->
+<!--                    android:id="@+id/title"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    android:autoSizeTextType="uniform"-->
+<!--                    android:fontFamily="@font/poppins_semi_bold"-->
+<!--                    android:gravity="center"-->
+<!--                    android:maxLines="2"-->
+<!--                    android:minLines="2"-->
+<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
+<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
+<!--                    android:text="@string/branch_atm"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
+<!--                    android:textColor="@color/dar_color_one"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/avatar"-->
+<!--                    tools:ignore="UnusedAttribute" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/cardItemTwo"-->
+<!--            android:layout_width="@dimen/dimens_120dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/dimens_10dp"-->
+<!--            android:onClick="@{()->callback.toLogin}"-->
+<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
+<!--            app:cardElevation="@dimen/dimens_5dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/cardItemFour"-->
+<!--            app:layout_constraintDimensionRatio="4:6"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/cardItemThree"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/cardItem"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:id="@+id/constraintLayout2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:padding="@dimen/dimens_5dp"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/constraintLayout"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/avatarTwo"-->
+<!--                    android:layout_width="@dimen/dimens_60dp"-->
+<!--                    android:layout_height="@dimen/dimens_60dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:contentDescription="@string/cente_login"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/lock"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
 
-    </FrameLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/titleTwo"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    android:autoSizeTextType="uniform"-->
+<!--                    android:fontFamily="@font/poppins_semi_bold"-->
+<!--                    android:gravity="center"-->
+<!--                    android:maxLines="2"-->
+<!--                    android:minLines="2"-->
+<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
+<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
+<!--                    android:text="@string/cente_login"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
+<!--                    android:textColor="@color/dar_color_one"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarTwo"-->
+<!--                    tools:ignore="UnusedAttribute" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/cardItemThree"-->
+<!--            android:layout_width="@dimen/dimens_120dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/dimens_10dp"-->
+<!--            android:onClick="@{()->callback.toOnline}"-->
+<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
+<!--            app:cardElevation="@dimen/dimens_5dp"-->
+<!--            app:layout_constraintDimensionRatio="4:6"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/cardItemTwo"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:padding="@dimen/dimens_5dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/avatarThree"-->
+<!--                    android:layout_width="@dimen/dimens_60dp"-->
+<!--                    android:layout_height="@dimen/dimens_60dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:contentDescription="@string/online_banking"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/checking"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+
+<!--                <TextView-->
+<!--                    android:id="@+id/titleThree"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    android:autoSizeTextType="uniform"-->
+<!--                    android:fontFamily="@font/poppins_semi_bold"-->
+<!--                    android:gravity="center"-->
+<!--                    android:maxLines="2"-->
+<!--                    android:minLines="2"-->
+<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
+<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
+<!--                    android:text="@string/online_banking"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
+<!--                    android:textColor="@color/dar_color_one"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarThree"-->
+<!--                    tools:ignore="UnusedAttribute" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/cardItemFour"-->
+<!--            android:layout_width="@dimen/dimens_120dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/dimens_10dp"-->
+<!--            android:onClick="@{()->callback.onTheGo()}"-->
+<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
+<!--            app:cardElevation="@dimen/dimens_5dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintDimensionRatio="4:6"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/cardItemTwo"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/cardItemTwo"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/cardItemTwo">-->
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:id="@+id/constraintLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:padding="@dimen/dimens_5dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/cardItemTwo"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/avatarFour"-->
+<!--                    android:layout_width="@dimen/dimens_60dp"-->
+<!--                    android:layout_height="@dimen/dimens_60dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:contentDescription="@string/cente_on_go"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/cente"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+
+<!--                <TextView-->
+<!--                    android:id="@+id/titleFour"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="8dp"-->
+<!--                    android:autoSizeTextType="uniform"-->
+<!--                    android:fontFamily="@font/poppins_semi_bold"-->
+<!--                    android:gravity="center"-->
+<!--                    android:maxLines="2"-->
+<!--                    android:minLines="2"-->
+<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
+<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
+<!--                    android:text="@string/cente_on_go"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
+<!--                    android:textColor="@color/dar_color_one"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarFour"-->
+<!--                    tools:ignore="UnusedAttribute" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+<!--    -->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

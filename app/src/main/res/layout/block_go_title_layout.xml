@@ -5,20 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:paddingHorizontal="@dimen/dimens_24dp"
-            android:paddingTop="@dimen/dimens_16dp"
-            android:text="@string/title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -27,18 +14,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
-            app:boxBackgroundColor="@color/white"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:boxBackgroundColor="@color/ghost_white"
             app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:layout_constraintTop_toBottomOf="@+id/textView4">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <AutoCompleteTextView
                 android:id="@+id/autoEdit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimens_70dp"
                 android:focusable="false"
                 android:fontFamily="@font/poppins_medium"
-                android:hint="@string/select_one"
+                android:hint="@string/title"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"

@@ -8,17 +8,22 @@ import android.os.Parcelable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.res.ResourcesCompat
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
+import com.craft.silicon.centemobile.data.model.ocr.ImageRequestData
+import com.craft.silicon.centemobile.data.model.ocr.ImageResponseData
+import com.craft.silicon.centemobile.data.model.ocr.ImageResponseTypeConverter
+import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentIDBinding
 import com.craft.silicon.centemobile.util.*
@@ -38,13 +43,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.koushikdutta.ion.Ion
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
-import kotlin.math.abs
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
+import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -69,8 +77,18 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     private val baseViewModel: BaseViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val workViewModel: WorkerViewModel by viewModels()
+
+    private val composite = CompositeDisposable()
+
+    private var isNSSF = false
+
     private lateinit var stateData: IDDetails
     private var ocrData: OCRData? = null
+
+
+    private lateinit var product: CustomerProduct
+
+    private lateinit var imageRes: ImageResponseData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,47 +148,10 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         setOnClick()
         setTitle()
         setToolbar()
-        setToolTitle()
         return binding.root.rootView
     }
 
-    private fun setToolTitle() {
-        var state = ToolbarEnum.EXPANDED
 
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.national_id)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.national_id)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
 
     private fun setToolbar() {
         binding.toolbar.setNavigationOnClickListener {
@@ -187,6 +168,13 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         val titles = requireContext().resources.getStringArray(R.array.title)
         val adapter = NameBaseAdapter(requireContext(), 0, titles.toMutableList())
         binding.titleLay.autoEdit.setAdapter(adapter)
+        binding.titleLay.autoEdit.onItemClickListener =
+            AdapterView.OnItemClickListener { p0, p1, p2, p3 ->
+                if (product.product?.value == "32112" && p2 == 0) {
+                    showError("CenteSupaWoman Account ${getString(R.string.reserved_for_women)}")
+                    binding.titleLay.autoEdit.setText("")
+                }
+            }
     }
 
     override fun setOnClick() {
@@ -204,6 +192,10 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
     override fun setBinding() {
+        baseViewModel.dataSource.customerProduct.asLiveData().observe(viewLifecycleOwner) {
+            if (it != null)
+                product = it
+        }
         binding.lifecycleOwner = viewLifecycleOwner
         val animationDuration = requireContext()
             .resources.getInteger(R.integer.animation_duration)
@@ -250,7 +242,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     private fun stopShimmer() {
         binding.shimmerContainer.stopShimmer()
-        binding.shimmerContainer.visibility = View.GONE
+        binding.shimmerContainer.visibility = GONE
     }
 
     override fun onImage(bitmap: Bitmap?) {
@@ -263,6 +255,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                 ImageSelector.ID -> {
                     id = ImageData(image = convert(bitmap!!))
                     binding.idLay.avatar.setImageBitmap(bitmap)
+                    if (product.product?.value != "32217")
+                        uploadIdImage(bitmap)
                 }
                 ImageSelector.SIGNATURE -> {
                     signature = ImageData(image = convert(bitmap!!))
@@ -325,12 +319,20 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     override fun onClick(p: View?) {
         if (p == binding.buttonNext) {
             if (validateFields()) {
-                uploadOCR()
+                if (product.product?.value != "32217") {
+                    saveState()
+                    pagerData?.onNext(4)
+                } else {
+                    SmartLifeFragment.showDialog(this.childFragmentManager, this)
+                }
             }
-        } else if (p == binding.buttonBack)
+        } else {
             pagerData?.onBack(2)
+        }
     }
 
+
+    //OUT OF ORDER
     private fun uploadOCR() {
         val json = JSONObject()
         json.put("INFOFIELD3", id?.image)
@@ -400,7 +402,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                                                 surname = display["SurName"]!!,
                                                 dob = display["Date Of Birth"]!!,
                                                 idNo = display["National ID Number"]!!,
-                                                otherName = name[1]
+                                                otherName = name[1],
+                                                gender = name[1]
                                             )
                                             AppLogger.instance.appLog(
                                                 "OCR:DATA",
@@ -475,6 +478,77 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         if (b) LoadingFragment.show(this.childFragmentManager)
         else LoadingFragment.dismiss(this.childFragmentManager)
     }
+
+    private fun uploadIdImage(bitmap: Bitmap) {
+        ShowToast(requireContext(), getString(R.string.take_few_secs))
+        setLoading(true)
+        val imageByte = BaseClass.getBitmapBytes(bitmap)
+        val urlString = "{" + "\"FormID\":\"BANKIDFRONT\"," +
+                "\"Key\":\"PORTAL-FF7B-4CCA-B884-98346D5EC385\"," +
+                "\"Country\":\"" + "UGANDA" + "\"," +
+                "\"FileType\":\"jpg\"," +
+                "\"MobileNumber\":\"" + Constants.Data.CUSTOMER_ID + "\"," +
+                "\"EMailID\":\"" + "craft@gmail.com" + "\"," +
+                "\"ModuleID\":\"CREATECUSTOMER\"," +
+                "\"BankID\":\"" + Constants.Data.BANK_ID + "\"}"
+        AppLogger.instance.appLog("${IDDetails::class.java.simpleName}: REQ", urlString)
+        try {
+            val imageUrl =
+                Constants.BaseUrl.IMAGE_BASE_URL + URLEncoder.encode(urlString, "UTF-8")
+            Ion.with(requireContext()).load("POST", imageUrl)
+                .uploadProgressHandler { downloaded: Long, total: Long ->
+                    val progressLive = MutableLiveData<Int?>()
+                    val progress = BaseClass.calculatePercentage(
+                        downloaded.toString().toDouble(),
+                        total.toString().toDouble()
+                    ).roundToInt()
+                    progressLive.value = progress.toFloat().roundToInt()
+
+                }.setByteArrayBody(imageByte).asString()
+                .setCallback { e: Exception?, result: String? ->
+                    if (e != null) {
+                        e.printStackTrace()
+                        setLoading(false)
+                    } else {
+                        assert(result != null)
+                        val responseData = ImageResponseTypeConverter().to(result)!!
+                        AppLogger.instance.appLog(
+                            "${IDDetails::class.java.simpleName}:ID",
+                            Gson().toJson(responseData)
+                        )
+                        processID(responseData)
+                    }
+                }
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+            setLoading(false)
+        }
+    }
+
+    private fun processID(responseData: ImageResponseData) {
+        val requestData = ImageRequestData(
+            Constants.Data.API_KEY,
+            Constants.ImageID.NATIONALID.name,
+            responseData.imageUrl, "UGANDA"
+        )
+        workViewModel.processID(requestData, this, object : WorkStatus {
+            override fun workDone(b: Boolean) {
+                if (b) setLoading(false)
+            }
+
+            override fun error(p: String?) {
+                setLoading(false)
+                ShowToast(requireContext(), p)
+            }
+
+            override fun onOCRData(data: OCRData, b: Boolean) {
+                setLoading(b)
+                ocrData = data
+                binding.buttonNext.visibility = VISIBLE
+            }
+        })
+
+    }
 }
 
 enum class ImageSelector {
@@ -514,6 +588,9 @@ data class OCRData(
     @field:SerializedName("F-6")
     @field:Expose
     val otherName: String,
+    @field:SerializedName("F-7")
+    @field:Expose
+    val gender: String?,
 ) : Parcelable
 
 @Parcelize
@@ -572,3 +649,24 @@ class IDDetailsConverter {
     }
 }
 
+
+class OCRConverter {
+    @TypeConverter
+    fun from(data: OCRData?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, OCRData::class.java)
+    }
+
+    @TypeConverter
+    fun to(data: String?): OCRData? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, OCRData::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().create()
+    }
+}

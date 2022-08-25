@@ -1,6 +1,5 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -11,15 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.converter.ResponseTypeConverter;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
-import com.craft.silicon.centemobile.data.receiver.SMSData;
-import com.craft.silicon.centemobile.data.receiver.SMSReceiver;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
@@ -29,9 +28,10 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
-import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
-import com.craft.silicon.centemobile.view.dialog.DialogData;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.dialog.MainDialogData;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OTP;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
@@ -67,7 +67,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     private static final String ARG_MOBILE = "mobile";
     private String mobile;
     private BaseViewModel baseViewModel;
-    private MutableLiveData<String> otp;
+
 
     public OtpFragment() {
         // Required empty public constructor
@@ -88,11 +88,6 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         return new OtpFragment();
     }
 
-    public static OtpFragment onOtp(MutableLiveData<String> otp) {
-        OtpFragment fragment = new OtpFragment();
-        fragment.otp = otp;
-        return new OtpFragment();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,12 +112,11 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     }
 
     private void setOTP() {
-        if (otp != null)
-            otp.observe(getViewLifecycleOwner(), o -> {
-                if (!TextUtils.isEmpty(o)) {
-                    binding.verificationCodeEditText.setText(o);
-                }
-            });
+
+
+
+        LiveData<String> otp = (LiveData<String>) baseViewModel.dataSource.getOtp();
+        otp.observe(getViewLifecycleOwner(), v -> binding.verificationCodeEditText.setText(v));
     }
 
 
@@ -130,6 +124,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     public void setOnClick() {
         binding.materialButton.setOnClickListener(this);
         binding.resendButton.setOnClickListener(this);
+        binding.toolbar.setNavigationOnClickListener(v -> (requireActivity()).onBackPressed());
     }
 
     @Override
@@ -163,6 +158,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     }
 
     private void resendOTP() {
+        ((MainActivity) requireActivity()).initSMSBroadCast();
         JSONObject jsonObject = new JSONObject();
         try {
             setLoading(true);
@@ -207,6 +203,16 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                                                     }
 
                                                     @Override
+                                                    public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void error(@Nullable String p) {
+
+                                                    }
+
+                                                    @Override
                                                     public void progress(int p) {
 
                                                     }
@@ -214,8 +220,8 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                                     }
                                 } else setLoading(false);
                             }
-                            setLoading(false);
-                        } else setLoading(false);
+                        }
+                        setLoading(false);
                     }, Throwable::printStackTrace));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -236,22 +242,13 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
 
     private void setOnSuccess(DynamicResponse data) {
         try {
-
             if (data.getResponse() == null) {
                 setLoading(false);
-                AlertDialogFragment.newInstance(new DialogData(
-                        R.string.error,
-                        getString(R.string.something_),
-                        R.drawable.warning_app
-                ), getChildFragmentManager());
+                setError(getString(R.string.something_));
             } else {
                 if (data.getResponse().equals("ok")) {
                     setLoading(false);
-                    AlertDialogFragment.newInstance(new DialogData(
-                            R.string.error,
-                            getString(R.string.something_),
-                            R.drawable.warning_app
-                    ), getChildFragmentManager());
+                    setError(getString(R.string.something_));
                 } else {
                     new AppLogger().appLog("ACTIVATION:OTP:Response",
                             BaseClass.decryptLatest(data.getResponse(),
@@ -269,17 +266,23 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                     assert responseDetails != null;
                     if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
                         setLoading(false);
-                        AlertDialogFragment.newInstance(new DialogData(
-                                R.string.error,
-                                Objects.requireNonNull(responseDetails.getMessage()),
-                                R.drawable.warning_app
-                        ), getChildFragmentManager());
+                        setError(responseDetails.getMessage());
                     } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
                         workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
                             @Override
                             public void workDone(boolean b) {
                                 setLoading(false);
                                 if (b) verifyOTP();
+                            }
+
+                            @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
                             }
 
                             @Override
@@ -305,12 +308,15 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         } catch (Exception e) {
             setLoading(false);
             e.printStackTrace();
-            AlertDialogFragment.newInstance(new DialogData(
-                    R.string.error,
-                    getString(R.string.fatal_error),
-                    R.drawable.warning_app
-            ), getChildFragmentManager());
+            setError(getString(R.string.something_));
         }
+    }
+
+    private void setError(String message) {
+        BindingAdapterKt.navigate(this,
+                baseViewModel.navigationData.navigateToAlertDialog(
+                        new MainDialogData(getString(R.string.error), message)
+                ));
     }
 
 

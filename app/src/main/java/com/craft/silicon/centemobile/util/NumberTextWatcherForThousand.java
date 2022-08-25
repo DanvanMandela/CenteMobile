@@ -51,7 +51,9 @@ public class NumberTextWatcherForThousand implements TextWatcher {
                     editText.setText("");
                 }
                 String str = editText.getText().toString().replaceAll(",", "");
+                editText.removeTextChangedListener(this);
                 editText.setText(getDecimalFormattedString(str));
+                editText.addTextChangedListener(this);
                 editText.setSelection(editText.getText().toString().length());
             }
             appCallbacks.userInput(

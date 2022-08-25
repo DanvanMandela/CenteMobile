@@ -12,15 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.databinding.FragmentIncomeSourceBinding
+import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand.getDecimalFormattedString
 import com.craft.silicon.centemobile.util.OnAlertDialog
 import com.craft.silicon.centemobile.util.ShowAlertDialog
 import com.craft.silicon.centemobile.util.ShowToast
@@ -35,7 +33,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -101,47 +100,58 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
         setBinding()
         setToolbar()
         durationWatcher()
-        setTitle()
+        setWatcher()
         return binding.root.rootView
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
+    private fun setWatcher() {
+        val decimalSeparator = '.'
+        val thousandSeparator = ","
+        binding.incomeInput.addTextChangedListener(object : TextWatcher {
 
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
+            override fun afterTextChanged(p0: Editable?) {
+                binding.incomeInput.removeTextChangedListener(this)
 
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.source_income)
+                try {
+                    var givenstring: String = p0.toString()
+                    if (givenstring.contains(thousandSeparator)) {
+                        givenstring = givenstring.replace(thousandSeparator.toString(), "")
+                    }
+                    val doubleVal: Double = givenstring.toDouble()
 
+
+                    val unusualSymbols = DecimalFormatSymbols()
+                    unusualSymbols.decimalSeparator = decimalSeparator
+                    unusualSymbols.groupingSeparator = thousandSeparator.single()
+
+                    val formatter = DecimalFormat("#,##0.##", unusualSymbols)
+                    formatter.groupingSize = 3
+                    val formattedString = formatter.format(doubleVal)
+
+                    binding.incomeInput.setText(formattedString)
+                    binding.incomeInput.setSelection(binding.incomeInput.text!!.length)
+                    // to place the cursor at the end of text
+                } catch (nfe: NumberFormatException) {
+                    nfe.printStackTrace()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.source_income)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
+
+                binding.incomeInput.addTextChangedListener(this)
+
             }
-        }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // no need any callback for this.
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // no need any callback for this.
+            }
+
+        })
     }
+
 
     private fun durationWatcher() {
         binding.durationGroup.setOnCheckedChangeListener { radioGroup, i ->
@@ -191,7 +201,7 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
             .navigate(widgetViewModel.navigation().navigateLanding())
     }
 
-     override fun saveState() {
+    override fun saveState() {
         statePersist()
         widgetViewModel.storageDataSource.setIncomeSource(stateData)
     }
@@ -201,7 +211,8 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
         stateData = IncomeData(
             occupation = hashMap["Occupation"],
             profession = hashMap["Profession"],
-            income = binding.incomeInput.text.toString(),
+            income = if (!TextUtils.isEmpty(binding.incomeInput.text.toString()))
+                getDecimalFormattedString(binding.incomeInput.text.toString()) else "",
             workPlace = binding.workPlaceInput.text.toString(),
             natureBusiness = binding.natureInput.text.toString(),
             duration = hashMap["Duration"],
@@ -258,8 +269,8 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     private fun setProfession(p: List<StaticDataDetails?>?) {
         if (p != null) {
             val pData = p.filter { a -> a?.id == "PROFFESSIONSTATUS" }
-            pData.sortedBy { a -> a?.description }
-            professionAdapter = AutoTextArrayAdapter(requireContext(), 0, pData)
+            val sorted = pData.sortedBy { a -> a?.description }
+            professionAdapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoProf.setAdapter(professionAdapter)
             binding.autoProf.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, p2, _ ->
@@ -280,8 +291,8 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     private fun setOccupation(p: List<StaticDataDetails?>?) {
         if (p != null) {
             val pData = p.filter { a -> a?.id == "OCCUPATION" }
-            pData.sortedBy { a -> a?.description }
-            occupationAdapter = AutoTextArrayAdapter(requireContext(), 0, pData)
+            val sorted = pData.sortedBy { a -> a?.description }
+            occupationAdapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoOccupation.setAdapter(occupationAdapter)
             binding.autoOccupation.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, p2, _ ->

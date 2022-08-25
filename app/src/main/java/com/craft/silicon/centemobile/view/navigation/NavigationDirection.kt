@@ -7,6 +7,8 @@ import androidx.navigation.NavDirections
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.view.dialog.MainDialogData
+import com.craft.silicon.centemobile.view.ep.controller.DisplayData
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import java.io.Serializable
 import javax.inject.Inject
@@ -68,9 +70,6 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_validation)
     }
 
-    override fun navigateDynamic(): NavDirections {
-        return ActionOnlyNavDirections(R.id.action_nav_dynamic)
-    }
 
     override fun navigatePurchase(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_purchase)
@@ -224,6 +223,50 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
                 return result
             }
         }
+    }
+
+    override fun navigateToPreResetPin(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_pre_pin)
+    }
+
+    override fun navigateToAlertDialog(data: MainDialogData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_alert
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(MainDialogData::class.java)) {
+                    result.putParcelable("data", data as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToDisplayDialog(data: DisplayData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_display_dialog
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(DisplayData::class.java)) {
+                    result.putParcelable("data", data as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToMini(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_mini)
     }
 
 

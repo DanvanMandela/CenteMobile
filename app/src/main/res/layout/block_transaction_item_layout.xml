@@ -84,7 +84,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="end"
                 android:maxLines="1"
-                android:text="@{data.type}"
+                android:text="@{data.serviceName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_two"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -176,6 +176,7 @@
             <TextView
                 android:id="@+id/amountTxt"
                 amountSet="@{data.amount}"
+                type="@{data.type}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"

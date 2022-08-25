@@ -10,13 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.address.AddressHelperModel
 import com.craft.silicon.centemobile.data.model.address.AddressStaticData
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
@@ -45,7 +43,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
-import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,43 +104,6 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         }
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
-
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.your_address_reach)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.your_address_reach)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -155,7 +115,6 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         setOnClick()
         setStep()
         setToolbar()
-        setTitle()
         return binding.root.rootView
     }
 

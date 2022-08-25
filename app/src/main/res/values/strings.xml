@@ -6,8 +6,8 @@
     <string name="welcome_back">Welcome Back!</string>
     <string name="login">Login</string>
     <string name="forgot_pin">Forgot Pin?</string>
-    <string name="login_securely">Login</string>
-    <string name="hello_there">Hello There</string>
+    <string name="login_securely">Login Securely</string>
+    <string name="hello_there">Hello There!</string>
     <string name="we_have_missed_you">We have missed You</string>
     <string name="mobile">Mobile</string>
     <string name="pin">Pin</string>
@@ -26,14 +26,14 @@
     <string name="pin_required">Pin required</string>
     <string name="opt_required">OTP required</string>
     <string name="welcome_cente">Welcome To Centenary Bank</string>
-    <string name="branch_atm"><![CDATA[Branch & ATM]]></string>
-    <string name="cente_login">Cente Login</string>
-    <string name="online_banking">Online Banking</string>
+    <string name="branch_atm"><![CDATA[Branches\n& ATM]]></string>
+    <string name="cente_login">CenteMobile\nLogin</string>
+    <string name="online_banking">Internet\nBanking</string>
     <string name="good_night">Good Night</string>
     <string name="good_afternoon">Good Afternoon</string>
     <string name="good_morining">Good  Morning</string>
     <string name="good_evening">Good Evening</string>
-    <string name="cente_on_go">Cente On The Go</string>
+    <string name="cente_on_go">Cente\nOn The Go</string>
     <string name="recent">Recent</string>
     <string name="close">Close</string>
     <string name="beneficiary">Beneficiary</string>
@@ -104,8 +104,8 @@
     <string name="whoops">Whoops!</string>
     <string name="slow_no_">Slow or no internet connections\nplease check your connection and try again</string>
     <string name="connection">Connection</string>
-    <string name="ATM">ATM</string>
-    <string name="branch_">Branch</string>
+    <string name="ATM">ATMs</string>
+    <string name="branch_">Branches</string>
     <string name="direction">direction</string>
     <string name="i_am">I am a</string>
     <string name="new_customer">New Customer</string>
@@ -125,7 +125,7 @@
     <string name="terms">https://www.centenarybank.co.ug/index.php/category/savings</string>
     <string name="please_agree_terms">Please agree to Terms And Conditions</string>
     <string name="national_id">ID Details</string>
-    <string name="title">Title</string>
+    <string name="title">Select Title</string>
     <string name="id_front">National Identity Card (Front)</string>
 
     <string name="camera_from">Take Photo</string>
@@ -150,7 +150,7 @@
     <string name="surname">Surname</string>
     <string name="id_">ID</string>
     <string name="other_names">Other Names (Optional)</string>
-    <string name="dob_">Date Of Birth (YYYY-MM-DD)</string>
+    <string name="dob_">Date Of Birth (DD-MM-YYYY)</string>
     <string name="given_name_required">Enter your given name</string>
     <string name="surname_required">Enter your surname</string>
     <string name="dob_required">Enter your date of birth</string>
@@ -335,6 +335,23 @@
     <string name="trans_details">TRANSACTION DETAILS</string>
     <string name="ugx">UGX</string>
     <string name="welcome_to_cente">Welcome To\nCentenary Bank</string>
+    <string name="not_reg">Not registered for CENETEMOBILE?</string>
+    <string name="register">Register</string>
+    <string name="id_national">National ID (Please counter check)</string>
+    <string name="nssf_number">NSSF Number</string>
+    <string name="reserved_for_women">reserved for women</string>
+    <string name="nssf_details">NSSF Details</string>
+    <string name="nssf_number_required">Enter your NSSF number</string>
+    <string name="please_enter_your_mobile">Please enter your mobile number</string>
+    <string name="send">Send</string>
+    <string name="invalid_mobile">Enter valid mobile number</string>
+    <string name="cente_activation">CenteMobile Activation</string>
+    <string name="device_no_biometric_enable">Your device does\'t support this service</string>
+    <string name="you_have_selected">You have selected</string>
+    <string name="currency">Currency</string>
+    <string name="branch">Branch</string>
+    <string name="previous">Previous</string>
+    <string name="mini_state">Mini statement</string>
 
 
 </resources>

@@ -4,13 +4,13 @@
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleGroup"
-        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/transparent"
         android:divider="@drawable/divider_toggle"
         android:orientation="horizontal"
         android:padding="@dimen/dimens_5dp"
-        app:checkedButton="@id/atmButton"
+        app:checkedButton="@id/branchButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,24 +18,29 @@
         app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/atmButton"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_60dp"
-            android:layout_weight="1"
-            android:text="@string/ATM"
-            android:textColor="@color/chip_text_color"
-            app:cornerRadius="@dimen/dimens_8dp" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/branchButton"
             style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_60dp"
             android:layout_weight="1"
+            android:fontFamily="@font/poppins_semi_bold"
             android:text="@string/branch_"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/chip_text_color"
             app:cornerRadius="@dimen/dimens_8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/atmButton"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_60dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="@string/ATM"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/chip_text_color"
+            app:cornerRadius="@dimen/dimens_8dp" />
+
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 

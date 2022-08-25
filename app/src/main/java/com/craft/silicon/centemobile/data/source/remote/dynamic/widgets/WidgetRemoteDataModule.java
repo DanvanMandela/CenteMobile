@@ -27,7 +27,8 @@ public class WidgetRemoteDataModule {
     public WidgetApiService provideApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebOtherDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
+        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.URL : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
         String token = storage.getDeviceData().getValue() == null ? "" : storage.getDeviceData().getValue().getToken();
 
         Retrofit retrofit = new Retrofit.Builder()

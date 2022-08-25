@@ -23,6 +23,7 @@ fun AutoCompleteTextView.contacts(
     callbacks: AppCallbacks,
     formControl: FormControl?
 ) {
+    AppLogger.instance.appLog("DROP:DOWN", Gson().toJson(formControl))
     this.setText("")
     setDefaultValue(formControl, callbacks)
     this.addTextChangedListener(object : TextWatcher {
@@ -57,6 +58,7 @@ fun AutoCompleteTextView.setDropDownData(
     storage: StorageDataSource?,
     modules: Modules?
 ) {
+    AppLogger.instance.appLog("DROP:DOWN", Gson().toJson(formControl))
     AppLogger.instance.appLog("DROP:MERCHANT", Gson().toJson(modules))
     AppLogger.instance.appLog("DROP:BENEFICIARY", Gson().toJson(storage?.beneficiary?.value))
     this.setText("")
@@ -67,6 +69,19 @@ fun AutoCompleteTextView.setDropDownData(
                 val accounts = storage.accounts.value!!.map { it?.id }
                 val adapter = NameBaseAdapter(context, 1, accounts)
                 this.setAdapter(adapter)
+                if (accounts.isNotEmpty()) {
+                    this.setText(adapter.getItem(0), false)
+                    this.setSelection(0)
+                    callbacks?.userInput(
+                        InputData(
+                            name = formControl?.controlText,
+                            key = formControl?.serviceParamID,
+                            value = adapter.getItem(0),
+                            encrypted = formControl?.isEncrypted!!,
+                            mandatory = formControl.isMandatory
+                        )
+                    )
+                }
                 this.onItemClickListener =
                     AdapterView.OnItemClickListener { _, _, p2, _ ->
                         callbacks?.userInput(
@@ -92,6 +107,20 @@ fun AutoCompleteTextView.setDropDownData(
                     beneficiaries
                 )
                 this.setAdapter(adapter)
+                if (beneficiaries.isNotEmpty()) {
+                    this.setText(adapter.getItem(0)?.accountAlias, false)
+                    this.setSelection(0)
+                    callbacks?.userInput(
+                        InputData(
+                            name = formControl?.controlText,
+                            key = formControl?.serviceParamID,
+                            value = adapter.getItem(0)?.accountID,
+                            encrypted = formControl?.isEncrypted!!,
+                            mandatory = formControl.isMandatory
+                        )
+                    )
+                }
+
                 this.onItemClickListener =
                     AdapterView.OnItemClickListener { _, _, p2, _ ->
                         callbacks?.userInput(
@@ -116,6 +145,20 @@ fun AutoCompleteTextView.setDropDownData(
                     }
                 val adapter = AutoTextArrayAdapter(context, 1, staticData)
                 this.setAdapter(adapter)
+                if (staticData.isNotEmpty()) {
+                    this.setText(adapter.getItem(0)?.description, false)
+                    this.setSelection(0)
+                    callbacks?.userInput(
+                        InputData(
+                            name = formControl?.controlText,
+                            key = formControl?.serviceParamID,
+                            value = adapter.getItem(0)!!.subCodeID,
+                            encrypted = formControl?.isEncrypted!!,
+                            mandatory = formControl.isMandatory
+                        )
+                    )
+                }
+
                 this.onItemClickListener =
                     AdapterView.OnItemClickListener { _, _, p2, _ ->
                         callbacks?.userInput(

@@ -4,16 +4,14 @@
     <solid android:color="@color/app_blue_light" />
 
 
-
     <padding
-        android:bottom="@dimen/dimens_16dp"
+        android:bottom="@dimen/dimens_8dp"
         android:left="@dimen/dimens_16dp"
         android:right="@dimen/dimens_16dp"
-        android:top="@dimen/dimens_16dp" />
+        android:top="@dimen/dimens_8dp" />
 
     <corners
-        android:topLeftRadius="@dimen/dimens_24dp"
-        android:bottomRightRadius="@dimen/dimens_24dp"
+        android:bottomLeftRadius="@dimen/dimens_24dp"
         android:topRightRadius="@dimen/dimens_24dp" />
 
 </shape>

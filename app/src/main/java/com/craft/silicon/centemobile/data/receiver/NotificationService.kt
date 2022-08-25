@@ -29,7 +29,6 @@ import com.craft.silicon.centemobile.data.worker.WorkerCommons
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.view.activity.MainActivity
-import com.google.firebase.messaging.EnhancedIntentService
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
@@ -38,7 +37,6 @@ import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import okhttp3.internal.trimSubstring
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -57,8 +55,6 @@ class NotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(p: RemoteMessage) {
         super.onMessageReceived(p)
-        // storageDataSource.setOtp(p.notification?.body)
-
         try {
 
             val data = NotificationConverter().to(Gson().toJson(p.data))
@@ -143,7 +139,7 @@ class NotificationService : FirebaseMessagingService() {
         val contentPendingIntent = NavDeepLinkBuilder(applicationContext)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.main_navigation_graph)
-            .setDestination(R.id.notificationFragment)
+            .setDestination(R.id.landingPageFragment)
             .createPendingIntent()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -187,20 +183,20 @@ class NotificationService : FirebaseMessagingService() {
     }
 
 
-    private fun extractOTP(str: String?): String {
-        val mPattern: Pattern = Pattern.compile("(|^)\\d{6}")
-        return if (str != null) {
-            val mMatcher: Matcher = mPattern.matcher(str)
-            return if (mMatcher.find()) {
-                val otp: String = mMatcher.group(0)!!
-                otp
-            } else {
-                ""
-            }
-        } else ""
-    }
+}
 
 
+fun extractOTP(str: String?): String {
+    val mPattern: Pattern = Pattern.compile("(|^)\\d{6}")
+    return if (str != null) {
+        val mMatcher: Matcher = mPattern.matcher(str)
+        return if (mMatcher.find()) {
+            val otp: String = mMatcher.group(0)!!
+            otp
+        } else {
+            ""
+        }
+    } else ""
 }
 
 @Entity(tableName = "notifications")

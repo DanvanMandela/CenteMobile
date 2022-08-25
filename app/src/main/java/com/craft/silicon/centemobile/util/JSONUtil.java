@@ -73,7 +73,7 @@ public class JSONUtil {
             group = group.replace(":", " ");// replace full colon with white space
             String[] str = group.split(",");//Split using comma
             for (String i : str) {
-                i = i.replaceAll("[\\-\\+\\.\\^:,]", "");//remove any unwanted characters from string
+                i = i.replaceAll("[\\\\+\\.\\^:,]", "");//remove any unwanted characters from string
                 String[] f = i.split(" ");//split using space
                 if (f.length == 2) dataMap.put(f[0], f[1]);
                 else if (f.length > 2) dataMap.put(f[0], f[1] + " " + f[2]);

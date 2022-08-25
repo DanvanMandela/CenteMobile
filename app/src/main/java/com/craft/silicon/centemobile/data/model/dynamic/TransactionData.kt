@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 
 @Parcelize
@@ -17,6 +16,11 @@ data class TransactionData(
     @field:SerializedName("TrxType")
     @field:Expose
     var type: String?,
+
+    @field:ColumnInfo(name = "serviceName")
+    @field:SerializedName("ServiceName")
+    @field:Expose
+    var serviceName: String?,
 
     @field:ColumnInfo(name = "date")
     @field:SerializedName("Date")

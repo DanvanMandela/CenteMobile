@@ -1,20 +1,29 @@
 package com.craft.silicon.centemobile.view.fragment.registration.self.steps
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentDialogOtpBinding
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer
+import com.craft.silicon.centemobile.view.model.BaseViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,11 +37,18 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class OTPDialogFragment : DialogFragment(), AppCallbacks, View.OnClickListener {
+class OTPDialogFragment : BottomSheetDialogFragment(), AppCallbacks,
+    com.craft.silicon.centemobile.view.fragment.go.steps.OTP, View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentDialogOtpBinding
+    private val baseViewModel: BaseViewModel by viewModels()
+
+    private val startTime = (120 * 1000).toLong()
+    private val interval = (1 * 1000).toLong()
+
+    private var countDownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,24 +65,74 @@ class OTPDialogFragment : DialogFragment(), AppCallbacks, View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentDialogOtpBinding.inflate(inflater, container, false)
         setOnClick()
+        setToolbar()
+        setOtp()
+        setTimer()
         return binding.root.rootView
+    }
+
+    private fun setOtp() {
+        binding.userFrame.resendButton.visibility = View.GONE
+        (requireActivity() as MainActivity).initSMSBroadCast()
+        val otp = baseViewModel.dataSource.otp.asLiveData()
+        otp.observe(viewLifecycleOwner) {
+            binding.userFrame.verificationCodeEditText.setText(it)
+        }
+    }
+
+    private fun setToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            dialog?.dismiss()
+        }
+    }
+
+    private fun setTimer() {
+        binding.userFrame.resendLay.visibility = View.VISIBLE
+        countDownTimer = OTPCountDownTimer(startTime = startTime, interval = interval, this)
+        timerControl(true)
+        done(false)
+    }
+
+
+    override fun timer(str: String) {
+        binding.userFrame.otpTimer.text = str
+    }
+
+    private fun timerControl(startTimer: Boolean) {
+        if (startTimer) {
+            countDownTimer!!.start()
+        } else {
+            countDownTimer!!.cancel()
+        }
+    }
+
+    override fun done(boolean: Boolean) {
+        if (boolean) {
+            timerControl(false)
+            binding.userFrame.resendButton.visibility = View.VISIBLE
+        } else binding.userFrame.resendButton.visibility = View.GONE
     }
 
     override fun setOnClick() {
         binding.materialButton.setOnClickListener(this)
+        binding.userFrame.resendButton.setOnClickListener {
+            dialog?.dismiss()
+            callback?.resendOTP()
+        }
     }
 
     override fun validateFields(): Boolean {
-        return if (TextUtils.isEmpty(binding.verificationCodeEditText.text)) {
+        return if (TextUtils.isEmpty(binding.userFrame.verificationCodeEditText.text)) {
             ShowToast(requireContext(), getString(R.string.otp_required), true)
             false
         } else {
-            if (binding.verificationCodeEditText.text?.length!! < 6) {
+            if (binding.userFrame.verificationCodeEditText.text?.length!! < 6) {
                 ShowToast(requireContext(), getString(R.string.otp_invalid), true)
                 false
             } else true
         }
     }
+
 
     companion object {
         private var callback: OTP? = null
@@ -96,15 +162,6 @@ class OTPDialogFragment : DialogFragment(), AppCallbacks, View.OnClickListener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (dialog != null && dialog!!.window != null) {
-            dialog!!.window!!.setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
-            )
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,12 +173,35 @@ class OTPDialogFragment : DialogFragment(), AppCallbacks, View.OnClickListener {
         if (view == binding.materialButton) {
             if (validateFields()) {
                 dialog?.dismiss()
-                callback?.otp(binding.verificationCodeEditText.text.toString())
+                callback?.otp(binding.userFrame.verificationCodeEditText.text.toString())
             }
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            val parentLayout =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            parentLayout?.let { data ->
+                val behaviour = BottomSheetBehavior.from(data)
+                setupFullHeight(data)
+                behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
+            }
+        }
+        return dialog
+    }
+
+    private fun setupFullHeight(bottomSheet: View) {
+        val layoutParams = bottomSheet.layoutParams
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        bottomSheet.layoutParams = layoutParams
     }
 }
 
 interface OTP {
     fun otp(string: String) {}
+    fun resendOTP() {}
 }

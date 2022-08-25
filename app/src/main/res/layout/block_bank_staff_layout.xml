@@ -19,7 +19,7 @@
             android:layout_marginTop="@dimen/dimens_16dp"
             android:hint="@string/bank_staff_name"
 
-            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundColor="@color/ghost_white"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"
@@ -45,7 +45,7 @@
             android:layout_marginTop="@dimen/dimens_16dp"
             android:hint="@string/bank_staff_branch"
 
-            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundColor="@color/ghost_white"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"

@@ -2,25 +2,18 @@ package com.craft.silicon.centemobile.view.ep.model
 
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.widget.TextView
-import androidx.compose.runtime.mutableStateListOf
 import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.*
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockTabGroupLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockTabItemBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.setChildren
 import com.craft.silicon.centemobile.view.ep.controller.LinkedVault
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
-import javax.inject.Inject
 
 
 @EpoxyModelClass

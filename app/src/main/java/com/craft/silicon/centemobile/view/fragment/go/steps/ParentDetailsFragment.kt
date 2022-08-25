@@ -11,13 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.databinding.FragmentParentDetailsBinding
 import com.craft.silicon.centemobile.util.OnAlertDialog
 import com.craft.silicon.centemobile.util.ShowAlertDialog
@@ -33,7 +30,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog,
@@ -89,7 +85,6 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
         setBinding()
         setOnClick()
         setToolbar()
-        setTitle()
         durationWatcher()
         return binding.root.rootView
     }
@@ -129,43 +124,6 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
         })
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
-
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.parent_details)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.parent_details)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
 
     private fun setToolbar() {
         binding.toolbar.setNavigationOnClickListener {
@@ -192,12 +150,12 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
             .navigate(widgetViewModel.navigation().navigateLanding())
     }
 
-     override fun saveState() {
+    override fun saveState() {
         statePersist()
         widgetViewModel.storageDataSource.setParentDetails(stateData)
     }
 
-     override fun statePersist() {
+    override fun statePersist() {
         stateData = ParentDetails(
             fFName = binding.fFInput.text.toString(),
             fMName = if (TextUtils.isEmpty(binding.fMInput.text.toString())) ""
@@ -267,7 +225,7 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
         }, animationDuration.toLong())
     }
 
-     override fun setState() {
+    override fun setState() {
         val sData = widgetViewModel.storageDataSource.parentDetails.value
         if (sData != null) {
             binding.fFInput.setText(sData.fFName)
@@ -298,10 +256,11 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
 
     private fun setPoliticallyExposed() {
         val p = widgetViewModel.storageDataSource.staticData.value
+
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "CSPEP" }
-            pData.sortedBy { a -> a?.description }
-            adapter = AutoTextArrayAdapter(requireContext(), 0, pData)
+            val pData = p.filter { a -> a?.id == "CSPEP" }.toMutableList()
+            val sorted = pData.sortedBy { a -> a?.description }
+            adapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoPolitically.setAdapter(adapter)
             binding.autoPolitically.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, p2, _ ->

@@ -8,7 +8,25 @@ public interface NavigationCallback {
     default void onNavigation(NavigationData data) {
     }
 
-    default NavigationDataSource navigation(){return null;}
+    default NavigationDataSource navigation() {
+        return null;
+    }
 
-    default void  onDestination(){}
+    default void onDestination() {
+    }
+
+    default void toBranch() {
+    }
+
+    default void toLogin() {
+    }
+
+    default void toOnline() {
+    }
+
+    default void toSelf() {
+    }
+
+    default void onTheGo() {
+    }
 }

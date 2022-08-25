@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.dialog.NewAlertDialogFragment">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.craft.silicon.centemobile.view.dialog.MainDialogData" />
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_40dp"
+            app:cardCornerRadius="@dimen/dimens_10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/banner"
+                    android:layout_width="@dimen/dimens_80dp"
+                    android:layout_height="@dimen/dimens_80dp"
+                    android:layout_marginTop="24dp"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/warning_app"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/dimens_5dp"
+                    android:text="@{data.title}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/banner"
+                    tools:ignore="UnusedAttribute"
+                    tools:text="Success" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/subTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:cardBackgroundColor="@color/ghost_white"
+                    app:cardCornerRadius="@dimen/dimens_16dp"
+                    app:cardElevation="@dimen/dimens_0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/dimens_5dp"
+                        android:paddingVertical="@dimen/dimens_10dp"
+                        android:text="@{data.message}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="Your transaction success" />
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimens_54dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:onClick="@{()->callback.onDialog()}"
+                    android:text="@string/close"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:cornerRadius="@dimen/dimens_30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/subTitle"
+                    app:strokeColor="@color/app_blue_dark" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </FrameLayout>
+
+
+</layout>

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
-import com.craft.silicon.centemobile.data.model.ATMTypeConverter
 import com.craft.silicon.centemobile.data.model.CarouselConverter
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
@@ -14,7 +13,6 @@ import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -48,6 +46,7 @@ class CarouselGETWorker @AssistedInject constructor(
             json.put("LAT",latLng?.latLng?.latitude ?: 0.0)
             json.put("COUNTRY", Constants.Data.COUNTRY)
             json.put("BANKID", Constants.Data.BANK_ID)
+            json.put("CATEGORY", "ADDS")
             json.put("HEADER", "GetBankImages")
             jsonObject.put("DynamicForm", json)
             Constants.commonJSON(

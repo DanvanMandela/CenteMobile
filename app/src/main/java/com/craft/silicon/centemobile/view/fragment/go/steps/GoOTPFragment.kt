@@ -9,11 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentGoOTPBinding
@@ -34,8 +33,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
-import kotlin.math.abs
-import kotlin.math.log
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -80,117 +77,20 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         binding = FragmentGoOTPBinding.inflate(inflater, container, false)
         setBinding()
         setToolbar()
-        setTitle()
         setStep()
         setOnClick()
-        val animationDuration = requireContext()
-            .resources.getInteger(R.integer.animation_duration)
-        if (requireActivity().window.decorView.isShown)
-            Handler(Looper.getMainLooper()).postDelayed({
-                createOtp()
-            }, animationDuration.toLong())
+        setOtp()
         return binding.root.rootView
     }
 
-    private fun createOtp() {
-
-        setLoading(true)
-        val userData = widgetViewModel.storageDataSource.addressState.value
-        val phoneData = "${userData?.phone?.key}${userData?.phone?.value}"
-
-        val json = JSONObject()
-        json.put("MOBILENUMBER", phoneData)
-        json.put("EMAILID", userData?.email)
-        json.put("SERVICENAME", "SELFRAO")
-
-        subscribe.add(
-            baseViewModel.createOTP(json, requireContext())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    try {
-                        AppLogger.instance.appLog(
-                            "OTP:CREATE:Response", BaseClass.decryptLatest(
-                                it.response,
-                                baseViewModel.dataSource.deviceData.value!!.device,
-                                true,
-                                baseViewModel.dataSource.deviceData.value!!.run
-                            )
-                        )
-                        if (it.response == StatusEnum.ERROR.type) {
-                            setLoading(false)
-                            AlertDialogFragment.newInstance(
-                                DialogData(
-                                    title = R.string.error,
-                                    subTitle = getString(R.string.something_),
-                                    R.drawable.warning_app
-                                ),
-                                requireActivity().supportFragmentManager
-                            )
-                        } else {
-                            val resData = DynamicAPIResponseConverter().to(
-                                BaseClass.decryptLatest(
-                                    it.response,
-                                    baseViewModel.dataSource.deviceData.value!!.device,
-                                    true,
-                                    baseViewModel.dataSource.deviceData.value!!.run
-                                )
-                            )
-                            AppLogger.instance.appLog(
-                                "OTP:CREATE:Response",
-                                Gson().toJson(resData)
-                            )
-                            if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                setLoading(false)
-                                setTimer()
-                                ShowToast(requireContext(), resData?.message)
-                            } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
-                                workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
-                                    override fun workDone(b: Boolean) {
-                                        setLoading(false)
-                                        if (b) createOtp()
-                                    }
-                                })
-                            } else {
-                                setLoading(false)
-                                AlertDialogFragment.newInstance(
-                                    DialogData(
-                                        title = R.string.error,
-                                        subTitle = resData?.message,
-                                        R.drawable.warning_app
-                                    ),
-                                    requireActivity().supportFragmentManager
-                                )
-                            }
-                        }
-                    } catch (e: Exception) {
-                        setLoading(false)
-                        e.printStackTrace()
-                        AlertDialogFragment.newInstance(
-                            DialogData(
-                                title = R.string.error,
-                                subTitle = getString(R.string.something_),
-                                R.drawable.warning_app
-                            ),
-                            requireActivity().supportFragmentManager
-                        )
-                    }
-                }, {
-                    setLoading(false)
-                    it.printStackTrace()
-                    AlertDialogFragment.newInstance(
-                        DialogData(
-                            title = R.string.error,
-                            subTitle = getString(R.string.something_),
-                            R.drawable.warning_app
-                        ),
-                        requireActivity().supportFragmentManager
-                    )
-                    it.printStackTrace()
-                })
-        )
-
+    private fun setOtp() {
+        val otpL = baseViewModel.dataSource.otp.asLiveData()
+        otpL.observe(viewLifecycleOwner) {
+            if (it != null) setTimer()
+            binding.verificationCodeEditText.setText(it)
+        }
     }
+
 
     private fun validateOtp() {
         setLoading(true)
@@ -468,43 +368,6 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
 //        widgetViewModel.storageDataSource.setOTPState(state)
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
-
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.otp_con)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.otp_con)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
 
     override fun validateFields(): Boolean {
         return if (TextUtils.isEmpty(binding.verificationCodeEditText.text.toString())) {
@@ -568,7 +431,8 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
     }
 
     private fun resendOTP() {
-        createOtp()
+        setTimer()
+        pagerData?.createOtp()
     }
 
 

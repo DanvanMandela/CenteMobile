@@ -35,7 +35,7 @@
             android:id="@+id/userFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/ghost_white">
+            android:background="@color/white">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"

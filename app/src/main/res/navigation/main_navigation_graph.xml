@@ -93,6 +93,16 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_pre_pin"
+        app:destination="@+id/preForgotFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_nav_level_two"
         app:destination="@+id/levelTwoFragment"
         app:enterAnim="@anim/anim_slide_in_right"
@@ -149,6 +159,12 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_alert"
+        app:destination="@+id/newAlertDialogFragment"
+        app:popUpToInclusive="true" />
+
+
+    <action
         android:id="@+id/action_nav_global_otp"
         app:destination="@+id/globalOTPFragment"
         app:popUpToInclusive="true" />
@@ -165,6 +181,16 @@
     <action
         android:id="@+id/action_nav_disclaimer"
         app:destination="@+id/disclaimerFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_display_dialog"
+        app:destination="@+id/displayDialogFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_mini"
+        app:destination="@+id/miniStatementFragment"
         app:popUpToInclusive="true" />
 
     <action
@@ -409,6 +435,31 @@
         android:name="com.craft.silicon.centemobile.view.fragment.transaction.TransactionDetailsFragment"
         android:label="fragment_transaction_details"
         tools:layout="@layout/fragment_transaction_details" />
+    <fragment
+        android:id="@+id/customerProductFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.go.steps.CustomerProductFragment"
+        android:label="fragment_customer_product"
+        tools:layout="@layout/fragment_customer_product" />
+    <fragment
+        android:id="@+id/preForgotFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.PreForgotFragment"
+        android:label="fragment_pre_forgot"
+        tools:layout="@layout/fragment_pre_forgot" />
+    <dialog
+        android:id="@+id/newAlertDialogFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.NewAlertDialogFragment"
+        android:label="fragment_new_alert_dialog"
+        tools:layout="@layout/fragment_new_alert_dialog" />
+    <dialog
+        android:id="@+id/displayDialogFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment"
+        android:label="fragment_display_dialog"
+        tools:layout="@layout/fragment_display_dialog" />
+    <dialog
+        android:id="@+id/miniStatementFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.MiniStatementFragment"
+        android:label="fragment_mini_statement"
+        tools:layout="@layout/fragment_mini_statement" />
 
     <!--    Dialog-->
 </navigation>

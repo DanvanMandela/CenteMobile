@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -36,6 +37,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
@@ -191,10 +193,10 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
             jsonObject.put("BANKACCOUNTID", Objects
                     .requireNonNull(binding.editAccountNumber.getText()).toString());
             encrypted.put("CARDNUMBER", BaseClass
-                    .encrypt(Objects.requireNonNull(binding.editATM.getText())
+                    .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
                             .toString().replace("-", "")));
             encrypted.put("CARDPIN", BaseClass
-                    .encrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
+                    .newEncrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
             subscribe.add(baseViewModel.pinForgotATM(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -228,33 +230,46 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                                     baseViewModel.dataSource.getDeviceData().getValue().getRun()
                             )
                     );
-                    assert resData != null;
-                    if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
-                        if (resData.getNotifications() != null)
-                            if (!resData.getNotifications().isEmpty())
-                                SuccessDialogFragment.showDialog(new DialogData(
-                                        R.string.success,
-                                        resData.getNotifications().get(0).getNotifyText(),
-                                        R.drawable.warning_app
-                                ), getChildFragmentManager(), this);
 
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
-                        showError(resData.getMessage());
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
-                            @Override
-                            public void workDone(boolean b) {
-                                setLoading(false);
-                                if (b) restPin();
-                                else showError(getString(R.string.something_));
-                            }
+                    if (resData != null) {
+                        if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
+                            if (resData.getNotifications() != null)
+                                if (!resData.getNotifications().isEmpty())
+                                    SuccessDialogFragment.showDialog(new DialogData(
+                                            R.string.success,
+                                            resData.getNotifications().get(0).getNotifyText(),
+                                            R.drawable.warning_app
+                                    ), getChildFragmentManager(), this);
 
-                            @Override
-                            public void progress(int p) {
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
+                            showError(resData.getMessage());
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                                @Override
+                                public void workDone(boolean b) {
+                                    setLoading(false);
+                                    if (b) restPin();
+                                    else showError(getString(R.string.something_));
+                                }
 
-                            }
-                        });
-                    }
+                                @Override
+                                public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                                }
+
+                                @Override
+                                public void error(@Nullable String p) {
+
+                                }
+
+                                @Override
+                                public void progress(int p) {
+
+                                }
+                            });
+                        }
+                    } else showError(getString(R.string.something_));
+
                 }
 
             } else {
@@ -278,6 +293,7 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                 R.drawable.warning_app
         ), getChildFragmentManager());
     }
+
 
 
 }

@@ -63,6 +63,8 @@ public class SelfRegistrationFragment extends Fragment implements AppCallbacks, 
         return fragment;
     }
 
+
+
     @Override
     public boolean validateFields() {
         if (TextUtils.isEmpty(binding.editMobile.getText().toString())) {

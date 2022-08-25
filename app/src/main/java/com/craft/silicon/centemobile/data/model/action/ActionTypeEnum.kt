@@ -13,7 +13,8 @@ enum class ActionTypeEnum(val type: String) {
     GET_MENU("MENU"),
     GET_ACTION_CONTROL("ACTIONS"),
     GET_FORM_CONTROL("FORMS"),
-    STATIC_DATA("STATICDATA")
+    STATIC_DATA("STATICDATA"),
+    CARD("CARD"),
 
 
 }

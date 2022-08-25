@@ -30,6 +30,11 @@ data class StaticData(
     @field:Expose
     var userCode: List<StaticDataDetails>,
 
+    @field:SerializedName("AppIdleTimeout")
+    @field:ColumnInfo(name = "AppIdleTimeout")
+    @field:Expose
+    var AppIdleTimeout: String?,
+
     @field:SerializedName("OnlineAccountProduct")
     @field:ColumnInfo(name = "accountProduct")
     @field:Expose

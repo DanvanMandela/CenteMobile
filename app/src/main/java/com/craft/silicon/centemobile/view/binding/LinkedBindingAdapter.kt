@@ -1,6 +1,5 @@
 package com.craft.silicon.centemobile.view.binding
 
-import android.text.InputType
 import android.text.TextUtils
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
@@ -13,7 +12,6 @@ import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
@@ -27,6 +25,7 @@ fun AutoCompleteTextView.linkedToInput(
     modules: Modules?,
     view: TextInputEditText?
 ) {
+
     this.setText("")
     setDefaultValue(formControl, callbacks)
     when (BaseClass.nonCaps(formControl?.controlFormat)) {

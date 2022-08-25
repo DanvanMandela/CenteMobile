@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/mainLay"
             android:layout_width="match_parent"
@@ -89,18 +90,29 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
 
-                    <include
-                        android:id="@+id/customerLay"
-                        layout="@layout/block_customer_type_tab"
+                    <LinearLayout
+                        android:id="@+id/customerLayMain"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_150dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <include
+                            android:id="@+id/customerLay"
+                            layout="@layout/block_customer_type_tab"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimens_150dp"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                    </LinearLayout>
 
 
                     <include
@@ -110,7 +122,7 @@
                         android:layout_height="@dimen/dimens_180dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/customerLay" />
+                        app:layout_constraintTop_toBottomOf="@+id/customerLayMain" />
 
                     <include
                         android:id="@+id/currencyLay"
@@ -135,29 +147,39 @@
                         android:id="@+id/space2"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_25dp"
-                        app:layout_constraintBottom_toTopOf="@+id/materialButton"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/branchLay" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/materialButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginBottom="24dp"
-                        android:fontFamily="@font/poppins_semi_bold"
-                        android:text="@string/proceed"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             </androidx.core.widget.NestedScrollView>
+
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:paddingVertical="@dimen/dimens_16dp"
+                app:contentInsetEnd="@dimen/dimens_0dp"
+                app:contentInsetStart="@dimen/dimens_0dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/materialButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:text="@string/proceed"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </com.google.android.material.bottomappbar.BottomAppBar>
 
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

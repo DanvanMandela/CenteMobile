@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
@@ -15,6 +16,7 @@ import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.repository.account.AccountRepository;
 import com.craft.silicon.centemobile.data.repository.auth.AuthRepository;
 import com.craft.silicon.centemobile.data.repository.calls.AppDataSource;
+import com.craft.silicon.centemobile.data.repository.card.CardRepository;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
 import com.craft.silicon.centemobile.data.repository.payment.PaymentRepository;
 import com.craft.silicon.centemobile.data.repository.validation.ValidationRepository;
@@ -24,6 +26,7 @@ import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
+import com.craft.silicon.centemobile.util.SimData;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
 import com.google.gson.Gson;
 
@@ -46,9 +49,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     private final PaymentRepository paymentRepository;
     private final AuthRepository authRepository;
     private final AccountRepository accountRepository;
+    private final CardRepository cardRepository;
+    public final SimData simData;
 
     public final StorageDataSource dataSource;
     public final NavigationDataSource navigationData;
+
+
+    //public LiveData<String>stateOTP
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
@@ -59,12 +67,17 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                          PaymentRepository paymentRepository,
                          AuthRepository authRepository,
                          AccountRepository accountRepository,
-                         StorageDataSource dataSource, NavigationDataSource navigationData) {
+                         CardRepository cardRepository,
+                         SimData simData,
+                         StorageDataSource dataSource,
+                         NavigationDataSource navigationData) {
         this.repository = repository;
         this.widgetRepository = widgetRepository;
         this.paymentRepository = paymentRepository;
         this.authRepository = authRepository;
         this.accountRepository = accountRepository;
+        this.cardRepository = cardRepository;
+        this.simData = simData;
         this.dataSource = dataSource;
         this.navigationData = navigationData;
     }
@@ -147,6 +160,39 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             return null;
         }
 
+    }
+
+    @Override
+    public Single<DynamicResponse> createNSSFOTP(JSONObject data, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.VALIDATE.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+            data.put("MerchantID", "NSSFCARDVALIDATION");
+            jsonObject.put("Validate", data);
+            String newRequest = jsonObject.toString();
+            new AppLogger().appLog("NSSF:validation", newRequest);
+
+            return validateCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -259,7 +305,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                         action.getMerchantID() : modules.getMerchantID());
                 jsonObject.put("ModuleID", modules.getModuleID());
                 data.put("ModuleID", modules.getModuleID());
-                data.put("PINTYPE", "PIN");
+                // data.put("PINTYPE", "PIN");
                 jsonObject.put("CHANGEPIN", data);
                 jsonObject.put("EncryptedFields", encrypted);
                 String changePinRequest = jsonObject.toString();
@@ -270,7 +316,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                         BaseClass.encryptString(changePinRequest, device, iv)
                 );
                 new AppLogger().logTXT(new Gson().toJson(payloadData), context);
-                return dbCall(payloadData);
+                return authCall(payloadData);
             }
             return null;
 
@@ -399,12 +445,12 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
-                    ActionTypeEnum.PAY_BILL.getType(),
+                    ActionTypeEnum.CARD.getType(),
                     customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
-            data.put("PHONENUMBER", mobile);
+            data.put("MOBILENUMBER", mobile);
             data.put("MerchantID", "PINRESET");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
@@ -412,7 +458,42 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
 
             new AppLogger().appLog("PIN:Forgot", newRequest);
 
-            return payBillCall(new PayloadData(
+            return cardCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> pinResetPre(JSONObject data, JSONObject encrypted, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.PAY_BILL.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+            data.put("MerchantID", "PINRESET");
+            jsonObject.put("EncryptedFields", encrypted);
+            jsonObject.put("PayBill", data);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("PIN:Forgot", newRequest);
+
+            return cardCall(new PayloadData(
                     dataSource.getUniqueID().getValue(),
                     BaseClass.encryptString(newRequest, device, iv)
             ));
@@ -441,14 +522,15 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
 
-            data.put("MerchantID", "VALIDATECARD");
+            data.put("MerchantID", "SELFREG");
+            jsonObject.put("MerchantID", "SELFREG");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
             String newRequest = jsonObject.toString();
 
             new AppLogger().appLog("CARD:VALID", newRequest);
 
-            return payBillCall(new PayloadData(
+            return cardCall(new PayloadData(
                     dataSource.getUniqueID().getValue(),
                     BaseClass.encryptString(newRequest, device, iv)
             ));
@@ -598,7 +680,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     @Override
     public Single<DynamicResponse> dbCall(PayloadData data) {
         String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
                 .getValue().getOther())).getPath();
         return widgetRepository.requestWidget(data, path)
                 .doOnSubscribe(disposable -> loadingUi.onNext(true))
@@ -609,7 +691,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     @Override
     public Single<DynamicResponse> payBillCall(PayloadData data) {
         String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
                 .getValue().getPurchase())).getPath();
 
         return paymentRepository.paymentRequest(
@@ -622,7 +704,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     @Override
     public Single<DynamicResponse> validateCall(PayloadData data) {
         String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
                 .getValue().getValidate())).getPath();
 
         return repository.validationRequest(
@@ -636,7 +718,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     @Override
     public Single<DynamicResponse> accountCall(PayloadData data) {
         String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
                 .getValue().getAccount())).getPath();
 
         return accountRepository.accountRequestT(
@@ -649,10 +731,23 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     @Override
     public Single<DynamicResponse> authCall(PayloadData data) {
         String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.UAT : Objects.requireNonNull(dataSource.getDeviceData()
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
                 .getValue().getAuth())).getPath();
 
         return authRepository.authRequest(
+                        data, path).doOnSubscribe(disposable -> loadingUi.onNext(true))
+                .doOnSuccess(disposable -> loadingUi.onNext(false))
+                .doOnError(disposable -> loadingUi.onNext(false));
+    }
+
+    @Override
+    public Single<DynamicResponse> cardCall(PayloadData data) {
+        String path = new SpiltURL(dataSource.getDeviceData().getValue() == null ?
+                Constants.BaseUrl.URL : Objects.requireNonNull(dataSource.getDeviceData()
+                .getValue().getCard())).getPath();
+
+        return cardRepository.cardRequest(
+                        dataSource.getDeviceData().getValue().getToken(),
                         data, path).doOnSubscribe(disposable -> loadingUi.onNext(true))
                 .doOnSuccess(disposable -> loadingUi.onNext(false))
                 .doOnError(disposable -> loadingUi.onNext(false));

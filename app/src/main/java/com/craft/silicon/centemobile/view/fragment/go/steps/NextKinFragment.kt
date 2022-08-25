@@ -5,17 +5,16 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.room.TypeConverter
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.ToolbarEnum
 import com.craft.silicon.centemobile.databinding.FragmentNextKinBinding
 import com.craft.silicon.centemobile.util.OnAlertDialog
 import com.craft.silicon.centemobile.util.ShowAlertDialog
@@ -30,7 +29,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,10 +48,12 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private lateinit var stateData: NextKinData
 
     private val widgetViewModel: WidgetViewModel by viewModels()
+    private var customerKey = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 //        activity?.onBackPressedDispatcher?.addCallback(this,
 //            object : OnBackPressedCallback(true) {
 //                override fun handleOnBackPressed() {
@@ -82,14 +82,14 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             .navigate(widgetViewModel.navigation().navigateLanding())
     }
 
-     override fun saveState() {
+    override fun saveState() {
         statePersist()
         widgetViewModel.storageDataSource.setNKData(stateData)
     }
 
     override fun statePersist() {
         stateData = NextKinData(
-            account = binding.accountInput.text.toString(),
+            account = if (customerKey == 1) binding.accountInput.text.toString() else "",
             firstName = binding.nKFNameInput.text.toString(),
             middleName = binding.nKMNameInput.text.toString(),
             lastName = binding.nKLNameInput.text.toString(),
@@ -115,8 +115,21 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         setOnClick()
         setToolbar()
         setBinding()
-        setTitle()
+
+        setAccountField()
         return binding.root.rootView
+    }
+
+    private fun setAccountField() {
+        val customerProduct = widgetViewModel.storageDataSource.customerProduct.asLiveData()
+        customerProduct.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it.type?.key == 0) {
+                    customerKey = it.type.key!!
+                    binding.accountLay.visibility = GONE
+                }
+            }
+        }
     }
 
     private fun setToolbar() {
@@ -130,48 +143,10 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         }
     }
 
-    private fun setTitle() {
-        var state = ToolbarEnum.EXPANDED
-
-        binding.collapsedLay.apply {
-            setCollapsedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_medium
-                )
-            )
-            setExpandedTitleTypeface(
-                ResourcesCompat.getFont(
-                    requireContext(),
-                    R.font.poppins_bold
-                )
-            )
-        }
-
-        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (verticalOffset == 0) {
-                if (state !== ToolbarEnum.EXPANDED) {
-                    state =
-                        ToolbarEnum.EXPANDED
-                    binding.collapsedLay.title = getString(R.string.kin_details)
-
-                }
-            } else if (abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                if (state !== ToolbarEnum.COLLAPSED) {
-                    val title = getString(R.string.kin_details)
-                    title.replace("\n", " ")
-                    state =
-                        ToolbarEnum.COLLAPSED
-                    binding.collapsedLay.title = title
-                }
-            }
-        }
-    }
-
     private fun stopShimmer() {
         binding.mainLay.visibility = VISIBLE
         binding.shimmerContainer.stopShimmer()
-        binding.shimmerContainer.visibility = View.GONE
+        binding.shimmerContainer.visibility = GONE
     }
 
     override fun setBinding() {
@@ -209,7 +184,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     override fun validateFields(): Boolean {
-        return if (TextUtils.isEmpty(binding.accountInput.text.toString())) {
+        return if (TextUtils.isEmpty(binding.accountInput.text.toString()) && customerKey == 1) {
             ShowToast(requireContext(), getString(R.string.cente_account_required), true)
             false
         } else if (TextUtils.isEmpty(binding.nKFNameInput.text.toString())) {

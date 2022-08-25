@@ -29,26 +29,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
                 android:contentDescription="@string/logo"
                 android:src="@drawable/company_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_bold"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="@color/dar_color_one"
+                app:layout_constraintBottom_toTopOf="@+id/openAccount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
                 tools:targetApi="o" />
 
 
@@ -63,9 +62,9 @@
                 android:text="@string/open_account"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="@color/dar_color_two"
+                app:layout_constraintBottom_toTopOf="@+id/digitally"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
                 tools:targetApi="o" />
 
 
@@ -79,9 +78,9 @@
                 android:text="@string/digitally"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_two"
+                app:layout_constraintBottom_toTopOf="@+id/kuSpeed"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/openAccount"
                 tools:targetApi="o" />
 
             <TextView
@@ -89,25 +88,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/dimens_24dp"
-                android:layout_marginTop="@dimen/dimens_10dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_semi_bold"
                 android:text="@string/open_ku"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/app_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/space3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/digitally"
                 tools:targetApi="o" />
 
 
             <Space
+                android:id="@+id/space3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_20dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/materialButton"
-                app:layout_constraintTop_toBottomOf="@+id/kuSpeed" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/materialButton"
@@ -115,13 +112,12 @@
                 android:layout_height="@dimen/dimens_70dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginBottom="24dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/lets_get"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/space3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

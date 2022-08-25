@@ -2,6 +2,7 @@ package com.craft.silicon.centemobile.data.source.remote.ocr;
 
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
+import com.craft.silicon.centemobile.data.source.remote.AuthorizationInterceptor;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -25,11 +26,10 @@ public class OCRRemoteDataModule {
     public OCRApiService provideApiService(Gson gson) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(Constants.BaseUrl.OCR)
+                .baseUrl(Constants.BaseUrl.IMAGE_PROCESSING_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)
@@ -39,9 +39,10 @@ public class OCRRemoteDataModule {
                             return chain.proceed(chain.request()
                                     .newBuilder().url(url)
                                     .build());
-                        }).addInterceptor(httpLoggingInterceptor).build()
+                        }).addInterceptor(httpLoggingInterceptor)
+                        .addInterceptor(new AuthorizationInterceptor("APIKey",
+                                Constants.Data.API_KEY)).build()
                 ).build();
-
         return retrofit.create(OCRApiService.class);
     }
 }

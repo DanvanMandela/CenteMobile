@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,6 +38,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment;
+import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
@@ -107,15 +109,30 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     }
 
     @Override
+    public void resendOTP() {
+        validateCard();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentCardDetailsBinding.inflate(inflater, container, false);
         setBinding();
+        setToolbar();
         setOnClick();
         setViewModel();
         setTextWatchers();
+        setOTP();
         return binding.getRoot().getRootView();
+    }
+
+    private void setOTP() {
+        baseViewModel.dataSource.setOtp("");
+    }
+
+    private void setToolbar() {
+        binding.toolbar.setNavigationOnClickListener(view -> requireActivity().onBackPressed());
     }
 
     private void setTextWatchers() {
@@ -154,7 +171,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         JSONObject encrypted = new JSONObject();
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
-            jsonObject.put("BANKACCOUNTID", mobileNumber.getValue());
+            jsonObject.put("BANKACCOUNTID", Objects.requireNonNull(binding.editAccountNumber.getText()).toString());
             disposable.add(baseViewModel.customerExist(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -165,6 +182,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         }
 
     }
+
 
     private void setOnCustomerSuccess(DynamicResponse response) {
         try {
@@ -209,6 +227,16 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                             }
 
                             @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
+                            }
+
+                            @Override
                             public void progress(int p) {
 
                             }
@@ -230,7 +258,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
-            jsonObject.put("SERVICENAME", "SELFREGISTRATION");
+            jsonObject.put("SERVICENAME", "SELFREG");
             disposable.add(baseViewModel.createOTP(jsonObject, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -276,6 +304,17 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                             public void workDone(boolean b) {
                                 setLoading(false);
                                 if (b) generateOTP();
+                            }
+
+
+                            @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
                             }
 
                             @Override
@@ -372,19 +411,24 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         validateOTP(string);
     }
 
+
     private void validateOTP(String string) {
-        setLoading(true);
         JSONObject jsonObject = new JSONObject();
         JSONObject encrypted = new JSONObject();
         try {
+            jsonObject.put("BANKACCOUNTID", Objects
+                    .requireNonNull(binding.editAccountNumber.getText()).toString());
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
+            encrypted.put("CARDNUMBER", BaseClass
+                    .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
+                            .toString().replace("-", "")));
+            encrypted.put("CARDPIN", BaseClass
+                    .newEncrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
             jsonObject.put("OTPKEY", string);
-            jsonObject.put("SERVICENAME", "SELFREGISTRATION");
-            disposable.add(baseViewModel.validateOTP(jsonObject, encrypted, requireContext())
+            disposable.add(baseViewModel.validateCard(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> setOnValidOTPSuccess(v, string),
-                            Throwable::printStackTrace));
+                    .subscribe(this::setOnValidateCardSuccess, Throwable::printStackTrace));
 
         } catch (JSONException e) {
             new ShowToast(requireContext(), e.getLocalizedMessage(), true);
@@ -430,6 +474,16 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                             }
 
                             @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
+                            }
+
+                            @Override
                             public void progress(int p) {
 
                             }
@@ -446,7 +500,9 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         }
     }
 
+
     private void validateCard() {
+        setLoading(true);
         JSONObject jsonObject = new JSONObject();
         JSONObject encrypted = new JSONObject();
         try {
@@ -454,10 +510,10 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                     .requireNonNull(binding.editAccountNumber.getText()).toString());
             jsonObject.put("PHONENUMBER", mobileNumber.getValue());
             encrypted.put("CARDNUMBER", BaseClass
-                    .encrypt(Objects.requireNonNull(binding.editATM.getText())
+                    .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
                             .toString().replace("-", "")));
             encrypted.put("CARDPIN", BaseClass
-                    .encrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
+                    .newEncrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
             disposable.add(baseViewModel.validateCard(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -492,25 +548,51 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                                     baseViewModel.dataSource.getDeviceData().getValue().getRun()
                             )
                     );
-                    assert resData != null;
-                    if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
-                        saveUserData();
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
-                        showError(resData.getMessage());
+                    if (resData != null) {
+                        if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
+
+                            setLoading(false);
+                            SuccessDialogFragment.showDialog(new DialogData(
+                                    R.string.success,
+                                    resData.getMessage(),
+                                    R.drawable.success
+                            ), this.getChildFragmentManager(), this);
+
+                            // saveUserData();
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
+                            showError(resData.getMessage());
+                            setLoading(false);
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                                @Override
+                                public void workDone(boolean b) {
+                                    setLoading(false);
+                                    if (b) validateCard();
+                                }
+
+                                @Override
+                                public void error(@Nullable String p) {
+
+                                }
+
+                                @Override
+                                public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                                }
+
+                                @Override
+                                public void progress(int p) {
+
+                                }
+                            });
+                        } else {
+                            setLoading(false);
+                            showError(resData.getMessage());
+                        }
+
+                    } else {
                         setLoading(false);
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
-                            @Override
-                            public void workDone(boolean b) {
-                                setLoading(false);
-                                if (b) validateCard();
-                            }
-
-                            @Override
-                            public void progress(int p) {
-
-                            }
-                        });
+                        showError(getString(R.string.something_));
                     }
                 }
 
@@ -522,6 +604,11 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
             showError(getString(R.string.something_));
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onOTP(String s) {
+        validateCard();
     }
 
     private void saveUserData() {
@@ -584,6 +671,16 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                             }
 
                             @Override
+                            public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                            }
+
+                            @Override
+                            public void error(@Nullable String p) {
+
+                            }
+
+                            @Override
                             public void progress(int p) {
 
                             }
@@ -603,8 +700,6 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
 
     @Override
     public void navigateUp() {
-        ((MainActivity) requireActivity())
-                .provideNavigationGraph()
-                .navigate(widgetViewModel.navigation().navigateLanding());
+        requireActivity().onBackPressed();
     }
 }

@@ -18,7 +18,9 @@
     <ConstraintSet android:id="@+id/userState">
         <Constraint
 
-            android:id="@id/userFrame">
+            android:id="@id/userFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <CustomAttribute
                 motion:attributeName="alpha"
                 motion:customFloatValue="1.0" />

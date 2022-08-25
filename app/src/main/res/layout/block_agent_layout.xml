@@ -19,7 +19,7 @@
 
             app:boxBackgroundColor="@color/white"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:hintTextColor="@color/dar_color_two"
+            app:hintTextColor="@color/ghost_white"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"
             app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
 

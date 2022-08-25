@@ -55,6 +55,10 @@ import com.craft.silicon.centemobile.view.ep.data.AccountData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
 import com.craft.silicon.centemobile.view.ep.data.GroupForm;
 import com.craft.silicon.centemobile.view.ep.data.GroupModule;
+import com.craft.silicon.centemobile.view.ep.data.MiniList;
+import com.craft.silicon.centemobile.view.ep.data.MiniStatement;
+import com.craft.silicon.centemobile.view.ep.data.MiniTypeConverter;
+import com.craft.silicon.centemobile.view.fragment.MiniStatementFragment;
 import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment;
 import com.craft.silicon.centemobile.view.model.AccountViewModel;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
@@ -577,12 +581,17 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
                 assert response != null;
                 if (nonCaps(response.getStatus()).equals(nonCaps(StatusEnum.SUCCESS.getType()))) {
-                    DisplayDialogFragment.showDialog(
-                            getParentFragmentManager(),
-                            response.getAccountStatement(),
-                            null,
-                            null
-                    );
+                    List<MiniStatement> dataList =
+                            new MiniTypeConverter().from(new Gson()
+                                    .toJson(response.getAccountStatement()));
+                    MiniStatementFragment.setData(new MiniList(dataList));
+                    BindingAdapterKt.navigate(this, widgetViewModel.navigation().navigateToMini());
+//                    DisplayDialogFragment.showDialog(
+//                            getParentFragmentManager(),
+//                            response.getAccountStatement(),
+//                            null,
+//                            null
+//                    );
                 } else if (Objects.equals(response.getStatus(), StatusEnum.TOKEN.getType())) {
                     setLoading(false);
                     InfoFragment.showDialog(this.getChildFragmentManager());

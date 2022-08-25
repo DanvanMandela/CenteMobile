@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -17,15 +15,17 @@ import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
 import com.craft.silicon.centemobile.data.source.pref.EncryptedData
 import com.craft.silicon.centemobile.databinding.FragmentBiometricBinding
-import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
+import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
+import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.crypto.Cipher
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,16 +39,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInterface {
+class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInterface,
+    BiometricAuthListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var cryptographyManager: CryptoManager
     private lateinit var secretKeyName: String
-    private lateinit var ciphertext: ByteArray
-    private lateinit var initializationVector: ByteArray
-    private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var binding: FragmentBiometricBinding
     private val widgetViewModel: WidgetViewModel by viewModels()
     private var state = false
@@ -72,7 +69,13 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
         setViewModel()
         setOnClick()
         setCrypto()
+
+        setBioMetric()
         return binding.root.rootView
+    }
+
+    private fun setBioMetric() {
+
     }
 
     override fun setViewModel() {
@@ -94,45 +97,12 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
     private fun setCrypto() {
         cryptographyManager = CryptoManager()
         secretKeyName = getString(R.string.secret_key_name)
-        biometricPrompt = createBiometricPrompt()
-        promptInfo = createPromptInfo()
     }
 
     override fun setOnClick() {
         binding.enableBio.setOnClickListener(this)
     }
 
-    private fun createBiometricPrompt(): BiometricPrompt {
-        val executor = ContextCompat.getMainExecutor(requireContext())
-
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "$errorCode :: $errString"
-                )
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "Authentication failed for an unknown reason"
-                )
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                AppLogger.instance.appLog(
-                    BiometricFragment::class.java.simpleName,
-                    "Authentication success"
-                )
-                processData(result.cryptoObject)
-            }
-        }
-        return BiometricPrompt(this, executor, callback)
-    }
 
     private fun processData(cryptoObject: BiometricPrompt.CryptoObject?) {
         if (!state) {
@@ -176,48 +146,6 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
             ),
             requireActivity().supportFragmentManager, this
         )
-    }
-
-
-    private fun authenticateTo() {
-        when (BiometricManager.from(requireContext().applicationContext)
-            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                if (state) {
-                    val data = widgetViewModel.storageDataSource.iv.value
-                    val cipher = cryptographyManager.getInitializedCipherForDecryption(
-                        secretKeyName,
-                        data!!.iv
-                    )
-                    biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
-                } else {
-                    val cipher =
-                        cryptographyManager.getInitializedCipherForEncryption(secretKeyName)
-                    biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
-                }
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                //hw  unavailable
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                //no hw found
-            }
-        }
-
-    }
-
-    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-        val info = if (state) getString(R.string.disable_fingerprint) else
-            getString(R.string.enable_fingerprint)
-        return BiometricPrompt.PromptInfo.Builder()
-            .setTitle("${getString(R.string.app_name)} ${getString(R.string.auth_)}")
-            .setDescription(info)
-            .setConfirmationRequired(false)
-            .setNegativeButtonText(getString(R.string.cancel))
-            .build()
     }
 
 
@@ -273,14 +201,24 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
 
     override fun onPin(pin: String) {
         this.pin = pin
-        authenticateTo()
+//        authenticateTo()
+        if (state) {
+            val data = widgetViewModel.storageDataSource.iv.value
+            val cipher = cryptographyManager.getInitializedCipherForDecryption(
+                secretKeyName,
+                data!!.iv
+            )
+            showBiometricOption(cipher)
+        } else {
+            val cipher =
+                cryptographyManager.getInitializedCipherForEncryption(secretKeyName)
+            showBiometricOption(cipher)
+        }
     }
 
     override fun onClick(p: View?) {
         if (p == binding.enableBio) {
-            if ((requireActivity() as MainActivity)
-                    .isBiometric()
-            ) {
+            if ((BiometricUtil.isBiometricReady(requireContext()))) {
                 EnableBiometricFragment.showDialog(
                     this,
                     this.childFragmentManager
@@ -290,8 +228,27 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
                 } else {
                     binding.toggleGroup.uncheck(R.id.enableBio)
                 }
-            } else ShowToast(requireContext(), getString(R.string.device_no_biometric), true)
+            } else ShowToast(requireContext(), getString(R.string.device_no_biometric_enable), true)
         }
+    }
+
+    override fun onBiometricAuthenticationSuccess(result: BiometricPrompt.AuthenticationResult) {
+        processData(result.cryptoObject)
+    }
+
+    override fun onBiometricAuthenticationError(errorCode: Int, errorMessage: String) {
+        ShowToast(requireContext(), errorMessage)
+    }
+
+    private fun showBiometricOption(cipher: Cipher) {
+        BiometricUtil.showBiometricPrompt(
+            "${getString(R.string.app_name)} ${getString(R.string.auth_)}",
+            getString(R.string.use_password),
+            getString(R.string.auth_finger),
+            requireActivity() as MainActivity,
+            this,
+            BiometricPrompt.CryptoObject(cipher)
+        )
     }
 
 

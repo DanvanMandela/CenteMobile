@@ -11,13 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.room.TypeConverter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
-import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentOnTheGoBinding
 import com.craft.silicon.centemobile.util.*
@@ -61,7 +59,9 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
     private lateinit var binding: FragmentOnTheGoBinding
     private var adapter: ONTHGFragmentAdapter? = null
     private val widgetViewModel: WidgetViewModel by viewModels()
-
+    private val baseViewModel: BaseViewModel by viewModels()
+    private val subscribe = CompositeDisposable()
+    private val workViewModel: WorkerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +95,113 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
                     this
                 )
         }
+
+    }
+
+    private fun setLoading(it: Boolean) {
+        if (it) {
+            LoadingFragment.show(requireActivity().supportFragmentManager)
+        } else {
+            LoadingFragment.dismiss(requireActivity().supportFragmentManager)
+        }
+    }
+
+    override fun createOtp() {
+        (requireActivity() as MainActivity).initSMSBroadCast()
+        setLoading(true)
+        val userData = widgetViewModel.storageDataSource.addressState.value
+        val phoneData = "${userData?.phone?.key}${userData?.phone?.value}"
+
+        val json = JSONObject()
+        json.put("MOBILENUMBER", phoneData)
+        json.put("EMAILID", userData?.email)
+        json.put("SERVICENAME", "SELFRAO")
+
+        subscribe.add(
+            baseViewModel.createOTP(json, requireContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    try {
+                        AppLogger.instance.appLog(
+                            "OTP:CREATE:Response", BaseClass.decryptLatest(
+                                it.response,
+                                baseViewModel.dataSource.deviceData.value!!.device,
+                                true,
+                                baseViewModel.dataSource.deviceData.value!!.run
+                            )
+                        )
+                        if (it.response == StatusEnum.ERROR.type) {
+                            setLoading(false)
+                            AlertDialogFragment.newInstance(
+                                DialogData(
+                                    title = R.string.error,
+                                    subTitle = getString(R.string.something_),
+                                    R.drawable.warning_app
+                                ),
+                                requireActivity().supportFragmentManager
+                            )
+                        } else {
+                            val resData = DynamicAPIResponseConverter().to(
+                                BaseClass.decryptLatest(
+                                    it.response,
+                                    baseViewModel.dataSource.deviceData.value!!.device,
+                                    true,
+                                    baseViewModel.dataSource.deviceData.value!!.run
+                                )
+                            )
+                            AppLogger.instance.appLog(
+                                "OTP:CREATE:Response",
+                                Gson().toJson(resData)
+                            )
+                            if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                setLoading(false)
+                                ShowToast(requireContext(), resData?.message)
+                            } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
+                                workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
+                                    override fun workDone(b: Boolean) {
+                                        setLoading(false)
+                                        if (b) createOtp()
+                                    }
+                                })
+                            } else {
+                                setLoading(false)
+                                AlertDialogFragment.newInstance(
+                                    DialogData(
+                                        title = R.string.error,
+                                        subTitle = resData?.message,
+                                        R.drawable.warning_app
+                                    ),
+                                    requireActivity().supportFragmentManager
+                                )
+                            }
+                        }
+                    } catch (e: Exception) {
+                        setLoading(false)
+                        e.printStackTrace()
+                        AlertDialogFragment.newInstance(
+                            DialogData(
+                                title = R.string.error,
+                                subTitle = getString(R.string.something_),
+                                R.drawable.warning_app
+                            ),
+                            requireActivity().supportFragmentManager
+                        )
+                    }
+                }, {
+                    setLoading(false)
+                    it.printStackTrace()
+                    AlertDialogFragment.newInstance(
+                        DialogData(
+                            title = R.string.error,
+                            subTitle = getString(R.string.something_),
+                            R.drawable.warning_app
+                        ),
+                        requireActivity().supportFragmentManager
+                    )
+                    it.printStackTrace()
+                })
+        )
 
     }
 
@@ -163,16 +270,14 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
             )
         binding.pager.adapter = adapter
         binding.pager.isUserInputEnabled = false
-//        binding.pager.setPageTransformer { page, position ->
-//
-////            val slide: Animation =
-////                AnimationUtils.loadAnimation(requireContext(), R.anim.anim_slide_out_right)
-////            page.animation = slide
-//        }
     }
 
 
     override fun onNext(pos: Int) {
+        if (pos == 11) {
+            createOtp()
+
+        }
         moveViewPager(pos)
     }
 
@@ -298,8 +403,16 @@ interface PagerData {
         throw Exception("Not implemented")
     }
 
+
+    fun otpPager(otpStr: String?, mobileStr: String?) {}
+
+
     fun onService(data: OtherService, boolean: Boolean) {
         throw Exception("Not implemented")
+    }
+
+    fun createOtp() {
+
     }
 }
 

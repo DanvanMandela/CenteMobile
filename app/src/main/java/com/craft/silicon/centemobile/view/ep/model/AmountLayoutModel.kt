@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.ep.model
 
+import android.text.InputType
 import android.text.TextUtils
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
@@ -42,6 +43,8 @@ open class AmountLayoutModel : DataBindingEpoxyModel() {
         binding.data = form
         binding.callback = callbacks
         binding.storage = storage
+
+
         binding.child.addTextChangedListener(
             NumberTextWatcherForThousand(
                 binding.child,
@@ -74,6 +77,7 @@ fun TextInputEditText.setAmountInputLayout(
     this.setText("")
     setDefaultValue(formControl, callbacks)
     callbacks?.onServerValue(formControl, this)
+    this.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     if (!TextUtils.isEmpty(value)) {
         this.setText(value)
         callbacks?.userInput(

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -42,9 +43,9 @@ import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.util.image.convert
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.*
-import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.InfoFragment
+import com.craft.silicon.centemobile.view.dialog.MainDialogData
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
 import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
@@ -52,11 +53,8 @@ import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.InsuranceAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.LoanAdapterItem
 import com.craft.silicon.centemobile.view.ep.controller.*
-import com.craft.silicon.centemobile.view.ep.data.DynamicData
-import com.craft.silicon.centemobile.view.ep.data.GroupForm
-import com.craft.silicon.centemobile.view.ep.data.GroupModule
+import com.craft.silicon.centemobile.view.ep.data.*
 import com.craft.silicon.centemobile.view.ep.data.Nothing
-import com.craft.silicon.centemobile.view.ep.data.ReceiptList
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment
 import com.craft.silicon.centemobile.view.fragment.dynamic.RecentFragment
@@ -117,6 +115,13 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 Gson().toJson(data)
             )
         }
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                isEnabled = false
+                cleanLevel()
+                requireActivity().onBackPressed()
+            }
+        })
     }
 
     override fun onCreateView(
@@ -126,8 +131,32 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         // Inflate the layout for this fragment
         binding = FragmentLevelTwoBinding.inflate(inflater, container, false)
         setBinding()
+        setDynamicInputs()
         return binding.root.rootView
     }
+
+    private fun setDynamicInputs() {
+        AppLogger.instance.appLog(
+            "${LevelTwoFragment::class.java.simpleName}:Dynamic:Inputs", Gson().toJson(
+                inputData
+            )
+        )
+        if (inputData != null)
+            if (inputData!!.isNotEmpty()) {
+                for (filter in inputData!!) {
+                    inputList.add(
+                        InputData(
+                            name = filter.name,
+                            key = filter.key,
+                            value = filter.value,
+                            encrypted = filter.encrypted,
+                            mandatory = filter.mandatory
+                        )
+                    )
+                }
+            }
+    }
+
 
     override fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
@@ -156,6 +185,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
     }
 
     override fun navigateUp() {
+        inputData?.clear()
         requireActivity().onBackPressed()
     }
 
@@ -189,23 +219,52 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
     }
 
     override fun onServerValue(formControl: FormControl?, view: TextInputEditText?) {
+        AppLogger.instance.appLog(
+            "${LevelTwoFragment::class.java.simpleName} ServerForm",
+            Gson().toJson(formControl)
+        )
+        AppLogger.instance.appLog(
+            "${LevelTwoFragment::class.java.simpleName} Form",
+            Gson().toJson(response)
+        )
         try {
-            if (response != null)
-                response?.formField!!.forEach {
-                    if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
-                        view?.setText(it.controlValue)
-                        userInput(
-                            InputData(
-                                name = formControl?.controlText,
-                                key = formControl?.serviceParamID,
-                                value = it.controlValue,
-                                encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+            if (response != null) {
+
+                if (!response?.resultsData.isNullOrEmpty())
+                    response?.resultsData!!.forEach {
+                        if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
+                            view?.setText(it.controlValue)
+                            userInput(
+                                InputData(
+                                    name = formControl?.controlText,
+                                    key = formControl?.serviceParamID,
+                                    value = it.controlValue,
+                                    encrypted = formControl?.isEncrypted!!,
+                                    mandatory = formControl.isMandatory
+                                )
                             )
-                        )
+                        }
+
+                    }
+                if (!response?.formField.isNullOrEmpty())
+                    response?.formField!!.forEach {
+                        if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
+                            view?.setText(it.controlValue)
+                            userInput(
+                                InputData(
+                                    name = formControl?.controlText,
+                                    key = formControl?.serviceParamID,
+                                    value = it.controlValue,
+                                    encrypted = formControl?.isEncrypted!!,
+                                    mandatory = formControl.isMandatory
+                                )
+                            )
+                        }
+
                     }
 
-                }
+            }
+
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -325,6 +384,19 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
     override fun onDestroy() {
         super.onDestroy()
         baseViewModel.dataSource.deleteOtp()
+    }
+
+
+    override fun cleanLevel() {
+        if (!inputData.isNullOrEmpty()) {
+            AppLogger.instance.appLog(
+                "${LevelTwoFragment::class.java.simpleName}:Cleaned", Gson().toJson(
+                    inputData
+                )
+            )
+            inputData?.clear()
+        }
+
     }
 
     override fun userInput(inputData: InputData?) {
@@ -526,12 +598,23 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                             } else if (BaseClass.nonCaps(resData.formID)
                                                 == BaseClass.nonCaps("STATEMENT")
                                             ) {
-                                                DisplayDialogFragment.showDialog(
-                                                    manager = this.parentFragmentManager,
-                                                    data = resData.accountStatement,
-                                                    modules = modules,
-                                                    controller = formControl
+
+                                                DisplayDialogFragment.setData(
+                                                    data = resData.accountStatement
                                                 )
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
+
+
                                             } else if (BaseClass.nonCaps(resData.formID)
                                                 == BaseClass.nonCaps("RELIGION")
                                             ) {
@@ -543,12 +626,22 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                         baseViewModel.dataSource.deviceData.value!!.run
                                                     )
                                                 )
-                                                DisplayDialogFragment.showDialog(
-                                                    manager = this.parentFragmentManager,
-                                                    data = mData?.data,
-                                                    modules = modules,
-                                                    controller = formControl
+
+                                                DisplayDialogFragment.setData(
+                                                    data = mData?.data
                                                 )
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
+
                                             } else {
                                                 ShowToast(requireContext(), resData.message)
                                                 setOnNextModule(
@@ -596,28 +689,23 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         navigate(widgetViewModel.navigation().navigateToGlobalOtp())
                                     }, 200)
                                 } else {
-                                    AlertDialogFragment.newInstance(
-                                        DialogData(
-                                            title = R.string.error,
-                                            subTitle = resData?.message!!,
-                                            R.drawable.warning_app
-                                        ),
-                                        requireActivity().supportFragmentManager
+                                    showError(
+                                        MainDialogData(
+                                            title = getString(R.string.error),
+                                            message = resData?.message,
+                                        )
                                     )
                                 }
                             }
 
                         } catch (e: Exception) {
-                            AlertDialogFragment.newInstance(
-                                DialogData(
-                                    title = R.string.error,
-                                    subTitle = getString(R.string.something_),
-                                    R.drawable.warning_app
-                                ),
-                                requireActivity().supportFragmentManager
+                            showError(
+                                MainDialogData(
+                                    title = getString(R.string.error),
+                                    message = getString(R.string.something_),
+                                )
                             )
                         }
-
                     }, {
                         it.printStackTrace()
                     })
@@ -639,6 +727,15 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         ) else binding.motionContainer.setTransition(
             R.id.userState, R.id.loadingState
         )
+    }
+
+    private fun showError(data: MainDialogData) {
+        navigate(
+            baseViewModel.navigationData.navigateToAlertDialog(
+                data
+            )
+        )
+
     }
 
     private fun setOnNextModule(
@@ -802,8 +899,9 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
 
     override fun onForm(formControl: FormControl?, modules: Modules?) {
-
-        requireActivity().hideSoftKeyboard(binding.root)
+        lifecycleScope.launch {
+            requireActivity().hideSoftKeyboard(binding.root)
+        }
         if (BaseClass.nonCaps(formControl?.controlFormat)
             == BaseClass.nonCaps(ControlFormatEnum.END.type)
         ) (requireActivity().onBackPressed())
@@ -833,6 +931,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
     }
 
     override fun onModule(modules: Modules?) {
+        inputData?.clear()
         if (modules?.available!!)
             if (modules.moduleURLTwo != null) {
                 if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
@@ -916,7 +1015,12 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             )
                         )
                         if (it.response == StatusEnum.ERROR.type) {
-                            setError(getString(R.string.something_))
+                            showError(
+                                MainDialogData(
+                                    title = getString(R.string.error),
+                                    message = getString(R.string.something_)
+                                )
+                            )
                         } else
                             if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
@@ -954,33 +1058,48 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                     ) {
                                         InfoFragment.showDialog(this.childFragmentManager)
                                     } else {
-                                        setError(moduleData?.message)
+                                        showError(
+                                            MainDialogData(
+                                                title = getString(R.string.error),
+                                                message = getString(R.string.something_)
+                                            )
+                                        )
                                     }
                                 } catch (e: Exception) {
                                     controller.setData(Nothing())
-                                    setError(getString(R.string.something_))
+                                    showError(
+                                        MainDialogData(
+                                            title = getString(R.string.error),
+                                            message = getString(R.string.something_)
+                                        )
+                                    )
                                     e.printStackTrace()
                                 }
                             }
                     } catch (e: Exception) {
                         controller.setData(Nothing())
-                        setError(getString(R.string.something_))
+                        showError(
+                            MainDialogData(
+                                title = getString(R.string.error),
+                                message = getString(R.string.something_)
+                            )
+                        )
                         e.printStackTrace()
                     }
                 }, { it.printStackTrace() })
         )
     }
 
-    private fun setError(message: String?) {
-        AlertDialogFragment.newInstance(
-            DialogData(
-                title = R.string.error,
-                subTitle = message,
-                R.drawable.warning_app
-            ),
-            requireActivity().supportFragmentManager
-        )
-    }
+//    private fun setError(message: String?) {
+//        AlertDialogFragment.newInstance(
+//            DialogData(
+//                title = R.string.error,
+//                subTitle = message,
+//                R.drawable.warning_app
+//            ),
+//            requireActivity().supportFragmentManager
+//        )
+//    }
 
     override fun onLabelList(
         view: EpoxyRecyclerView?,
@@ -1127,7 +1246,12 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             )
                         )
                         if (it.response == StatusEnum.ERROR.type) {
-                            setError(getString(R.string.something_))
+                            showError(
+                                MainDialogData(
+                                    title = getString(R.string.error),
+                                    message = getString(R.string.something_)
+                                )
+                            )
                         } else
                             if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
@@ -1163,17 +1287,32 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         InfoFragment.showDialog(this.childFragmentManager)
 
                                     } else {
-                                        setError(moduleData?.message)
+                                        showError(
+                                            MainDialogData(
+                                                title = getString(R.string.error),
+                                                message = moduleData?.message
+                                            )
+                                        )
                                     }
                                 } catch (e: Exception) {
                                     layout.setData(Nothing())
-                                    setError(getString(R.string.something_))
+                                    showError(
+                                        MainDialogData(
+                                            title = getString(R.string.error),
+                                            message = getString(R.string.something_)
+                                        )
+                                    )
                                     e.printStackTrace()
                                 }
                             }
                     } catch (e: Exception) {
                         layout.setData(Nothing())
-                        setError(getString(R.string.something_))
+                        showError(
+                            MainDialogData(
+                                title = getString(R.string.error),
+                                message = getString(R.string.something_)
+                            )
+                        )
                         e.printStackTrace()
                     }
                 }, { it.printStackTrace() })
@@ -1304,12 +1443,22 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                     if (BaseClass.nonCaps(resData.formID)
                                         == BaseClass.nonCaps("STATEMENT")
                                     ) {
-                                        DisplayDialogFragment.showDialog(
-                                            manager = this.parentFragmentManager,
-                                            data = resData.accountStatement,
-                                            modules = module,
-                                            controller = formControl
+
+                                        DisplayDialogFragment.setData(
+                                            data = resData.accountStatement
                                         )
+                                        navigate(
+                                            baseViewModel
+                                                .navigationData
+                                                .navigateToDisplayDialog(
+                                                    DisplayData(
+                                                        display = null,
+                                                        modules = modules,
+                                                        form = formControl
+                                                    )
+                                                )
+                                        )
+
                                     } else if (BaseClass.nonCaps(resData.formID)
                                         == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
                                     ) {
@@ -1344,11 +1493,19 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                 baseViewModel.dataSource.deviceData.value!!.run
                                             )
                                         )
-                                        DisplayDialogFragment.showDialog(
-                                            manager = this.parentFragmentManager,
-                                            data = mData?.data,
-                                            modules = module,
-                                            controller = formControl
+                                        DisplayDialogFragment.setData(
+                                            data = mData?.data
+                                        )
+                                        navigate(
+                                            baseViewModel
+                                                .navigationData
+                                                .navigateToDisplayDialog(
+                                                    DisplayData(
+                                                        display = null,
+                                                        modules = modules,
+                                                        form = formControl
+                                                    )
+                                                )
                                         )
                                     }
                                 } else SuccessDialogFragment.showDialog(
@@ -1364,6 +1521,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OTP.type) {
+                                (requireActivity() as MainActivity).initSMSBroadCast()
                                 GlobalOTPFragment.setData(
                                     json = json,
                                     encrypted = encrypted,
@@ -1380,13 +1538,11 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             } else {
                                 AppLogger.instance.appLog("Pay", Gson().toJson(resData))
                                 Handler(Looper.getMainLooper()).postDelayed({
-                                    AlertDialogFragment.newInstance(
-                                        DialogData(
-                                            title = R.string.error,
-                                            subTitle = resData?.message,
-                                            R.drawable.warning_app
-                                        ),
-                                        this.childFragmentManager
+                                    showError(
+                                        MainDialogData(
+                                            title = getString(R.string.error),
+                                            message = resData?.message
+                                        )
                                     )
                                 }, 200)
                             }

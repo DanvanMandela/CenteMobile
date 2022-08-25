@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavDirections
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
@@ -25,14 +27,18 @@ import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.drawableToBitmap
 import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.binding.navigate
 import com.craft.silicon.centemobile.view.binding.setImageRes
-import com.craft.silicon.centemobile.view.ep.data.GroupLanding
+import com.craft.silicon.centemobile.view.ep.adapter.LandingPageAdapterItem
 import com.craft.silicon.centemobile.view.ep.data.LandingData
 import com.craft.silicon.centemobile.view.ep.data.LandingPageEnum
 import com.craft.silicon.centemobile.view.ep.data.LandingPageItem
+import com.craft.silicon.centemobile.view.ep.model.LandingItemGrid
 import com.craft.silicon.centemobile.view.model.AuthViewModel
+import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.SplashViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
+import com.google.android.flexbox.*
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -61,6 +67,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     private val authViewModel: AuthViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
+    private val baseViewModel: BaseViewModel by viewModels()
     private val adverts = MutableLiveData<List<CarouselItem>>()
     private val compositeDisposable = CompositeDisposable()
 
@@ -84,24 +91,26 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         return binding.root.rootView
     }
 
+
     private fun getAdverts() {
-        compositeDisposable.add(widgetViewModel.carousel
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isNotEmpty()) {
-                    val itemList = mutableListOf<CarouselItem>()
-                    it.forEach { a ->
-                        itemList.add(
-                            CarouselItem(
-                                imageUrl = a.imageURL,
-                                caption = a.imageInfoURL
+        compositeDisposable.add(
+            widgetViewModel.carousel
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.isNotEmpty()) {
+                        val itemList = mutableListOf<CarouselItem>()
+                        it.forEach { a ->
+                            itemList.add(
+                                CarouselItem(
+                                    imageUrl = a.imageURL,
+                                    caption = a.imageInfoURL
+                                )
                             )
-                        )
+                        }
+                        adverts.value = itemList
                     }
-                    adverts.value = itemList
-                }
-            }, { it.printStackTrace() })
+                }, { it.printStackTrace() })
         )
     }
 
@@ -202,16 +211,69 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         val landing = LandingData.landingData
         binding.lifecycleOwner = viewLifecycleOwner
         val active = widgetViewModel.storageDataSource.activationData.value
-        if (active != null) landing.forEach {
-            if (it.enum == LandingPageEnum.REGISTRATION) it.visible = false
+
+
+        if (active != null) {
+            binding.selfReg.visibility = GONE
         }
-        binding.data = GroupLanding(landing)
+
+
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            flexDirection = FlexDirection.ROW
+            justifyContent = JustifyContent.CENTER
+            alignItems = AlignItems.CENTER
+            flexWrap = FlexWrap.WRAP
+        }
+
+        val gridOne = GridLayoutManager(requireContext(), 3)
+        val adapterGrid = LandingItemGrid(requireContext(), landing, this)
+
+        // val adapter = LandingPageAdapterItem(landing, this)
+        val adapterTwo = LandingPageAdapterItem(
+            mutableListOf(
+
+                LandingPageItem(
+                    title = R.string.cente_on_go,
+                    avatar = R.drawable.cente,
+                    enum = LandingPageEnum.ON_THE_GO
+                )
+            ), this
+        )
+        binding.containerTwo.layoutManager = layoutManager
+        binding.containerTwo.adapter = adapterTwo
+
+        binding.container.layoutManager = gridOne
+        // binding.container.adapter = adapter
+
         binding.callback = this
+
+        binding.mainContainer.adapter = adapterGrid
+
     }
 
     override fun onStart() {
         super.onStart()
         setTimeOfDay()
+    }
+
+    override fun toLogin() {
+        navigate(splashViewModel.navigation)
+    }
+
+    override fun toBranch() {
+        navigate(widgetViewModel.navigation().navigateMap())
+    }
+
+    override fun onTheGo() {
+        navigate(widgetViewModel.navigation().navigateOnTheGo())
+    }
+
+    override fun toSelf() {
+        navigate(widgetViewModel.navigation().navigateSelfReg())
+    }
+
+    override fun toOnline() {
+        openUrl("https://centeonlinebanking.centenarybank.co.ug/iProfits2Prod/")
     }
 
     companion object {

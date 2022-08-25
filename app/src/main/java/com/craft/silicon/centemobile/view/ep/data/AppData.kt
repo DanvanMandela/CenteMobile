@@ -3,10 +3,7 @@ package com.craft.silicon.centemobile.view.ep.data
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
@@ -20,10 +17,15 @@ import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.FrequentModules
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.ReceiptDetails
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import kotlinx.parcelize.Parcelize
+import java.lang.reflect.Type
+import java.util.*
 
 open class AppData
 
@@ -113,28 +115,18 @@ object LandingData {
     val landingData = mutableListOf(
         LandingPageItem(
             title = R.string.branch_atm,
-            avatar = R.drawable.atm,
+            avatar = R.drawable.atm_machine,
             enum = LandingPageEnum.BRANCH
         ),
         LandingPageItem(
             title = R.string.cente_login,
-            avatar = R.drawable.enter,
+            avatar = R.drawable.lock,
             enum = LandingPageEnum.LOGIN
         ),
         LandingPageItem(
             title = R.string.online_banking,
-            avatar = R.drawable.piggy_bank,
+            avatar = R.drawable.checking,
             enum = LandingPageEnum.ONLINE_BANKING
-        ),
-        LandingPageItem(
-            title = R.string.cente_on_go,
-            avatar = R.drawable.cente,
-            enum = LandingPageEnum.ON_THE_GO
-        ),
-        LandingPageItem(
-            title = R.string.self_reg,
-            avatar = R.drawable.registration,
-            enum = LandingPageEnum.REGISTRATION
         )
     )
 }
@@ -195,6 +187,52 @@ data class GlobalInput(
     val hint: String,
     val data: String?
 )
+
+
+@Parcelize
+data class MiniStatement(
+    @field:SerializedName("Narration")
+    @field:Expose
+    val narration: String?,
+
+    @field:SerializedName("Amount")
+    @field:Expose
+    val amount: String?,
+
+    @field:SerializedName("Date")
+    @field:Expose
+    val date: String?
+) : Parcelable
+
+@Parcelize
+data class MiniList(
+    @field:SerializedName("mini")
+    @field:Expose
+    val miniList: MutableList<MiniStatement>?
+) : Parcelable
+
+
+class MiniTypeConverter {
+    @TypeConverter
+    fun from(data: String?): List<MiniStatement?>? {
+        if (data == null) {
+            return Collections.emptyList()
+        }
+        val listType: Type = object :
+            TypeToken<List<MiniStatement?>?>() {}.type
+        return gsonBuilder.fromJson<List<MiniStatement?>>(data, listType)
+    }
+
+    @TypeConverter
+    fun to(someObjects: List<MiniStatement?>?): String? {
+        return Gson().toJson(someObjects)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    }
+}
 
 
 

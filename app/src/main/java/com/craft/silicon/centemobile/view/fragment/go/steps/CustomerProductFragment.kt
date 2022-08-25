@@ -11,7 +11,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -30,6 +29,7 @@ import com.craft.silicon.centemobile.util.OnAlertDialog
 import com.craft.silicon.centemobile.util.ShowAlertDialog
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.ep.adapter.BranchAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
@@ -59,7 +59,7 @@ private const val ARG_PARAM2 = "param2"
  */
 @AndroidEntryPoint
 class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog,
-    PagerData {
+    PagerData, Confirm {
 
 
     private lateinit var binding: FragmentCustomerProductBinding
@@ -71,6 +71,10 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     private lateinit var stateData: CustomerProduct
     private lateinit var branchAdapter: BranchAdapterItem
     private lateinit var currencyAdapter: NameBaseAdapter
+
+    private var branchData: String? = null
+    private var currencyData: String? = null
+    private var accountData: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,6 +203,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     private fun stateCurrency(currency: TwoDMap) {
         val value = currencyAdapter.getItem(currency.key!!)
+        currencyData = value
         Handler(Looper.getMainLooper()).postDelayed({
             binding.currencyLay.autoEdit.setText(value, false)
         }, 200)
@@ -207,6 +212,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     private fun stateBranch(branch: TwoDMap) {
         val value = branchAdapter.getItem(branch.key!!)
+        branchData = value?.description
         binding.branchLay.autoEdit.setText(value?.description, false)
         hashMap["Branch"] = branch
     }
@@ -245,6 +251,8 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                         key = p2,
                         value = branchAdapter.getItem(p2)?.id
                     )
+                    branchData = branchAdapter.getItem(p2)?.description
+
                 }
         }
     }
@@ -297,7 +305,6 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         p: OnlineAccountProduct,
     ) {
 
-
         tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.currencyLay.autoEdit.text.clear()
@@ -308,6 +315,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                         key = i,
                         value = p.id
                     )
+                    accountData = p.description
                     setCurrencyDropDown(c)
                     custom.parent.setCardBackgroundColor(
                         ContextCompat.getColor(
@@ -370,10 +378,13 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                     key = p2,
                     value = currencyAdapter.getItem(p2)
                 )
+                currencyData = currencyAdapter.getItem(p2)
             }
     }
 
     private fun setCustomerType() {
+        val user = customerType
+        val active = widgetViewModel.storageDataSource.activationData.value
         val tab = binding.customerLay.parent
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -385,7 +396,12 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
             binding.root.context.resources.getDimensionPixelSize(R.dimen.dimens_5dp),
             binding.root.context.resources.getDimensionPixelSize(R.dimen.dimens_5dp)
         )
-        customerType.forEachIndexed { index, type ->
+        if (active != null) {
+            if (user.size != 1)
+                user.removeAt(0)
+        }
+
+        user.forEachIndexed { index, type ->
             val item = tab.newTab().setText(type.type)
             val custom =
                 BlockCustomerTypeLayoutBinding.inflate(LayoutInflater.from(requireContext()))
@@ -508,6 +524,11 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         } else true
     }
 
+    override fun onConfirm() {
+        saveState()
+        pagerData?.onNext(2)
+    }
+
     companion object {
         private var pagerData: PagerData? = null
 
@@ -538,8 +559,11 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     override fun onClick(p: View?) {
         if (p == binding.materialButton) {
             if (validateFields()) {
-                saveState()
-                pagerData?.onNext(2)
+                ProductConfirmationFragment.showDialog(
+                    this.childFragmentManager, ProductConfirm(
+                        account = accountData, branch = branchData, currency = currencyData
+                    ), this
+                )
             }
         }
     }

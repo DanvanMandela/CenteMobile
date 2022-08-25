@@ -26,5 +26,9 @@ interface Confirm {
         throw Exception("Not implemented")
     }
 
+    fun onConfirm() {
+        throw Exception("Not implemented")
+    }
+
 
 }

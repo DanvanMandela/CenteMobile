@@ -45,4 +45,8 @@ public interface BaseView {
 
     default void logOut() {
     }
+
+    default void onOTP(String s){}
+
+    default void cleanLevel(){}
 }

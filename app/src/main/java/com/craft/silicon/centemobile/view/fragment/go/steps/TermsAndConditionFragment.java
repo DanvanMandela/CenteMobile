@@ -57,7 +57,12 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
         binding = FragmentTermsAndConditionBinding.inflate(inflater, container, false);
         setBinding();
         setOnClick();
+        setToolbar();
         return binding.getRoot().getRootView();
+    }
+
+    private void setToolbar() {
+        binding.toolbar.setNavigationOnClickListener(view -> pagerData.onBack(1));
     }
 
     @Override

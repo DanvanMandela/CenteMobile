@@ -6,9 +6,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.KeyguardManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.ImageDecoder
@@ -36,19 +34,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.receiver.SMSMonitor
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
 import com.craft.silicon.centemobile.databinding.ActivityMainBinding
-import com.craft.silicon.centemobile.util.AppLogger
-import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.MyActivityResult
-import com.craft.silicon.centemobile.util.ScreenHelper.fullScreen
-import com.craft.silicon.centemobile.util.ShowToast
+import com.craft.silicon.centemobile.util.*
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.compressImage
-import com.craft.silicon.centemobile.view.fragment.auth.OtpFragment
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
@@ -60,6 +52,7 @@ import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -83,8 +76,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var callbacks: AppCallbacks? = null
     private var cryptographyManager = CryptoManager()
     private var bioInterface: BioInterface? = null
-    private var intentFilter: IntentFilter? = null
-    private var smsMonitor: SMSMonitor? = null
+
+
     private val otpSMS = MutableLiveData<String?>()
 
 
@@ -93,21 +86,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var mTime: Long = 60000
 
 
-    private fun initSMSBroadCast() {
-        intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        smsMonitor = SMSMonitor()
-        smsMonitor?.setOTPListener(object : SMSMonitor.OTPObserver {
-            override fun onReceived(otp: String?) {
-                AppLogger.instance.appLog("OTP", otp!!)
-                otpSMS.value = otp
-            }
-        })
+    fun initSMSBroadCast() {
+        startSMSListener()
     }
 
-    private fun initSmsListener() {
-        val client = SmsRetriever.getClient(this)
-        client.startSmsRetriever()
-    }
 
     override fun onStart() {
         super.onStart()
@@ -123,71 +105,43 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        appSignature()
         setViewModel()
         setNavigation()
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
         requestPermissions()
-        setCallbacks()
         listenToConnection()
-        initSmsListener()
-        initSMSBroadCast()
+
         subscribePush()
         inactivityMonitor()
 
+    }
+
+    private fun appSignature() {
+        AppLogger.instance.appLog(
+            "${MainActivity::class.java.simpleName} :Signature",
+            AppSignatureHelper(this).appSignatures[0]
+        )
     }
 
     private fun inactivityMonitor() {
         mHandler = Handler(Looper.getMainLooper())
         mRunnable = Runnable {
             when (provideNavigationGraph().currentDestination?.id) {
-                R.id.loadingFragment,
-                R.id.mapsFragment,
-                R.id.onTheGoFragment,
-                R.id.splashFragment,
-                R.id.landingPageFragment,
-                R.id.authFragment,
-                R.id.loginFragment,
-                R.id.selfRegistrationFragment,
-                R.id.otpFragment -> {
-                    AppLogger.instance.appLog("Timeout:", "Not here")
-                }
-                else -> provideNavigationGraph().navigate(
+                R.id.homeFragment,
+                R.id.levelOneFragment,
+                R.id.levelTwoFragment,
+                R.id.miniStatementFragment,
+                R.id.transactionCenterFragment
+                -> provideNavigationGraph().navigate(
                     widgetViewModel.navigation().navigateLanding()
                 )
+                else -> {
+                    AppLogger.instance.appLog("Timeout:", "Not here")
+                }
             }
         }
         startHandler()
-
-
-        workViewModel.timeOut(this, object : WorkStatus {
-            override fun workDone(b: Boolean) {
-                if (b) {
-                    when (provideNavigationGraph().currentDestination?.id) {
-                        R.id.loadingFragment,
-                        R.id.mapsFragment,
-                        R.id.onTheGoFragment,
-                        R.id.splashFragment,
-                        R.id.landingPageFragment,
-                        R.id.authFragment,
-                        R.id.loginFragment,
-                        R.id.selfRegistrationFragment,
-                        R.id.otpFragment -> {
-                            AppLogger.instance.appLog("Timeout:", "Not here")
-                        }
-                        else -> provideNavigationGraph().navigate(
-                            widgetViewModel.navigation().navigateLanding()
-                        )
-                    }
-                }
-            }
-        })
-
-
-//        ProcessLifecycleOwner.get()
-//            .lifecycle
-//            .addObserver(
-//                AppLifecycleListener()
-//                    .also { it })
 
     }
 
@@ -227,29 +181,19 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     }
 
-    private fun setCallbacks() {
-        otpSMS.observe(this) {
-            if (!TextUtils.isEmpty(it)) {
-                OtpFragment.onOtp(MutableLiveData(it))
-            }
-        }
-    }
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(smsMonitor, intentFilter)
         startHandler()
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(smsMonitor)
         stopHandler()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        smsMonitor = null
         stopHandler()
     }
 
@@ -271,6 +215,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
             val status = widgetViewModel.connectionObserver.observe().asLiveData()
+
             status.observe(this) {
                 when (it) {
                     ConnectionObserver.ConnectionEnum.Available -> {
@@ -288,7 +233,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         }
                     }
 
-                    else -> {}
                 }
             }
         }, animationDuration.toLong())
@@ -311,8 +255,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             override fun workDone(b: Boolean) {
                 if (b) {
                     AppLogger.instance.appLog("DATA:Version", version!!)
-                    if (TextUtils.isEmpty(version))
+                    if (TextUtils.isEmpty(version)) {
+                        widgetViewModel.storageDataSource.setVersion("1")
                         workViewModel.onWidgetData(this@MainActivity, this)
+                    }
                 }
             }
 
@@ -424,7 +370,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         activityLauncher.launch(intent)
     }
 
-    private fun requestLocationPermission() {
+    fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -783,8 +729,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             getString(R.string.secret_key_name),
             data!!.iv
         )
+
         BiometricUtil.showBiometricPrompt(
-            getString(R.string.app_name) + getString(R.string.auth_),
+            "${getString(R.string.app_name)} ${getString(R.string.auth_)}",
             getString(R.string.use_password),
             getString(R.string.auth_finger),
             this,
@@ -799,6 +746,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             .withPermissions(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -809,11 +757,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
                     }
                     if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "All the permissions are Denied...",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AppLogger.instance.appLog("PERMISSIONS", "permissions are Denied")
                     }
                 }
 
@@ -824,9 +768,20 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     permissionToken.continuePermissionRequest()
                 }
             }).withErrorListener {
-                Toast.makeText(applicationContext, "Error occurred! ", Toast.LENGTH_SHORT).show()
+                AppLogger.instance.appLog("PERMISSIONS", it.name)
             }
             .onSameThread().check()
+    }
+
+    private fun startSMSListener() {
+        val client = SmsRetriever.getClient(this)
+        val task: Task<Void> = client.startSmsRetriever()
+        task.addOnSuccessListener {
+
+            AppLogger.instance.appLog("${MainActivity::class.java.simpleName}: SMS", "SUCCESS")
+
+        }
+        task.addOnFailureListener { }
     }
 
 
