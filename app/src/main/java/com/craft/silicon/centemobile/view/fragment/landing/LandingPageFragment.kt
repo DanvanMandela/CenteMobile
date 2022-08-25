@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.landing
 
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -22,8 +23,10 @@ import androidx.palette.graphics.Palette.Swatch
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
 import com.craft.silicon.centemobile.util.AppLogger
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.drawableToBitmap
 import com.craft.silicon.centemobile.view.activity.MainActivity
@@ -328,5 +331,26 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         (requireActivity() as MainActivity).provideNavigationGraph().navigate(direction!!)
     }
 
+    override fun twitter() {
+        openUrl(Constants.Contacts.url_twitter)
+    }
+
+    override fun facebook() {
+        openUrl(Constants.Contacts.url_facebook)
+    }
+
+    override fun telephone() {
+        BaseClass.callPhone(requireActivity(), Constants.Contacts.call_center_number)
+    }
+
+    override fun email() {
+        var title = "Contact Us"
+        var body = ""
+        BaseClass.emailCustomerCare(requireActivity(), title, body, Constants.Contacts.contact_us_email)
+    }
+
+    override fun chat() {
+        openUrl(Constants.Contacts.url_chat)
+    }
 
 }

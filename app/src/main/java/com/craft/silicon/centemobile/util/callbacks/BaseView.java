@@ -49,4 +49,10 @@ public interface BaseView {
     default void onOTP(String s){}
 
     default void cleanLevel(){}
+
+    default void twitter(){}
+    default void facebook(){}
+    default void telephone(){}
+    default void email(){}
+    default void chat(){}
 }
