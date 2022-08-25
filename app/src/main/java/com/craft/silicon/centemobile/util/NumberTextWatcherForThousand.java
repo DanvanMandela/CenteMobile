@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.input.InputData;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
@@ -45,14 +46,14 @@ public class NumberTextWatcherForThousand implements TextWatcher {
             String value = Objects.requireNonNull(editText.getText()).toString();
             if (!value.equals("")) {
                 if (value.startsWith(".")) {
-                    editText.setText("0.");
+                    BindingAdapterKt.updateText(editText, "0.");
                 }
                 if (value.startsWith("0") && !value.startsWith("0.")) {
-                    editText.setText("");
+                    BindingAdapterKt.updateText(editText, "");
                 }
                 String str = editText.getText().toString().replaceAll(",", "");
                 editText.removeTextChangedListener(this);
-                editText.setText(getDecimalFormattedString(str));
+                BindingAdapterKt.updateText(editText, getDecimalFormattedString(str));
                 editText.addTextChangedListener(this);
                 editText.setSelection(editText.getText().toString().length());
             }

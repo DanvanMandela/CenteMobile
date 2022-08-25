@@ -361,6 +361,7 @@
     <string name="new_pin_required">Enter your new pin</string>
     <string name="con_new_pin_required">Confirm your new pin</string>
     <string name="new_password_not_matching">New passwords not matching</string>
+    <string name="no_connection">No internet connection</string>
 
 
 </resources>

@@ -14,8 +14,6 @@ import com.craft.silicon.centemobile.databinding.BlockAmountTextInputLayoutBindi
 import com.craft.silicon.centemobile.databinding.BlockDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockLinkedDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockTextInputLayoutBinding
-import com.craft.silicon.centemobile.otpLayout
-import com.craft.silicon.centemobile.textInputLayout
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks

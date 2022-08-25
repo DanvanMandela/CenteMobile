@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
+import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.isOnline;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -118,17 +119,18 @@ public class LoginFragment extends Fragment implements AppCallbacks {
 
     private void authAccount() {
         hideSoftKeyboard(requireActivity(), binding.getRoot());
-        setLoading(true);
-        CompositeDisposable subscribe = new CompositeDisposable();
-        subscribe.add(authViewModel.activateAccount(Constants.
-                                setMobile(binding.countryCodeHolder.getSelectedCountryCode(),
-                                        Objects.requireNonNull(binding.editMobile.getText()).toString()),
-                        Objects.requireNonNull(binding.editPin.getText()).toString(),
-                        requireActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setOnSuccess, Throwable::printStackTrace));
-
+        if (isOnline(requireActivity())) {
+            setLoading(true);
+            CompositeDisposable subscribe = new CompositeDisposable();
+            subscribe.add(authViewModel.activateAccount(Constants.
+                                    setMobile(binding.countryCodeHolder.getSelectedCountryCode(),
+                                            Objects.requireNonNull(binding.editMobile.getText()).toString()),
+                            Objects.requireNonNull(binding.editPin.getText()).toString(),
+                            requireActivity())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::setOnSuccess, Throwable::printStackTrace));
+        } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
     }
 
     private void setOnSuccess(DynamicResponse data) {

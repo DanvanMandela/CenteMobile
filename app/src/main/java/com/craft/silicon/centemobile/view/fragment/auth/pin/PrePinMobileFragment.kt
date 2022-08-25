@@ -22,6 +22,7 @@ import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.TextHelper
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.binding.isOnline
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
@@ -203,10 +204,20 @@ class PrePinMobileFragment : Fragment(), AppCallbacks, OTP, View.OnClickListener
                 } else {
                     if (binding.loadingFrame.verificationCodeEditText.text.toString().length < 6) {
                         ShowToast(requireContext(), getString(R.string.otp_invalid), true)
-                    } else resetPin()
+                    } else if (requireActivity().isOnline()) resetPin() else ShowToast(
+                        requireContext(),
+                        getString(R.string.no_connection),
+                        true
+                    )
                 }
             } else {
-                createOTP()
+                if (requireActivity().isOnline()) {
+                    createOTP()
+                } else ShowToast(
+                    requireContext(),
+                    getString(R.string.no_connection),
+                    true
+                )
             }
         }
     }

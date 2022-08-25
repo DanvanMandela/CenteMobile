@@ -33,6 +33,7 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
@@ -181,7 +182,9 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
     @Override
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
-            if (validateFields()) restPin();
+            if (BindingAdapterKt.isOnline(requireActivity())) {
+                if (validateFields()) restPin();
+            } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
         }
     }
 

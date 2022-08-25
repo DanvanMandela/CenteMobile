@@ -148,9 +148,15 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     @Override
     public void onClick(View view) {
         if (binding.materialButton.equals(view)) {
-            if (validateFields()) verifyOTP();
+            if (BindingAdapterKt.isOnline(requireActivity())) {
+                if (validateFields()) {
+                    verifyOTP();
+                }
+            } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
         } else if (binding.resendButton.equals(view)) {
-            resendOTP();
+            if (BindingAdapterKt.isOnline(requireActivity()))
+                resendOTP();
+            else new ShowToast(requireContext(), getString(R.string.no_connection), true);
         }
     }
 

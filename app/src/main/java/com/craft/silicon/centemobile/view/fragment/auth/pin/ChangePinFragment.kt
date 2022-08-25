@@ -16,6 +16,7 @@ import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.binding.isOnline
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
@@ -76,7 +77,13 @@ class ChangePinFragment : Fragment(), AppCallbacks {
         }
 
         binding.materialButton.setOnClickListener {
-            if (validateFields()) changePin()
+            if (requireActivity().isOnline()) {
+                if (validateFields()) changePin()
+            } else ShowToast(
+                requireContext(),
+                getString(R.string.no_connection),
+                true
+            )
         }
     }
 

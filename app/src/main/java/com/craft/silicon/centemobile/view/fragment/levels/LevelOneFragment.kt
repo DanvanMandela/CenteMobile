@@ -946,7 +946,13 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 "${LevelOneFragment::class.java.simpleName}:NextModuleID",
                                 Gson().toJson(action.nextModuleID)
                             )
-                            apiCall(action, formControl, modules)
+                            if (requireActivity().isOnline()) {
+                                apiCall(action, formControl, modules)
+                            } else ShowToast(
+                                requireContext(),
+                                getString(R.string.no_connection),
+                                true
+                            )
                         }
                     }, { it.printStackTrace() })
                 )
