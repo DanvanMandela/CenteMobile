@@ -137,7 +137,6 @@
                         app:ccp_autoDetectCountry="true"
                         app:ccp_autoDetectLanguage="true"
                         app:ccp_countryAutoDetectionPref="SIM_ONLY"
-                        app:ccp_customMasterCountries="UG,KE,TZ"
                         app:ccp_defaultNameCode="UG"
                         app:ccp_showFlag="true"
                         app:ccp_textSize="16sp" />

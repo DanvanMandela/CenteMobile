@@ -238,7 +238,7 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                                     SuccessDialogFragment.showDialog(new DialogData(
                                             R.string.success,
                                             resData.getNotifications().get(0).getNotifyText(),
-                                            R.drawable.warning_app
+                                            R.drawable.success
                                     ), getChildFragmentManager(), this);
 
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
@@ -293,7 +293,6 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                 R.drawable.warning_app
         ), getChildFragmentManager());
     }
-
 
 
 }

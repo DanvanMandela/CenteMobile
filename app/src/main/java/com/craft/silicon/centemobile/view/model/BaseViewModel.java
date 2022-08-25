@@ -56,8 +56,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     public final NavigationDataSource navigationData;
 
 
-    //public LiveData<String>stateOTP
-
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
 
@@ -189,6 +187,49 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource.getUniqueID().getValue(),
                     BaseClass.encryptString(newRequest, device, iv)
             ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> changePin(JSONObject json, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+
+            AppLogger.Companion.getInstance().appLog("GLOBAL:UniqueID",
+                    dataSource.getUniqueID().getValue());
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.CHANGE_PIN.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+
+            jsonObject.put("ModuleID", "PIN");
+            jsonObject.put("MerchantID", "PIN");
+            json.put("MerchantID", "PIN");
+            json.put("ModuleID", "PIN");
+            json.put("PINTYPE", "PIN");
+
+            jsonObject.put("CHANGEPIN", json);
+            String changePinRequest = jsonObject.toString();
+            AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
+
+            PayloadData payloadData = new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(changePinRequest, device, iv)
+            );
+            return authCall(payloadData);
+
         } catch (JSONException exception) {
             exception.printStackTrace();
             return null;

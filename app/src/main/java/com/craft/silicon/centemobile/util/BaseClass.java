@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -30,6 +31,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -526,6 +529,32 @@ public class BaseClass {
     public static void stopTimer(CountDownTimer logout) {
         if (logout != null) {
             logout.cancel();
+        }
+    }
+
+    public static void setMaxLength(TextInputEditText view, int length) {
+        InputFilter[] curFilters;
+        InputFilter.LengthFilter lengthFilter;
+        int idx;
+
+        lengthFilter = new InputFilter.LengthFilter(length);
+
+        curFilters = view.getFilters();
+        if (curFilters != null) {
+            for (idx = 0; idx < curFilters.length; idx++) {
+                if (curFilters[idx] instanceof InputFilter.LengthFilter) {
+                    curFilters[idx] = lengthFilter;
+                    return;
+                }
+            }
+
+
+            InputFilter[] newFilters = new InputFilter[curFilters.length + 1];
+            System.arraycopy(curFilters, 0, newFilters, 0, curFilters.length);
+            newFilters[curFilters.length] = lengthFilter;
+            view.setFilters(newFilters);
+        } else {
+            view.setFilters(new InputFilter[]{lengthFilter});
         }
     }
 

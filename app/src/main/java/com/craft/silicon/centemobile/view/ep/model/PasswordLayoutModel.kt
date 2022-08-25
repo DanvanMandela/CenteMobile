@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.ep.model
 
 import android.text.InputType
+import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
@@ -13,11 +14,12 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockPasswordTextInputLayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.BaseClass.setMaxLength
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.setDefaultValue
 import com.craft.silicon.centemobile.view.binding.setDefaultWatcher
-import com.craft.silicon.centemobile.view.binding.setInputLayout
 import com.google.android.material.textfield.TextInputEditText
+
 
 @EpoxyModelClass
 open class PasswordLayoutModel : DataBindingEpoxyModel() {
@@ -62,6 +64,12 @@ open class PasswordLayoutModel : DataBindingEpoxyModel() {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         binding.parent.setStartIconOnClickListener {
             callbacks.bioPayment(binding.child)
+        }
+
+        if (form.maxValue != null) {
+            if (!TextUtils.isEmpty(form.maxValue)) {
+                setMaxLength(binding.child, form.maxValue!!.toInt())
+            }
         }
     }
 }

@@ -3,10 +3,14 @@ package com.craft.silicon.centemobile.view.binding
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.graphics.BlurMaskFilter
 import android.graphics.MaskFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -24,13 +28,12 @@ import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.*
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -74,6 +77,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import kotlinx.coroutines.flow.StateFlow
 import java.text.*
 import java.time.LocalDate
 import java.util.*
@@ -914,6 +918,31 @@ fun TextView.setDateTime(date: Date?) {
     }
 }
 
+
+fun otpLive(optState: StateFlow<String>): LiveData<String> {
+    return optState.asLiveData()
+}
+
+
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+fun isOnline(activity: Activity): Boolean {
+
+    val connectivityMgr = activity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    val allNetworks: Array<Network> = connectivityMgr.allNetworks // added in API 21 (Lollipop)
+
+    for (network in allNetworks) {
+        val networkCapabilities = connectivityMgr.getNetworkCapabilities(network)
+        return (networkCapabilities!!.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+                (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)))
+    }
+
+}
+return false
+}
 
 
 

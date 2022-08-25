@@ -221,6 +221,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                             showError(Objects.requireNonNull(responseDetails.getMessage()));
                             setLoading(false);
                         } else if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.PIN_CHANGE.getType())) {
+                            BindingAdapterKt.navigate(this, authViewModel
+                                    .navigationDataSource.navigateToChangePin());
+                        }
+                        if (Objects.equals(responseDetails.getStatus(),
                                 StatusEnum.TOKEN.getType())) {
                             workerViewModel.routeData(getViewLifecycleOwner(),
                                     new WorkStatus() {

@@ -112,10 +112,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     }
 
     private void setOTP() {
-
-
-
-        LiveData<String> otp = (LiveData<String>) baseViewModel.dataSource.getOtp();
+        LiveData<String> otp = BindingAdapterKt.otpLive(baseViewModel.dataSource.getOtp());
         otp.observe(getViewLifecycleOwner(), v -> binding.verificationCodeEditText.setText(v));
     }
 

@@ -352,6 +352,15 @@
     <string name="branch">Branch</string>
     <string name="previous">Previous</string>
     <string name="mini_state">Mini statement</string>
+    <string name="change_pin">Change Pin</string>
+    <string name="your_pin_has">Your pin has been reset please change it and it requires change</string>
+    <string name="old_pin">Old Pin</string>
+    <string name="new_pin">New Pin</string>
+    <string name="confirm_pin">Confirm Pin</string>
+    <string name="old_pin_required">Enter your old pin</string>
+    <string name="new_pin_required">Enter your new pin</string>
+    <string name="con_new_pin_required">Confirm your new pin</string>
+    <string name="new_password_not_matching">New passwords not matching</string>
 
 
 </resources>

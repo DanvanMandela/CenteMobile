@@ -269,5 +269,9 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_mini)
     }
 
+    override fun navigateToChangePin(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_change_pin)
+    }
+
 
 }

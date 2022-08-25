@@ -132,4 +132,8 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateToChangePin() {
+        return null;
+    }
+
 }
