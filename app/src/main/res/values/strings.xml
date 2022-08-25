@@ -81,7 +81,7 @@
     <string name="total_amount">Total Amount</string>
     <string name="welcome_to_self">Welcome To\nSelf Registration</string>
     <string name="lets_start_with_card_details">Almost done.Now enter your card details so that we can verify you are you</string>
-    <string name="lets_start_with_mobile_details">Lets get you started,please enter your mobile number</string>
+    <string name="lets_start_with_mobile_details">Lets get you started, please enter your mobile number</string>
     <string name="continue_">Continue</string>
     <string name="cente_self_reg">Centenary\nSelf Registration</string>
     <string name="mobile_less">Enter valid mobile number</string>
