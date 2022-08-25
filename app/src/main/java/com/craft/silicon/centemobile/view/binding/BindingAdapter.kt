@@ -924,26 +924,6 @@ fun otpLive(optState: StateFlow<String>): LiveData<String> {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-fun isOnline(activity: Activity): Boolean {
-
-    val connectivityMgr = activity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-
-    val allNetworks: Array<Network> = connectivityMgr.allNetworks // added in API 21 (Lollipop)
-
-    for (network in allNetworks) {
-        val networkCapabilities = connectivityMgr.getNetworkCapabilities(network)
-        return (networkCapabilities!!.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
-                (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)))
-    }
-
-}
-return false
-}
-
 
 
 

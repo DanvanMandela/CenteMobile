@@ -53,6 +53,23 @@ public class Constants {
         @NotNull
         public static final String URL = Data.TEST ? UAT : LIVE;
 
+
+
+
+
+    }
+
+    public static class Contacts{
+        @NotNull
+        public static final String url_twitter          = "https://twitter.com/CentenaryBank";
+        @NotNull
+        public static final String url_facebook         = "https://www.facebook.com/Centenarybank/?ref=br_rs";
+        @NotNull
+        public static final String url_chat             = "https://web.powerva.microsoft.com/environments/Default-41c79b66-e60a-4ca0-896b-f4bfdf6a9678/bots/new_bot_49bd010dd726465cab846eb4cdc61ea6/webchat";
+        @NotNull
+        public static final String call_center_number   = "0800200555";
+        @NotNull
+        public static final String contact_us_email     = "";
     }
 
     public static class Data {

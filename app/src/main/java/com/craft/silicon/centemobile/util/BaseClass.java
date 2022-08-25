@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -14,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -558,5 +560,33 @@ public class BaseClass {
         }
     }
 
+
+    public static void emailCustomerCare(Activity activity, String title, String body, String email_address) {
+        String[]email = new String[]{email_address};
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL, email);
+        i.putExtra(Intent.EXTRA_SUBJECT, title);
+        i.putExtra(Intent.EXTRA_TEXT, body);
+        try {
+            activity.startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(activity, "Sorry no email clients found on your phone", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void callPhone(Activity activity, String mobilenumber) {
+        if (mobilenumber != null) {
+            if (!(TextUtils.isEmpty(mobilenumber)) || mobilenumber.length() < 4) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + "+" + mobilenumber));
+                activity.startActivity(callIntent);
+            } else {
+                Toast.makeText(activity, "The phone number provided is not valid", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(activity, "The phone number provided is not valid", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }
