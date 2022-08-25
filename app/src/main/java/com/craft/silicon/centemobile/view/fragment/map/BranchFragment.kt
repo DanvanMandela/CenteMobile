@@ -1,14 +1,18 @@
 package com.craft.silicon.centemobile.view.fragment.map
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
@@ -52,6 +56,7 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val subscribe = CompositeDisposable()
     private var googleMap: GoogleMap? = null
+    private var latLng: LatLng? = null
 
     private lateinit var binding: FragmentBranchBinding
     private var fusedLocationProvider: FusedLocationProviderClient? = null
@@ -68,8 +73,33 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
 
     }
 
+    private fun isLocationEnabled(): Boolean {
+        var locationManager: LocationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
     private fun getCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(
+       if(!isLocationEnabled()){
+           Toast.makeText(activity, "Location is currently switched off", Toast.LENGTH_LONG).show();
+           //location is currently switched off let zoom in to one of the points
+
+           if(latLng!=null){
+               googleMap?.animateCamera(
+                   CameraUpdateFactory.newLatLng(
+                       latLng!!,
+                   )
+               )
+               googleMap?.moveCamera(
+                   CameraUpdateFactory.newLatLngZoom(
+                       latLng!!,
+                       9f
+                   )
+               )
+           }
+
+       }else if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -129,6 +159,7 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
     }
 
 
+
     private fun getBranchData() {
         subscribe.add(
             widgetViewModel.getATMBranch(false)
@@ -137,6 +168,7 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
                 .subscribe({
                     if (it.isNotEmpty()) {
                         setMarkers(it)
+                        getCurrentLocation()
                     }
                 }, { it.printStackTrace() })
         )
@@ -150,6 +182,8 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
                     LatLng(lg.latitude!!, lg.longitude!!)
                 ).title(lg.location)
             )
+
+            latLng = LatLng(lg.latitude!!, lg.longitude!!)
 
 
         }
@@ -192,6 +226,6 @@ class BranchFragment : Fragment(), AppCallbacks, OnMapReadyCallback {
         }
         googleMap?.isMyLocationEnabled = true
         getBranchData()
-        getCurrentLocation()
+
     }
 }

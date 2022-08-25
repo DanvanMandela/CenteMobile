@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.craft.silicon.centemobile.data.model.AtmData
 import com.craft.silicon.centemobile.databinding.FragmentMapsBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.google.android.gms.maps.model.LatLng
@@ -41,6 +42,7 @@ class MapsFragment : Fragment(), AppCallbacks {
         setViewPager()
         setClicks()
         requestPermissions()
+        //AppLogger.instance.l
         return binding.root.rootView
     }
 
