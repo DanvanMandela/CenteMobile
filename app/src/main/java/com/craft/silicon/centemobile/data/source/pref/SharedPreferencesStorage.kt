@@ -867,6 +867,29 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _loginTime = MutableStateFlow(
+        sharedPreferences.getLong(
+            TAG_LOGIN_TIME,
+            0
+        )
+    )
+    override val loginTime: StateFlow<Long?>
+        get() = _loginTime
+
+    override fun setLoginTime(value: Long) {
+        _loginTime.value = value
+        with(sharedPreferences.edit()) {
+            putLong(
+                TAG_LOGIN_TIME,
+                value
+            )
+            apply()
+        }
+    }
+
+
+
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -919,5 +942,8 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_OTP = "otpTag"
 
         private const val TAG_TIME_OUT = "timeout"
+
+
+        private const val TAG_LOGIN_TIME = "login_time"
     }
 }

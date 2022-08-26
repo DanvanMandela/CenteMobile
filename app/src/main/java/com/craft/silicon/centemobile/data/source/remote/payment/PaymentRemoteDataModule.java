@@ -35,7 +35,7 @@ public class PaymentRemoteDataModule {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(base)
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
+                        .connectTimeout(Constants.Timeout.connection_payments, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)
                         .readTimeout(Constants.Timeout.read, TimeUnit.SECONDS)
                         .addInterceptor(httpLoggingInterceptor)

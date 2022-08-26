@@ -31,7 +31,7 @@ public class OCRRemoteDataModule {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(Constants.BaseUrl.IMAGE_PROCESSING_URL)
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
+                        .connectTimeout(Constants.Timeout.connection_ocr, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)
                         .readTimeout(Constants.Timeout.read, TimeUnit.SECONDS)
                         .addInterceptor(chain -> {

@@ -15,16 +15,32 @@
     <string name="enter_otp">Enter the One-Time Password\nsent to Your Mobile Number or Email</string>
     <string name="resend_otp">Resend</string>
     <string name="verification">Verification</string>
+
+    <string name="feedback_verypoor">Very Poor</string>
+    <string name="feedback_poor">Poor</string>
+    <string name="feedback_average">Average</string>
+    <string name="feedback_good">Good</string>
+    <string name="feedback_excellent">Excellent</string>
+
     <string name="submit_">Submit</string>
+    <string name="dismiss">Dismiss</string>
     <string name="otp_required">Enter OTP</string>
     <string name="hello_jane">Hello</string>
-    <string name="log_out">logout</string>
+    <string name="duration">Duration</string>
+    <string name="logout">Logout</string>
+    <string name="log_out">Logout</string>
     <string name="image">Image</string>
     <string name="avatar">Avatar</string>
     <string name="error">Error</string>
     <string name="something_">Something went wrong\nTry Again Later!</string>
     <string name="pin_required">Pin required</string>
     <string name="opt_required">OTP required</string>
+
+
+    <string name="thank_you_for_using">Thank you for using</string>
+    <string name="centmobile">CenteMobile.</string>
+    <string name="you_have_succesfully_logged_out">You have successfully logged out</string>
+
     <string name="welcome_cente">Welcome To Centenary Bank</string>
     <string name="branch_atm"><![CDATA[Branches\n& ATM]]></string>
     <string name="cente_login">CenteMobile\nLogin</string>
@@ -337,6 +353,10 @@
     <string name="ugx">UGX</string>
     <string name="welcome_to_cente">Welcome To\nCentenary Bank</string>
     <string name="not_reg">Not registered for CENETEMOBILE?</string>
+    <string name="tap_to_rate">Tap below to rate your experience</string>
+
+    <string name="your_feedback_is_important">Your feedback is important to us</string>
+
     <string name="register">Register</string>
     <string name="id_national">National ID (Please counter check)</string>
     <string name="nssf_number">NSSF Number</string>
@@ -354,7 +374,7 @@
     <string name="previous">Previous</string>
     <string name="mini_state">Mini statement</string>
     <string name="change_pin">Change Pin</string>
-    <string name="your_pin_has">Your pin has been reset please change it and it requires change</string>
+    <string name="your_pin_has">Your pin has been reset. Please set up a new one below</string>
     <string name="old_pin">Old Pin</string>
     <string name="new_pin">New Pin</string>
     <string name="confirm_pin">Confirm Pin</string>

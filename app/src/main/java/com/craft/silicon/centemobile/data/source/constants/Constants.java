@@ -27,9 +27,12 @@ import java.util.UUID;
 
 public class Constants {
     public static class Timeout {
-        public static long connection = 60 * 10000;
-        public static long read = 60 * 10000;
-        public static long write = 60 * 10000;
+        public static long connection          = 30 * 10000;
+        public static long connection_payments = 60 * 10000;//give time for external apis
+        public static long connection_ocr      = 90 * 10000;//takes long
+
+        public static long read                = 60 * 10000;
+        public static long write               = 60 * 10000;
     }
 
     public static class BaseUrl {
@@ -54,9 +57,6 @@ public class Constants {
         public static final String URL = Data.TEST ? UAT : LIVE;
 
 
-
-
-
     }
 
     public static class Contacts{
@@ -69,7 +69,7 @@ public class Constants {
         @NotNull
         public static final String call_center_number   = "0800200555";
         @NotNull
-        public static final String contact_us_email     = "";
+        public static final String contact_us_email     = "info@centenarybank.co.ug";
     }
 
     public static class Data {

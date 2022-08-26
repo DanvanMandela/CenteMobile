@@ -161,9 +161,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             if (validateFields())
                 authUser(Objects.requireNonNull(binding.editPin.getText()).toString());
         } else if (view.equals(binding.forgotPin)) {
-            ((MainActivity) requireActivity())
-                    .provideNavigationGraph()
-                    .navigate(authViewModel.navigationDataSource.navigateResetPinATM());
+            BindingAdapterKt.navigate(this,
+                    authViewModel.navigationDataSource.navigateResetPinATM());
         }
     }
 
@@ -281,8 +280,14 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void navigate() {
         new Handler(Looper.getMainLooper()).postDelayed(() ->
-                BindingAdapterKt.navigate(this,
-                        authViewModel.navigationDataSource.navigateToHome()), 1500);
+                {
+                    authViewModel.storage.setLoginTime(System.currentTimeMillis());
+                    BindingAdapterKt.navigate(this,
+                            authViewModel.navigationDataSource.navigateToHome());
+
+                }
+
+                , 1500);
     }
 
     private void setLoading(boolean b) {

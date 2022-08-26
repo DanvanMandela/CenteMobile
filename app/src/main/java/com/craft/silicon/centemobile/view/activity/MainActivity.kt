@@ -574,7 +574,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    fun onImagePicker(callbacks: AppCallbacks) {
+    fun onImagePicker(callbacks: AppCallbacks, x:Int, y:Int) {
         this.callbacks = callbacks
         ImagePicker.clearCache(this)
         Dexter.withContext(this)
@@ -585,7 +585,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     if (report.areAllPermissionsGranted()) {
-                        showImagePickerOptions()
+                        showImagePickerOptions(x, y)
                     }
                     if (report.isAnyPermissionPermanentlyDenied) {
                         showSettingsDialog()
@@ -602,13 +602,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun launchCameraIntent() {
+    private fun launchCameraIntent(x:Int, y:Int) {
         val intent = Intent(this@MainActivity, ImagePicker::class.java)
         intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
 
         intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, 1)
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
         intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
         intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
         intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
@@ -644,12 +644,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun launchGalleryIntent() {
+    private fun launchGalleryIntent(x:Int, y:Int) {
         val intent = Intent(this@MainActivity, ImagePicker::class.java)
         intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
         intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, 1)
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
 
         activityLauncher.launch(intent) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -681,14 +681,14 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         }
     }
 
-    private fun showImagePickerOptions() {
+    private fun showImagePickerOptions(x:Int, y:Int) {
         ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
             override fun onTakeCameraSelected() {
-                launchCameraIntent()
+                launchCameraIntent(x, y)
             }
 
             override fun onChooseGallerySelected() {
-                launchGalleryIntent()
+                launchGalleryIntent(x, y)
             }
         })
     }

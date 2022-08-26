@@ -686,7 +686,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 imageView?.setImageBitmap(bitmap)
 
             }
-        })
+        }, 1, 1)
     }
 
     override fun onList(

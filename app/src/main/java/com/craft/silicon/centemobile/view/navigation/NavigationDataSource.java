@@ -136,4 +136,8 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateToLogoutFeedBack() {
+        return null;
+    }
+
 }

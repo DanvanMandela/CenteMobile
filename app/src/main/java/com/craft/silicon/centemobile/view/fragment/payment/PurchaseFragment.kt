@@ -786,7 +786,7 @@ class PurchaseFragment : Fragment(), AppCallbacks, Confirm {
                 imageView?.setImageBitmap(bitmap)
 
             }
-        })
+        }, 1, 1)
     }
 
     private fun onBiometric(forms: MutableList<FormControl>?, modules: Modules?) {

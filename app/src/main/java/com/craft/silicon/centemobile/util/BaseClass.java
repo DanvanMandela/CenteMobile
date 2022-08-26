@@ -27,6 +27,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.craft.silicon.centemobile.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -572,6 +575,21 @@ public class BaseClass {
             activity.startActivity(Intent.createChooser(i, "Send mail..."));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(activity, "Sorry no email clients found on your phone", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void show_toast(Activity activity, String message){
+        if(activity!=null && message!=null && !message.trim().isEmpty()){
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    final public static void animation_blow(Activity activity, View viewToAnimate){
+        if(activity!=null && viewToAnimate!=null){
+            viewToAnimate.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(activity, R.anim.blow);
+            animation.setDuration(1000);
+            viewToAnimate.startAnimation(animation);
         }
     }
 

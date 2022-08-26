@@ -150,7 +150,7 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         val animationDuration = requireContext()
             .resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
-            binding.mainLay.visibility = View.VISIBLE
+            binding.rlMainLay.visibility = View.VISIBLE
             stopShimmer()
             setStep()
             setState()

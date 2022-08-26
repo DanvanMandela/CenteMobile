@@ -21,6 +21,9 @@ interface StorageDataSource {
     fun setFirstRun(value: Boolean)
     val firstRun: StateFlow<Boolean?>
 
+    fun setLoginTime(value: Long)
+    val loginTime: StateFlow<Long?>
+
     fun setDeviceData(value: DeviceData)
     val deviceData: StateFlow<DeviceData?>
 

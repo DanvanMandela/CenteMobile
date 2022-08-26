@@ -167,6 +167,12 @@
         app:destination="@+id/receiptFragment"
         app:popUpToInclusive="true" />
 
+
+    <action
+        android:id="@+id/action_nav_log_feed_back"
+        app:destination="@+id/logoutFeedback"
+        app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/action_nav_alert"
         app:destination="@+id/newAlertDialogFragment"
@@ -474,6 +480,11 @@
         android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.ChangePinFragment"
         android:label="fragment_change_pin"
         tools:layout="@layout/fragment_change_pin" />
+    <fragment
+        android:id="@+id/logoutFeedback"
+        android:name="com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback"
+        android:label="fragment_logout_feedback"
+        tools:layout="@layout/fragment_logout_feedback" />
 
     <!--    Dialog-->
 </navigation>

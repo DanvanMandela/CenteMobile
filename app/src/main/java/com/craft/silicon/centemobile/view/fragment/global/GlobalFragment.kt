@@ -928,7 +928,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                 imageView?.setImageBitmap(bitmap)
 
             }
-        })
+        }, 1, 1)
     }
 
     override fun onDestroy() {

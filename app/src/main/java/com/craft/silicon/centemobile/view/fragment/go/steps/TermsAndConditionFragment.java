@@ -11,9 +11,11 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.databinding.FragmentTermsAndConditionBinding;
+import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.fragment.go.PagerData;
@@ -62,7 +64,12 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
     }
 
     private void setToolbar() {
-        binding.toolbar.setNavigationOnClickListener(view -> pagerData.onBack(1));
+        if(pagerData!=null){
+            binding.toolbar.setNavigationOnClickListener(view -> pagerData.onBack(1));
+        }else{
+            //BaseClass.show_toast(getActivity(), "---pagerData null 1----");
+        }
+
     }
 
     @Override
@@ -107,10 +114,15 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
 
     @Override
     public void onClick(View view) {
-        if (view.equals(binding.buttonNext)) {
-            if (validateFields()) pagerData.onNext(3);
-        } else if (view.equals(binding.buttonBack)) {
-            pagerData.onBack(1);
+        if(pagerData!=null){
+            if (view.equals(binding.buttonNext)) {
+                if (validateFields()) pagerData.onNext(3);
+            } else if (view.equals(binding.buttonBack)) {
+                pagerData.onBack(1);
+            }
+        }else{
+            //BaseClass.show_toast(getActivity(), "---pagerData null----");
         }
+
     }
 }

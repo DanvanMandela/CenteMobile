@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.databinding.FragmentLoadingBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -37,19 +40,30 @@ class LoadingFragment : BottomSheetDialogFragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentLoadingBinding.inflate(inflater, container, false)
+
+        autoDismiss()
+
         return binding.root.rootView
     }
+
+    fun autoDismiss(){
+        Handler(Looper.getMainLooper()).postDelayed({dialog?.dismiss()}, time)
+    }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog!!.setCancelable(false)
+        dialog!!.setCancelable(true)
+        dialog!!.setCanceledOnTouchOutside(false)
         // dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
 
     companion object {
         private val TAG: String = LoadingFragment::class.java.simpleName
+        private var time:Long   = Constants.Timeout.connection
 
         /**
          * Use this factory method to create a new instance of
@@ -67,6 +81,13 @@ class LoadingFragment : BottomSheetDialogFragment() {
         @JvmStatic
         fun show(fragmentManager: FragmentManager) {
             val loadingFragment = LoadingFragment()
+            loadingFragment.show(fragmentManager, TAG)
+        }
+
+        @JvmStatic
+        fun show(fragmentManager: FragmentManager,time:Long) {
+            val loadingFragment = LoadingFragment()
+            this@Companion.time = time
             loadingFragment.show(fragmentManager, TAG)
         }
 

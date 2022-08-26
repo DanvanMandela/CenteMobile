@@ -183,11 +183,14 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     public void onPositive() {
         setLoading(true);
         //widgetViewModel.storageDataSource.clearDevice();
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
             setLoading(false);
             ((MainActivity) requireActivity()).provideNavigationGraph()
                     .navigate(widgetViewModel.navigation().navigateLanding());
-        }, 1500);
+        }, 1500);*/
+
+        BindingAdapterKt.navigate(this,
+                widgetViewModel.navigation().navigateToLogoutFeedBack());
     }
 
     @Override

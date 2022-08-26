@@ -179,13 +179,13 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     override fun setOnClick() {
         binding.idLay.avatar.setOnClickListener {
-            imageSelector(ImageSelector.ID)
+            imageSelector(ImageSelector.ID, 3, 2)
         }
         binding.signatureLay.avatar.setOnClickListener {
-            imageSelector(ImageSelector.SIGNATURE)
+            imageSelector(ImageSelector.SIGNATURE, 3, 2)
         }
         binding.selfieLay.avatar.setOnClickListener {
-            imageSelector(ImageSelector.SELFIE)
+            imageSelector(ImageSelector.SELFIE,1,1)
         }
         binding.buttonNext.setOnClickListener(this)
         binding.buttonBack.setOnClickListener(this)
@@ -284,9 +284,9 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
 
-    override fun imageSelector(selector: ImageSelector?) {
+    override fun imageSelector(selector: ImageSelector?, x:Int, y:Int) {
         imageLive = selector
-        (requireActivity() as MainActivity).onImagePicker(this)
+        (requireActivity() as MainActivity).onImagePicker(this, x, y)
     }
 
     companion object {
