@@ -217,6 +217,26 @@
         app:popEnterAnim="@anim/anim_slide_in_right"
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_pending_transaction"
+        app:destination="@+id/pendingTransactionFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_beneficiary_management"
+        app:destination="@+id/beneficiaryManagementFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
     <!--    End-->
 
 
@@ -485,6 +505,16 @@
         android:name="com.craft.silicon.centemobile.view.fragment.transaction.StandingOrderDetailsFragment"
         android:label="fragment_standing_order_details"
         tools:layout="@layout/fragment_standing_order_details" />
+    <fragment
+        android:id="@+id/pendingTransactionFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.PendingTransactionFragment"
+        android:label="fragment_pending_transaction"
+        tools:layout="@layout/fragment_pending_transaction" />
+    <fragment
+        android:id="@+id/beneficiaryManagementFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
+        android:label="fragment_beneficiary_management"
+        tools:layout="@layout/fragment_beneficiary_management" />
 
     <!--    Dialog-->
 </navigation>

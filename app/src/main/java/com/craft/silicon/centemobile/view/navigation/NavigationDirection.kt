@@ -292,5 +292,41 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         }
     }
 
+    override fun navigateToBeneficiary(modules: Modules?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_beneficiary_management
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(StandingOrder::class.java)) {
+                    result.putParcelable("module", modules as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateToPendingTransaction(modules: Modules?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_pending_transaction
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(StandingOrder::class.java)) {
+                    result.putParcelable("module", modules as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
 
 }

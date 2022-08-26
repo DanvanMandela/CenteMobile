@@ -141,4 +141,12 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateToBeneficiary(Modules modules) {
+        return null;
+    }
+
+    default NavDirections navigateToPendingTransaction(Modules modules) {
+        return null;
+    }
+
 }
