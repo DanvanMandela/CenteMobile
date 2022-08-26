@@ -1,0 +1,173 @@
+Index: .idea/codeStyles/codeStyleConfig.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml
+new file mode 100644
+--- /dev/null	(date 1661441206686)
++++ b/.idea/codeStyles/codeStyleConfig.xml	(date 1661441206686)
+@@ -0,0 +1,5 @@
++<component name="ProjectCodeStyleConfiguration">
++  <state>
++    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
++  </state>
++</component>
+\ No newline at end of file
+Index: .idea/codeStyles/Project.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/Project.xml b/.idea/codeStyles/Project.xml
+new file mode 100644
+--- /dev/null	(date 1661441206667)
++++ b/.idea/codeStyles/Project.xml	(date 1661441206667)
+@@ -0,0 +1,123 @@
++<component name="ProjectCodeStyleConfiguration">
++  <code_scheme name="Project" version="173">
++    <JetCodeStyleSettings>
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </JetCodeStyleSettings>
++    <codeStyleSettings language="XML">
++      <option name="FORCE_REARRANGE_MODE" value="1" />
++      <indentOptions>
++        <option name="CONTINUATION_INDENT_SIZE" value="4" />
++      </indentOptions>
++      <arrangement>
++        <rules>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>xmlns:android</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>xmlns:.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*:id</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*:name</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>name</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>style</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>^$</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>ANDROID_ATTRIBUTE_ORDER</order>
++            </rule>
++          </section>
++          <section>
++            <rule>
++              <match>
++                <AND>
++                  <NAME>.*</NAME>
++                  <XML_ATTRIBUTE />
++                  <XML_NAMESPACE>.*</XML_NAMESPACE>
++                </AND>
++              </match>
++              <order>BY_NAME</order>
++            </rule>
++          </section>
++        </rules>
++      </arrangement>
++    </codeStyleSettings>
++    <codeStyleSettings language="kotlin">
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </codeStyleSettings>
++  </code_scheme>
++</component>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DesignSurface\">\r\n    <option name=\"filePathToZoomLevelMap\">\r\n      <map>\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/drawable/circle_layout.xml\" value=\"0.193\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/drawable/text_corner_back_morning.xml\" value=\"0.202\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/activity_main.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_accounts_layout.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_agent_layout.xml\" value=\"0.13372620126926563\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_amount_text_input_layout.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_auto_complete_item.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_bank_staff_layout.xml\" value=\"0.13372620126926563\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_beneficiary_item.xml\" value=\"0.19809610154125112\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_card_reader_layout.xml\" value=\"0.17889492753623187\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_check_box_layout.xml\" value=\"0.17889492753623187\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_contact_input_layout.xml\" value=\"0.16485507246376813\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_contact_us_layout.xml\" value=\"0.1912964641885766\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_current_customer_layout.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_customer_type_layout.xml\" value=\"0.17889492753623187\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_customer_type_tab.xml\" value=\"0.17889492753623187\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_date_picker_layout.xml\" value=\"0.17905711695376247\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_display_container.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_drop_down_layout.xml\" value=\"0.21875\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_dymanic_drop_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_frequent_module_item.xml\" value=\"0.15534420289855072\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_go_title_layout.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_header_item_card_layout.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_header_views_layout.xml\" value=\"0.1\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_hear_about_medium_layout.xml\" value=\"0.10029251984956122\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_home_body_layout.xml\" value=\"0.15534420289855072\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_home_header_layout.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_horizontal_scroll_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_label_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_label_list_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_landing_page_group_layout.xml\" value=\"0.15457842248413417\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_landing_page_item.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_linked_drop_down_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_linked_input_layout.xml\" value=\"0.17905711695376247\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_list_with_option_layout.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_map_toggle_layout.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_mini_statement_item.xml\" value=\"0.3421240199572345\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_mobile_number_layout.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_module_controller_layout.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_module_form_item_layout.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_module_item_layout.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_national_id_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_no_data_layout.xml\" value=\"0.22735507246376813\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_no_frequent_layout.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_no_notification_layout.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_no_service_alert_layout.xml\" value=\"0.15534420289855072\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_notification_layout.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_nssf_layout.xml\" value=\"0.128\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_otp_layout.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_password_text_input_layout.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_radion_group_layout.xml\" value=\"0.16485507246376813\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_recent_list_layout.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_single_text_drop_down.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_social_media_layout.xml\" value=\"0.13372620126926563\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_tab_group_layout.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_tab_item.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_text_input_layout.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_text_input_layout_amount.xml\" value=\"0.17889492753623187\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_toggle_button_layout.xml\" value=\"0.16364460562103356\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_toggle_group_container.xml\" value=\"0.16485507246376813\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_transaction_item_layout.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_tv_radio_layout.xml\" value=\"0.13372620126926563\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_address.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_alert_dialog.xml\" value=\"0.20521590423257802\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_atm.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_auth.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_branch.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_card_details.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_confirm.xml\" value=\"0.21875\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_connection.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_customer_product.xml\" value=\"0.1\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_dialog_otp.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_display_dialog.xml\" value=\"0.19809610154125112\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_dynamic.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_forgot_pin.xml\" value=\"0.2\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_global.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_global_o_t_p.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_go_o_t_p.xml\" value=\"0.21875\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_hear_about.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_home.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_i_d.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_i_d_details.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_income_source.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_landing_page.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_level_one.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_level_two.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_loading.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_login.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_main_aux.xml\" value=\"0.1455122393472348\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_maps.xml\" value=\"0.2105978260869565\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_mini_statement.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_new_alert_dialog.xml\" value=\"0.17361740707162285\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_new_self_registration.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_next_kin.xml\" value=\"0.2\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_notification.xml\" value=\"0.15534420289855072\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_on_the_go.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_on_the_landing.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_other_service.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_otp.xml\" value=\"0.25263157894736843\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_parent_details.xml\" value=\"0.1455122393472348\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_pre_forgot.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_pre_pin_mobile.xml\" value=\"0.1870824053452116\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_pre_pin_o_t_p.xml\" value=\"0.17724388032638258\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_product_confirmation.xml\" value=\"0.4\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_purchase.xml\" value=\"0.20244565217391305\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_receipt.xml\" value=\"0.18449682683590207\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_recent.xml\" value=\"0.20036264732547598\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_self_registration.xml\" value=\"0.176\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_smart_life.xml\" value=\"0.176\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_success_dialog.xml\" value=\"0.20521590423257802\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_terms_and_condition.xml\" value=\"0.13372620126926563\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_transaction_center.xml\" value=\"0.1\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_transaction_details.xml\" value=\"0.2\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_validation.xml\" value=\"0.16485507246376813\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/nssf_otp_layout.xml\" value=\"0.2980769230769231\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/play_ground.xml\" value=\"0.264\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu-v26/home_menu.xml\" value=\"0.24895833333333334\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu/home_menu.xml\" value=\"0.25\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu/notification_menu.xml\" value=\"0.24895833333333334\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu/receipt_menu.xml\" value=\"0.24895833333333334\" />\r\n        <entry key=\"..\\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/xml/motion_scene_loading_new.xml\" value=\"0.20244565217391305\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" default=\"true\" project-jdk-name=\"Android Studio default JDK\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 70473740f99ecea0d53da9a0d2cf02c3be3cd64e)
++++ b/.idea/misc.xml	(date 1661444437928)
+@@ -124,6 +124,12 @@
+         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu/notification_menu.xml" value="0.24895833333333334" />
+         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/menu/receipt_menu.xml" value="0.24895833333333334" />
+         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/xml/motion_scene_loading_new.xml" value="0.20244565217391305" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/activity_main.xml" value="0.16614583333333333" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/block_atm_branch_item_layout.xml" value="0.16354166666666667" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/block_map_toggle_layout.xml" value="0.1875" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/fragment_maps.xml" value="0.1875" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/fragment_otp.xml" value="0.16614583333333333" />
++        <entry key="..\:/Users/erick/Documents/AndroidStudio/CenteMobile/app/src/main/res/layout/fragment_self_registration.xml" value="0.16614583333333333" />
+       </map>
+     </option>
+   </component>
