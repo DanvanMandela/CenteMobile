@@ -4,8 +4,6 @@ import android.text.*
 import android.text.InputFilter.LengthFilter
 import android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
 import android.view.View
-import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.asLiveData
 import com.chaos.view.PinView
@@ -20,10 +18,8 @@ import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand.trimCommaOfString
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.ep.model.setAmountInputLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.util.*
 
 
 @BindingAdapter("callback", "hidden")
@@ -45,8 +41,8 @@ fun TextInputEditText.setHidden(
                 )
             )
             callbacks?.onServerValue(formControl, this)
-        } else callbacks?.onServerValue(formControl, this)
-    else callbacks?.onServerValue(formControl, this)
+        }
+    callbacks?.onServerValue(formControl, this)
 }
 
 @BindingAdapter("callback", "form", "value")

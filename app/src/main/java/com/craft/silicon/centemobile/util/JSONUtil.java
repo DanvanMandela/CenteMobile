@@ -77,6 +77,9 @@ public class JSONUtil {
                 String[] f = i.split(" ");//split using space
                 if (f.length == 2) dataMap.put(f[0], f[1]);
                 else if (f.length > 2) dataMap.put(f[0], f[1] + " " + f[2]);
+                else {
+
+                }
             }
             arrayList.add(dataMap);
         }

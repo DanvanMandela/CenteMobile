@@ -38,7 +38,8 @@ public interface BaseView {
     default void onImage(Bitmap bitmap) {
     }
 
-    default void onBiometric(){}
+    default void onBiometric() {
+    }
 
     default void imageSelector(ImageSelector selector) {
     }
@@ -46,13 +47,28 @@ public interface BaseView {
     default void logOut() {
     }
 
-    default void onOTP(String s){}
+    default void onOTP(String s) {
+    }
 
-    default void cleanLevel(){}
+    default void cleanLevel() {
+    }
 
-    default void twitter(){}
-    default void facebook(){}
-    default void telephone(){}
-    default void email(){}
-    default void chat(){}
+    default void twitter() {
+    }
+
+    default void facebook() {
+    }
+
+    default void telephone() {
+    }
+
+    default void email() {
+    }
+
+    default void chat() {
+    }
+
+
+
+
 }

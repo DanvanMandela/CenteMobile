@@ -21,8 +21,8 @@ public interface AppDataSource {
     }
 
     default Single<DynamicResponse> pinResetPre(JSONObject jsonObject,
-                                             JSONObject encrypted,
-                                             Context context) {
+                                                JSONObject encrypted,
+                                                Context context) {
         return null;
     }
 
@@ -52,7 +52,7 @@ public interface AppDataSource {
         return null;
     }
 
-    default Single<DynamicResponse> changePin(JSONObject jsonObject,
+    default Single<DynamicResponse> changePin(JSONObject jsonObject, JSONObject encrypted,
                                               Context context) {
         return null;
     }

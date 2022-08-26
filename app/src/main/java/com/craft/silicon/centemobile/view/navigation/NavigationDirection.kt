@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.navigation.ActionOnlyNavDirections
 import androidx.navigation.NavDirections
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.StandingOrder
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.view.dialog.MainDialogData
@@ -271,6 +272,24 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateToChangePin(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_change_pin)
+    }
+
+    override fun navigateToStandingDetails(standingOrder: StandingOrder?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_standing
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(StandingOrder::class.java)) {
+                    result.putParcelable("data", standingOrder as Parcelable)
+                }
+                return result
+            }
+        }
     }
 
 

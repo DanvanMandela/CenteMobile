@@ -224,8 +224,8 @@
                         android:id="@+id/space"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_16dp"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginBottom="32dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toTopOf="@+id/materialCardView6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -273,7 +273,7 @@
                                 android:layout_height="80dp"
                                 android:layout_alignParentRight="true"
                                 android:adjustViewBounds="true"
-                                android:src="@drawable/contactus_bg" />
+                                android:src="@drawable/contact_us_bg" />
 
                             <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
                                 android:id="@+id/childConnect"

@@ -45,5 +45,6 @@ enum class ControlFormatEnum(var type: String) {
     BENEFICIARY("SELECTBENEFICIARY"),
     END("END"),
     NEXT("NEXT"),
-    LIST_WITH_OPTIONS("ListWithOptions")
+    LIST_WITH_OPTIONS("ListWithOptions"),
+    STANDING_ORDER("STANDINGORDER")
 }

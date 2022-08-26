@@ -2,6 +2,7 @@ package com.craft.silicon.centemobile.view.navigation;
 
 import androidx.navigation.NavDirections;
 
+import com.craft.silicon.centemobile.data.model.StandingOrder;
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.view.dialog.MainDialogData;
@@ -133,6 +134,10 @@ public interface NavigationDataSource {
     }
 
     default NavDirections navigateToChangePin() {
+        return null;
+    }
+
+    default NavDirections navigateToStandingDetails(StandingOrder standingOrder) {
         return null;
     }
 

@@ -402,7 +402,10 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     @Override
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
-            if (validateFields()) checkCustomer();
+            if (validateFields()) {
+                // checkCustomer();
+                generateOTP();
+            }
         }
     }
 

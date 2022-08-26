@@ -89,12 +89,15 @@ class ChangePinFragment : Fragment(), AppCallbacks {
 
     private fun changePin() {
         val json = JSONObject()
-        json.put("OLDPIN", binding.pinEdit.text.toString())
-        json.put("NEWPIN", binding.editNewPin.text.toString())
-        json.put("CONFIRMPIN", binding.editConPin.text.toString())
+        val encrypted = JSONObject()
+        encrypted.put("OLDPIN", BaseClass.newEncrypt(binding.pinEdit.text.toString()))
+        encrypted.put("NEWPIN", BaseClass.newEncrypt(binding.editNewPin.text.toString()))
+        encrypted.put("CONFIRMPIN", BaseClass.newEncrypt(binding.editConPin.text.toString()))
+
+
 
         composite.add(
-            baseViewModel.changePin(json, requireContext())
+            baseViewModel.changePin(json,encrypted, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

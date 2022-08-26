@@ -3,14 +3,11 @@ package com.craft.silicon.centemobile.view.binding
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Context.CONNECTIVITY_SERVICE
 import android.graphics.BlurMaskFilter
 import android.graphics.MaskFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -28,7 +25,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -77,6 +73,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.flow.StateFlow
 import java.text.*
 import java.time.LocalDate
@@ -826,6 +823,17 @@ fun FrameLayout.listOption(
     callbacks.onListOption(data, modules)
 }
 
+@BindingAdapter("stand", "module", "callback", "storage")
+fun EpoxyRecyclerView.standingOrder(
+    form: FormControl?,
+    modules: Modules?,
+    callbacks: AppCallbacks,
+    storage: StorageDataSource?
+) {
+
+    callbacks.listDataServer(this, form, modules)
+}
+
 
 @BindingAdapter("preview", "module", "callback")
 fun LinearLayout.setPreviewWindow(
@@ -924,6 +932,27 @@ fun otpLive(optState: StateFlow<String>): LiveData<String> {
 }
 
 
+fun Context.isOnline(): Boolean {
+    return try {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cm.activeNetworkInfo
+        netInfo != null && netInfo.isConnected
+    } catch (e: NullPointerException) {
+        e.printStackTrace()
+        false
+    }
+}
+
+fun TextInputEditText.updateText(text: String) {
+    val focussed = hasFocus()
+    if (focussed) {
+        clearFocus()
+    }
+    setText(text)
+    if (focussed) {
+        requestFocus()
+    }
+}
 
 
 

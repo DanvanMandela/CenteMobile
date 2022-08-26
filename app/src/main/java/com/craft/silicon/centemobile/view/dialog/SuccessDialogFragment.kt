@@ -48,7 +48,13 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
 
     override fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.callback = this
+        if (callBacks != null)
+            binding.callback = this
+        else binding.callback = object : AppCallbacks {
+            override fun onDialog() {
+                dialog?.dismiss()
+            }
+        }
         if (dialogData != null) {
             binding.data = dialogData
             Log.e("TAg", Gson().toJson(dialogData))
@@ -70,7 +76,7 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
         fun showDialog(
             data: DialogData,
             manager: FragmentManager,
-            callback: AppCallbacks
+            callback: AppCallbacks?
         ) =
             SuccessDialogFragment().apply {
                 arguments = Bundle().apply {
@@ -98,7 +104,6 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
             )
         }
     }
-
 
 
     override fun onDialog() {

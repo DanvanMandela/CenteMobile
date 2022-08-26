@@ -167,6 +167,12 @@
         app:destination="@+id/receiptFragment"
         app:popUpToInclusive="true" />
 
+
+    <action
+        android:id="@+id/action_nav_standing"
+        app:destination="@+id/standingOrderDetailsFragment"
+        app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/action_nav_alert"
         app:destination="@+id/newAlertDialogFragment"
@@ -474,6 +480,11 @@
         android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.ChangePinFragment"
         android:label="fragment_change_pin"
         tools:layout="@layout/fragment_change_pin" />
+    <dialog
+        android:id="@+id/standingOrderDetailsFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.StandingOrderDetailsFragment"
+        android:label="fragment_standing_order_details"
+        tools:layout="@layout/fragment_standing_order_details" />
 
     <!--    Dialog-->
 </navigation>
