@@ -167,6 +167,12 @@
         app:destination="@+id/receiptFragment"
         app:popUpToInclusive="true" />
 
+
+    <action
+        android:id="@+id/action_nav_standing"
+        app:destination="@+id/standingOrderDetailsFragment"
+        app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/action_nav_alert"
         app:destination="@+id/newAlertDialogFragment"
@@ -188,6 +194,11 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_login_out_feedback"
+        app:destination="@+id/logoutFeedback"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_nav_disclaimer"
         app:destination="@+id/disclaimerFragment"
         app:popUpToInclusive="true" />
@@ -205,6 +216,26 @@
     <action
         android:id="@+id/action_nav_bio"
         app:destination="@+id/biometricFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_pending_transaction"
+        app:destination="@+id/pendingTransactionFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_beneficiary_management"
+        app:destination="@+id/beneficiaryManagementFragment"
         app:enterAnim="@anim/anim_slide_in_right"
         app:exitAnim="@anim/anim_slide_out_right"
         app:launchSingleTop="true"
@@ -474,6 +505,26 @@
         android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.ChangePinFragment"
         android:label="fragment_change_pin"
         tools:layout="@layout/fragment_change_pin" />
+    <dialog
+        android:id="@+id/standingOrderDetailsFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.StandingOrderDetailsFragment"
+        android:label="fragment_standing_order_details"
+        tools:layout="@layout/fragment_standing_order_details" />
+    <fragment
+        android:id="@+id/pendingTransactionFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.PendingTransactionFragment"
+        android:label="fragment_pending_transaction"
+        tools:layout="@layout/fragment_pending_transaction" />
+    <fragment
+        android:id="@+id/beneficiaryManagementFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
+        android:label="fragment_beneficiary_management"
+        tools:layout="@layout/fragment_beneficiary_management" />
+    <fragment
+        android:id="@+id/logoutFeedback"
+        android:name="com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback"
+        android:label="fragment_logout_feedback"
+        tools:layout="@layout/fragment_logout_feedback" />
 
     <!--    Dialog-->
 </navigation>

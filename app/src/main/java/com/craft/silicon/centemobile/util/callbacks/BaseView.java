@@ -40,7 +40,7 @@ public interface BaseView {
 
     default void onBiometric(){}
 
-    default void imageSelector(ImageSelector selector) {
+    default void imageSelector(ImageSelector selector, int x, int y) {
     }
 
     default void logOut() {
@@ -55,4 +55,12 @@ public interface BaseView {
     default void telephone(){}
     default void email(){}
     default void chat(){}
+
+    default void rate_very_poor(){}
+    default void rate_poor(){}
+    default void rate_average(){}
+    default void rate_good(){}
+    default void rate_excellent(){}
+    default void rating_dismiss(){}
+    default void rating_submit(){}
 }
