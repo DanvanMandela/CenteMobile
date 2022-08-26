@@ -10,12 +10,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentLogoutFeedbackBinding
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.binding.navigate
 import com.craft.silicon.centemobile.view.binding.setImageRes
 import com.craft.silicon.centemobile.view.model.BaseViewModel
@@ -24,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import org.ocpsoft.prettytime.units.Millisecond
 import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
@@ -65,7 +62,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         //return inflater.inflate(R.layout.fragment_logout_feedback, container, false)
     }
     //dd/MM/yyyy
-    fun getDateFromMilliSeconds(millisecond: Long, date_format:String):String{
+    private fun getDateFromMilliSeconds(millisecond: Long, date_format:String):String{
         val simpleDateFormat = SimpleDateFormat(date_format)
         val dateString = simpleDateFormat.format(millisecond)
         return dateString
@@ -75,10 +72,10 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
 
     fun setData(){
         val login_time  = widgetViewModel.storageDataSource.loginTime.value!!;//1661523060000L
-        var logout_time = System.currentTimeMillis()
+        val logout_time = System.currentTimeMillis()
         val duration    = ((System.currentTimeMillis() - login_time));
 
-        var date_format: String       = "dd MMM yyyy HH:mm:ss"
+        val date_format: String       = "dd MMM yyyy HH:mm:ss"
         var date_format_hours: String = "HH:mm:ss"
         binding.txtLoginTime.text     = getDateFromMilliSeconds(login_time, date_format)
         binding.txtLogoutTime.text    = getDateFromMilliSeconds(logout_time, date_format)

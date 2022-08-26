@@ -144,12 +144,10 @@ public interface NavigationDataSource {
     default NavDirections navigateToLogoutFeedBack() {
         return null;
     }
+
     default NavDirections navigateToBeneficiary(Modules modules) {
         return null;
     }
-
-
-
 
 
     default NavDirections navigateToPendingTransaction(Modules modules) {
