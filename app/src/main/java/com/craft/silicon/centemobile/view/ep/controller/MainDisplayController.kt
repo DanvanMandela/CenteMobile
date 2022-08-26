@@ -2,11 +2,14 @@ package com.craft.silicon.centemobile.view.ep.controller
 
 import android.os.Parcelable
 import com.airbnb.epoxy.TypedEpoxyController
+import com.craft.silicon.centemobile.data.model.StandingOrderList
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.labelLayout
 import com.craft.silicon.centemobile.loadingStateLayout
 import com.craft.silicon.centemobile.nothingLayout
+import com.craft.silicon.centemobile.standingOrderItemLayout
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.AppData
 import com.craft.silicon.centemobile.view.ep.data.Nothing
@@ -24,10 +27,23 @@ class MainDisplayController(val callbacks: AppCallbacks) :
                 is Nothing -> nothingLayout { id("nothing") }
                 is LoadingState -> loadingStateLayout { id("Loading") }
                 is LabelData -> labelLayout {
-                    id("label")
+                    id(BaseClass.generateAlphaNumericString(10))
                     value(data.value)
                 }
+                is StandingOrderList -> standingOrder(data)
             }
+    }
+
+    private fun standingOrder(data: StandingOrderList) {
+        for (s in data.list!!) {
+            standingOrderItemLayout {
+                id(BaseClass.generateAlphaNumericString(10))
+                data(s)
+                form(data.formControl)
+                module(data.module)
+                callback(this@MainDisplayController.callbacks)
+            }
+        }
     }
 
     private fun displayState(data: DisplayData?) {

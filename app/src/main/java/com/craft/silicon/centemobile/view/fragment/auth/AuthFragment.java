@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.auth;
 
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
+import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.isOnline;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.converter.LoginDataTypeConverter;
@@ -158,8 +158,10 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     @Override
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
-            if (validateFields())
+            if (validateFields()) {
                 authUser(Objects.requireNonNull(binding.editPin.getText()).toString());
+
+            }
         } else if (view.equals(binding.forgotPin)) {
             BindingAdapterKt.navigate(this,
                     authViewModel.navigationDataSource.navigateResetPinATM());
@@ -168,14 +170,17 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void authUser(String pin) {
         hideSoftKeyboard(requireActivity(), binding.getRoot());
-        subscribe.add(authViewModel.loginAccount(pin,
-                        requireActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
-        subscribe.add(authViewModel.loading.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setLoading, Throwable::printStackTrace));
+        if (isOnline(requireActivity())) {
+            subscribe.add(authViewModel.loginAccount(pin,
+                            requireActivity())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
+            subscribe.add(authViewModel.loading.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::setLoading, Throwable::printStackTrace));
+        } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
+
     }
 
     @Override
@@ -321,6 +326,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     public void progress(int p) {
                         new AppLogger().appLog("PROGRESS", String.valueOf(p));
                         if (p == 100) {
+                            authViewModel.storage.setVersion(version);
                             navigate();
                         }
                     }
@@ -340,7 +346,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
                     }
                 });
-                authViewModel.storage.setVersion(version);
+
             } else navigate();
         } else {
             authViewModel.storage.setVersion("1");

@@ -34,6 +34,7 @@ import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
@@ -401,14 +402,19 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     @Override
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
-            if (validateFields()) checkCustomer();
+            if (validateFields()) {
+                // checkCustomer();
+                generateOTP();
+            }
         }
     }
 
     @Override
     public void otp(@NonNull String string) {
         new AppLogger().appLog("SELF:OTP", string);
-        validateOTP(string);
+        if (BindingAdapterKt.isOnline(requireActivity()))
+            validateOTP(string);
+        else new ShowToast(requireContext(), getString(R.string.no_connection), true);
     }
 
 
@@ -502,28 +508,30 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
 
 
     private void validateCard() {
-        setLoading(true);
-        JSONObject jsonObject = new JSONObject();
-        JSONObject encrypted = new JSONObject();
-        try {
-            jsonObject.put("BANKACCOUNTID", Objects
-                    .requireNonNull(binding.editAccountNumber.getText()).toString());
-            jsonObject.put("PHONENUMBER", mobileNumber.getValue());
-            encrypted.put("CARDNUMBER", BaseClass
-                    .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
-                            .toString().replace("-", "")));
-            encrypted.put("CARDPIN", BaseClass
-                    .newEncrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
-            disposable.add(baseViewModel.validateCard(jsonObject, encrypted, requireContext())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::setOnValidateCardSuccess, Throwable::printStackTrace));
+        if (BindingAdapterKt.isOnline(requireActivity())) {
+            setLoading(true);
+            JSONObject jsonObject = new JSONObject();
+            JSONObject encrypted = new JSONObject();
+            try {
+                jsonObject.put("BANKACCOUNTID", Objects
+                        .requireNonNull(binding.editAccountNumber.getText()).toString());
+                jsonObject.put("PHONENUMBER", mobileNumber.getValue());
+                encrypted.put("CARDNUMBER", BaseClass
+                        .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
+                                .toString().replace("-", "")));
+                encrypted.put("CARDPIN", BaseClass
+                        .newEncrypt(Objects.requireNonNull(binding.editATMPin.getText()).toString()));
+                disposable.add(baseViewModel.validateCard(jsonObject, encrypted, requireContext())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::setOnValidateCardSuccess, Throwable::printStackTrace));
 
-        } catch (JSONException e) {
-            new ShowToast(requireContext(), e.getLocalizedMessage(), true);
-            setLoading(false);
-            e.printStackTrace();
-        }
+            } catch (JSONException e) {
+                new ShowToast(requireContext(), e.getLocalizedMessage(), true);
+                setLoading(false);
+                e.printStackTrace();
+            }
+        } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
     }
 
     private void setOnValidateCardSuccess(DynamicResponse response) {

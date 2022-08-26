@@ -273,9 +273,5 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_change_pin)
     }
 
-    override fun navigateToLogoutFeedBack(): NavDirections {
-        return ActionOnlyNavDirections(R.id.action_nav_log_feed_back)
-    }
-
 
 }

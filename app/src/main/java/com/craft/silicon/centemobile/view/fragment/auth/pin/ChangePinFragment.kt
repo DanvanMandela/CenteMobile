@@ -16,6 +16,7 @@ import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
+import com.craft.silicon.centemobile.view.binding.isOnline
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
@@ -76,18 +77,27 @@ class ChangePinFragment : Fragment(), AppCallbacks {
         }
 
         binding.materialButton.setOnClickListener {
-            if (validateFields()) changePin()
+            if (requireActivity().isOnline()) {
+                if (validateFields()) changePin()
+            } else ShowToast(
+                requireContext(),
+                getString(R.string.no_connection),
+                true
+            )
         }
     }
 
     private fun changePin() {
         val json = JSONObject()
-        json.put("OLDPIN", binding.pinEdit.text.toString())
-        json.put("NEWPIN", binding.editNewPin.text.toString())
-        json.put("CONFIRMPIN", binding.editConPin.text.toString())
+        val encrypted = JSONObject()
+        encrypted.put("OLDPIN", BaseClass.newEncrypt(binding.pinEdit.text.toString()))
+        encrypted.put("NEWPIN", BaseClass.newEncrypt(binding.editNewPin.text.toString()))
+        encrypted.put("CONFIRMPIN", BaseClass.newEncrypt(binding.editConPin.text.toString()))
+
+
 
         composite.add(
-            baseViewModel.changePin(json, requireContext())
+            baseViewModel.changePin(json,encrypted, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

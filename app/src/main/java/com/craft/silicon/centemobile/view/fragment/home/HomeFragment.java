@@ -133,7 +133,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         setViewModel();
         setHomeData();
         setController();
-
         return binding.getRoot().getRootView();
     }
 

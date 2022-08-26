@@ -1,7 +1,9 @@
 package com.craft.silicon.centemobile.view.ep.model
 
+import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
+import android.text.TextWatcher
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.DataBindingEpoxyModel
@@ -17,6 +19,9 @@ import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.setDefaultValue
 import com.google.android.material.textfield.TextInputEditText
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 
 @EpoxyModelClass
@@ -44,14 +49,14 @@ open class AmountLayoutModel : DataBindingEpoxyModel() {
         binding.callback = callbacks
         binding.storage = storage
 
-
-        binding.child.addTextChangedListener(
-            NumberTextWatcherForThousand(
-                binding.child,
-                callbacks,
-                form
-            )
-        )
+        binding.child.addTextChangedListener(thousandSeparatorListener(callbacks, form))
+//        binding.child.addTextChangedListener(
+//            NumberTextWatcherForThousand(
+//                binding.child,
+//                callbacks,
+//                form
+//            )
+//        )
     }
 }
 
@@ -89,5 +94,34 @@ fun TextInputEditText.setAmountInputLayout(
                 mandatory = formControl.isMandatory
             )
         )
+    }
+}
+
+private fun thousandSeparatorListener(callbacks: AppCallbacks?, form: FormControl?): TextWatcher {
+    return object : TextWatcher {
+        var formatting = false
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(editable: Editable) {
+            if (formatting) return
+            formatting = true
+            val str = editable.toString().replace("[^\\d]".toRegex(), "")
+            if (str.isNotEmpty()) {
+                val s1 = str.toDouble()
+                val nf2: NumberFormat = NumberFormat.getInstance(Locale.getDefault())
+                (nf2 as DecimalFormat).applyPattern("#,###,###")
+                editable.replace(0, editable.length, nf2.format(s1))
+                callbacks?.userInput(
+                    InputData(
+                        name = form?.controlText,
+                        key = form?.serviceParamID,
+                        value = NumberTextWatcherForThousand.trimCommaOfString(editable.toString()),
+                        encrypted = form!!.isEncrypted,
+                        mandatory = form.isMandatory
+                    )
+                )
+            }
+            formatting = false
+        }
     }
 }

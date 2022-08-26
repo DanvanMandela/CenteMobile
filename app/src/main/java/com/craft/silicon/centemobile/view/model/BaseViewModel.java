@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
@@ -194,7 +193,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     }
 
     @Override
-    public Single<DynamicResponse> changePin(JSONObject json, Context context) {
+    public Single<DynamicResponse> changePin(JSONObject json,JSONObject encrypted, Context context) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
@@ -221,6 +220,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             json.put("PINTYPE", "PIN");
 
             jsonObject.put("CHANGEPIN", json);
+            jsonObject.put("EncryptedFields", encrypted);
             String changePinRequest = jsonObject.toString();
             AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
 

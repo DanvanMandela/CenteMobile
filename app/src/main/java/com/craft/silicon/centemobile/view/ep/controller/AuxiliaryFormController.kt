@@ -8,7 +8,6 @@ import com.craft.silicon.centemobile.data.model.control.ControlIDEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
-import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.FormData
@@ -264,6 +263,13 @@ class NewFormController(
                             data(d)
                             module(data.module)
                             callback(this@NewFormController.callbacks)
+                        }
+                        nonCaps(ControlFormatEnum.STANDING_ORDER.type) -> standingOrderLayout {
+                            id(d.controlID)
+                            data(d)
+                            module(data.module)
+                            callback(this@NewFormController.callbacks)
+                            storage(this@NewFormController.storageDataSource)
                         }
                     }
                 }
