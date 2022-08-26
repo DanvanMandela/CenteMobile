@@ -161,39 +161,39 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     override fun rate_very_poor() {
         override_images()
         BaseClass.animation_blow(activity, binding.imgVeryPoor)
-        binding.imgVeryPoor.setImageRes(R.drawable.feedback_one_selected)
+        binding.imgVeryPoor.setImageResource(R.drawable.feedback_one_selected)
     }
 
     override fun rate_poor() {
         override_images()
         BaseClass.animation_blow(activity, binding.imgPoor)
-        binding.imgPoor.setImageRes(R.drawable.feedback_two_selected)
+        binding.imgPoor.setImageResource(R.drawable.feedback_two_selected)
     }
 
     override fun rate_average() {
         override_images()
         BaseClass.animation_blow(activity, binding.imgAverage);
-        binding.imgAverage.setImageRes(R.drawable.feedback_three_selected)
+        binding.imgAverage.setImageResource(R.drawable.feedback_three_selected)
     }
 
     override fun rate_good() {
         override_images()
         BaseClass.animation_blow(activity, binding.imgGood);
-        binding.imgGood.setImageRes(R.drawable.feedback_four_selected)
+        binding.imgGood.setImageResource(R.drawable.feedback_four_selected)
     }
 
     override fun rate_excellent() {
         override_images()
         BaseClass.animation_blow(activity, binding.imgExcellent);
-        binding.imgExcellent.setImageRes(R.drawable.feedback_five_selected)
+        binding.imgExcellent.setImageResource(R.drawable.feedback_five_selected)
     }
 
     fun override_images(){
-        binding.imgVeryPoor.setImageRes(R.drawable.feedback_one)
-        binding.imgPoor.setImageRes(R.drawable.feedback_two)
-        binding.imgAverage.setImageRes(R.drawable.feedback_three)
-        binding.imgGood.setImageRes(R.drawable.feedback_four)
-        binding.imgExcellent.setImageRes(R.drawable.feedback_five)
+        binding.imgVeryPoor.setImageResource(R.drawable.feedback_one)
+        binding.imgPoor.setImageResource(R.drawable.feedback_two)
+        binding.imgAverage.setImageResource(R.drawable.feedback_three)
+        binding.imgGood.setImageResource(R.drawable.feedback_four)
+        binding.imgExcellent.setImageResource(R.drawable.feedback_five)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
