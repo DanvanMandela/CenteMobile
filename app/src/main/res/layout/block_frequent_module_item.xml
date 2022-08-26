@@ -16,47 +16,67 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="@{()->callback.onFrequent(data)}"
-        android:padding="@dimen/dimens_5dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/avatar"
-            imageUri="@{data.moduleUrl}"
-            android:layout_width="@dimen/dimens_40dp"
-            android:layout_height="@dimen/dimens_40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/avatar"
-            android:scaleType="fitXY"
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="@{()->callback.onFrequent(data)}"
+            app:cardBackgroundColor="@color/app_blue_light"
+            app:cardCornerRadius="@dimen/dimens_0dp"
+            app:cardElevation="@dimen/dimens_0dp"
+            app:layout_constraintDimensionRatio="6:6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dimens_5dp">
+
+                <ImageView
+                    android:id="@+id/avatar"
+                    imageUri="@{data.moduleUrl}"
+                    android:layout_width="@dimen/dimens_40dp"
+                    android:layout_height="@dimen/dimens_40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/avatar"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
-            android:id="@+id/title"
-            textSet="@{data.moduleName}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
-            android:fontFamily="@font/poppins_medium"
-            android:gravity="center"
-            android:maxLines="2"
-            android:minLines="2"
-            android:paddingHorizontal="@dimen/dimens_5dp"
-            android:paddingVertical="@dimen/dimens_2dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avatar"
-            tools:ignore="UnusedAttribute" />
+                <TextView
+                    android:id="@+id/title"
+                    textSet="@{data.moduleName}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:paddingHorizontal="@dimen/dimens_5dp"
+                    android:paddingVertical="@dimen/dimens_2dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/avatar"
+                    tools:ignore="UnusedAttribute" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
