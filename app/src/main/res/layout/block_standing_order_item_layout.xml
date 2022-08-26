@@ -32,7 +32,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dimens_16dp">
+            android:paddingTop="@dimen/dimens_16dp"
+            android:paddingHorizontal="@dimen/dimens_16dp">
 
             <ImageView
                 android:id="@+id/icon"
@@ -202,21 +203,23 @@
                 android:id="@+id/viewTwo"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/ghost_white"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/amountTxt" />
 
 
             <LinearLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimens_54dp"
-                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewTwo">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
@@ -224,14 +227,14 @@
                     android:layout_weight="1"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:fontFamily="@font/poppins_medium"
-                    android:gravity="center"
+                    android:gravity="end|center"
                     android:onClick="@{()->callback.viewStandingOrder(data)}"
                     android:text="@string/view_details"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/app_blue_light"
                     app:icon="@drawable/next_small"
                     app:iconGravity="textStart"
-                    app:iconSize="@dimen/dimens_24dp"
+                    app:iconSize="@dimen/dimens_20dp"
                     app:iconTint="@color/app_blue_light" />
 
                 <View
@@ -250,11 +253,11 @@
                     android:gravity="center"
                     android:onClick="@{()->callback.deleteStandingOrder(form,module,data)}"
                     android:text="@string/delete"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/red_app"
                     app:icon="@drawable/delete_small"
                     app:iconGravity="textStart"
-                    app:iconSize="@dimen/dimens_24dp"
+                    app:iconSize="@dimen/dimens_20dp"
                     app:iconTint="@color/red_app" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
