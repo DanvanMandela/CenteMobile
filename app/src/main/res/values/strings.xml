@@ -391,11 +391,10 @@
     <string name="start_date">Start Date</string>
     <string name="frequency">Frequency</string>
     <string name="end_date">End Date</string>
-    <string name="last_exc">Last Excitation Date</string>
+    <string name="last_exc">Last Excetuation Date</string>
     <string name="delete_standing">Delete standing order?</string>
     <string name="delete_s_message">Are you sure you want to delete the standing order</string>
     <string name="unable_to_delete">Unable to delete</string>
-    <string name="account_alias">Account Alias</string>
 
 
 </resources>
