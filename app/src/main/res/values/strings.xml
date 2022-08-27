@@ -395,6 +395,7 @@
     <string name="delete_standing">Delete standing order?</string>
     <string name="delete_s_message">Are you sure you want to delete the standing order</string>
     <string name="unable_to_delete">Unable to delete</string>
+    <string name="account_alias">Account Alias</string>
 
 
 </resources>
