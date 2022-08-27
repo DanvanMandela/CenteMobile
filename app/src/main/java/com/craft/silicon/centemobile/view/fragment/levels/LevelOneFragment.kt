@@ -652,114 +652,84 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
 
-                                    if (formControl?.nextFormID.isNullOrEmpty())
-                                        SuccessDialogFragment.showDialog(
-                                            DialogData(
-                                                title = R.string.success,
-                                                subTitle = resData?.message!!,
-                                                R.drawable.success
-                                            ),
-                                            requireActivity().supportFragmentManager, this
-                                        )
-                                    else
-                                        if (resData?.formID != null) {
+                                    if (resData?.formID != null) {
+                                        if (nonCaps(resData.formID)
+                                            == nonCaps("STATEMENT")
+                                        ) {
+                                            DisplayDialogFragment.setData(
+                                                data = resData.accountStatement
+                                            )
+                                            navigate(
+                                                baseViewModel
+                                                    .navigationData
+                                                    .navigateToDisplayDialog(
+                                                        DisplayData(
+                                                            display = null,
+                                                            modules = modules,
+                                                            form = formControl
+                                                        )
+                                                    )
+                                            )
 
-                                            if (!TextUtils.isEmpty(resData.formID)
-                                            ) {
+                                        } else if (nonCaps(resData.formID)
+                                            == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                        ) {
+                                            AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                            ReceiptFragment.newInstance(
+                                                this, ReceiptList(
+                                                    receipt = resData.receipt!!
+                                                        .toMutableList(),
+                                                    notification = resData.notifications
+                                                )
+                                            )
 
-                                                if (nonCaps(resData.formID)
-                                                    == nonCaps("PAYMENTCONFIRMATIONFORM")
-                                                ) {
-                                                    ReceiptFragment.newInstance(
-                                                        this, ReceiptList(
+                                            navigate(
+                                                widgetViewModel.navigation()
+                                                    .navigateReceipt(
+                                                        ReceiptList(
                                                             receipt = resData.receipt!!
                                                                 .toMutableList(),
                                                             notification = resData.notifications
-
                                                         )
                                                     )
-                                                    navigate(
-                                                        widgetViewModel.navigation()
-                                                            .navigateReceipt(
-                                                                ReceiptList(
-                                                                    receipt = resData.receipt!!
-                                                                        .toMutableList(),
-                                                                    notification = resData.notifications
-                                                                )
-                                                            )
-                                                    )
-                                                } else if (nonCaps(resData.formID)
-                                                    == nonCaps("STATEMENT")
-                                                ) {
-                                                    DisplayDialogFragment.setData(
-                                                        data = resData.accountStatement
-                                                    )
-                                                    navigate(
-                                                        baseViewModel
-                                                            .navigationData
-                                                            .navigateToDisplayDialog(
-                                                                DisplayData(
-                                                                    display = null,
-                                                                    modules = modules,
-                                                                    form = formControl
-                                                                )
-                                                            )
-                                                    )
-                                                } else if (nonCaps(resData.formID)
-                                                    == nonCaps("RELIGION")
-                                                ) {
-                                                    val mData = GlobalResponseTypeConverter().to(
-                                                        BaseClass.decryptLatest(
-                                                            it.response,
-                                                            baseViewModel.dataSource.deviceData.value!!.device,
-                                                            true,
-                                                            baseViewModel.dataSource.deviceData.value!!.run
-                                                        )
-                                                    )
-
-                                                    DisplayDialogFragment.setData(
-                                                        data = mData?.data
-                                                    )
-                                                    navigate(
-                                                        baseViewModel
-                                                            .navigationData
-                                                            .navigateToDisplayDialog(
-                                                                DisplayData(
-                                                                    display = null,
-                                                                    modules = modules,
-                                                                    form = formControl
-                                                                )
-                                                            )
-                                                    )
-
-                                                } else {
-                                                    ShowToast(requireContext(), resData.message)
-                                                    setOnNextModule(
-                                                        formControl,
-                                                        resData.next,
-                                                        modules,
-                                                        resData.formID
-                                                    )
-                                                }
-
-                                            } else {
-                                                SuccessDialogFragment.showDialog(
-                                                    DialogData(
-                                                        title = R.string.success,
-                                                        subTitle = resData.message!!,
-                                                        R.drawable.success
-                                                    ),
-                                                    requireActivity().supportFragmentManager, this
+                                            )
+                                        } else if (nonCaps(resData.formID) == nonCaps(
+                                                "RELIGION"
+                                            )
+                                        ) {
+                                            val mData = GlobalResponseTypeConverter().to(
+                                                BaseClass.decryptLatest(
+                                                    it.response,
+                                                    baseViewModel.dataSource.deviceData.value!!.device,
+                                                    true,
+                                                    baseViewModel.dataSource.deviceData.value!!.run
                                                 )
-                                            }
-                                        } else SuccessDialogFragment.showDialog(
-                                            DialogData(
-                                                title = R.string.success,
-                                                subTitle = resData?.message!!,
-                                                R.drawable.success
-                                            ),
-                                            requireActivity().supportFragmentManager, this
-                                        )
+                                            )
+
+                                            DisplayDialogFragment.setData(
+                                                data = mData?.data
+                                            )
+                                            navigate(
+                                                baseViewModel
+                                                    .navigationData
+                                                    .navigateToDisplayDialog(
+                                                        DisplayData(
+                                                            display = null,
+                                                            modules = modules,
+                                                            form = formControl
+                                                        )
+                                                    )
+                                            )
+
+                                        }
+                                    } else SuccessDialogFragment.showDialog(
+                                        DialogData(
+                                            title = R.string.success,
+                                            subTitle = resData?.message!!,
+                                            R.drawable.success
+                                        ),
+                                        requireActivity().supportFragmentManager, this
+                                    )
 
                                 } else if (nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
@@ -1153,95 +1123,84 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                if (formControl?.nextFormID.isNullOrEmpty())
-                                    SuccessDialogFragment.showDialog(
-                                        DialogData(
-                                            title = R.string.success,
-                                            subTitle = resData?.message!!,
-                                            R.drawable.success
-                                        ),
-                                        requireActivity().supportFragmentManager, this
-                                    )
-                                else
-                                    if (resData?.formID != null) {
-                                        if (nonCaps(resData.formID)
-                                            == nonCaps("STATEMENT")
-                                        ) {
-                                            DisplayDialogFragment.setData(
-                                                data = resData.accountStatement
-                                            )
-                                            navigate(
-                                                baseViewModel
-                                                    .navigationData
-                                                    .navigateToDisplayDialog(
-                                                        DisplayData(
-                                                            display = null,
-                                                            modules = modules,
-                                                            form = formControl
-                                                        )
+                                if (resData?.formID != null) {
+                                    if (nonCaps(resData.formID)
+                                        == nonCaps("STATEMENT")
+                                    ) {
+                                        DisplayDialogFragment.setData(
+                                            data = resData.accountStatement
+                                        )
+                                        navigate(
+                                            baseViewModel
+                                                .navigationData
+                                                .navigateToDisplayDialog(
+                                                    DisplayData(
+                                                        display = null,
+                                                        modules = modules,
+                                                        form = formControl
                                                     )
-                                            )
-
-                                        } else if (nonCaps(resData.formID)
-                                            == nonCaps("PAYMENTCONFIRMATIONFORM")
-                                        ) {
-                                            AppLogger.instance.appLog("Pay", Gson().toJson(resData))
-                                            ReceiptFragment.newInstance(
-                                                this, ReceiptList(
-                                                    receipt = resData.receipt!!
-                                                        .toMutableList(),
-                                                    notification = resData.notifications
                                                 )
-                                            )
+                                        )
 
-                                            navigate(
-                                                widgetViewModel.navigation()
-                                                    .navigateReceipt(
-                                                        ReceiptList(
-                                                            receipt = resData.receipt!!
-                                                                .toMutableList(),
-                                                            notification = resData.notifications
-                                                        )
+                                    } else if (nonCaps(resData.formID)
+                                        == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                    ) {
+                                        AppLogger.instance.appLog("Pay", Gson().toJson(resData))
+                                        ReceiptFragment.newInstance(
+                                            this, ReceiptList(
+                                                receipt = resData.receipt!!
+                                                    .toMutableList(),
+                                                notification = resData.notifications
+                                            )
+                                        )
+
+                                        navigate(
+                                            widgetViewModel.navigation()
+                                                .navigateReceipt(
+                                                    ReceiptList(
+                                                        receipt = resData.receipt!!
+                                                            .toMutableList(),
+                                                        notification = resData.notifications
                                                     )
-                                            )
-                                        } else if (nonCaps(resData.formID) == nonCaps(
-                                                "RELIGION"
-                                            )
-                                        ) {
-                                            val mData = GlobalResponseTypeConverter().to(
-                                                BaseClass.decryptLatest(
-                                                    it.response,
-                                                    baseViewModel.dataSource.deviceData.value!!.device,
-                                                    true,
-                                                    baseViewModel.dataSource.deviceData.value!!.run
                                                 )
+                                        )
+                                    } else if (nonCaps(resData.formID) == nonCaps(
+                                            "RELIGION"
+                                        )
+                                    ) {
+                                        val mData = GlobalResponseTypeConverter().to(
+                                            BaseClass.decryptLatest(
+                                                it.response,
+                                                baseViewModel.dataSource.deviceData.value!!.device,
+                                                true,
+                                                baseViewModel.dataSource.deviceData.value!!.run
                                             )
+                                        )
 
-                                            DisplayDialogFragment.setData(
-                                                data = mData?.data
-                                            )
-                                            navigate(
-                                                baseViewModel
-                                                    .navigationData
-                                                    .navigateToDisplayDialog(
-                                                        DisplayData(
-                                                            display = null,
-                                                            modules = modules,
-                                                            form = formControl
-                                                        )
+                                        DisplayDialogFragment.setData(
+                                            data = mData?.data
+                                        )
+                                        navigate(
+                                            baseViewModel
+                                                .navigationData
+                                                .navigateToDisplayDialog(
+                                                    DisplayData(
+                                                        display = null,
+                                                        modules = modules,
+                                                        form = formControl
                                                     )
-                                            )
+                                                )
+                                        )
 
-                                        }
-                                    } else SuccessDialogFragment.showDialog(
-                                        DialogData(
-                                            title = R.string.success,
-                                            subTitle = resData?.message!!,
-                                            R.drawable.success
-                                        ),
-                                        requireActivity().supportFragmentManager, this
-                                    )
-
+                                    }
+                                } else SuccessDialogFragment.showDialog(
+                                    DialogData(
+                                        title = R.string.success,
+                                        subTitle = resData?.message!!,
+                                        R.drawable.success
+                                    ),
+                                    requireActivity().supportFragmentManager, this
+                                )
 
                             } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
