@@ -249,10 +249,12 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         // binding.container.adapter = adapter
 
         binding.callback = this
-
+        binding.landingButtons.callback = this
         binding.mainContainer.adapter = adapterGrid
 
     }
+
+
 
     override fun onStart() {
         super.onStart()

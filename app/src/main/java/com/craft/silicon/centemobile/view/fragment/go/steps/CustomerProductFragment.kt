@@ -330,12 +330,12 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                         )
                     )
 
-                    custom.existingAvatar.setColorFilter(
+                    /*custom.existingAvatar.setColorFilter(
                         ContextCompat.getColor(
                             requireContext(),
                             R.color.white
                         )
-                    )
+                    )*/
                 }
 
             }
@@ -354,12 +354,12 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                     )
                 )
 
-                custom.existingAvatar.setColorFilter(
+                /*custom.existingAvatar.setColorFilter(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.dar_color_one
                     )
-                )
+                )*/
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {

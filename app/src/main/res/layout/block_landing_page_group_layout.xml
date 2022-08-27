@@ -11,255 +11,241 @@
             type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
     </data>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardItem"
-            android:layout_width="@dimen/dimens_120dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_10dp"
-
-            app:cardCornerRadius="@dimen/dimens_8dp"
-            app:cardElevation="@dimen/dimens_5dp"
-            app:layout_constraintDimensionRatio="4:6"
-            app:layout_constraintEnd_toStartOf="@+id/cardItemTwo"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/dimens_5dp">
-
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="@dimen/dimens_60dp"
-                    android:layout_height="@dimen/dimens_60dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/avatar"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/atm_machine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
+                android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:onClick="@{()->callback.toBranch()}"
+                    android:id="@+id/cardItem"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_10dp"
-                    android:paddingVertical="@dimen/dimens_5dp"
-                    android:text="@string/branch_atm"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/dar_color_one"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatar"
-                    tools:ignore="UnusedAttribute" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_margin="@dimen/dimens_10dp"
+                    app:cardCornerRadius="@dimen/dimens_8dp"
+                    app:cardElevation="@dimen/dimens_5dp">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/dimens_5dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardItemTwo"
-            android:layout_width="@dimen/dimens_120dp"
+                        <ImageView
+                            android:id="@+id/avatar"
+                            android:layout_width="@dimen/dimens_60dp"
+                            android:layout_height="@dimen/dimens_60dp"
+                            android:layout_marginTop="@dimen/dimens_12dp"
+                            android:contentDescription="@string/avatar"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/atm_machine" />
+
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/dimens_5dp"
+                            android:fontFamily="@font/poppins_semi_bold"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:minLines="2"
+                            android:paddingVertical="@dimen/dimens_5dp"
+                            android:text="@string/branch_atm"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:textColor="@color/dar_color_one"
+                            tools:ignore="UnusedAttribute" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:onClick="@{()->callback.toLogin()}"
+                    android:id="@+id/cardItemTwo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimens_10dp"
+                    app:cardCornerRadius="@dimen/dimens_8dp"
+                    app:cardElevation="@dimen/dimens_5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/dimens_5dp">
+
+                        <ImageView
+                            android:id="@+id/avatarTwo"
+                            android:layout_width="@dimen/dimens_60dp"
+                            android:layout_height="@dimen/dimens_60dp"
+                            android:layout_marginTop="@dimen/dimens_12dp"
+                            android:contentDescription="@string/cente_login"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/lock"/>
+
+
+                        <TextView
+                            android:id="@+id/titleTwo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/dimens_5dp"
+                            android:fontFamily="@font/poppins_semi_bold"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:minLines="2"
+                            android:paddingVertical="@dimen/dimens_5dp"
+                            android:text="@string/cente_login"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:textColor="@color/dar_color_one"/>
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:onClick="@{()->callback.toOnline()}"
+                    android:id="@+id/cardItemThree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimens_10dp"
+                    app:cardCornerRadius="@dimen/dimens_8dp"
+                    app:cardElevation="@dimen/dimens_5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/dimens_5dp">
+
+                        <ImageView
+                            android:id="@+id/avatarThree"
+                            android:layout_width="@dimen/dimens_60dp"
+                            android:layout_height="@dimen/dimens_60dp"
+                            android:layout_marginTop="@dimen/dimens_12dp"
+                            android:contentDescription="@string/online_banking"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/checking" />
+
+
+                        <TextView
+                            android:id="@+id/titleThree"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/dimens_5dp"
+                            android:fontFamily="@font/poppins_semi_bold"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:minLines="2"
+                            android:paddingVertical="@dimen/dimens_5dp"
+                            android:text="@string/online_banking"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:textColor="@color/dar_color_one"
+                            tools:ignore="UnusedAttribute" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_10dp"
-            app:cardCornerRadius="@dimen/dimens_8dp"
-            app:cardElevation="@dimen/dimens_5dp"
-            app:layout_constraintBottom_toTopOf="@+id/cardItemFour"
-            app:layout_constraintDimensionRatio="4:6"
-            app:layout_constraintEnd_toStartOf="@+id/cardItemThree"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cardItem"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/dimens_5dp"
-                app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/avatarTwo"
-                    android:layout_width="@dimen/dimens_60dp"
-                    android:layout_height="@dimen/dimens_60dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/cente_login"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/lock"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/titleTwo"
-                    android:layout_width="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_10dp"
-                    android:paddingVertical="@dimen/dimens_5dp"
-                    android:text="@string/cente_login"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/dar_color_one"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatarTwo"
-                    tools:ignore="UnusedAttribute" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_margin="@dimen/dimens_10dp">
 
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardItemThree"
-            android:layout_width="@dimen/dimens_120dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_10dp"
-            app:cardCornerRadius="@dimen/dimens_8dp"
-            app:cardElevation="@dimen/dimens_5dp"
-            app:layout_constraintDimensionRatio="4:6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardItemTwo"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/dimens_5dp">
-
-                <ImageView
-                    android:id="@+id/avatarThree"
-                    android:layout_width="@dimen/dimens_60dp"
-                    android:layout_height="@dimen/dimens_60dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/online_banking"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/checking"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/titleThree"
-                    android:layout_width="wrap_content"
+                android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:onClick="@{()->callback.onTheGo()}"
+                    android:id="@+id/cardItemFour"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_10dp"
-                    android:paddingVertical="@dimen/dimens_5dp"
-                    android:text="@string/online_banking"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/dar_color_one"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatarThree"
-                    tools:ignore="UnusedAttribute" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_margin="@dimen/dimens_10dp"
+                    app:cardCornerRadius="@dimen/dimens_8dp"
+                    app:cardElevation="@dimen/dimens_5dp">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/dimens_5dp">
+
+                        <ImageView
+                            android:id="@+id/avatarFour"
+                            android:layout_width="@dimen/dimens_60dp"
+                            android:layout_height="@dimen/dimens_60dp"
+                            android:layout_marginTop="@dimen/dimens_12dp"
+                            android:contentDescription="@string/cente_on_go"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/cente"/>
 
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardItemFour"
-            android:layout_width="@dimen/dimens_120dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_10dp"
-            app:cardCornerRadius="@dimen/dimens_8dp"
-            app:cardElevation="@dimen/dimens_5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="4:6"
-            app:layout_constraintEnd_toEndOf="@+id/cardItemTwo"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/cardItemTwo"
-            app:layout_constraintTop_toBottomOf="@+id/cardItemTwo">
+                        <TextView
+                            android:id="@+id/titleFour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/dimens_5dp"
+                            android:fontFamily="@font/poppins_semi_bold"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:minLines="2"
+                            android:paddingVertical="@dimen/dimens_5dp"
+                            android:text="@string/cente_on_go"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:textColor="@color/dar_color_one"
+                            tools:ignore="UnusedAttribute" />
+                    </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="@dimen/dimens_5dp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardItemTwo"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/avatarFour"
-                    android:layout_width="@dimen/dimens_60dp"
-                    android:layout_height="@dimen/dimens_60dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/cente_on_go"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/cente"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <TextView
-                    android:id="@+id/titleFour"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_10dp"
-                    android:paddingVertical="@dimen/dimens_5dp"
-                    android:text="@string/cente_on_go"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/dar_color_one"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatarFour"
-                    tools:ignore="UnusedAttribute" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_margin="@dimen/dimens_10dp">
 
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </layout>
