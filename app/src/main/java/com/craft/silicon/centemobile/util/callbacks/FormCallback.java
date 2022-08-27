@@ -16,6 +16,7 @@ import com.craft.silicon.centemobile.data.model.input.InputData;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.AlertServices;
+import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding;
 import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController;
@@ -124,6 +125,12 @@ public interface FormCallback {
     }
 
     default void viewStandingOrder(StandingOrder standingOrder) {
+    }
+
+
+    default void deleteBeneficiary(FormControl formControl,
+                                   Modules modules,
+                                   Beneficiary beneficiary) {
     }
 
 }
