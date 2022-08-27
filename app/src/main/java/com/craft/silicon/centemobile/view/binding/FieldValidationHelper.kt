@@ -38,7 +38,7 @@ class FieldValidationHelper {
         if (inputList.isNotEmpty()) {
             AppLogger.instance.appLog("FIELD:Validation", Gson().toJson(inputList))
             for (i in inputList) {
-                if (TextUtils.isEmpty(i.value) && i.mandatory) {
+                if (TextUtils.isEmpty(i.value) && i.mandatory && params.contains(i.key)) {
                     activity.runOnUiThread {
                         ShowToast(
                             activity,
@@ -76,6 +76,7 @@ class FieldValidationHelper {
         return validForm
     }
 
+    //TODO remove if error does not persist
     fun auxValidate(
         inputList: MutableList<InputData>,
         params: List<String>,
@@ -86,8 +87,18 @@ class FieldValidationHelper {
         return if (inputList.isNotEmpty()) {
             AppLogger.instance.appLog("FIELD:Validation", Gson().toJson(inputList))
 
-            for (p in params) {
-
+            for (i in inputList) {
+                if (TextUtils.isEmpty(i.value) && i.mandatory && params.contains(i.key)) {
+                    activity.runOnUiThread {
+                        ShowToast(
+                            activity,
+                            "${i.name} ${activity.getString(R.string._required)}",
+                            true
+                        )
+                    }
+                    validForm = false
+                    break
+                } else validForm = true
             }
             true
 
