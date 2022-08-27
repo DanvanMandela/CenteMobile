@@ -2,13 +2,11 @@ package com.craft.silicon.centemobile.view.ep.controller
 
 import android.os.Parcelable
 import com.airbnb.epoxy.TypedEpoxyController
+import com.craft.silicon.centemobile.*
 import com.craft.silicon.centemobile.data.model.StandingOrderList
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.module.Modules
-import com.craft.silicon.centemobile.labelLayout
-import com.craft.silicon.centemobile.loadingStateLayout
-import com.craft.silicon.centemobile.nothingLayout
-import com.craft.silicon.centemobile.standingOrderItemLayout
+import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.AppData
@@ -24,14 +22,26 @@ class MainDisplayController(val callbacks: AppCallbacks) :
         if (data != null)
             when (data) {
                 is DisplayData -> displayState(data)
-                is Nothing -> nothingLayout { id("nothing") }
-                is LoadingState -> loadingStateLayout { id("Loading") }
+                is Nothing -> nothingLayout { id(BaseClass.generateAlphaNumericString(10)) }
+                is LoadingState -> loadingStateLayout { id(BaseClass.generateAlphaNumericString(10)) }
                 is LabelData -> labelLayout {
                     id(BaseClass.generateAlphaNumericString(10))
                     value(data.value)
                 }
                 is StandingOrderList -> standingOrder(data)
+                is BeneficiaryList -> setBeneficiary(data)
             }
+    }
+
+    private fun setBeneficiary(data: BeneficiaryList) {
+        for (s in data.list!!) {
+            beneficiaryItemLayout {
+                id(BaseClass.generateAlphaNumericString(10))
+                data(s)
+                callback(this@MainDisplayController.callbacks)
+                module(data.module)
+            }
+        }
     }
 
     private fun standingOrder(data: StandingOrderList) {
@@ -74,5 +84,16 @@ open class LoadingState : AppData()
 
 
 open class LabelData(val value: String?) : AppData()
+
+
+@Parcelize
+data class BeneficiaryList(
+    @field:SerializedName("list")
+    @field:Expose
+    val list: MutableList<Beneficiary?>,
+    @field:SerializedName("module")
+    @field:Expose
+    val module: Modules?
+) : AppData(), Parcelable
 
 
