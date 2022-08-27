@@ -22,7 +22,7 @@ class MainDisplayController(val callbacks: AppCallbacks) :
         if (data != null)
             when (data) {
                 is DisplayData -> displayState(data)
-                is Nothing -> nothingLayout { id(BaseClass.generateAlphaNumericString(10)) }
+                is Nothing -> noDataLayout { id(BaseClass.generateAlphaNumericString(10)) }
                 is LoadingState -> loadingStateLayout { id(BaseClass.generateAlphaNumericString(10)) }
                 is LabelData -> labelLayout {
                     id(BaseClass.generateAlphaNumericString(10))

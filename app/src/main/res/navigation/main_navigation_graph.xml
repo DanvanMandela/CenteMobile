@@ -240,8 +240,7 @@
         app:exitAnim="@anim/anim_slide_out_right"
         app:launchSingleTop="true"
         app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
+        app:popExitAnim="@anim/anim_slide_out_right" />
     <!--    End-->
 
 

@@ -22,7 +22,6 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
-import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
@@ -247,14 +246,8 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
                                         setProgress(100)
                                         setLoading(false)
-                                        SuccessDialogFragment.showDialog(
-                                            DialogData(
-                                                title = R.string.success,
-                                                subTitle = moduleData?.message!!,
-                                                R.drawable.success
-                                            ),
-                                            requireActivity().supportFragmentManager, this
-                                        )
+                                        navigateUp()
+                                        callbacks.onOCR(null)
                                     } else if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.FAILED.type) {
                                         setLoading(false)
                                         showError(moduleData?.message!!)

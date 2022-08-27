@@ -152,7 +152,6 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
 
-
     private fun setToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             ShowAlertDialog().showDialog(
@@ -185,7 +184,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
             imageSelector(ImageSelector.SIGNATURE, 3, 2)
         }
         binding.selfieLay.avatar.setOnClickListener {
-            imageSelector(ImageSelector.SELFIE,1,1)
+            imageSelector(ImageSelector.SELFIE, 1, 1)
         }
         binding.buttonNext.setOnClickListener(this)
         binding.buttonBack.setOnClickListener(this)
@@ -255,8 +254,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                 ImageSelector.ID -> {
                     id = ImageData(image = convert(bitmap!!))
                     binding.idLay.avatar.setImageBitmap(bitmap)
-                    if (product.product?.value != "32217")
-                        uploadIdImage(bitmap)
+//                    if (product.product?.value != "32217")
+//                        uploadIdImage(bitmap)//out of order
                 }
                 ImageSelector.SIGNATURE -> {
                     signature = ImageData(image = convert(bitmap!!))
@@ -284,7 +283,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
 
-    override fun imageSelector(selector: ImageSelector?, x:Int, y:Int) {
+    override fun imageSelector(selector: ImageSelector?, x: Int, y: Int) {
         imageLive = selector
         (requireActivity() as MainActivity).onImagePicker(this, x, y)
     }
@@ -320,8 +319,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         if (p == binding.buttonNext) {
             if (validateFields()) {
                 if (product.product?.value != "32217") {
-                    saveState()
-                    pagerData?.onNext(4)
+                    uploadOCR()
                 } else {
                     SmartLifeFragment.showDialog(this.childFragmentManager, this)
                 }
@@ -329,6 +327,12 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         } else {
             pagerData?.onBack(2)
         }
+    }
+
+    override fun onDialog() {
+        //ocrData = OCRData()//TODO ORC DATA
+        saveState()
+        pagerData?.onNext(4)
     }
 
 
