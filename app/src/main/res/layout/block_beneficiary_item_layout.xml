@@ -27,8 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dimens_8dp"
-        android:layout_marginTop="@dimen/dimens_8dp"
-        android:onClick="@{()->callback.onTransactionDetails(data)}">
+        android:layout_marginTop="@dimen/dimens_8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
