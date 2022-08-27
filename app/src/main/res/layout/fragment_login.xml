@@ -172,7 +172,7 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="@color/app_blue_light"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/inputPin" />
+                    app:layout_constraintTop_toBottomOf="@+id/materialButton" />
 
 
                 <com.google.android.material.button.MaterialButton
@@ -186,7 +186,7 @@
                     android:text="@string/login_securely"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/forgotPin" />
+                    app:layout_constraintTop_toBottomOf="@+id/inputPin" />
 
                 <View
                     android:layout_width="wrap_content"

@@ -111,7 +111,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     private fun setTitle() {
         var state = ToolbarEnum.EXPANDED
 
-        binding.collapsedLay.apply {
+        /*binding.collapsedLay.apply {
             setCollapsedTitleTypeface(
                 ResourcesCompat.getFont(
                     requireContext(),
@@ -143,7 +143,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                     binding.collapsedLay.title = title
                 }
             }
-        }
+        }*/
     }
 
     private fun setStep() {
