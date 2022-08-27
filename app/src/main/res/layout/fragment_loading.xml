@@ -39,7 +39,7 @@
                     android:padding="@dimen/dimens_10dp"
                     android:layout_gravity="bottom|center"
                     android:src="@drawable/cs_logo_powered"
-                    android:layout_width="@dimen/dimens_100dp"
+                    android:layout_width="@dimen/dimens_150dp"
                     android:layout_height="@dimen/dimens_100dp"/>
             </FrameLayout>
 

@@ -80,11 +80,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/mainLay"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:layout_height="match_parent">
 
                     <include
-                        app:layout_constraintDimensionRatio="16:8"
                         android:id="@+id/headerItem"
                         layout="@layout/block_home_header_layout"
                         android:layout_width="match_parent"

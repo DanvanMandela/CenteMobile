@@ -140,7 +140,6 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun rating_dismiss() {
-        //widgetViewModel.storageDataSource.clearDevice();
         Handler(Looper.getMainLooper()).postDelayed({
             navigate(widgetViewModel!!.navigation().navigateLanding())
 
