@@ -39,7 +39,7 @@
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dimens_40dp">
+                        android:layout_marginTop="@dimen/dimens_20dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                                 android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/poppins_medium"
                                 android:text="@string/thank_you_for_using"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                                 android:textColor="@color/ghost_white"
                                 tools:targetApi="o" />
 
@@ -69,7 +69,7 @@
                                 android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/poppins_medium"
                                 android:text="@string/centmobile"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                                 android:textColor="@color/white"
                                 tools:targetApi="o" />
 
@@ -200,7 +200,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="1.2"
                     android:layout_height="0dp"
                     android:layout_marginTop="-40dp"
                     android:orientation="vertical">
@@ -386,6 +386,31 @@
 
                                     </LinearLayout>
                                 </LinearLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                    android:id="@+id/materialCardComment"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dimens_70dp"
+                                    android:layout_marginHorizontal="@dimen/dimens_16dp"
+                                    android:layout_marginTop="@dimen/dimens_16dp"
+                                    android:hint="@string/add_comment"
+                                    app:boxBackgroundColor="@color/white"
+                                    android:visibility="gone"
+                                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                    app:hintTextColor="@color/app_blue_light"
+                                    app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edtComment"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:inputType="textCapSentences"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        tools:ignore="SpeakableTextPresentCheck" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
 
                                 <LinearLayout
                                     android:layout_width="match_parent"

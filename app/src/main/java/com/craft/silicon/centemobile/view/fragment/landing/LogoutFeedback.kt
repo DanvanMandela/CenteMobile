@@ -147,44 +147,60 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun rating_submit() {
-        //widgetViewModel.storageDataSource.clearDevice();
         //TODO call server to submit loading
-        Handler(Looper.getMainLooper()).postDelayed({
-            navigate(widgetViewModel!!.navigation().navigateLanding())
-        }, 500)
+        if(rating>0){
+            var comment = binding.edtComment.text
+            if(rating<3 && comment?.length!!<3){//bad rating comment required, comment require more than 3 characters
+                BaseClass.show_toast(activity, activity?.getString(R.string.add_comment))
+            }else{
+                Handler(Looper.getMainLooper()).postDelayed({
+                    navigate(widgetViewModel!!.navigation().navigateLanding())
+                }, 500)
+            }
+        }else{
+            BaseClass.show_toast(activity, activity?.getString(R.string.choose_rating))
+        }
+
     }
 
+    var rating:Int = 0
     override fun rate_very_poor() {
+        rating = 1
         override_images()
         BaseClass.animation_blow(activity, binding.imgVeryPoor)
         binding.imgVeryPoor.setImageResource(R.drawable.feedback_one_selected)
     }
 
     override fun rate_poor() {
+        rating = 2
         override_images()
         BaseClass.animation_blow(activity, binding.imgPoor)
         binding.imgPoor.setImageResource(R.drawable.feedback_two_selected)
     }
 
     override fun rate_average() {
+        rating = 3
         override_images()
         BaseClass.animation_blow(activity, binding.imgAverage);
         binding.imgAverage.setImageResource(R.drawable.feedback_three_selected)
     }
 
     override fun rate_good() {
+        rating = 4
         override_images()
         BaseClass.animation_blow(activity, binding.imgGood);
         binding.imgGood.setImageResource(R.drawable.feedback_four_selected)
     }
 
     override fun rate_excellent() {
+        rating = 5
         override_images()
         BaseClass.animation_blow(activity, binding.imgExcellent);
         binding.imgExcellent.setImageResource(R.drawable.feedback_five_selected)
     }
 
     fun override_images(){
+        binding.materialCardComment.visibility= if(rating>3){View.GONE}else{View.VISIBLE}
         binding.imgVeryPoor.setImageResource(R.drawable.feedback_one)
         binding.imgPoor.setImageResource(R.drawable.feedback_two)
         binding.imgAverage.setImageResource(R.drawable.feedback_three)

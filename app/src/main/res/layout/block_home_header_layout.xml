@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingHorizontal="@dimen/dimens_16dp"
+            android:paddingLeft="@dimen/dimens_16dp"
             android:paddingVertical="@dimen/dimens_16dp"
             android:showDividers="middle"
             app:checkedButton="@id/accountButton"

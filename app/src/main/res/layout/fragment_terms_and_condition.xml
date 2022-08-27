@@ -15,13 +15,15 @@
             android:background="@color/white"
             app:elevation="@dimen/dimens_0dp">
 
+
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_close_white_24dp"
-                app:navigationIconTint="@color/dar_color_one"
-                app:title="@string/terms_condition" />
+                app:navigationIconTint="@color/white"
+                app:title="@string/terms_condition"
+                app:titleTextColor="@color/white" />
 
 
         </com.google.android.material.appbar.AppBarLayout>

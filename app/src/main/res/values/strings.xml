@@ -21,6 +21,9 @@
     <string name="feedback_average">Average</string>
     <string name="feedback_good">Good</string>
     <string name="feedback_excellent">Excellent</string>
+    <string name="add_comment">Kindly add comment for low ratings</string>
+    <string name="choose_rating">Kindly choose a rating before submitting or tap on dismiss</string>
+
 
     <string name="submit_">Submit</string>
     <string name="dismiss">Dismiss</string>

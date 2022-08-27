@@ -61,13 +61,13 @@
                     <TextView
                         android:id="@+id/textView7"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/dimens_50dp"
                         android:layout_marginStart="@dimen/dimens_16dp"
                         android:autoSizeTextType="uniform"
                         android:background="@drawable/text_corner_back_morning"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -79,10 +79,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginTop="@dimen/dimens_12dp"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/poppins_medium"
                         android:text="@string/welcome_cente"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         app:layout_constraintBottom_toBottomOf="@+id/textView7"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView7"
@@ -103,7 +104,8 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:visibility="gone">
 
                             <com.craft.silicon.centemobile.util.ExpandableHeightGridView
                                 android:id="@+id/mainContainer"
@@ -135,8 +137,12 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/containerTwo"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"/>
+                        <include
+                            android:id="@+id/landingButtons"
+                            layout="@layout/block_landing_page_group_layout"
+                            />
                         <LinearLayout
                             android:id="@+id/selfReg"
                             android:layout_width="match_parent"
