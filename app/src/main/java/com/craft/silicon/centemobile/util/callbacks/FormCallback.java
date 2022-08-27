@@ -128,8 +128,7 @@ public interface FormCallback {
     }
 
 
-    default void deleteBeneficiary(FormControl formControl,
-                                   Modules modules,
+    default void deleteBeneficiary(Modules modules,
                                    Beneficiary beneficiary) {
     }
 

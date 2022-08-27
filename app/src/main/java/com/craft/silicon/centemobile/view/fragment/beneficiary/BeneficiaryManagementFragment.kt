@@ -1,18 +1,25 @@
 package com.craft.silicon.centemobile.view.fragment.beneficiary
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.databinding.FragmentBeneficiaryManagementBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.TransactionAdapterItem
+import com.craft.silicon.centemobile.view.ep.controller.BeneficiaryList
+import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController
+import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.craft.silicon.centemobile.view.model.BaseViewModel
-import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
@@ -31,9 +38,11 @@ class BeneficiaryManagementFragment : Fragment(), AppCallbacks {
     // TODO: Rename and change types of parameters
     private var data: Modules? = null
     private val baseViewModel: BaseViewModel by viewModels()
-    private val widgetViewModel: WidgetViewModel by viewModels()
+
     private val subscribe = CompositeDisposable()
     private lateinit var adapter: TransactionAdapterItem
+
+    private lateinit var controller: MainDisplayController
 
     private lateinit var binding: FragmentBeneficiaryManagementBinding
 
@@ -60,11 +69,54 @@ class BeneficiaryManagementFragment : Fragment(), AppCallbacks {
         return binding.root.rootView
     }
 
+    override fun setBinding() {
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.callback = this
+        val animationDuration = requireContext()
+            .resources.getInteger(R.integer.animation_duration)
+        Handler(Looper.getMainLooper()).postDelayed({
+            stopShimmer()
+            setData()
+        }, animationDuration.toLong())
+
+    }
+
+    private fun stopShimmer() {
+        binding.shimmerContainer.stopShimmer()
+        binding.shimmerContainer.visibility = View.GONE
+    }
+
+    private fun setData() {
+        binding.container.setController(controller)
+    }
+    
     private fun setToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
+        if (data != null) {
+            binding.toolbar.title = data?.moduleName
+        }
 
+    }
+
+    override fun deleteBeneficiary(modules: Modules?, beneficiary: Beneficiary?) {
+
+    }
+
+    override fun setController() {
+        controller = MainDisplayController(this)
+        val staticData = baseViewModel.dataSource.beneficiary.asLiveData()
+        staticData.observe(viewLifecycleOwner) {
+            setData(it)
+        }
+
+    }
+
+    private fun setData(it: List<Beneficiary?>?) {
+        if (it!!.isNotEmpty()) controller.setData(Nothing())
+        else controller.setData(BeneficiaryList(list = it.toMutableList(), module = data))
     }
 
     companion object {

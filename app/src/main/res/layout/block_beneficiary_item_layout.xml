@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="form"
-            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
-
-        <variable
             name="module"
             type="com.craft.silicon.centemobile.data.model.module.Modules" />
 
@@ -168,7 +164,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
-                    android:onClick="@{()->callback.deleteBeneficiary(form,module,data)}"
+                    android:onClick="@{()->callback.deleteBeneficiary(module,data)}"
                     android:text="@string/delete"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/red_app"
