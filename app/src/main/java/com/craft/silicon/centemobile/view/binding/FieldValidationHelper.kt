@@ -75,4 +75,22 @@ class FieldValidationHelper {
         }
         return validForm
     }
+
+    fun auxValidate(
+        inputList: MutableList<InputData>,
+        params: List<String>,
+        json: JSONObject,
+        encrypted: JSONObject,
+        activity: Activity
+    ): Boolean {
+        return if (inputList.isNotEmpty()) {
+            AppLogger.instance.appLog("FIELD:Validation", Gson().toJson(inputList))
+
+            for (p in params) {
+
+            }
+            true
+
+        } else validForm
+    }
 }
