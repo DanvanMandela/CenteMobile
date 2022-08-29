@@ -327,6 +327,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         if (!authViewModel.storage.getVersion().getValue().equals(version)) {
             liveData.observe(getViewLifecycleOwner(), live -> {
                 if (live != null) {
+                    binding.loadingFrame.loading.getRoot().setVisibility(View.VISIBLE);
                     binding.loadingFrame.loading.setData(live);
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                 }
