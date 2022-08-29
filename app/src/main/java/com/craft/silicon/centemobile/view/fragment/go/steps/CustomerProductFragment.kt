@@ -145,6 +145,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
                 }
             }
         }*/
+
     }
 
     private fun setStep() {
