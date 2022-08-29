@@ -23,6 +23,7 @@
                 app:navigationIcon="@drawable/ic_close_white_24dp"
                 app:navigationIconTint="@color/white"
                 app:title="@string/terms_condition"
+                android:background="@color/app_blue_light"
                 app:titleTextColor="@color/white" />
 
 
