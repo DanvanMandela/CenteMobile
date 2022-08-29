@@ -48,6 +48,8 @@ open class TextInputModel : DataBindingEpoxyModel() {
                     binding.child.isEnabled = false
             }
         }
+
+
     }
 }
 

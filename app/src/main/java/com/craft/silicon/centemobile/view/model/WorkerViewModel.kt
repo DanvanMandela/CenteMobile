@@ -3,6 +3,7 @@ package com.craft.silicon.centemobile.view.model
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -13,6 +14,7 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.craft.silicon.centemobile.data.repository.ocr.worker.IDProcessingWorker
 import com.craft.silicon.centemobile.data.repository.ocr.worker.ImageProcessingWorker
+import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.worker.CleanDBWorker
 import com.craft.silicon.centemobile.data.worker.SessionWorkManager
 import com.craft.silicon.centemobile.data.worker.WorkMangerDataSource
@@ -30,16 +32,18 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSource) : ViewModel() {
+class WorkerViewModel @Inject constructor(
+    private val worker: WorkMangerDataSource,
+    private val dataSource: StorageDataSource
+) : ViewModel() {
 
 
     fun onWidgetData(owner: LifecycleOwner?, status: WorkStatus?) {
         val workWorker = OneTimeWorkRequestBuilder<CleanDBWorker>()
         var continuation = worker.getWorkManger()
             .beginUniqueWork(
-                WorkerCommons.TAG_DATA_WORKER +
-                        BaseClass.generateAlphaNumericString(2),
-                ExistingWorkPolicy.REPLACE,
+                WorkerCommons.TAG_DATA_WORKER,
+                ExistingWorkPolicy.KEEP,
                 workWorker.build()
             )
 
@@ -81,7 +85,7 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
 
         continuation.enqueue()
 
-        if (owner != null)
+        if (owner != null && status != null)
             continuation.workInfosLiveData.observe(owner) { workInfo ->
                 if (workInfo.isNotEmpty()) {
                     val progress = MutableLiveData(0.0)
@@ -100,8 +104,13 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
                     }
                 }
             }
-
-
+        dataSource.sync.asLiveData().observe(owner!!) {
+            if (it != null) {
+                if (it.work == 8) {
+                    worker.getWorkManger().cancelUniqueWork(WorkerCommons.TAG_DATA_WORKER)
+                }
+            }
+        }
     }
 
     fun routeData(owner: LifecycleOwner, status: WorkStatus) {

@@ -84,6 +84,19 @@ fun TextInputEditText.setInputLayout(
             )
         )
     }
+
+    if (!formControl.controlValue.isNullOrBlank()) {
+        this.setText(formControl.controlValue)
+        callbacks?.userInput(
+            InputData(
+                name = formControl.controlText,
+                key = formControl.serviceParamID,
+                value = formControl.controlValue,
+                encrypted = formControl.isEncrypted,
+                mandatory = formControl.isMandatory
+            )
+        )
+    }
 }
 
 fun setDefaultWatcher(

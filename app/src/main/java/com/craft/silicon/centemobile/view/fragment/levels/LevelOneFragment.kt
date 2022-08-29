@@ -1204,6 +1204,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                                 )
                                         )
 
+                                    } else if (nonCaps(resData.formID) == nonCaps("STANDINGORDERADD")) {
+                                        setSuccess(resData!!.message)
                                     } else setOnNextModule(
                                         formControl,
                                         resData.next,

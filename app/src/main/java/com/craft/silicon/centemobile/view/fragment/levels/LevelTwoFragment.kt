@@ -1537,7 +1537,13 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                         )
                                                     )
                                             )
-                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                        }else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                                "STANDINGORDERADD"
+                                            )
+                                        ) {
+                                            setSuccess(resData!!.message)
+                                        }
+                                        else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
                                                 "RELIGION"
                                             )
                                         ) {
