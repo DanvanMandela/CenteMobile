@@ -325,6 +325,8 @@ dependencies {
 // https://mvnrepository.com/artifact/com.google.maps.android/android-maps-utils
     implementation group: 'com.google.maps.android', name: 'android-maps-utils', version: '2.4.0'
 
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
+
 
 
 

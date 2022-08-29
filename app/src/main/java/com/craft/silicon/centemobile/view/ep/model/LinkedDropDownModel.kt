@@ -57,13 +57,13 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
                             binding.data = s
                             binding.callback = callbacks
                             parent.childContainer.addView(binding.root)
-                            binding.child.addTextChangedListener(
-                                NumberTextWatcher(
-                                    binding.child,
-                                    callbacks,
-                                    s
-                                )
-                            )
+//                            binding.child.addTextChangedListener(
+//                                NumberTextWatcher(
+//                                    binding.child,
+//                                    callbacks,
+//                                    s
+//                                )
+//                            )
                             setLinkedToInput(parent, binding.child)
                         }
                         else -> {

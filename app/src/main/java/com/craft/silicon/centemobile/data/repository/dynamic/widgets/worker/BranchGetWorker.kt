@@ -82,7 +82,7 @@ class BranchGetWorker @AssistedInject constructor(
 
                     setSyncData(
                         SyncData(
-                            work = 7,
+                            work = 4,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -110,7 +110,7 @@ class BranchGetWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 6,
+                            work = 3,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -122,7 +122,7 @@ class BranchGetWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 6,
+                    work = 3,
                     message = applicationContext.getString(R.string.error)
                 )
             )

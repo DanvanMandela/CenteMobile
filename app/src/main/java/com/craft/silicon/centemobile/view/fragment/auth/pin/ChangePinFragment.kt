@@ -97,7 +97,7 @@ class ChangePinFragment : Fragment(), AppCallbacks {
 
 
         composite.add(
-            baseViewModel.changePin(json,encrypted, requireContext())
+            baseViewModel.changePin(json, encrypted, requireContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -143,6 +143,7 @@ class ChangePinFragment : Fragment(), AppCallbacks {
                     )
                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
                         setLoading(false)
+                        baseViewModel.dataSource.setBio(false)
                         SuccessDialogFragment.showDialog(
                             DialogData(
                                 title = R.string.success,
@@ -226,6 +227,7 @@ class ChangePinFragment : Fragment(), AppCallbacks {
     }
 
     override fun navigateUp() {
+
         (requireActivity().onBackPressed())
     }
 }

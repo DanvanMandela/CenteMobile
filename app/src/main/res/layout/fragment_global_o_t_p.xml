@@ -57,20 +57,56 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <TextView
-                        android:id="@+id/textView11"
+                    <LinearLayout
+                        android:id="@+id/resendLay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/dimens_8dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:fontFamily="@font/poppins_semi_bold"
-                        android:text="@string/otp_"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        android:textColor="@color/dar_color_one"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="8dp"
+                        android:visibility="visible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/container" />
+                        app:layout_constraintTop_toBottomOf="@+id/container">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppins_medium"
+                                android:gravity="end"
+                                android:text="@string/resend_code" />
+
+                            <TextView
+                                android:id="@+id/otpTimer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppins_semi_bold"
+                                android:paddingHorizontal="@dimen/dimens_5dp"
+                                tools:text="00:15" />
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:id="@+id/resendButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/dimens_2dp"
+                            android:elevation="@dimen/dimens_0dp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/resend_otp"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:textColor="@color/app_blue_light"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
 
                     <com.chaos.view.PinView
@@ -101,7 +137,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView11"
+                        app:layout_constraintTop_toBottomOf="@+id/resendLay"
                         app:lineColor="@color/dar_color_two"
                         app:lineWidth="1dp"
                         app:viewType="rectangle"

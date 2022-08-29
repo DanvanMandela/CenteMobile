@@ -116,7 +116,7 @@ fun setDefaultWatcher(
                 InputData(
                     name = formControl.controlText,
                     key = formControl.serviceParamID,
-                    value = e.toString(),
+                    value = trimCommaOfString(e.toString()),
                     encrypted = formControl.isEncrypted,
                     mandatory = formControl.isMandatory
                 )

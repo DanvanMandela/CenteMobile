@@ -1,14 +1,12 @@
 package com.craft.silicon.centemobile.view.fragment.global
 
 import android.os.Bundle
-import android.text.Editable
+import android.os.CountDownTimer
 import android.text.TextUtils
-import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.craft.silicon.centemobile.R
@@ -18,18 +16,16 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.BlockDisplayItemLayoutBinding
-import com.craft.silicon.centemobile.databinding.FragmentGlobalBinding
 import com.craft.silicon.centemobile.databinding.FragmentGlobalOTPBinding
-import com.craft.silicon.centemobile.databinding.FragmentGoOTPBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.callbacks.Confirm
-import com.craft.silicon.centemobile.view.dialog.confirm.ConfirmFragment
 import com.craft.silicon.centemobile.view.ep.data.DisplayContent
 import com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment
-
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTP
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
@@ -50,7 +46,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks {
+class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -60,6 +56,10 @@ class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks {
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val subscribe = CompositeDisposable()
 
+    private val startTime = (120 * 1000).toLong()
+    private val interval = (1 * 1000).toLong()
+
+    private var countDownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +78,37 @@ class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks {
         setViewModel()
         setOnClick()
         setOtpListener()
+        setTimer()
         return binding.root.rootView
     }
+
+    override fun timer(str: String) {
+        binding.otpTimer.text = str
+    }
+
+    override fun done(boolean: Boolean) {
+        if (boolean) {
+            timerControl(false)
+            binding.resendButton.visibility = View.VISIBLE
+        } else binding.resendButton.visibility = View.GONE
+    }
+
+
+    private fun setTimer() {
+        binding.resendLay.visibility = View.VISIBLE
+        countDownTimer = OTPCountDownTimer(startTime = startTime, interval = interval, this)
+        timerControl(true)
+        done(false)
+    }
+
+    private fun timerControl(startTimer: Boolean) {
+        if (startTimer) {
+            countDownTimer!!.start()
+        } else {
+            countDownTimer!!.cancel()
+        }
+    }
+
 
     override fun userInput(inputData: InputData?) {
         data.removeIf { a -> a.key == inputData?.key }
@@ -130,6 +159,17 @@ class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks {
             }
         }
         binding.cancel.setOnClickListener { dialog?.dismiss() }
+        binding.resendButton.setOnClickListener {
+            dialog?.dismiss()
+            confirm?.onPay(
+                json = json,
+                inputList = data,
+                action = action,
+                module = module,
+                encrypted = encrypted,
+                formControl = form
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

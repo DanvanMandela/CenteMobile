@@ -73,7 +73,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 .map {
                     setSyncData(
                         SyncData(
-                            work = 2,
+                            work = 6,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -101,7 +101,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 1,
+                            work = 5,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -112,7 +112,7 @@ class ModuleGETWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 1,
+                    work = 5,
                     message = applicationContext.getString(R.string.error)
                 )
             )

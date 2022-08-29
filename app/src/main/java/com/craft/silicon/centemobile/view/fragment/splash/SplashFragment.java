@@ -17,6 +17,7 @@ import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.model.SplashViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
+import com.scottyab.rootbeer.RootBeer;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -93,9 +94,11 @@ public class SplashFragment extends Fragment implements AppCallbacks {
 
     @Override
     public void setViewModel() {
+        RootBeer rootBeer = new RootBeer(requireContext());
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
         new Handler(Looper.getMainLooper()).postDelayed(() ->
-                BindingAdapterKt.navigate(this, widgetViewModel
+                BindingAdapterKt.navigate(this, rootBeer.isRooted() ? widgetViewModel
+                        .navigation().navigateToDeviceRooted() : widgetViewModel
                         .navigation().navigateLanding()), 300);
     }
 }

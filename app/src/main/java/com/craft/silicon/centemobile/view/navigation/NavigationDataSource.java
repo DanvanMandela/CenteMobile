@@ -154,4 +154,7 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateToDeviceRooted() {
+        return null;
+    }
 }

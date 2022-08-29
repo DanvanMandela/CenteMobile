@@ -77,6 +77,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.flow.StateFlow
+import java.io.File
 import java.text.*
 import java.time.LocalDate
 import java.util.*
@@ -965,6 +966,24 @@ fun Activity.statusColor(color: Int) {
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
     window.statusBarColor = this.resources.getColor(color)
+}
+
+fun findBinary(binaryName: String): Boolean {
+    var found = false
+    if (!found) {
+        val places = arrayOf(
+            "/sbin/", "/system/bin/", "/system/xbin/",
+            "/data/local/xbin/", "/data/local/bin/",
+            "/system/sd/xbin/", "/system/bin/failsafe/", "/data/local/"
+        )
+        for (where in places) {
+            if (File(where + binaryName).exists()) {
+                found = true
+                break
+            }
+        }
+    }
+    return found
 }
 
 

@@ -21,14 +21,15 @@
 
 
         <ImageView
+            android:contentDescription="@string/no_connection"
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_200dp"
-            android:src="@drawable/ic_internet_day"
+            android:layout_height="@dimen/dimens_150dp"
+            android:src="@drawable/satellite"
             app:layout_constraintBottom_toTopOf="@+id/title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            android:padding="@dimen/dimens_10dp"
+            android:padding="@dimen/dimens_20dp"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView

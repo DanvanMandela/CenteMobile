@@ -403,6 +403,9 @@
     <string name="delete_b_message">Are you sure you want to delete beneficiary</string>
     <string name="warmin_up">Warming up…</string>
     <string name="percentage">%</string>
+    <string name="security">security</string>
+    <string name="sorry_no_root">Sorry, CenteMobile is not supported on Rooted devices</string>
+    <string name="we_take_security">We\'re serious about  keeping your data secure</string>
 
 
 </resources>

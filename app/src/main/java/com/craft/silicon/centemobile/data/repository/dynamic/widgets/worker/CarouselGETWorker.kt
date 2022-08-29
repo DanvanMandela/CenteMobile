@@ -83,7 +83,7 @@ class CarouselGETWorker @AssistedInject constructor(
 
                     setSyncData(
                         SyncData(
-                            work = 8,
+                            work = 5,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -106,7 +106,7 @@ class CarouselGETWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 7,
+                            work = 4,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -118,7 +118,7 @@ class CarouselGETWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 7,
+                    work = 4,
                     message = applicationContext.getString(R.string.error)
                 )
             )

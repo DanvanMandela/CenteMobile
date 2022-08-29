@@ -837,8 +837,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
     ) {
         try {
             if (data != null) {
-                AppLogger.instance.appLog("DYNAMIC:DATA", Gson().toJson(data.rData))
-                AppLogger.instance.appLog("DYNAMIC:FORM", Gson().toJson(data.formField))
+                AppLogger.instance.appLog("DYNAMIC:RESULT:DATA", Gson().toJson(data.resultsData))
+                AppLogger.instance.appLog("DYNAMIC:FIELD:DATA", Gson().toJson(data.formField))
                 startShimmer()
                 val controller = MainDisplayController(this)
                 if (!data.resultsData.isNullOrEmpty()) {
@@ -851,8 +851,10 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                     controller.setData(DisplayData(hashMaps, form, modules))
                     binding.detailsContainer.setController(controller)
 
-                } else if (!data.formField.isNullOrEmpty()) {
-                    binding.displayContainer.visibility = View.VISIBLE
+                }
+
+                if (!data.formField.isNullOrEmpty()) {
+                    binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
                     val list = data.formField?.single { a -> a.controlID == form?.controlID }
                     val hashMaps: ArrayList<HashMap<String, String>> =
@@ -1537,13 +1539,12 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                         )
                                                     )
                                             )
-                                        }else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
                                                 "STANDINGORDERADD"
                                             )
                                         ) {
                                             setSuccess(resData!!.message)
-                                        }
-                                        else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
                                                 "RELIGION"
                                             )
                                         ) {

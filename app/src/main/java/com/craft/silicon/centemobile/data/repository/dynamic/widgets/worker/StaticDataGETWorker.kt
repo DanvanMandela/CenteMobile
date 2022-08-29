@@ -69,7 +69,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                 .map {
                     setSyncData(
                         SyncData(
-                            work = 5,
+                            work = 2,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -101,7 +101,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 4,
+                            work = 1,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -112,7 +112,7 @@ class StaticDataGETWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 4,
+                    work = 1,
                     message = applicationContext.getString(R.string.error)
                 )
             )

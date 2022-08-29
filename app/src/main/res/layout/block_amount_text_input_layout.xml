@@ -49,12 +49,14 @@
                 app:prefixText="@string/ugx"
                 app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.craft.silicon.centemobile.util.custom.CurrencyInput
                     android:id="@+id/child"
                     amount="@{data}"
                     callback="@{callback}"
                     setTag="@{data.controlID}"
                     value="@{value}"
+                    app:localeTag="en-NG"
+                    app:maxNumberOfDecimalDigits="2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/poppins_medium"

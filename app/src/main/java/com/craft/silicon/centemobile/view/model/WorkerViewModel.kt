@@ -49,21 +49,6 @@ class WorkerViewModel @Inject constructor(
                 workWorker.build()
             )
 
-        val moduleWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(moduleWorker.build())
-
-
-        val formWorker = OneTimeWorkRequestBuilder<FormControlGETWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(formWorker.build())
-
-        val actionWorker = OneTimeWorkRequestBuilder<ActionControlGETWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(actionWorker.build())
 
         val staticWorker = OneTimeWorkRequestBuilder<StaticDataGETWorker>()
             .setConstraints(worker.getConstraint())
@@ -84,6 +69,25 @@ class WorkerViewModel @Inject constructor(
             .setConstraints(worker.getConstraint())
             .addTag(WorkerCommons.TAG_OUTPUT)
         continuation = continuation.then(carouselWorker.build())
+
+
+        val moduleWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(moduleWorker.build())
+
+
+        val formWorker = OneTimeWorkRequestBuilder<FormControlGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(formWorker.build())
+
+        val actionWorker = OneTimeWorkRequestBuilder<ActionControlGETWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(actionWorker.build())
+
+
 
         continuation.enqueue()
 

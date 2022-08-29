@@ -332,7 +332,9 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_login_out_feedback)
     }
 
-
+    override fun navigateToDeviceRooted(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_rooted)
+    }
 
 
 }

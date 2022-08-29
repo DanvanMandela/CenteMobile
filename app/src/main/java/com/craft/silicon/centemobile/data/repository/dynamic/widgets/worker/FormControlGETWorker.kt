@@ -73,7 +73,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 .map {
                     setSyncData(
                         SyncData(
-                            work = 3,
+                            work = 7,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -98,7 +98,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 2,
+                            work = 6,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -109,7 +109,7 @@ class FormControlGETWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 2,
+                    work = 6,
                     message = applicationContext.getString(R.string.error)
                 )
             )

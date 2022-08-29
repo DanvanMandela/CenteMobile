@@ -1,6 +1,7 @@
 package com.craft.silicon.centemobile.view.ep.controller
 
 import android.os.Parcelable
+import androidx.room.TypeConverter
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.*
 import com.craft.silicon.centemobile.data.model.StandingOrderList
@@ -12,9 +13,14 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.AppData
 import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.craft.silicon.centemobile.view.ep.model.mainDisplayLay
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
+import java.lang.reflect.Type
+import java.util.*
 
 class MainDisplayController(val callbacks: AppCallbacks) :
     TypedEpoxyController<AppData>() {
@@ -95,5 +101,28 @@ data class BeneficiaryList(
     @field:Expose
     val module: Modules?
 ) : AppData(), Parcelable
+
+
+class HashTypeConverter {
+    @TypeConverter
+    fun from(data: String?): List<HashMap<String, String>?>? {
+        if (data == null) {
+            return Collections.emptyList()
+        }
+        val listType: Type = object :
+            TypeToken<List<HashMap<String, String>?>?>() {}.type
+        return gsonBuilder.fromJson<List<HashMap<String, String>?>>(data, listType)
+    }
+
+    @TypeConverter
+    fun to(someObjects: List<HashMap<String, String>?>?): String? {
+        return Gson().toJson(someObjects)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    }
+}
 
 

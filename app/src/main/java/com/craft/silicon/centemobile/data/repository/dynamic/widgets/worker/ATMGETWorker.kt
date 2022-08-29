@@ -81,7 +81,7 @@ class ATMGETWorker @AssistedInject constructor(
                 .map {
                     setSyncData(
                         SyncData(
-                            work = 6,
+                            work = 3,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -110,7 +110,7 @@ class ATMGETWorker @AssistedInject constructor(
                 .onErrorReturn {
                     setSyncData(
                         SyncData(
-                            work = 5,
+                            work = 2,
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
@@ -121,7 +121,7 @@ class ATMGETWorker @AssistedInject constructor(
         } catch (e: Exception) {
             setSyncData(
                 SyncData(
-                    work = 5,
+                    work = 2,
                     message = applicationContext.getString(R.string.error)
                 )
             )

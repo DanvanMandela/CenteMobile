@@ -62,6 +62,17 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_nav_rooted"
+        app:destination="@+id/deviceRootedFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
         android:id="@+id/action_nav_validation"
         app:destination="@+id/validationFragment"
         app:enterAnim="@anim/anim_slide_in_right"
@@ -524,6 +535,11 @@
         android:name="com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback"
         android:label="fragment_logout_feedback"
         tools:layout="@layout/fragment_logout_feedback" />
+    <fragment
+        android:id="@+id/deviceRootedFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.auth.DeviceRootedFragment"
+        android:label="fragment_device_rooted"
+        tools:layout="@layout/fragment_device_rooted" />
 
     <!--    Dialog-->
 </navigation>
