@@ -8,6 +8,8 @@ import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.*
+import com.craft.silicon.centemobile.data.source.sync.SyncData
+import com.craft.silicon.centemobile.data.source.sync.SyncDataTypeConverter
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.view.fragment.go.OnTheGoConverter
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
@@ -887,8 +889,35 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _sync = MutableStateFlow(
+        SyncDataTypeConverter().to(
+            sharedPreferences.getString(
+                TAG_SYNC,
+                ""
+            )
+        )
+    )
 
+    override val sync: StateFlow<SyncData?>
+        get() = _sync
 
+    override fun setSync(value: SyncData?) {
+        _sync.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_SYNC,
+                SyncDataTypeConverter().from(value)
+            )
+            apply()
+        }
+    }
+
+    override fun deleteSync() {
+        _sync.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_SYNC)
+        }
+    }
 
 
     companion object {
@@ -901,7 +930,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_ACTIVATION_DATA = "activeData"
         private const val TAG_ACTIVATED = "activated"
         private const val TAG_VERSION = "version"
-        private const val STATIC_DATA = "staticData"
+        private const val STATIC_DATA = "staticSyncData"
         private const val BENEFICIARY_DATA = "beneficiary"
         private const val ACCOUNTS_DATA = "accounts"
         private const val ALERTS_DATA = "alerts"
@@ -943,6 +972,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
         private const val TAG_TIME_OUT = "timeout"
 
+        private const val TAG_SYNC = "sync"
 
         private const val TAG_LOGIN_TIME = "login_time"
     }

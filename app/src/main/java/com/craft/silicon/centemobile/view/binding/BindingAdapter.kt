@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.text.style.MaskFilterSpan
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -56,6 +57,7 @@ import com.craft.silicon.centemobile.data.model.user.Accounts
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.model.user.AlertServices
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockRadioButtonLayoutBinding
 import com.craft.silicon.centemobile.databinding.DotLayoutBinding
@@ -931,6 +933,10 @@ fun otpLive(optState: StateFlow<String>): LiveData<String> {
     return optState.asLiveData()
 }
 
+fun syncLive(sync: StateFlow<SyncData>): LiveData<SyncData> {
+    return sync.asLiveData()
+}
+
 
 fun Context.isOnline(): Boolean {
     return try {
@@ -952,6 +958,13 @@ fun TextInputEditText.updateText(text: String) {
     if (focussed) {
         requestFocus()
     }
+}
+
+fun Activity.statusColor(color: Int) {
+    val window = this.window
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    window.statusBarColor = this.resources.getColor(color)
 }
 
 

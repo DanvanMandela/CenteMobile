@@ -35,8 +35,8 @@
 
 
                 <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
-                    android:layout_margin="@dimen/dimens_16dp"
-                    android:padding="@dimen/dimens_10dp"
+                    android:layout_margin="@dimen/dimens_8dp"
+                    android:padding="@dimen/dimens_16dp"
                     android:layout_gravity="bottom|center"
                     android:src="@drawable/cs_logo_powered"
                     android:layout_width="@dimen/dimens_120dp"

@@ -16,14 +16,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="@{()->callback.onFrequent(data)}">
 
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:onClick="@{()->callback.onFrequent(data)}"
-            app:cardBackgroundColor="@color/app_blue_light"
+            app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/dimens_0dp"
             app:cardElevation="@dimen/dimens_0dp"
             app:layout_constraintDimensionRatio="6:6"

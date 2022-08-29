@@ -235,6 +235,21 @@ class MiniTypeConverter {
 }
 
 
+@Parcelize
+data class NameBaseData(
+    @field:SerializedName("text")
+    @field:Expose
+    val text: String?,
+
+    @field:SerializedName("id")
+    @field:Expose
+    val id: String?
+) : Parcelable{
+    override fun toString(): String {
+        return text!!
+    }
+}
+
 
 
 

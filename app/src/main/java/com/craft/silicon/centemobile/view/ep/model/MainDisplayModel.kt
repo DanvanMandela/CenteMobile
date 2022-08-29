@@ -64,8 +64,10 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
             if (form?.nextFormID != null)
                 if (!TextUtils.isEmpty(form?.nextFormID))
                     binding.displayLay.setOnClickListener {
-                        val holderModule = module
-                        callbacks.onDisplay(form, holderModule, data)
+                        if (module != null) {
+                            val holderModule = module
+                            callbacks.onDisplay(form, holderModule, data)
+                        }
                     }
         }
 

@@ -15,21 +15,36 @@ import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
-import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand.trimCommaOfString
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 
-@BindingAdapter("callback", "hidden")
+@BindingAdapter("callback", "hidden", "value")
 fun TextInputEditText.setHidden(
     callbacks: AppCallbacks?,
     formControl: FormControl?,
+    value: String?
 ) {
+    callbacks?.onServerValue(formControl, this)
+
+    if (!TextUtils.isEmpty(value)) {
+        this.setText(value)
+        callbacks?.userInput(
+            InputData(
+                name = formControl!!.controlText,
+                key = formControl.serviceParamID,
+                value = trimCommaOfString(value),
+                encrypted = formControl.isEncrypted,
+                mandatory = formControl.isMandatory
+            )
+        )
+    }
+
     if (!formControl?.controlValue.isNullOrBlank())
         this.setText(formControl?.controlValue)
-    if (formControl?.controlValue != null)
+    if (formControl?.controlValue != null) {
         if (!TextUtils.isEmpty(formControl.controlValue)) {
             callbacks?.userInput(
                 InputData(
@@ -40,9 +55,9 @@ fun TextInputEditText.setHidden(
                     mandatory = formControl.isMandatory
                 )
             )
-            callbacks?.onServerValue(formControl, this)
-        }
-    callbacks?.onServerValue(formControl, this)
+        } else setDefaultWatcher(this, callbacks, formControl)
+    } else setDefaultWatcher(this, callbacks, formControl!!)
+
 }
 
 @BindingAdapter("callback", "form", "value")
@@ -63,7 +78,7 @@ fun TextInputEditText.setInputLayout(
             InputData(
                 name = formControl.controlText,
                 key = formControl.serviceParamID,
-                value = NumberTextWatcherForThousand.trimCommaOfString(value),
+                value = trimCommaOfString(value),
                 encrypted = formControl.isEncrypted,
                 mandatory = formControl.isMandatory
             )
@@ -75,8 +90,6 @@ fun setDefaultWatcher(
     inputEdit: TextInputEditText,
     callbacks: AppCallbacks?, formControl: FormControl
 ) {
-    inputEdit.inputType =
-        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
     inputEdit.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
 

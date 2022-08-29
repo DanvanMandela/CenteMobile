@@ -40,6 +40,13 @@ class FormController(
                     storage(data.storage)
                     module(data.forms.module)
                 }
+                BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> {
+                    hiddenInputLayout {
+                        id(d.controlID)
+                        data(d)
+                        callback(this@FormController.callbacks)
+                    }
+                }
 
                 BaseClass.nonCaps(ControlTypeEnum.CONTAINER.type) -> setContainer(data.forms, d)
 
@@ -149,11 +156,18 @@ class FormController(
             BaseClass.nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
                 form = d, storage = storage, callbacks = callbacks
             )
-            else -> textInputLayout {
-                id(d.controlID)
-                data(d)
-                storage(data.storage)
-                callback(this@FormController.callbacks)
+            else -> when (BaseClass.nonCaps(d.controlFormat)) {
+                BaseClass.nonCaps(ControlFormatEnum.NUMERIC.type),
+                BaseClass.nonCaps(ControlFormatEnum.NUMBER.type) -> inputNumericModel(
+                    form = d,
+                    storage = storage,
+                    callbacks = callbacks
+                )
+                else -> inputModel(
+                    form = d,
+                    storage = storage,
+                    callbacks = callbacks
+                )
             }
         }
 

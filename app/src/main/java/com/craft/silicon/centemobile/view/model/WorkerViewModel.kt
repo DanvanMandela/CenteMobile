@@ -81,24 +81,25 @@ class WorkerViewModel @Inject constructor(private val worker: WorkMangerDataSour
 
         continuation.enqueue()
 
-        continuation.workInfosLiveData.observe(owner!!) { workInfo ->
-            if (workInfo.isNotEmpty()) {
-                val progress = MutableLiveData(0.0)
-                workInfo.forEachIndexed { index, info ->
-                    val state = info.state
-                    val start = index.plus(1).toDouble()
-                    if (state.isFinished && state == WorkInfo.State.SUCCEEDED) {
-                        progress.value = (start.div(workInfo.size)).times(100)
-                        if (info == workInfo.first()) {
-                            progress.observe(owner) {
-                                status?.progress(it.toInt())
+        if (owner != null)
+            continuation.workInfosLiveData.observe(owner) { workInfo ->
+                if (workInfo.isNotEmpty()) {
+                    val progress = MutableLiveData(0.0)
+                    workInfo.forEachIndexed { index, info ->
+                        val state = info.state
+                        val start = index.plus(1).toDouble()
+                        if (state.isFinished && state == WorkInfo.State.SUCCEEDED) {
+                            progress.value = (start.div(workInfo.size)).times(100)
+                            if (info == workInfo.first()) {
+                                progress.observe(owner) {
+                                    status?.progress(it.toInt())
+                                }
                             }
-                        }
 
+                        }
                     }
                 }
             }
-        }
 
 
     }

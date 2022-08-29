@@ -1,7 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.landing
 
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -27,6 +26,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.databinding.FragmentLandingPageBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.ScreenHelper
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.image.drawableToBitmap
 import com.craft.silicon.centemobile.view.activity.MainActivity
@@ -162,12 +162,14 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
 
         if (vibrant != null) {
+            ScreenHelper.fullScreen(requireActivity(), false, false, vibrant.rgb)
             when (val background: Drawable = binding.textView7.background) {
                 is ShapeDrawable -> {
                     background.paint.color = vibrant.rgb
                 }
                 is GradientDrawable -> {
                     background.setColor(vibrant.rgb)
+
                 }
                 is ColorDrawable -> {
 
@@ -255,9 +257,13 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     }
 
 
-
     override fun onStart() {
         super.onStart()
+        setTimeOfDay()
+    }
+
+    override fun onResume() {
+        super.onResume()
         setTimeOfDay()
     }
 
@@ -348,7 +354,12 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     override fun email() {
         var title = "Contact Us"
         var body = ""
-        BaseClass.emailCustomerCare(requireActivity(), title, body, Constants.Contacts.contact_us_email)
+        BaseClass.emailCustomerCare(
+            requireActivity(),
+            title,
+            body,
+            Constants.Contacts.contact_us_email
+        )
     }
 
     override fun chat() {

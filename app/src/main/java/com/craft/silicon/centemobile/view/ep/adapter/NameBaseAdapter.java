@@ -13,13 +13,15 @@ import androidx.databinding.DataBindingUtil;
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.databinding.BlockSingleTextDropDownBinding;
 import com.craft.silicon.centemobile.view.ep.adapter.holder.SingleTextViewHolder;
+import com.craft.silicon.centemobile.view.ep.data.NameBaseData;
 
 import java.util.List;
+import java.util.Objects;
 
-public class NameBaseAdapter extends ArrayAdapter<String> {
+public class NameBaseAdapter extends ArrayAdapter<NameBaseData> {
 
 
-    public NameBaseAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+    public NameBaseAdapter(@NonNull Context context, int resource, @NonNull List<NameBaseData> objects) {
         super(context, resource, objects);
     }
 
@@ -44,7 +46,7 @@ public class NameBaseAdapter extends ArrayAdapter<String> {
         } else {
             holder = (SingleTextViewHolder) convertView.getTag();
         }
-        holder.binding.setData(getItem(position));
+        holder.binding.setData(Objects.requireNonNull(getItem(position)).getText());
         return holder.binding.getRoot();
     }
 
@@ -62,7 +64,7 @@ public class NameBaseAdapter extends ArrayAdapter<String> {
         } else {
             holder = (SingleTextViewHolder) view.getTag();
         }
-        holder.binding.setData(getItem(i));
+        holder.binding.setData(Objects.requireNonNull(getItem(i)).getText());
         return holder.binding.getRoot();
     }
 
@@ -74,7 +76,7 @@ public class NameBaseAdapter extends ArrayAdapter<String> {
 
     @Nullable
     @Override
-    public String getItem(int position) {
+    public NameBaseData getItem(int position) {
         return super.getItem(position);
     }
 }

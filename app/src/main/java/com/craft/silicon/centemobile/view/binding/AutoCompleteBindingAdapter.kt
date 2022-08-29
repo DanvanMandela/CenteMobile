@@ -16,6 +16,7 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.BeneficiaryArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
+import com.craft.silicon.centemobile.view.ep.data.NameBaseData
 import com.google.gson.Gson
 
 @BindingAdapter("callback", "auto_date")
@@ -66,17 +67,27 @@ fun AutoCompleteTextView.setDropDownData(
     when (BaseClass.nonCaps(formControl?.controlFormat)) {
         BaseClass.nonCaps(ControlFormatEnum.ACCOUNT_BANK.type) -> {
             if (storage?.accounts?.value != null) {
-                val accounts = storage.accounts.value!!.map { it?.id }
+                val accounts = mutableListOf<NameBaseData>()
+                val data =
+                    storage.accounts.value!!
+                data.forEach {
+                    accounts.add(
+                        NameBaseData(
+                            text = if (it!!.aliasName.isNullOrEmpty()) it.id else it.aliasName,
+                            id = it.id
+                        )
+                    )
+                }
                 val adapter = NameBaseAdapter(context, 1, accounts)
                 this.setAdapter(adapter)
                 if (accounts.isNotEmpty()) {
-                    this.setText(adapter.getItem(0), false)
+                    this.setText(adapter.getItem(0)?.text, false)
                     this.setSelection(0)
                     callbacks?.userInput(
                         InputData(
                             name = formControl?.controlText,
                             key = formControl?.serviceParamID,
-                            value = adapter.getItem(0),
+                            value = adapter.getItem(0)?.id,
                             encrypted = formControl?.isEncrypted!!,
                             mandatory = formControl.isMandatory
                         )
@@ -88,7 +99,7 @@ fun AutoCompleteTextView.setDropDownData(
                             InputData(
                                 name = formControl?.controlText,
                                 key = formControl?.serviceParamID,
-                                value = adapter.getItem(p2),
+                                value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
                                 mandatory = formControl.isMandatory
                             )
@@ -137,6 +148,7 @@ fun AutoCompleteTextView.setDropDownData(
         }
         else -> {
             if (storage?.staticData?.value != null) {
+                AppLogger.instance.appLog("DROP:DOWN:static", Gson().toJson(formControl))
                 val staticData =
                     storage.staticData.value!!.filter { a ->
                         BaseClass.nonCaps(a?.id) == BaseClass.nonCaps(

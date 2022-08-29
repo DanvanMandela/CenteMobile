@@ -401,6 +401,7 @@
     <string name="account_alias">Account Alias</string>
     <string name="delete_beneficiary">Delete beneficiary</string>
     <string name="delete_b_message">Are you sure you want to delete beneficiary</string>
+    <string name="warmin_up">Warming up…</string>
 
 
 </resources>

@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="value"
+            type="String" />
+
+        <variable
             name="data"
             type="com.craft.silicon.centemobile.data.model.control.FormControl" />
 
@@ -29,6 +33,7 @@
             android:id="@+id/child"
             callback="@{callback}"
             hidden="@{data}"
+            value="@{value}"
             setTag="@{data.controlID}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

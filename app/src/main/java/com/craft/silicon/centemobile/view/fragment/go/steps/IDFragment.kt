@@ -34,6 +34,7 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
+import com.craft.silicon.centemobile.view.ep.data.NameBaseData
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -88,7 +89,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     private lateinit var product: CustomerProduct
 
-    private lateinit var imageRes: ImageResponseData
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,7 +165,17 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
     private fun setTitle() {
-        val titles = requireContext().resources.getStringArray(R.array.title)
+        val titles = mutableListOf<NameBaseData>()
+        val sData = requireContext().resources.getStringArray(R.array.title)
+        sData.forEach {
+            titles.add(
+                NameBaseData(
+                    text = it,
+                    id = it
+                )
+            )
+        }
+
         val adapter = NameBaseAdapter(requireContext(), 0, titles.toMutableList())
         binding.titleLay.autoEdit.setAdapter(adapter)
         binding.titleLay.autoEdit.onItemClickListener =

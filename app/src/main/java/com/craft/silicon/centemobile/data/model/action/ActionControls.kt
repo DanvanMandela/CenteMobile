@@ -5,10 +5,8 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -37,6 +35,14 @@ data class ActionControls(
     @field:ColumnInfo(name = "actionID")
     @field:Expose
     var actionID: String?,
+
+    @field:SerializedName("RowID")
+    @field:ColumnInfo(name = "RowID")
+    @field:PrimaryKey
+    @NonNull
+    @field:Expose
+    var rowID: String,
+
 
     @field:SerializedName("ActionType")
     @field:ColumnInfo(name = "actionType")
@@ -79,15 +85,15 @@ data class ActionControls(
     var webHeader: String?
 ) : Serializable, Parcelable {
 
-    @IgnoredOnParcel
-    @field:SerializedName("id")
-    @field:ColumnInfo(name = "id")
-    @field:PrimaryKey
-    @field:NonNull
-    @field:Expose(serialize = false, deserialize = false)
-    var id: String = ""
-
-    fun generateID() {
-        id = "A-${BaseClass.generateAlphaNumericString(10)}"
-    }
+//    @IgnoredOnParcel
+//    @field:SerializedName("id")
+//    @field:ColumnInfo(name = "id")
+//    @field:PrimaryKey
+//    @field:NonNull
+//    @field:Expose(serialize = false, deserialize = false)
+//    var id: String = ""
+//
+//    fun generateID() {
+//        id = "A-${BaseClass.generateAlphaNumericString(10)}"
+//    }
 }

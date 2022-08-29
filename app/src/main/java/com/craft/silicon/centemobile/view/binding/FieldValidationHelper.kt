@@ -14,6 +14,7 @@ import org.json.JSONObject
 class FieldValidationHelper {
     private var validForm = false
 
+
     companion object {
         private var INSTANCE: FieldValidationHelper? = null
 

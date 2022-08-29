@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.StaticDataTypeConverter
@@ -13,6 +14,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -65,7 +67,12 @@ class StaticDataGETWorker @AssistedInject constructor(
                     constructResponse(Result.failure())
                 }
                 .map {
-
+                    setSyncData(
+                        SyncData(
+                            work = 5,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     val data = StaticDataTypeConverter().to(
                         BaseClass.decryptLatest(
                             it.response,
@@ -92,11 +99,23 @@ class StaticDataGETWorker @AssistedInject constructor(
                     }
                 }
                 .onErrorReturn {
+                    setSyncData(
+                        SyncData(
+                            work = 4,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     constructResponse(Result.retry())
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
         } catch (e: Exception) {
+            setSyncData(
+                SyncData(
+                    work = 4,
+                    message = applicationContext.getString(R.string.error)
+                )
+            )
             e.printStackTrace()
             e.localizedMessage?.let { Log.e("StaticDataGET", it) }
             Single.just(Result.failure())
@@ -105,5 +124,10 @@ class StaticDataGETWorker @AssistedInject constructor(
 
     private fun constructResponse(result: Result): Result {
         return result
+    }
+
+    private fun setSyncData(data: SyncData) {
+        if (!storageDataSource.version.value.isNullOrEmpty())
+            storageDataSource.setSync(data)
     }
 }

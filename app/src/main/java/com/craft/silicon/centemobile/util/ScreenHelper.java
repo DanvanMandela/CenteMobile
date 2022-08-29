@@ -16,7 +16,7 @@ public class ScreenHelper {
 
     public static void fullScreen(Activity activity,
                                   boolean isTransparent,
-                                  boolean fullscreen) {
+                                  boolean fullscreen, int color) {
         if (isTransparent) {
             activity.getWindow().getDecorView()
                     .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -42,8 +42,7 @@ public class ScreenHelper {
                         .LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                 activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                activity.getWindow().setStatusBarColor(ContextCompat
-                        .getColor(activity, R.color.app_blue_dark));
+                activity.getWindow().setStatusBarColor(color);
 
             }
         }

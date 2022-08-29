@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
@@ -13,7 +13,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
-import com.craft.silicon.centemobile.data.worker.WorkerCommons
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -34,7 +34,7 @@ class ActionControlGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
-            widgetRepository.deleteAction()
+
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
@@ -68,7 +68,12 @@ class ActionControlGETWorker @AssistedInject constructor(
                     constructResponse(Result.failure())
                 }
                 .map {
-
+                    setSyncData(
+                        SyncData(
+                            work = 4,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     val data = WidgetDataTypeConverter().from(
                         BaseClass.decryptLatest(
                             it.response,
@@ -81,18 +86,30 @@ class ActionControlGETWorker @AssistedInject constructor(
                     val status = data?.map { s -> s?.status }?.single()
                     if (status == StatusEnum.SUCCESS.type) {
                         val actions = data.map { s -> s?.actionControls }.single()
-                        actions?.forEach { a -> a.generateID() }
+                        //actions?.forEach { a -> a.generateID() }
                         widgetRepository.saveAction(actions)
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
 
                 }
                 .onErrorReturn {
+                    setSyncData(
+                        SyncData(
+                            work = 3,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     constructResponse(Result.retry())
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
         } catch (e: Exception) {
+            setSyncData(
+                SyncData(
+                    work = 3,
+                    message = applicationContext.getString(R.string.error)
+                )
+            )
             e.printStackTrace()
             Single.just(Result.failure())
         }
@@ -100,5 +117,10 @@ class ActionControlGETWorker @AssistedInject constructor(
 
     private fun constructResponse(result: Result): Result {
         return result
+    }
+
+    private fun setSyncData(data: SyncData) {
+        if (!storageDataSource.version.value.isNullOrEmpty())
+            storageDataSource.setSync(data)
     }
 }

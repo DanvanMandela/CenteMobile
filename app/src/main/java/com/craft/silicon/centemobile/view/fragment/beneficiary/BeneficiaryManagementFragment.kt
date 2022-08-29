@@ -202,7 +202,6 @@ class BeneficiaryManagementFragment : Fragment(), AppCallbacks {
     }
 
     private fun onDeleteSuccess(it: DynamicResponse?, modules: Modules?) {
-
         try {
             setLoading(false)
             AppLogger.instance.appLog(
@@ -290,7 +289,7 @@ class BeneficiaryManagementFragment : Fragment(), AppCallbacks {
         controller = MainDisplayController(this)
         val staticData = baseViewModel.dataSource.beneficiary.asLiveData()
         staticData.observe(viewLifecycleOwner) {
-            setData(it)
+            setData(it?.filter { s -> s?.rowID != "0" })
         }
 
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.CarouselConverter
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
@@ -11,6 +12,7 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepos
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -43,7 +45,7 @@ class CarouselGETWorker @AssistedInject constructor(
 
             json.put("LON", latLng?.latLng?.longitude ?: 0.0)
             json.put("APPNAME", Constants.Data.APP_NAME)
-            json.put("LAT",latLng?.latLng?.latitude ?: 0.0)
+            json.put("LAT", latLng?.latLng?.latitude ?: 0.0)
             json.put("COUNTRY", Constants.Data.COUNTRY)
             json.put("BANKID", Constants.Data.BANK_ID)
             json.put("CATEGORY", "ADDS")
@@ -79,6 +81,14 @@ class CarouselGETWorker @AssistedInject constructor(
                 }
                 .map {
 
+                    setSyncData(
+                        SyncData(
+                            work = 8,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
+
+
                     val data = CarouselConverter().to(
                         BaseClass.decryptLatest(
                             it.response,
@@ -94,11 +104,24 @@ class CarouselGETWorker @AssistedInject constructor(
                     constructResponse(Result.success())
                 }
                 .onErrorReturn {
+                    setSyncData(
+                        SyncData(
+                            work = 7,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
+
                     constructResponse(Result.retry())
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
         } catch (e: Exception) {
+            setSyncData(
+                SyncData(
+                    work = 7,
+                    message = applicationContext.getString(R.string.error)
+                )
+            )
             e.printStackTrace()
             Single.just(Result.failure())
         }
@@ -106,5 +129,10 @@ class CarouselGETWorker @AssistedInject constructor(
 
     private fun constructResponse(result: Result): Result {
         return result
+    }
+
+    private fun setSyncData(data: SyncData) {
+        if (!storageDataSource.version.value.isNullOrEmpty())
+            storageDataSource.setSync(data)
     }
 }

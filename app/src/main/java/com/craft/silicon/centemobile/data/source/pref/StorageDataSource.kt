@@ -6,6 +6,7 @@ import com.craft.silicon.centemobile.data.model.converter.IVData
 import com.craft.silicon.centemobile.data.model.static_data.OnlineAccountProduct
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
 import com.craft.silicon.centemobile.data.model.user.*
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import kotlinx.coroutines.flow.StateFlow
@@ -141,5 +142,10 @@ interface StorageDataSource {
     fun setTimeout(value: Int?)
     val timeout: StateFlow<Int?>
     fun deleteTimeout()
+
+    fun setSync(value: SyncData?)
+    val sync: StateFlow<SyncData?>
+    fun deleteSync()
+
 
 }

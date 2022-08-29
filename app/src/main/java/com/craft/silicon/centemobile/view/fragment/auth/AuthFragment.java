@@ -2,6 +2,7 @@ package com.craft.silicon.centemobile.view.fragment.auth;
 
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.isOnline;
+import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.setBalance;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
@@ -24,6 +26,7 @@ import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.model.user.LoginUserData;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
+import com.craft.silicon.centemobile.data.source.sync.SyncData;
 import com.craft.silicon.centemobile.databinding.FragmentAuthBinding;
 import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
@@ -318,40 +321,24 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     }
 
+
     private void updateWidgets(String version) {
-        if (!TextUtils.isEmpty(version)) {
-            if (!authViewModel.storage.getVersion().getValue().equals(version)) {
-                workerViewModel.onWidgetData(getViewLifecycleOwner(), new WorkStatus() {
-                    @Override
-                    public void progress(int p) {
-                        new AppLogger().appLog("PROGRESS", String.valueOf(p));
-                        if (p == 100) {
-                            authViewModel.storage.setVersion(version);
-                            navigate();
-                        }
-                    }
+        LiveData<SyncData> liveData = BindingAdapterKt.syncLive(authViewModel.storage.getSync());
+        if (!authViewModel.storage.getVersion().getValue().equals(version)) {
+            liveData.observe(getViewLifecycleOwner(), live -> {
+                if (live != null) {
+                    new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
+                }
+                if (live == null || live.getWork() < 1
+                        || !authViewModel.storage.getVersion().getValue().equals("1"))
+                    workerViewModel.onWidgetData(null, null);
+                else if (live.getWork() == 8) {
+                    authViewModel.storage.setVersion(version);
+                    navigate();
+                }
 
-                    @Override
-                    public void error(@Nullable String p) {
-
-                    }
-
-                    @Override
-                    public void workDone(boolean b) {
-
-                    }
-
-                    @Override
-                    public void onOCRData(@NonNull OCRData data, boolean b) {
-
-                    }
-                });
-
-            } else navigate();
-        } else {
-            authViewModel.storage.setVersion("1");
-            navigate();
-        }
+            });
+        } else navigate();
     }
 
     private void updateActivationData(LoginUserData data) {
@@ -367,7 +354,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 userData.setMessage(data.getMessage());
         authViewModel.storage.setActivationData(userData);
     }
-
 
     private void showError(String string) {
         AlertDialogFragment.newInstance(new DialogData(

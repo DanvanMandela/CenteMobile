@@ -237,11 +237,18 @@ class NewFormController(
                 nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
                     form = d, storage = storageDataSource, callbacks = callbacks
                 )
-                else -> textInputLayout {
-                    id(d.controlID)
-                    data(d)
-                    storage(data.storage)
-                    callback(this@NewFormController.callbacks)
+                else -> when (nonCaps(d.controlFormat)) {
+                    nonCaps(ControlFormatEnum.NUMERIC.type),
+                    nonCaps(ControlFormatEnum.NUMBER.type) -> inputNumericModel(
+                        form = d,
+                        storage = storageDataSource,
+                        callbacks = callbacks
+                    )
+                    else -> inputModel(
+                        form = d,
+                        storage = storageDataSource,
+                        callbacks = callbacks
+                    )
                 }
             }
 

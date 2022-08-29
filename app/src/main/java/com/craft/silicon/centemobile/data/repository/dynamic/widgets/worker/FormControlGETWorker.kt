@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
+import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
@@ -13,6 +14,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.Gson
@@ -29,12 +31,13 @@ class FormControlGETWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val widgetRepository: WidgetRepository,
-    private val storageDataSource: StorageDataSource
+    private val storageDataSource: StorageDataSource,
+    private val dataSource: StorageDataSource
 
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
-            widgetRepository.deleteFormControl()
+
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
@@ -68,6 +71,12 @@ class FormControlGETWorker @AssistedInject constructor(
                     constructResponse(Result.failure())
                 }
                 .map {
+                    setSyncData(
+                        SyncData(
+                            work = 3,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     val data = WidgetDataTypeConverter().from(
                         BaseClass.decryptLatest(
                             it.response,
@@ -80,25 +89,43 @@ class FormControlGETWorker @AssistedInject constructor(
                     val status = data?.map { s -> s?.status }?.single()
                     if (status == StatusEnum.SUCCESS.type) {
                         val forms = data.map { s -> s?.formControls }.single()
-                        forms?.forEach { s -> s.generateID() }
+                        //forms?.forEach { s -> s.generateID() }
                         if (forms != null)
                             widgetRepository.saveFormControl(forms)
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
                 }
                 .onErrorReturn {
+                    setSyncData(
+                        SyncData(
+                            work = 2,
+                            message = applicationContext.getString(R.string.loading_)
+                        )
+                    )
                     constructResponse(Result.retry())
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
         } catch (e: Exception) {
+            setSyncData(
+                SyncData(
+                    work = 2,
+                    message = applicationContext.getString(R.string.error)
+                )
+            )
             e.printStackTrace()
             e.localizedMessage?.let { Log.e("TAG", it) }
             Single.just(Result.failure())
+
         }
     }
 
     private fun constructResponse(result: Result): Result {
         return result
+    }
+
+    private fun setSyncData(data: SyncData) {
+        if (!dataSource.version.value.isNullOrEmpty())
+            dataSource.setSync(data)
     }
 }

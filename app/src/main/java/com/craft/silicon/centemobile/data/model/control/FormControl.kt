@@ -6,7 +6,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.craft.silicon.centemobile.util.BaseClass
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.IgnoredOnParcel
@@ -21,6 +20,13 @@ data class FormControl(
     @field:ColumnInfo(name = "moduleID")
     @field:Expose
     var moduleID: String?,
+
+    @field:SerializedName("RowID")
+    @field:ColumnInfo(name = "RowID")
+    @field:PrimaryKey
+    @NonNull
+    @field:Expose
+    var rowID: String,
 
     @field:SerializedName("FormID")
     @field:ColumnInfo(name = "formID")
@@ -164,17 +170,17 @@ data class FormControl(
     @field:Ignore
     var isChecked: Boolean? = null
 
-    @IgnoredOnParcel
-    @field:SerializedName("id")
-    @field:ColumnInfo(name = "id")
-    @field:PrimaryKey
-    @field:NonNull
-    @field:Expose(serialize = false, deserialize = false)
-    var id: String = ""
-
-    fun generateID() {
-        id = "F-${BaseClass.generateAlphaNumericString(10)}"
-    }
+//    @IgnoredOnParcel
+//    @field:SerializedName("id")
+//    @field:ColumnInfo(name = "id")
+//    @field:PrimaryKey
+//    @field:NonNull
+//    @field:Expose(serialize = false, deserialize = false)
+//    var id: String = ""
+//
+//    fun generateID() {
+//        id = "F-${BaseClass.generateAlphaNumericString(10)}"
+//    }
 
 }
 

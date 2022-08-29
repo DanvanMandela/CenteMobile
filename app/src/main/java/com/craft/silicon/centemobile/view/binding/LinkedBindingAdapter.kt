@@ -15,6 +15,7 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.adapter.AutoTextArrayAdapter
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
+import com.craft.silicon.centemobile.view.ep.data.NameBaseData
 import com.google.android.material.textfield.TextInputEditText
 
 @BindingAdapter("callback", "form", "storage", "module", "view")
@@ -31,7 +32,17 @@ fun AutoCompleteTextView.linkedToInput(
     when (BaseClass.nonCaps(formControl?.controlFormat)) {
         BaseClass.nonCaps(ControlFormatEnum.ACCOUNT_BANK.type) -> {
             if (storage?.accounts?.value != null) {
-                val accounts = storage.accounts.value!!.map { it?.id }
+                val accounts = mutableListOf<NameBaseData>()
+                val data =
+                    storage.accounts.value!!
+                data.forEach {
+                    accounts.add(
+                        NameBaseData(
+                            text = if (it!!.aliasName.isNullOrEmpty()) it.id else it.aliasName,
+                            id = it.id
+                        )
+                    )
+                }
                 val adapter = NameBaseAdapter(context, 1, accounts)
                 this.setAdapter(adapter)
                 this.onItemClickListener =
@@ -40,7 +51,7 @@ fun AutoCompleteTextView.linkedToInput(
                             InputData(
                                 name = formControl?.controlText,
                                 key = formControl?.serviceParamID,
-                                value = adapter.getItem(p2),
+                                value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
                                 mandatory = formControl.isMandatory
                             )
@@ -50,10 +61,22 @@ fun AutoCompleteTextView.linkedToInput(
         }
         BaseClass.nonCaps(ControlFormatEnum.BENEFICIARY.type) -> {
             if (storage?.beneficiary?.value != null) {
-                val beneficiaries =
+
+                val beneficiaries = mutableListOf<NameBaseData>()
+                val data =
                     storage.beneficiary.value!!
                         .filter { a -> a?.merchantID == modules?.merchantID }
                         .map { it?.accountAlias }
+                data.forEach {
+                    beneficiaries.add(
+                        NameBaseData(
+                            text = it,
+                            id = it
+                        )
+                    )
+                }
+
+
                 val adapter = NameBaseAdapter(context, 1, beneficiaries)
                 this.setAdapter(adapter)
                 this.onItemClickListener =
@@ -62,7 +85,7 @@ fun AutoCompleteTextView.linkedToInput(
                             InputData(
                                 name = formControl?.controlText,
                                 key = formControl?.serviceParamID,
-                                value = adapter.getItem(p2),
+                                value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
                                 mandatory = formControl.isMandatory
                             )
@@ -202,11 +225,19 @@ fun setChildToChildDropLink(
     when (BaseClass.nonCaps(child.data.controlFormat)) {
         BaseClass.nonCaps(ControlFormatEnum.BENEFICIARY.type) -> {
             if (storage.beneficiary.value != null) {
-                val beneficiaries =
+                val beneficiaries = mutableListOf<NameBaseData>()
+                val data =
                     storage.beneficiary.value!!
                         .filter { a -> a?.merchantID == item?.subCodeID }
                         .map { it?.accountAlias }
-
+                data.forEach {
+                    beneficiaries.add(
+                        NameBaseData(
+                            text = it,
+                            id = it
+                        )
+                    )
+                }
                 val adapter = NameBaseAdapter(child.dropDown.context, 1, beneficiaries)
                 child.dropDown.setAdapter(adapter)
                 child.dropDown.onItemClickListener =
@@ -215,7 +246,7 @@ fun setChildToChildDropLink(
                             InputData(
                                 name = child.data.controlText,
                                 key = child.data.serviceParamID,
-                                value = adapter.getItem(p2),
+                                value = adapter.getItem(p2)?.id,
                                 encrypted = child.data.isEncrypted,
                                 mandatory = child.data.isMandatory
                             )

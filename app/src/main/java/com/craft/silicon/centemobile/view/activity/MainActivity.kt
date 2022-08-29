@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
         requestPermissions()
         listenToConnection()
-
         subscribePush()
         inactivityMonitor()
 

@@ -14,14 +14,15 @@ import com.craft.silicon.centemobile.databinding.BlockAmountTextInputLayoutBindi
 import com.craft.silicon.centemobile.databinding.BlockDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockLinkedDropDownLayoutBinding
 import com.craft.silicon.centemobile.databinding.BlockTextInputLayoutBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.DropDownView
 import com.craft.silicon.centemobile.view.binding.linkedDropDown
 import com.craft.silicon.centemobile.view.binding.linkedToInput
 import com.craft.silicon.centemobile.view.ep.controller.LinkedVault
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 
 @EpoxyModelClass
 open class LinkedDropDownModel : DataBindingEpoxyModel() {
@@ -41,6 +42,7 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
     }
 
     private fun addChildren(parent: BlockLinkedDropDownLayoutBinding) {
+        AppLogger.instance.appLog(LinkedDropDownModel::class.simpleName!!, Gson().toJson(data.container))
         parent.data = data.container
         parent.childContainer.removeAllViews()
         for (s in data.children) {
@@ -56,7 +58,7 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
                             binding.callback = callbacks
                             parent.childContainer.addView(binding.root)
                             binding.child.addTextChangedListener(
-                                NumberTextWatcherForThousand(
+                                NumberTextWatcher(
                                     binding.child,
                                     callbacks,
                                     s

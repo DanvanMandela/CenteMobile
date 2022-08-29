@@ -33,6 +33,7 @@ import com.craft.silicon.centemobile.util.callbacks.Confirm
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.ep.adapter.BranchAdapterItem
 import com.craft.silicon.centemobile.view.ep.adapter.NameBaseAdapter
+import com.craft.silicon.centemobile.view.ep.data.NameBaseData
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -203,9 +204,9 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     private fun stateCurrency(currency: TwoDMap) {
         val value = currencyAdapter.getItem(currency.key!!)
-        currencyData = value
+        currencyData = value?.id
         Handler(Looper.getMainLooper()).postDelayed({
-            binding.currencyLay.autoEdit.setText(value, false)
+            binding.currencyLay.autoEdit.setText(value?.id, false)
         }, 200)
         hashMap["Currency"] = currency
     }
@@ -369,16 +370,25 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     }
 
-    private fun setCurrencyDropDown(currency: List<String?>?) {
-        currencyAdapter = NameBaseAdapter(requireContext(), 0, currency!!.toMutableList())
+    private fun setCurrencyDropDown(data: List<String?>?) {
+        val currency = mutableListOf<NameBaseData>()
+        data?.forEach {
+            currency.add(
+                NameBaseData(
+                    text = it,
+                    id = it
+                )
+            )
+        }
+        currencyAdapter = NameBaseAdapter(requireContext(), 0, currency.toMutableList())
         binding.currencyLay.autoEdit.setAdapter(currencyAdapter)
         binding.currencyLay.autoEdit.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, p2, _ ->
                 hashMap["Currency"] = TwoDMap(
                     key = p2,
-                    value = currencyAdapter.getItem(p2)
+                    value = currencyAdapter.getItem(p2)?.id
                 )
-                currencyData = currencyAdapter.getItem(p2)
+                currencyData = currencyAdapter.getItem(p2)?.id
             }
     }
 

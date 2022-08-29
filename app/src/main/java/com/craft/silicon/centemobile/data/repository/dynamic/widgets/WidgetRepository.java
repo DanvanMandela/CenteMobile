@@ -31,6 +31,7 @@ public class WidgetRepository implements WidgetDataSource {
     private final WidgetDataSource localData;
 
 
+
     @Inject
     public WidgetRepository(@Remote WidgetDataSource remoteData,
                             @Local WidgetDataSource localData) {
