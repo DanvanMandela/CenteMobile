@@ -1,5 +1,7 @@
 package com.craft.silicon.centemobile.view.model
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -107,7 +109,12 @@ class WorkerViewModel @Inject constructor(
         dataSource.sync.asLiveData().observe(owner!!) {
             if (it != null) {
                 if (it.work == 8) {
-                    worker.getWorkManger().cancelUniqueWork(WorkerCommons.TAG_DATA_WORKER)
+                    this@WorkerViewModel.apply {
+                        Handler(Looper.myLooper()!!).postDelayed({
+                            worker.getWorkManger().cancelUniqueWork(WorkerCommons.TAG_DATA_WORKER)
+                            dataSource.setSync(null)
+                        }, 2000)
+                    }
                 }
             }
         }

@@ -34,7 +34,7 @@
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="end"
                     android:text="@{data.message}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
 
                     tools:text="@string/loading_" />
 
@@ -46,7 +46,7 @@
                     android:gravity="start"
                     android:paddingHorizontal="@dimen/dimens_2dp"
                     android:text="@{data.percentage+@string/percentage}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     tools:text="88.5%" />
 
             </LinearLayout>

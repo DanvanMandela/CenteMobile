@@ -2,7 +2,6 @@ package com.craft.silicon.centemobile.view.fragment.auth;
 
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.isOnline;
-import static com.craft.silicon.centemobile.view.binding.BindingAdapterKt.setBalance;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -64,7 +63,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
-    private boolean isBioDialog = false;
+
 
 
     public AuthFragment() {
@@ -324,24 +323,24 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void updateWidgets(String version) {
         LiveData<SyncData> liveData = BindingAdapterKt.syncLive(authViewModel.storage.getSync());
-        if (!authViewModel.storage.getVersion().getValue().equals(version)) {
-            liveData.observe(getViewLifecycleOwner(), live -> {
+        liveData.observe(getViewLifecycleOwner(), live -> {
+            if (!authViewModel.storage.getVersion().getValue().equals(version)) {
                 if (live != null) {
                     binding.loadingFrame.loading.getRoot().setVisibility(View.VISIBLE);
                     binding.loadingFrame.loading.setData(live);
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                 }
-                if (live == null || !authViewModel.storage.getVersion().getValue().equals("1")) {
-                    workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
+                if (live == null) {
+                    if (!authViewModel.storage.getVersion().getValue().equals("1"))
+                        workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
                 } else {
                     if (live.getWork() == 8) {
-                        authViewModel.storage.setVersion(version);
-                        authViewModel.storage.setSync(null);
                         navigate();
+                        authViewModel.storage.setVersion(version);
                     }
                 }
-            });
-        } else navigate();
+            } else navigate();
+        });
     }
 
     private void updateActivationData(LoginUserData data) {
