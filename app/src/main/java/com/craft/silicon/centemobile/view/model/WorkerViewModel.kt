@@ -98,7 +98,7 @@ class WorkerViewModel @Inject constructor(
                             progress.value = (start.div(workInfo.size)).times(100)
                             if (info == workInfo.first()) {
                                 progress.observe(owner) {
-                                    status?.progress(it.toInt())
+                                    status.progress(it.toInt())
                                 }
                             }
 
