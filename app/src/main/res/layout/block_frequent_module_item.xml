@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="callback"
             type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
@@ -32,10 +31,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/dimens_5dp">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/dimens_2dp">
 
                 <ImageView
                     android:id="@+id/avatar"
@@ -45,6 +46,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
                     android:contentDescription="@string/avatar"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -57,23 +59,20 @@
                     textSet="@{data.moduleName}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_2dp"
                     android:layout_marginBottom="8dp"
                     android:autoSizeTextType="uniform"
                     android:ellipsize="end"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
+                    android:text="jfjf"
                     android:maxLines="2"
                     android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_5dp"
-                    android:paddingVertical="@dimen/dimens_2dp"
+                    android:paddingHorizontal="@dimen/dimens_2dp"
+                    android:paddingVertical="@dimen/dimens_5dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatar"
-                    tools:ignore="UnusedAttribute" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textColor="@color/white" />
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
