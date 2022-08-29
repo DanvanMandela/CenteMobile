@@ -45,7 +45,7 @@ class WorkerViewModel @Inject constructor(
         var continuation = worker.getWorkManger()
             .beginUniqueWork(
                 WorkerCommons.TAG_DATA_WORKER,
-                ExistingWorkPolicy.KEEP,
+                ExistingWorkPolicy.REPLACE,
                 workWorker.build()
             )
 
@@ -98,7 +98,7 @@ class WorkerViewModel @Inject constructor(
                             progress.value = (start.div(workInfo.size)).times(100)
                             if (info == workInfo.first()) {
                                 progress.observe(owner) {
-                                    status?.progress(it.toInt())
+                                    status.progress(it.toInt())
                                 }
                             }
 
