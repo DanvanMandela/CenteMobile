@@ -49,7 +49,19 @@ class FieldValidationHelper {
                     }
                     validForm = false
                     break
-                } else validForm = true
+                } else {
+                    if (i.validation != null) {
+                        activity.runOnUiThread {
+                            ShowToast(
+                                activity,
+                                i.validation,
+                                true
+                            )
+                        }
+                        validForm = false
+                        break
+                    } else validForm = true
+                }
             }
             if (validForm) {
                 for (s in inputList) {

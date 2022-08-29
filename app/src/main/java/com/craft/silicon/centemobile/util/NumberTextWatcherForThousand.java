@@ -57,15 +57,7 @@ public class NumberTextWatcherForThousand implements TextWatcher {
                 editText.addTextChangedListener(this);
                 editText.setSelection(editText.getText().toString().length());
             }
-            appCallbacks.userInput(
-                    new InputData(
-                            formControl.getControlText(),
-                            formControl.getServiceParamID(),
-                            trimCommaOfString(s.toString()),
-                            formControl.isEncrypted(),
-                            formControl.isMandatory()
-                    )
-            );
+
             editText.addTextChangedListener(this);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -40,7 +40,7 @@ import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding
 import com.craft.silicon.centemobile.databinding.FragmentLevelTwoBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.JSONUtil
+import com.craft.silicon.centemobile.util.BaseClass.nonCaps
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.callbacks.Confirm
@@ -146,8 +146,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         if (response != null) {
             if (!response!!.formField.isNullOrEmpty()) {
                 response!!.formField?.forEach {
-                    if (BaseClass.nonCaps(it.controlID) != BaseClass.nonCaps("JSON") ||
-                        BaseClass.nonCaps(it.controlID) != BaseClass.nonCaps("DISPLAY")
+                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
+                        nonCaps(it.controlID) != nonCaps("DISPLAY")
                     )
                         userInput(
                             InputData(
@@ -161,8 +161,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 }
             } else if (!response!!.resultsData.isNullOrEmpty()) {
                 response!!.resultsData?.forEach {
-                    if (BaseClass.nonCaps(it.controlID) != BaseClass.nonCaps("JSON") ||
-                        BaseClass.nonCaps(it.controlID) != BaseClass.nonCaps("DISPLAY")
+                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
+                        nonCaps(it.controlID) != nonCaps("DISPLAY")
                     )
                         userInput(
                             InputData(
@@ -279,7 +279,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
                 if (!response?.resultsData.isNullOrEmpty())
                     response?.resultsData!!.forEach {
-                        if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
+                        if (nonCaps(it.controlID) == nonCaps(formControl?.controlID)) {
                             view?.setText(it.controlValue)
                             userInput(
                                 InputData(
@@ -295,7 +295,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                     }
                 if (!response?.formField.isNullOrEmpty())
                     response?.formField!!.forEach {
-                        if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
+                        if (nonCaps(it.controlID) == nonCaps(formControl?.controlID)) {
                             view?.setText(it.controlValue)
                             userInput(
                                 InputData(
@@ -333,7 +333,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 val data =
                     response?.formField?.single { a -> a.controlID == formControl?.controlID }
 
-                if (BaseClass.nonCaps(data?.controlID) == BaseClass.nonCaps("Packages")) {
+                if (nonCaps(data?.controlID) == nonCaps("Packages")) {
                     val packages = InsuranceTypeConverter().from(data?.controlValue)
                     val adapter =
                         InsuranceAdapterItem(
@@ -357,11 +357,11 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             if (editTextList!!.isNotEmpty())
                                 for (s in map.entries) {
                                     editTextList.filter { a ->
-                                        BaseClass.nonCaps(a.tag.toString()) == BaseClass.nonCaps(s.key)
+                                        nonCaps(a.tag.toString()) == nonCaps(s.key)
                                     }.map { it.setText(s.value.toString()) }
                                 }
                         }
-                } else if (BaseClass.nonCaps(data?.controlID) == BaseClass.nonCaps("LOANS")) {
+                } else if (nonCaps(data?.controlID) == nonCaps("LOANS")) {
                     val packages = LoanTypeConverter().from(data?.controlValue)
                     val adapter =
                         LoanAdapterItem(
@@ -384,7 +384,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             if (editTextList!!.isNotEmpty())
                                 for (s in map.entries) {
                                     editTextList.filter { a ->
-                                        BaseClass.nonCaps(a.tag.toString()) == BaseClass.nonCaps(s.key)
+                                        nonCaps(a.tag.toString()) == nonCaps(s.key)
                                     }.map { it.setText(s.value.toString()) }
                                 }
                         }
@@ -517,7 +517,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             widgetViewModel.storageDataSource.deviceData.value!!.run
                         )
                     )
-                    if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                    if (nonCaps(it.response) != StatusEnum.ERROR.type) {
                         try {
                             val moduleData = DynamicDataResponseTypeConverter().to(
                                 BaseClass.decryptLatest(
@@ -531,7 +531,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 "${LevelTwoFragment::class.java.simpleName}:E:RECENT",
                                 Gson().toJson(moduleData)
                             )
-                            if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
+                            if (nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
                                 moduleDataRes.value = moduleData
                                 val recent: MenuItem =
                                     binding.toolbar.menu.findItem(R.id.actionRecent)
@@ -601,7 +601,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                     baseViewModel.dataSource.deviceData.value!!.run
                                 )
                             )
-                            if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            if (nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 val resData = DynamicAPIResponseConverter().to(
                                     BaseClass.decryptLatest(
                                         it.response,
@@ -614,12 +614,12 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                     "${LevelTwoFragment::class.java.simpleName}:Data",
                                     Gson().toJson(resData)
                                 )
-                                if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
                                     if (resData?.formID != null) {
                                         if (!TextUtils.isEmpty(resData.formID)) {
-                                            if (BaseClass.nonCaps(resData.formID)
-                                                == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
+                                            if (nonCaps(resData.formID)
+                                                == nonCaps("PAYMENTCONFIRMATIONFORM")
                                             ) {
                                                 ReceiptFragment.newInstance(
                                                     this, ReceiptList(
@@ -639,8 +639,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                             )
                                                         )
                                                 )
-                                            } else if (BaseClass.nonCaps(resData.formID)
-                                                == BaseClass.nonCaps("STATEMENT")
+                                            } else if (nonCaps(resData.formID)
+                                                == nonCaps("STATEMENT")
                                             ) {
 
                                                 DisplayDialogFragment.setData(
@@ -659,8 +659,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                 )
 
 
-                                            } else if (BaseClass.nonCaps(resData.formID)
-                                                == BaseClass.nonCaps("RELIGION")
+                                            } else if (nonCaps(resData.formID)
+                                                == nonCaps("RELIGION")
                                             ) {
                                                 val mData = GlobalResponseTypeConverter().to(
                                                     BaseClass.decryptLatest(
@@ -694,11 +694,11 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                             )
                                         } else setSuccess(resData.message!!)
                                     } else setSuccess(resData?.message)
-                                } else if (BaseClass.nonCaps(resData?.status)
+                                } else if (nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {
                                     InfoFragment.showDialog(this.childFragmentManager)
-                                } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OTP.type) {
+                                } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
                                     GlobalOTPFragment.setData(
                                         json = jsonObject,
                                         encrypted = encrypted,
@@ -790,7 +790,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
     override fun onDisplay(formControl: FormControl?, modules: Modules?) {
         AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
-        if (BaseClass.nonCaps(formControl?.controlID) == BaseClass.nonCaps("DISPLAY")) {
+        if (nonCaps(formControl?.controlID) == nonCaps("DISPLAY")) {
+            AppLogger.instance.appLog("DIS", Gson().toJson(formControl))
             if (!response?.display.isNullOrEmpty()) {
                 binding.displayContainer.visibility = View.VISIBLE
                 val controller = MainDisplayController(this)
@@ -798,7 +799,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 binding.displayContainer.setController(controller)
             }
 
-            if (BaseClass.nonCaps(formControl?.controlFormat) == BaseClass.nonCaps("JSON")) {
+            if (nonCaps(formControl?.controlFormat) == nonCaps("JSON")) {
                 if (!response?.formField.isNullOrEmpty()) {
                     try {
                         val controller = MainDisplayController(this)
@@ -807,12 +808,16 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                         val list =
                             response?.formField?.single { a -> a.controlID == formControl?.controlFormat }
 
-                        val value = list?.controlValue?.replace("\"\\", "\"\"")
-                        AppLogger.instance.appLog("removed", Gson().toJson(value))
 
-                        val hashMaps: ArrayList<HashMap<String, String>> =
-                            JSONUtil.cleanData(list?.controlValue)
-                        controller.setData(DisplayData(hashMaps, formControl, modules))
+                        val hashMaps = HashTypeConverter().from(list?.controlValue)
+                        AppLogger.instance.appLog("DISPLAY:value", Gson().toJson(hashMaps))
+                        controller.setData(
+                            DisplayData(
+                                hashMaps!!.toMutableList(),
+                                formControl,
+                                modules
+                            )
+                        )
                         binding.displayContainer.setController(controller)
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -820,12 +825,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 }
             }
 
-        } else {
-            if (BaseClass.nonCaps(formControl?.controlFormat)
-                == BaseClass.nonCaps(ControlFormatEnum.JSON.type)
-            ) {
-                response?.let { setJsonFormatData(it, formControl, modules) }
-            }
+        } else if (nonCaps(formControl?.controlID) == nonCaps("JSON")) {
+            response?.let { setJsonFormatData(it, formControl, modules) }
         }
     }
 
@@ -845,22 +846,18 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                     binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
                     val list = data.resultsData?.single { a -> a.controlID == form?.controlID }
-                    val hashMaps: ArrayList<HashMap<String, String>> =
-                        JSONUtil.cleanData(list?.controlValue)
+                    val hashMaps = HashTypeConverter().from(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps, form, modules))
+                    controller.setData(DisplayData(hashMaps!!.toMutableList(), form, modules))
                     binding.detailsContainer.setController(controller)
 
-                }
-
-                if (!data.formField.isNullOrEmpty()) {
+                } else if (!data.formField.isNullOrEmpty()) {
                     binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
                     val list = data.formField?.single { a -> a.controlID == form?.controlID }
-                    val hashMaps: ArrayList<HashMap<String, String>> =
-                        JSONUtil.cleanData(list?.controlValue)
+                    val hashMaps = HashTypeConverter().from(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps, form, modules))
+                    controller.setData(DisplayData(hashMaps!!.toMutableList(), form, modules))
                     binding.detailsContainer.setController(controller)
 
                 }
@@ -876,8 +873,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
     override fun setFormNavigation(forms: MutableList<FormControl>?, modules: Modules?) {
         try {
-            when (BaseClass.nonCaps(modules?.moduleID)) {
-                BaseClass.nonCaps(FormNavigation.FINGERPRINT.name) -> onBiometric(
+            when (nonCaps(modules?.moduleID)) {
+                nonCaps(FormNavigation.FINGERPRINT.name) -> onBiometric(
                     forms,
                     modules
                 )
@@ -947,8 +944,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         lifecycleScope.launch {
             requireActivity().hideSoftKeyboard(binding.root)
         }
-        if (BaseClass.nonCaps(formControl?.controlFormat)
-            == BaseClass.nonCaps(ControlFormatEnum.END.type)
+        if (nonCaps(formControl?.controlFormat)
+            == nonCaps(ControlFormatEnum.END.type)
         ) (requireActivity().onBackPressed())
         else {
             try {
@@ -983,7 +980,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
     override fun onModule(modules: Modules?) {
         inputData?.clear()
-        if (BaseClass.nonCaps(BaseClass.nonCaps(modules?.moduleID)) == BaseClass.nonCaps("VIEWBENEFICIARY"))
+        if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("VIEWBENEFICIARY"))
             navigate(widgetViewModel.navigation().navigateToBeneficiary(modules))
         else
             if (modules?.available!!)
@@ -1076,7 +1073,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                         } else
-                            if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            if (nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
                                     val moduleData = GlobalResponseTypeConverter().to(
                                         BaseClass.decryptLatest(
@@ -1090,7 +1087,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         "LIST:Label",
                                         Gson().toJson(moduleData)
                                     )
-                                    if (BaseClass.nonCaps(moduleData?.status)
+                                    if (nonCaps(moduleData?.status)
                                         == StatusEnum.SUCCESS.type
                                     ) {
                                         val values = formControl.controlValue?.split(",")
@@ -1107,7 +1104,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                             )
                                         )
 
-                                    } else if (BaseClass.nonCaps(moduleData?.status)
+                                    } else if (nonCaps(moduleData?.status)
                                         == StatusEnum.TOKEN.type
                                     ) {
                                         InfoFragment.showDialog(this.childFragmentManager)
@@ -1307,7 +1304,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                         } else
-                            if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            if (nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
                                     val moduleData = GlobalResponseTypeConverter().to(
                                         BaseClass.decryptLatest(
@@ -1318,7 +1315,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         )
                                     )
                                     AppLogger.instance.appLog("LIST", Gson().toJson(moduleData))
-                                    if (BaseClass.nonCaps(moduleData?.status)
+                                    if (nonCaps(moduleData?.status)
                                         == StatusEnum.SUCCESS.type
                                     ) {
 
@@ -1335,7 +1332,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                 data = s
                                             )
                                         )
-                                    } else if (BaseClass.nonCaps(moduleData?.status)
+                                    } else if (nonCaps(moduleData?.status)
                                         == StatusEnum.TOKEN.type
                                     ) {
                                         InfoFragment.showDialog(this.childFragmentManager)
@@ -1399,8 +1396,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 encrypted = encrypted
             )
         ) {
-            when (BaseClass.nonCaps(formControl?.controlFormat)) {
-                BaseClass.nonCaps(ControlFormatEnum.NEXT.type) -> {
+            when (nonCaps(formControl?.controlFormat)) {
+                nonCaps(ControlFormatEnum.NEXT.type) -> {
                     setOnNextModule(
                         formControl = formControl,
                         next = if (formControl?.formSequence.isNullOrEmpty()) null
@@ -1412,8 +1409,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 }
                 else -> {
                     val destination = formControl?.formID
-                    when (BaseClass.nonCaps(destination)) {
-                        BaseClass.nonCaps(FormNavigation.PAYMENT.name) -> {
+                    when (nonCaps(destination)) {
+                        nonCaps(FormNavigation.PAYMENT.name) -> {
                             if (action.confirmationModuleID != null)
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     ConfirmFragment.showDialog(
@@ -1484,7 +1481,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 baseViewModel.dataSource.deviceData.value!!.run
                             )
                         )
-                        if (BaseClass.nonCaps(it.response) != "ok") {
+                        if (nonCaps(it.response) != "ok") {
                             val resData = DynamicDataResponseTypeConverter().to(
                                 BaseClass.decryptLatest(
                                     it.response,
@@ -1493,11 +1490,11 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                     baseViewModel.dataSource.deviceData.value!!.run
                                 )
                             )
-                            if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                            if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                 if (resData?.formID != null) {
                                     if (!TextUtils.isEmpty(resData.formID)) {
-                                        if (BaseClass.nonCaps(resData.formID)
-                                            == BaseClass.nonCaps("STATEMENT")
+                                        if (nonCaps(resData.formID)
+                                            == nonCaps("STATEMENT")
                                         ) {
                                             DisplayDialogFragment.setData(
                                                 data = resData.accountStatement
@@ -1514,8 +1511,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                     )
                                             )
 
-                                        } else if (BaseClass.nonCaps(resData.formID)
-                                            == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
+                                        } else if (nonCaps(resData.formID)
+                                            == nonCaps("PAYMENTCONFIRMATIONFORM")
                                         ) {
                                             AppLogger.instance.appLog(
                                                 "Pay",
@@ -1539,12 +1536,12 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                         )
                                                     )
                                             )
-                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                        } else if (nonCaps(resData.formID) == nonCaps(
                                                 "STANDINGORDERADD"
                                             )
                                         ) {
                                             setSuccess(resData!!.message)
-                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                        } else if (nonCaps(resData.formID) == nonCaps(
                                                 "RELIGION"
                                             )
                                         ) {
@@ -1580,9 +1577,9 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         )
                                     } else setSuccess(resData.message)
                                 } else setSuccess(resData!!.message)
-                            } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
+                            } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
-                            } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OTP.type) {
+                            } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
                                 (requireActivity() as MainActivity).initSMSBroadCast()
                                 GlobalOTPFragment.setData(
                                     json = json,
@@ -1690,7 +1687,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                         } else
-                            if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                            if (nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
                                     val moduleData = StandingResponseTypeConverter().to(
                                         BaseClass.decryptLatest(
@@ -1701,7 +1698,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                         )
                                     )
                                     AppLogger.instance.appLog("LIST", Gson().toJson(moduleData))
-                                    if (BaseClass.nonCaps(moduleData?.status)
+                                    if (nonCaps(moduleData?.status)
                                         == StatusEnum.SUCCESS.type
                                     ) {
 
@@ -1716,7 +1713,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                             ) as AppData
                                         )
 
-                                    } else if (BaseClass.nonCaps(moduleData?.status)
+                                    } else if (nonCaps(moduleData?.status)
                                         == StatusEnum.TOKEN.type
                                     ) {
                                         InfoFragment.showDialog(this.childFragmentManager)
@@ -1844,7 +1841,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                     )
                 )
             } else
-                if (BaseClass.nonCaps(it?.response) != StatusEnum.ERROR.type) {
+                if (nonCaps(it?.response) != StatusEnum.ERROR.type) {
                     try {
                         val moduleData = StandingResponseTypeConverter().to(
                             BaseClass.decryptLatest(
@@ -1855,7 +1852,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                             )
                         )
                         AppLogger.instance.appLog("Standing", Gson().toJson(moduleData))
-                        if (BaseClass.nonCaps(moduleData?.status)
+                        if (nonCaps(moduleData?.status)
                             == StatusEnum.SUCCESS.type
                         ) {
 
@@ -1872,7 +1869,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
 
                             }
-                        } else if (BaseClass.nonCaps(moduleData?.status)
+                        } else if (nonCaps(moduleData?.status)
                             == StatusEnum.TOKEN.type
                         ) {
                             InfoFragment.showDialog(this.childFragmentManager)

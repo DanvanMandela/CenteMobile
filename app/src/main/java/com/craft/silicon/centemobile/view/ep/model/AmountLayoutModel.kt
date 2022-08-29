@@ -1,6 +1,8 @@
 package com.craft.silicon.centemobile.view.ep.model
 
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.DataBindingEpoxyModel
@@ -12,12 +14,12 @@ import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockAmountTextInputLayoutBinding
-import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.custom.CurrencyInput
 import com.craft.silicon.centemobile.view.binding.setDefaultValue
-import com.craft.silicon.centemobile.view.binding.setDefaultWatcher
+import com.google.android.material.textfield.TextInputEditText
 
 
 @EpoxyModelClass
@@ -51,20 +53,6 @@ open class AmountLayoutModel : DataBindingEpoxyModel() {
                 form
             )
         )
-        //binding.child.addTextChangedListener(NumberTextWatcher(binding.child, callbacks, form))
-//        binding.child.addTextChangedListener(
-//            NumberTextWatcherForThousand(
-//                binding.child,
-//                callbacks,
-//                form
-//            )
-//        )
-        if (form.maxValue != null) {
-            if (!TextUtils.isEmpty(form.maxValue)) {
-                BaseClass.setMaxLength(binding.child, form.maxValue!!.length)
-            }
-        }
-
         if (form.displayControl != null) {
             if (!TextUtils.isEmpty(form.displayControl)) {
                 if (form.displayControl == "true")
@@ -95,7 +83,7 @@ fun CurrencyInput.setAmountInputLayout(
 ) {
     this.setText("")
     setDefaultValue(formControl, callbacks)
-    setDefaultWatcher(this, callbacks, formControl!!)
+    setDefaultAmountWatcher(this, callbacks, formControl!!)
     callbacks?.onServerValue(formControl, this)
     if (!TextUtils.isEmpty(value)) {
         this.setText(value)
@@ -109,5 +97,73 @@ fun CurrencyInput.setAmountInputLayout(
             )
         )
     }
+}
+
+
+fun setDefaultAmountWatcher(
+    inputEdit: TextInputEditText,
+    callbacks: AppCallbacks?, formControl: FormControl
+) {
+    inputEdit.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+        }
+
+        override fun onTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(e: Editable?) {
+            try {
+                if (!e.isNullOrEmpty()) {
+                    val amount =
+                        NumberTextWatcherForThousand
+                            .trimCommaOfString(e.toString()).split(".")[0].toInt()
+                    if (!formControl.maxValue.isNullOrEmpty() && !formControl.minValue.isNullOrEmpty()) {
+                        val max = formControl.maxValue!!.toInt()
+                        val min = formControl.minValue!!.toInt()
+                        AppLogger.instance.appLog("Max", "$max")
+                        if (amount > max) {
+                            callbacks?.userInput(
+                                InputData(
+                                    name = formControl.controlText,
+                                    key = formControl.serviceParamID,
+                                    value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
+                                    encrypted = formControl.isEncrypted,
+                                    mandatory = formControl.isMandatory,
+                                    validation = "Maximum amount is $max"
+                                )
+                            )
+
+                        } else if (amount < min) {
+                            callbacks?.userInput(
+                                InputData(
+                                    name = formControl.controlText,
+                                    key = formControl.serviceParamID,
+                                    value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
+                                    encrypted = formControl.isEncrypted,
+                                    mandatory = formControl.isMandatory,
+                                    validation = "Minimum amount is $min"
+                                )
+                            )
+                        } else {
+                            callbacks?.userInput(
+                                InputData(
+                                    name = formControl.controlText,
+                                    key = formControl.serviceParamID,
+                                    value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
+                                    encrypted = formControl.isEncrypted,
+                                    mandatory = formControl.isMandatory,
+                                    validation = null
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    })
 }
 

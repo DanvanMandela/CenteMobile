@@ -41,7 +41,6 @@ import com.craft.silicon.centemobile.databinding.FragmentLevelOneBinding
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.nonCaps
-import com.craft.silicon.centemobile.util.JSONUtil
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.callbacks.Confirm
@@ -834,6 +833,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
     override fun onDisplay(formControl: FormControl?, modules: Modules?) {
         AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
         if (nonCaps(formControl?.controlID) == nonCaps("DISPLAY")) {
+            AppLogger.instance.appLog("DIS", Gson().toJson(formControl))
             if (!response?.display.isNullOrEmpty()) {
                 binding.displayContainer.visibility = View.VISIBLE
                 val controller = MainDisplayController(this)
@@ -849,24 +849,26 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                         val list =
                             response?.formField?.single { a -> a.controlID == formControl?.controlFormat }
 
-                        val value = list?.controlValue?.replace("\"\\", "\"\"")
-                        AppLogger.instance.appLog("removed", Gson().toJson(value))
 
-                        val hashMaps: ArrayList<HashMap<String, String>> =
-                            JSONUtil.cleanData(list?.controlValue)
-                        controller.setData(DisplayData(hashMaps, formControl, modules))
+                        val hashMaps = HashTypeConverter().from(list?.controlValue)
+
+                        AppLogger.instance.appLog("DISPLAY:value", Gson().toJson(hashMaps))
+
+                        controller.setData(
+                            DisplayData(
+                                hashMaps!!.toMutableList(),
+                                formControl,
+                                modules
+                            )
+                        )
                         binding.displayContainer.setController(controller)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
             }
-        } else {
-            if (nonCaps(formControl?.controlFormat)
-                == nonCaps(ControlFormatEnum.JSON.type)
-            ) {
-                response?.let { setJsonFormatData(it, formControl, modules) }
-            }
+        } else if (nonCaps(formControl?.controlID) == nonCaps("JSON")) {
+            response?.let { setJsonFormatData(it, formControl, modules) }
         }
     }
 
@@ -885,26 +887,19 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                     binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
                     val list = data.resultsData?.single { a -> a.controlID == form?.controlID }
-                    val hashMaps: ArrayList<HashMap<String, String>> =
-                        JSONUtil.cleanData(list?.controlValue)
+                    val hashMaps = HashTypeConverter().from(list?.controlValue)
 
-                    controller.setData(DisplayData(hashMaps, form, modules))
+                    controller.setData(DisplayData(hashMaps!!.toMutableList(), form, modules))
                     binding.detailsContainer.setController(controller)
 
-                }
-
-                if (!data.formField.isNullOrEmpty()) {
+                } else if (!data.formField.isNullOrEmpty()) {
 
                     binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
                     val list = data.formField?.single { a -> a.controlID == form?.controlID }
-                    val hashMaps: ArrayList<HashMap<String, String>> =
-                        JSONUtil.cleanData(list?.controlValue)
-                    AppLogger.instance.appLog(
-                        "DYNAMIC:HASH:DATA",
-                        Gson().toJson(HashTypeConverter().from(list?.controlValue))
-                    )
-                    controller.setData(DisplayData(hashMaps, form, modules))
+                    val hashMaps = HashTypeConverter().from(list?.controlValue)
+
+                    controller.setData(DisplayData(hashMaps!!.toMutableList(), form, modules))
                     binding.detailsContainer.setController(controller)
 
                 }

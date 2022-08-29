@@ -105,17 +105,17 @@ data class BeneficiaryList(
 
 class HashTypeConverter {
     @TypeConverter
-    fun from(data: String?): List<HashMap<String, String>?>? {
+    fun from(data: String?): List<HashMap<String, String>>? {
         if (data == null) {
             return Collections.emptyList()
         }
         val listType: Type = object :
-            TypeToken<List<HashMap<String, String>?>?>() {}.type
-        return gsonBuilder.fromJson<List<HashMap<String, String>?>>(data, listType)
+            TypeToken<List<HashMap<String, String>>?>() {}.type
+        return gsonBuilder.fromJson<List<HashMap<String, String>>>(data, listType)
     }
 
     @TypeConverter
-    fun to(someObjects: List<HashMap<String, String>?>?): String? {
+    fun to(someObjects: List<HashMap<String, String>>?): String? {
         return Gson().toJson(someObjects)
     }
 

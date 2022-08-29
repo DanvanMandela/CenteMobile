@@ -16,5 +16,9 @@ data class InputData(
     @SerializedName("encrypted")
     val encrypted: Boolean,
     @SerializedName("mandatory")
-    val mandatory: Boolean
+    val mandatory: Boolean,
+    @SerializedName("validation")
+    val validation: String? = null
 ) : Parcelable
+
+
