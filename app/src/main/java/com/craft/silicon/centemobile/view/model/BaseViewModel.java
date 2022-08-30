@@ -79,6 +79,49 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         this.navigationData = navigationData;
     }
 
+    @Override
+    public Single<DynamicResponse> addComment(JSONObject data, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            String uniqueID = Constants.getUniqueID();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.DB_CALL.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+//            "APPNAME": "CENTEMOBILE",
+//                    "COUNTRY": "UGANDATEST",
+//                    "COMMENT": "Just a comment",
+//                    "RATING": "Average",
+//                    "HEADER": "FEEDBACK",
+//                    "BANKID": "16"
+
+            data.put("HEADER", "FEEDBACK");
+            data.put("COUNTRY", "UGANDATEST");
+            data.put("BANKID", "UGANDATEST");
+            data.put("APPNAME", "CENTEMOBILE");
+            data.put("HEADER", "16");
+            jsonObject.put("DynamicForm", data);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("FEEDBACK:", newRequest);
+
+            return dbCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public Single<DynamicResponse> checkMiniStatement(Accounts accounts, Context context) {

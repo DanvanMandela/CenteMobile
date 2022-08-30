@@ -16,7 +16,14 @@
             type="com.craft.silicon.centemobile.view.ep.data.GroupLanding" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene_loading_new">
+
+        <RelativeLayout
+            android:id="@+id/userFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -24,17 +31,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="0dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
                     <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
                         android:id="@+id/banner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="fitXY"
                         android:background="@color/app_blue_light"
-                        android:src="@drawable/bg_feedback"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/bg_feedback" />
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -200,9 +209,9 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1.2"
                     android:layout_height="0dp"
                     android:layout_marginTop="-40dp"
+                    android:layout_weight="1.2"
                     android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
@@ -221,29 +230,32 @@
                         <ScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="@dimen/dimens_8dp"
-                            android:layout_marginTop="@dimen/dimens_40dp">
+                            android:layout_marginTop="@dimen/dimens_40dp"
+                            android:padding="@dimen/dimens_8dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:autoSizeTextType="uniform"
-                                    android:gravity="center"
-                                    android:textColor="@color/app_blue_dark"
                                     android:fontFamily="@font/poppins_medium"
+                                    android:gravity="center"
                                     android:text="@string/your_feedback_is_important"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                                    android:textColor="@color/app_blue_dark"
                                     tools:targetApi="o" />
+
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center"
                                     android:autoSizeTextType="uniform"
                                     android:fontFamily="@font/poppins_medium"
+                                    android:gravity="center"
                                     android:text="@string/tap_to_rate"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     tools:targetApi="o" />
@@ -252,13 +264,14 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:padding="@dimen/dimens_8dp"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/dimens_8dp">
+
                                     <LinearLayout
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_margin="@dimen/dimens_2dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
                                         android:onClick="@{()->callback.rate_very_poor()}"
                                         android:orientation="vertical">
 
@@ -267,25 +280,26 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/feedback_one"/>
+                                            android:src="@drawable/feedback_one" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:gravity="center"
                                             android:autoSizeTextType="uniform"
                                             android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
                                             android:text="@string/feedback_verypoor"
                                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                             tools:targetApi="o" />
 
                                     </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_margin="@dimen/dimens_2dp"
-                                        android:onClick="@{()->callback.rate_poor()}"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_poor()}"
                                         android:orientation="vertical">
 
                                         <ImageView
@@ -293,14 +307,14 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/feedback_two"/>
+                                            android:src="@drawable/feedback_two" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:gravity="center"
                                             android:autoSizeTextType="uniform"
                                             android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
                                             android:text="@string/feedback_poor"
                                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                             tools:targetApi="o" />
@@ -309,10 +323,10 @@
 
                                     <LinearLayout
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_margin="@dimen/dimens_2dp"
-                                        android:onClick="@{()->callback.rate_average()}"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_average()}"
                                         android:orientation="vertical">
 
                                         <ImageView
@@ -320,25 +334,26 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/feedback_three"/>
+                                            android:src="@drawable/feedback_three" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:gravity="center"
                                             android:autoSizeTextType="uniform"
                                             android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
                                             android:text="@string/feedback_average"
                                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                             tools:targetApi="o" />
 
                                     </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_margin="@dimen/dimens_2dp"
-                                        android:onClick="@{()->callback.rate_good()}"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_good()}"
                                         android:orientation="vertical">
 
                                         <ImageView
@@ -346,25 +361,26 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/feedback_four"/>
+                                            android:src="@drawable/feedback_four" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:gravity="center"
                                             android:autoSizeTextType="uniform"
                                             android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
                                             android:text="@string/feedback_good"
                                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                             tools:targetApi="o" />
 
                                     </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_margin="@dimen/dimens_2dp"
-                                        android:onClick="@{()->callback.rate_excellent()}"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_excellent()}"
                                         android:orientation="vertical">
 
                                         <ImageView
@@ -372,14 +388,14 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/feedback_five"/>
+                                            android:src="@drawable/feedback_five" />
 
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:gravity="center"
                                             android:autoSizeTextType="uniform"
                                             android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
                                             android:text="@string/feedback_excellent"
                                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                             tools:targetApi="o" />
@@ -388,15 +404,15 @@
                                 </LinearLayout>
 
                                 <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                                     android:id="@+id/materialCardComment"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/dimens_70dp"
                                     android:layout_marginHorizontal="@dimen/dimens_16dp"
                                     android:layout_marginTop="@dimen/dimens_16dp"
                                     android:hint="@string/add_comment"
-                                    app:boxBackgroundColor="@color/white"
                                     android:visibility="gone"
+                                    app:boxBackgroundColor="@color/white"
                                     app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                     app:hintTextColor="@color/app_blue_light"
                                     app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
@@ -419,26 +435,25 @@
                                     android:orientation="horizontal">
 
 
-
                                     <com.google.android.material.button.MaterialButton
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
                                         android:layout_height="wrap_content"
-                                        android:onClick="@{()->callback.rating_dismiss()}"
-                                        app:backgroundTint="@color/ghost_white"
-                                        app:strokeWidth="@dimen/dimens_2dp"
                                         android:layout_marginHorizontal="@dimen/dimens_8dp"
-                                        android:textColor="@color/app_blue_dark"
-                                        app:strokeColor="@color/app_blue_light"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rating_dismiss()}"
                                         android:paddingVertical="@dimen/dimens_16dp"
                                         android:text="@string/dismiss"
-                                        app:cornerRadius="@dimen/dimens_16dp" />
+                                        android:textColor="@color/app_blue_dark"
+                                        app:backgroundTint="@color/ghost_white"
+                                        app:cornerRadius="@dimen/dimens_16dp"
+                                        app:strokeColor="@color/app_blue_light"
+                                        app:strokeWidth="@dimen/dimens_2dp" />
 
                                     <com.google.android.material.button.MaterialButton
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
                                         android:layout_height="wrap_content"
                                         android:layout_marginHorizontal="@dimen/dimens_8dp"
+                                        android:layout_weight="1"
 
                                         android:onClick="@{()->callback.rating_submit()}"
                                         android:paddingVertical="@dimen/dimens_16dp"
@@ -451,16 +466,18 @@
                         </ScrollView>
 
 
-
                     </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </LinearLayout>
 
 
-
-
         </RelativeLayout>
+
+        <include
+            android:id="@+id/loadingFrame"
+            layout="@layout/fragment_loading" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
 </layout>

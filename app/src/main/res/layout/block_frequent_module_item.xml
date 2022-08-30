@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -21,12 +21,11 @@
 
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/dimens_0dp"
             app:cardElevation="@dimen/dimens_0dp"
-            app:layout_constraintDimensionRatio="6:6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -44,9 +43,8 @@
                     android:layout_width="@dimen/dimens_40dp"
                     android:layout_height="@dimen/dimens_40dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
                     android:contentDescription="@string/avatar"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -60,18 +58,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimens_2dp"
-                    android:layout_marginBottom="8dp"
-                    android:autoSizeTextType="uniform"
                     android:ellipsize="end"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
-                    android:text="jfjf"
                     android:maxLines="2"
                     android:minLines="2"
-                    android:paddingHorizontal="@dimen/dimens_2dp"
-                    android:paddingVertical="@dimen/dimens_5dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    tools:targetApi="o" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

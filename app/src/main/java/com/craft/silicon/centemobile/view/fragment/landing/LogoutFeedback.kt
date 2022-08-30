@@ -11,18 +11,30 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentLogoutFeedbackBinding
+import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
+import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.navigate
-import com.craft.silicon.centemobile.view.binding.setImageRes
+import com.craft.silicon.centemobile.view.dialog.InfoFragment
+import com.craft.silicon.centemobile.view.dialog.MainDialogData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONException
+import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +53,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     private var param2: String? = null
     private val baseViewModel: BaseViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
+    private val composite = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +62,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
     private lateinit var binding: FragmentLogoutFeedbackBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,25 +75,25 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         return binding.root.rootView
         //return inflater.inflate(R.layout.fragment_logout_feedback, container, false)
     }
+
     //dd/MM/yyyy
-    private fun getDateFromMilliSeconds(millisecond: Long, date_format:String):String{
-        val simpleDateFormat = SimpleDateFormat(date_format)
-        val dateString = simpleDateFormat.format(millisecond)
-        return dateString
+    private fun getDateFromMilliSeconds(millisecond: Long, date_format: String): String {
+        val simpleDateFormat = SimpleDateFormat(date_format, Locale.getDefault())
+        return simpleDateFormat.format(millisecond)
         //textView.text = String.format("Date: %s", dateString)
     }
 
 
-    fun setData(){
-        val login_time  = widgetViewModel.storageDataSource.loginTime.value!!;//1661523060000L
-        val logout_time = System.currentTimeMillis()
-        val duration    = ((System.currentTimeMillis() - login_time));
+    fun setData() {
+        val loginTime = widgetViewModel.storageDataSource.loginTime.value!!//1661523060000L
+        val logoutTime = System.currentTimeMillis()
+        val duration = ((System.currentTimeMillis() - loginTime))
 
-        val date_format: String       = "dd MMM yyyy HH:mm:ss"
-        var date_format_hours: String = "HH:mm:ss"
-        binding.txtLoginTime.text     = getDateFromMilliSeconds(login_time, date_format)
-        binding.txtLogoutTime.text    = getDateFromMilliSeconds(logout_time, date_format)
-        binding.txtDuration.text      = getTimeDifference(duration)
+        val dateFormat: String = "dd MMM yyyy HH:mm:ss"
+        var dateFormatHours: String = "HH:mm:ss"
+        binding.txtLoginTime.text = getDateFromMilliSeconds(loginTime, dateFormat)
+        binding.txtLogoutTime.text = getDateFromMilliSeconds(logoutTime, dateFormat)
+        binding.txtDuration.text = getTimeDifference(duration)
 
         //binding.txtLoginTime.setText(""+widgetViewModel.storageDataSource.loginTime)
         //binding.txtLogoutTime.setText(""+widgetViewModel.storageDataSource.loginTime)
@@ -97,29 +111,31 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         println("$milliseconds Milliseconds = $minutes minutes and $seconds seconds.")
     }
 
-    fun getTimeDifference(milliseconds:Long):String{
+    fun getTimeDifference(milliseconds: Long): String {
         var x = milliseconds;
-        var h = x / (60*60*1000)
+        val h = x / (60 * 60 * 1000)
         x -= h * (60 * 60 * 1000)
-        var m = x / (60*1000)
+        val m = x / (60 * 1000)
         x -= m * (60 * 1000)
-        var s = x / 1000
+        val s = x / 1000
         x -= s * 1000
 
         return "${formatDuration(h.toDouble())}:${formatDuration(m.toDouble())}:${formatDuration(s.toDouble())}"
 
     }
 
-    fun formatDuration(duration: Double): String {
+    private fun formatDuration(duration: Double): String {
         // fill the result to be of 2 characters, use 0 as padding char
         return duration.toInt().toString().padStart(2, '0')
     }
 
     override fun setBinding() {
-        binding.callback=this
+        binding.callback = this
     }
 
     companion object {
+        private lateinit var callbacks: AppCallbacks
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -137,33 +153,112 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
+        @JvmStatic
+        fun setData(appCallbacks: AppCallbacks) =
+            LogoutFeedback().apply {
+                this@Companion.callbacks = appCallbacks
+            }
     }
 
     override fun rating_dismiss() {
         Handler(Looper.getMainLooper()).postDelayed({
-            navigate(widgetViewModel!!.navigation().navigateLanding())
-
+            navigate(widgetViewModel.navigation().navigateLanding())
         }, 500)
     }
 
+    private fun setLoading(b: Boolean) {
+        if (b) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
+    }
+
+    private fun showError(data: MainDialogData) {
+        navigate(baseViewModel.navigationData.navigateToAlertDialog(data))
+    }
+
+
     override fun rating_submit() {
         //TODO call server to submit loading
-        if(rating>0){
-            var comment = binding.edtComment.text
-            if(rating<3 && comment?.length!!<3){//bad rating comment required, comment require more than 3 characters
+        if (rating > 0) {
+            val comment = binding.edtComment.text
+            if (rating < 3 && comment?.length!! < 3) {//bad rating comment required, comment require more than 3 characters
                 BaseClass.show_toast(activity, activity?.getString(R.string.add_comment))
-            }else{
-                Handler(Looper.getMainLooper()).postDelayed({
-                    navigate(widgetViewModel!!.navigation().navigateLanding())
-                }, 500)
+            } else {
+                baseViewModel.dataSource.setFeedbackTimer(1)
+                createFeedback()
             }
-        }else{
+        } else {
             BaseClass.show_toast(activity, activity?.getString(R.string.choose_rating))
         }
 
     }
 
-    var rating:Int = 0
+    private fun createFeedback() {
+        val json = JSONObject()
+        json.put("COMMENT", binding.edtComment.text.toString())
+        json.put("RATING", binding.edtComment.text.toString())
+        try {
+            setLoading(true)
+            composite.add(
+                baseViewModel.addComment(
+                    json, requireContext()
+                ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        try {
+                            AppLogger.instance.appLog(
+                                "Feedback", BaseClass.decryptLatest(
+                                    it.response,
+                                    baseViewModel.dataSource.deviceData.value!!.device,
+                                    true,
+                                    baseViewModel.dataSource.deviceData.value!!.run
+                                )
+                            )
+                            if (BaseClass.nonCaps(it.response) != "ok") {
+                                val resData = DynamicDataResponseTypeConverter().to(
+                                    BaseClass.decryptLatest(
+                                        it.response,
+                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                        true,
+                                        baseViewModel.dataSource.deviceData.value!!.run
+                                    )
+                                )
+                                if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                    ShowToast(requireContext(), resData!!.message)
+                                    callbacks.onDialog()
+                                    dialog?.dismiss()
+                                } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
+                                    InfoFragment.showDialog(this.childFragmentManager)
+                                } else {
+                                    AppLogger.instance.appLog("Feedback", Gson().toJson(resData))
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        showError(
+                                            MainDialogData(
+                                                title = getString(R.string.error),
+                                                message = resData?.message,
+                                            )
+                                        )
+                                    }, 200)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }, {
+                        setLoading(false)
+                        it.printStackTrace()
+                    })
+            )
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    var rating: Int = 0
     override fun rate_very_poor() {
         rating = 1
         override_images()
@@ -181,7 +276,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     override fun rate_average() {
         rating = 3
         override_images()
-        BaseClass.animation_blow(activity, binding.imgAverage);
+        BaseClass.animation_blow(activity, binding.imgAverage)
         binding.imgAverage.setImageResource(R.drawable.feedback_three_selected)
     }
 
@@ -199,8 +294,12 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         binding.imgExcellent.setImageResource(R.drawable.feedback_five_selected)
     }
 
-    fun override_images(){
-        binding.materialCardComment.visibility= if(rating>3){View.GONE}else{View.VISIBLE}
+    fun override_images() {
+        binding.materialCardComment.visibility = if (rating > 3) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
         binding.imgVeryPoor.setImageResource(R.drawable.feedback_one)
         binding.imgPoor.setImageResource(R.drawable.feedback_two)
         binding.imgAverage.setImageResource(R.drawable.feedback_three)

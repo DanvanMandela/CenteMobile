@@ -27,12 +27,12 @@ import java.util.UUID;
 
 public class Constants {
     public static class Timeout {
-        public static long connection          = 30 * 10000;
+        public static long connection = 30 * 10000;
         public static long connection_payments = 60 * 10000;//give time for external apis
-        public static long connection_ocr      = 90 * 10000;//takes long
+        public static long connection_ocr = 90 * 10000;//takes long
 
-        public static long read                = 60 * 10000;
-        public static long write               = 60 * 10000;
+        public static long read = 60 * 10000;
+        public static long write = 60 * 10000;
     }
 
     public static class BaseUrl {
@@ -56,20 +56,19 @@ public class Constants {
         @NotNull
         public static final String URL = Data.TEST ? UAT : LIVE;
 
-
     }
 
-    public static class Contacts{
+    public static class Contacts {
         @NotNull
-        public static final String url_twitter          = "https://twitter.com/CentenaryBank";
+        public static final String url_twitter = "https://twitter.com/CentenaryBank";
         @NotNull
-        public static final String url_facebook         = "https://www.facebook.com/Centenarybank/?ref=br_rs";
+        public static final String url_facebook = "https://www.facebook.com/Centenarybank/?ref=br_rs";
         @NotNull
-        public static final String url_chat             = "https://web.powerva.microsoft.com/environments/Default-41c79b66-e60a-4ca0-896b-f4bfdf6a9678/bots/new_bot_49bd010dd726465cab846eb4cdc61ea6/webchat";
+        public static final String url_chat = "https://web.powerva.microsoft.com/environments/Default-41c79b66-e60a-4ca0-896b-f4bfdf6a9678/bots/new_bot_49bd010dd726465cab846eb4cdc61ea6/webchat";
         @NotNull
-        public static final String call_center_number   = "0800200555";
+        public static final String call_center_number = "0800200555";
         @NotNull
-        public static final String contact_us_email     = "info@centenarybank.co.ug";
+        public static final String contact_us_email = "info@centenarybank.co.ug";
     }
 
     public static class Data {

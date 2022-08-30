@@ -122,4 +122,10 @@ public interface AppDataSource {
                                                   Context context) {
         return null;
     }
+
+
+    default Single<DynamicResponse> addComment(JSONObject jsonObject,
+                                               Context context) {
+        return null;
+    }
 }

@@ -651,8 +651,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
 
-                                    if (resData?.formID != null) {
-                                        if (resData.next != null) {
+                                    if (resData?.formID.isNullOrBlank()) {
+                                        if (resData!!.next != null) {
                                             if ("${resData.next}".isNotEmpty()) {
                                                 if (!TextUtils.isEmpty(resData.formID)) {
                                                     if (nonCaps(resData.formID)
@@ -1132,8 +1132,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                if (resData?.formID != null) {
-                                    if (nonCaps(resData.formID)
+                                if (!resData?.formID.isNullOrBlank()) {
+                                    if (nonCaps(resData!!.formID)
                                         == nonCaps("STATEMENT")
                                     ) {
                                         DisplayDialogFragment.setData(

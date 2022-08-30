@@ -59,6 +59,7 @@ import com.craft.silicon.centemobile.view.ep.data.MiniList;
 import com.craft.silicon.centemobile.view.ep.data.MiniStatement;
 import com.craft.silicon.centemobile.view.ep.data.MiniTypeConverter;
 import com.craft.silicon.centemobile.view.fragment.MiniStatementFragment;
+import com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback;
 import com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment;
 import com.craft.silicon.centemobile.view.model.AccountViewModel;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
@@ -180,15 +181,16 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void onPositive() {
-//        setLoading(true);
-        //widgetViewModel.storageDataSource.clearDevice();
-        /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            setLoading(false);
-            ((MainActivity) requireActivity()).provideNavigationGraph()
-                    .navigate(widgetViewModel.navigation().navigateLanding());
-        }, 1500);*/
+//        int feedback = authViewModel.storage.getFeedbackTimer().getValue();
+//        if (feedback == 5) {
+//            LogoutFeedback.setData(this);
+//            BindingAdapterKt.navigate(this,
+//                    widgetViewModel.navigation().navigateToLogoutFeedBack());
+//        } else BindingAdapterKt.navigate(this,
+//                widgetViewModel.navigation().navigateLanding());
+//
         BindingAdapterKt.navigate(this,
-                widgetViewModel.navigation().navigateToLogoutFeedBack());
+                widgetViewModel.navigation().navigateLanding());
     }
 
     @Override
@@ -587,12 +589,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                                     .toJson(response.getAccountStatement()));
                     MiniStatementFragment.setData(new MiniList(dataList));
                     BindingAdapterKt.navigate(this, widgetViewModel.navigation().navigateToMini());
-//                    DisplayDialogFragment.showDialog(
-//                            getParentFragmentManager(),
-//                            response.getAccountStatement(),
-//                            null,
-//                            null
-//                    );
                 } else if (Objects.equals(response.getStatus(), StatusEnum.TOKEN.getType())) {
                     setLoading(false);
                     InfoFragment.showDialog(this.getChildFragmentManager());
@@ -615,5 +611,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         } else {
             new ShowToast(requireContext(), getString(R.string.error_fetching_mini));
         }
+    }
+
+    @Override
+    public void onDialog() {
+        new Handler(Looper.getMainLooper())
+                .postDelayed(() -> requireActivity().onBackPressed(), 200);
     }
 }

@@ -8,14 +8,19 @@ import androidx.lifecycle.ViewModel;
 
 import com.craft.silicon.centemobile.data.model.DeviceData;
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum;
+import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.DynamicDataSource;
 import com.craft.silicon.centemobile.data.repository.dynamic.DynamicRepository;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
+import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
+import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.data.source.remote.callback.RequestData;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseData;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -67,4 +72,7 @@ public class DynamicViewModel extends ViewModel implements DynamicDataSource {
     public void saveDeviceData(DeviceData data) {
         storageDataSource.setDeviceData(data);
     }
+
+
+
 }

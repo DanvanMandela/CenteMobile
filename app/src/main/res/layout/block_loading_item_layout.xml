@@ -28,6 +28,7 @@
 
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -43,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/poppins_medium"
-                    android:gravity="start"
+                    android:gravity="center"
                     android:paddingHorizontal="@dimen/dimens_2dp"
                     android:text="@{data.percentage+@string/percentage}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"

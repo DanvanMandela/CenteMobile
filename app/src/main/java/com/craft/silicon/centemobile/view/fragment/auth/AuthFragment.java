@@ -65,7 +65,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
 
-
     public AuthFragment() {
         // Required empty public constructor
     }
@@ -98,7 +97,14 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         setData();
         autoBio();
         bioLogin();
+        setFeedbackTimer();
         return binding.getRoot().getRootView();
+    }
+
+    private void setFeedbackTimer() {
+        int feedback = authViewModel.storage.getFeedbackTimer().getValue();
+        feedback = feedback + 1;
+        authViewModel.storage.setFeedbackTimer(feedback);
     }
 
     private void autoBio() {
@@ -108,8 +114,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void setFingerPrint() {
-
-
         boolean state = authViewModel.storage.getBio().getValue();
         if (state) {
             binding.bioButton.setVisibility(View.VISIBLE);
@@ -117,8 +121,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 ((MainActivity) requireActivity()).authenticateTo(this::authUser);
             }
         }
-
-
     }
 
     private void setData() {
@@ -291,7 +293,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     authViewModel.storage.setLoginTime(System.currentTimeMillis());
                     BindingAdapterKt.navigate(this,
                             authViewModel.navigationDataSource.navigateToHome());
-
                 }
 
                 , 1500);
@@ -342,6 +343,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             } else navigate();
         });
     }
+
 
     private void updateActivationData(LoginUserData data) {
         ActivationData userData = authViewModel.storage.getActivationData().getValue();

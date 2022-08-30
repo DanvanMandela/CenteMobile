@@ -919,6 +919,26 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _feedbackTimer = MutableStateFlow(
+        sharedPreferences.getInt(
+            TAG_FEED_BACK_TIMER,
+            0
+        )
+    )
+    override val feedbackTimer: StateFlow<Int?>
+        get() = _feedbackTimer
+
+    override fun setFeedbackTimer(value: Int?) {
+        _feedbackTimer.value = value!!
+        with(sharedPreferences.edit()) {
+            putInt(
+                TAG_FEED_BACK_TIMER,
+                value
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -975,5 +995,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_SYNC = "sync"
 
         private const val TAG_LOGIN_TIME = "login_time"
+
+        private const val TAG_FEED_BACK_TIMER = "feed_back_timer"
     }
 }

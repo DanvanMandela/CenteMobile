@@ -157,7 +157,16 @@ fun setDefaultAmountWatcher(
                                 )
                             )
                         }
-                    }
+                    } else callbacks?.userInput(
+                        InputData(
+                            name = formControl.controlText,
+                            key = formControl.serviceParamID,
+                            value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
+                            encrypted = formControl.isEncrypted,
+                            mandatory = formControl.isMandatory,
+                            validation = null
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

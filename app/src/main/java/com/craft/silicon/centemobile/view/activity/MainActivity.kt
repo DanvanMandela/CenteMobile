@@ -45,9 +45,7 @@ import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.craft.silicon.centemobile.view.fragment.map.MapData
-import com.craft.silicon.centemobile.view.model.WidgetViewModel
-import com.craft.silicon.centemobile.view.model.WorkStatus
-import com.craft.silicon.centemobile.view.model.WorkerViewModel
+import com.craft.silicon.centemobile.view.model.*
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -60,6 +58,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.disposables.CompositeDisposable
 import java.io.IOException
 
 
@@ -73,9 +72,14 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var navController: NavController? = null
     private val workViewModel: WorkerViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
+    private val baseViewModel: BaseViewModel by viewModels()
     private var callbacks: AppCallbacks? = null
     private var cryptographyManager = CryptoManager()
     private var bioInterface: BioInterface? = null
+
+    private val composite = CompositeDisposable()
+
+    private val staticViewModel: StaticDataViewModel by viewModels()
 
 
     private val otpSMS = MutableLiveData<String?>()
@@ -113,6 +117,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         listenToConnection()
         subscribePush()
         inactivityMonitor()
+
 
     }
 
@@ -249,6 +254,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
 
     override fun setViewModel() {
+
         val version = widgetViewModel.storageDataSource.version.value
         workViewModel.routeData(this, object : WorkStatus {
             override fun workDone(b: Boolean) {
@@ -256,7 +262,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     AppLogger.instance.appLog("DATA:Version", version!!)
                     if (TextUtils.isEmpty(version)) {
                         widgetViewModel.storageDataSource.setVersion("1")
-                        workViewModel.onWidgetData(this@MainActivity, this)
+                        workViewModel.onWidgetData(this@MainActivity, null)
                     }
                 }
             }
@@ -573,7 +579,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    fun onImagePicker(callbacks: AppCallbacks, x:Int, y:Int) {
+    fun onImagePicker(callbacks: AppCallbacks, x: Int, y: Int) {
         this.callbacks = callbacks
         ImagePicker.clearCache(this)
         Dexter.withContext(this)
@@ -601,7 +607,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun launchCameraIntent(x:Int, y:Int) {
+    private fun launchCameraIntent(x: Int, y: Int) {
         val intent = Intent(this@MainActivity, ImagePicker::class.java)
         intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
 
@@ -643,7 +649,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun launchGalleryIntent(x:Int, y:Int) {
+    private fun launchGalleryIntent(x: Int, y: Int) {
         val intent = Intent(this@MainActivity, ImagePicker::class.java)
         intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
         intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
@@ -680,7 +686,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         }
     }
 
-    private fun showImagePickerOptions(x:Int, y:Int) {
+    private fun showImagePickerOptions(x: Int, y: Int) {
         ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
             override fun onTakeCameraSelected() {
                 launchCameraIntent(x, y)

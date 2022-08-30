@@ -147,5 +147,8 @@ interface StorageDataSource {
     val sync: StateFlow<SyncData?>
     fun deleteSync()
 
+    fun setFeedbackTimer(value: Int?)
+    val feedbackTimer: StateFlow<Int?>
+
 
 }

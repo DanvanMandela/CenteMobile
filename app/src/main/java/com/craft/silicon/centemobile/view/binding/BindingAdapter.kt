@@ -49,6 +49,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.DeviceData
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.input.InputData
@@ -936,6 +937,10 @@ fun otpLive(optState: StateFlow<String>): LiveData<String> {
 
 fun syncLive(sync: StateFlow<SyncData>): LiveData<SyncData> {
     return sync.asLiveData()
+}
+
+fun deviceLive(optState: StateFlow<DeviceData>): LiveData<DeviceData> {
+    return optState.asLiveData()
 }
 
 

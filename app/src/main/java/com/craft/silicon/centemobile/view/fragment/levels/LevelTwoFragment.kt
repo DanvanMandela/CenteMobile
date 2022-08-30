@@ -616,8 +616,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                                 if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
-                                    if (resData?.formID != null) {
-                                        if (!TextUtils.isEmpty(resData.formID)) {
+                                    if (!resData?.formID.isNullOrBlank()) {
+                                        if (!TextUtils.isEmpty(resData!!.formID)) {
                                             if (nonCaps(resData.formID)
                                                 == nonCaps("PAYMENTCONFIRMATIONFORM")
                                             ) {
@@ -1491,8 +1491,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                if (resData?.formID != null) {
-                                    if (!TextUtils.isEmpty(resData.formID)) {
+                                if (!resData?.formID.isNullOrEmpty()) {
+                                    if (!TextUtils.isEmpty(resData!!.formID)) {
                                         if (nonCaps(resData.formID)
                                             == nonCaps("STATEMENT")
                                         ) {

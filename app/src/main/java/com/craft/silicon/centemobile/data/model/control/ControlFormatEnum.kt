@@ -33,6 +33,7 @@ enum class ControlFormatEnum(var type: String) {
     HORIZONTAL_SCROLL("HORIZONTALSCROLL"),
     CATEGORY("CATEGORY"),
     NUMBER("NUMBER"),
+    PAN("PAN"),
     PRIMARY("PRIMARY"),
     HTML("HTML"),
     MY_NUMBER("MYNUMBER"),

@@ -42,7 +42,10 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
     }
 
     private fun addChildren(parent: BlockLinkedDropDownLayoutBinding) {
-        AppLogger.instance.appLog(LinkedDropDownModel::class.simpleName!!, Gson().toJson(data.container))
+        AppLogger.instance.appLog(
+            LinkedDropDownModel::class.simpleName!!,
+            Gson().toJson(data.container)
+        )
         parent.data = data.container
         parent.childContainer.removeAllViews()
         for (s in data.children) {
@@ -57,13 +60,6 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
                             binding.data = s
                             binding.callback = callbacks
                             parent.childContainer.addView(binding.root)
-//                            binding.child.addTextChangedListener(
-//                                NumberTextWatcher(
-//                                    binding.child,
-//                                    callbacks,
-//                                    s
-//                                )
-//                            )
                             setLinkedToInput(parent, binding.child)
                         }
                         else -> {

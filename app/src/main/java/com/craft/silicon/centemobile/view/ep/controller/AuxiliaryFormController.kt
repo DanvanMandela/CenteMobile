@@ -230,9 +230,21 @@ class NewFormController(
                     module(data.forms.module)
                     storage(this@NewFormController.storageDataSource)
                 }
-                nonCaps(ControlFormatEnum.AMOUNT.type) -> amountModel(
-                    form = d, storage = storageDataSource, callbacks = callbacks
-                )
+                nonCaps(ControlFormatEnum.AMOUNT.type) -> {
+                    if (!d.displayControl.isNullOrEmpty()) {
+                        if (d.displayControl == "true") {
+                            inputDisabledModel(
+                                form = d,
+                                storage = storageDataSource,
+                                callbacks = callbacks
+                            )
+                        } else amountModel(
+                            form = d, storage = storageDataSource, callbacks = callbacks
+                        )
+                    } else amountModel(
+                        form = d, storage = storageDataSource, callbacks = callbacks
+                    )
+                }
                 nonCaps(ControlFormatEnum.PIN_NUMBER.type),
                 nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
                     form = d, storage = storageDataSource, callbacks = callbacks
@@ -244,11 +256,32 @@ class NewFormController(
                         storage = storageDataSource,
                         callbacks = callbacks
                     )
-                    else -> inputModel(
+                    nonCaps(ControlFormatEnum.PAN.type) -> inputPanModel(
                         form = d,
                         storage = storageDataSource,
                         callbacks = callbacks
                     )
+                    else -> {
+                        if (!d.displayControl.isNullOrEmpty()) {
+                            if (d.displayControl == "true")
+                                inputDisabledModel(
+                                    form = d,
+                                    storage = storageDataSource,
+                                    callbacks = callbacks
+                                )
+                            else inputModel(
+                                form = d,
+                                storage = storageDataSource,
+                                callbacks = callbacks
+                            )
+                        } else {
+                            inputModel(
+                                form = d,
+                                storage = storageDataSource,
+                                callbacks = callbacks
+                            )
+                        }
+                    }
                 }
             }
 

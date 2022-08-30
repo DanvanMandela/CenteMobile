@@ -1,8 +1,16 @@
 package com.craft.silicon.centemobile.data.source.remote.dynamic.widgets;
 
+import android.content.Context;
+
+import androidx.lifecycle.LiveData;
+
+import com.craft.silicon.centemobile.data.model.DeviceData;
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
+import com.craft.silicon.centemobile.util.AppLogger;
+import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -24,12 +32,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class WidgetRemoteDataModule {
 
     @Provides
-    public WidgetApiService provideApiService(Gson gson, StorageDataSource storage) {
+    public WidgetApiService provideApiService(Gson gson,
+                                              StorageDataSource storage,
+                                              Context context) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        LiveData<DeviceData> deviceLive = BindingAdapterKt.deviceLive(storage.getDeviceData());
+
+
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.URL : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
-        String token = storage.getDeviceData().getValue() == null ? "" : storage.getDeviceData().getValue().getToken();
+                DynamicURL.INSTANCE.getOther() : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
+
+        new AppLogger().appLog("Live:URL", new Gson().toJson(deviceLive.getValue()));
+        new AppLogger().appLog("Old:URL", base);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))

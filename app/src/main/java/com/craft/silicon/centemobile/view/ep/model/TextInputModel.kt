@@ -42,14 +42,6 @@ open class TextInputModel : DataBindingEpoxyModel() {
                 BaseClass.setMaxLength(binding.child, form.maxValue!!.toInt())
             }
         }
-        if (form.displayControl != null) {
-            if (!TextUtils.isEmpty(form.displayControl)) {
-                if (form.displayControl == "true")
-                    binding.child.isEnabled = false
-            }
-        }
-
-
     }
 }
 
