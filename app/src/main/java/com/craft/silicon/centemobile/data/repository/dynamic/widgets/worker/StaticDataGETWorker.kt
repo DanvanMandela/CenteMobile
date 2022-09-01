@@ -93,6 +93,10 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.setBranchData(
                                 data.bankBranch.toMutableList()
                             )
+                        if (!data.AppIdleTimeout.isNullOrBlank())
+                            storageDataSource.setTimeout(
+                                data.AppIdleTimeout!!.toLong()
+                            )
                         constructResponse(Result.success())
                     } else {
                         constructResponse(Result.retry())

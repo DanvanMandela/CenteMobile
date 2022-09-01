@@ -6,6 +6,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider;
@@ -214,6 +215,35 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     @Override
     public void deleteNotification(int id) {
         Completable.fromRunnable(() -> widgetDao.deleteNotification(id))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void savePendingTransaction(PendingTransaction pendingTransaction) {
+        Completable.fromRunnable(() -> widgetDao.savePendingTransaction(pendingTransaction))
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public void deletePendingTransactions() {
+        Completable.fromRunnable(widgetDao::deletePendingTransactions)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe();
+    }
+
+    @Override
+    public Observable<List<PendingTransaction>> getPendingTransaction() {
+        return widgetDao.getPendingTransaction();
+    }
+
+    @Override
+    public void deletePendingTransactionsByID(int id) {
+        Completable.fromRunnable(() -> deletePendingTransactionsByID(id))
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe();

@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,23 +63,22 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     private lateinit var professionAdapter: AutoTextArrayAdapter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        activity?.onBackPressedDispatcher?.addCallback(this,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    ShowAlertDialog().showDialog(
-//                        context!!,
-//                        getString(R.string.exit_registration),
-//                        getString(R.string.proceed_registration),
-//                        this@IncomeSourceFragment
-//                    )
-//                }
-//
-//            }
-//        )
+    override fun onResume() {
+        super.onResume()
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.exit_registration),
+                    getString(R.string.proceed_registration),
+                    this
+                )
+                true
+            } else false
+        }
     }
-
     private fun setToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             ShowAlertDialog().showDialog(

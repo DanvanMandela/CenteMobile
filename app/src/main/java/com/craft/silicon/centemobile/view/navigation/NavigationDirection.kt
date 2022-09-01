@@ -10,6 +10,7 @@ import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.view.dialog.MainDialogData
 import com.craft.silicon.centemobile.view.ep.controller.DisplayData
+import com.craft.silicon.centemobile.view.ep.data.ActivateData
 import com.craft.silicon.centemobile.view.ep.data.DynamicData
 import java.io.Serializable
 import javax.inject.Inject
@@ -46,7 +47,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_disclaimer)
     }
 
-    override fun navigateToOTP(mobile: String?): NavDirections {
+    override fun navigateToOTP(data: ActivateData?): NavDirections? {
         return object : NavDirections {
             override val actionId: Int
                 get() = R.id.action_nav_otp
@@ -56,10 +57,10 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
             @Suppress("CAST_NEVER_SUCCEEDS")
             fun mArguments(): Bundle {
                 val result = Bundle()
-                if (Parcelable::class.java.isAssignableFrom(String::class.java)) {
-                    result.putParcelable("mobile", mobile as Parcelable)
-                } else if (Serializable::class.java.isAssignableFrom(String::class.java)) {
-                    result.putSerializable("mobile", mobile as Serializable)
+                if (Parcelable::class.java.isAssignableFrom(ActivateData::class.java)) {
+                    result.putParcelable("mobile", data as Parcelable)
+                } else if (Serializable::class.java.isAssignableFrom(ActivateData::class.java)) {
+                    result.putSerializable("mobile", data as Serializable)
                 }
                 return result
             }

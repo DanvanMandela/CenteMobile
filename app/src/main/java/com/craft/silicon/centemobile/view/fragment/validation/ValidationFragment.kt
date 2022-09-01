@@ -66,7 +66,6 @@ import com.craft.silicon.centemobile.view.qr.QRResult
 import com.craft.silicon.centemobile.view.qr.ScanCode
 import com.craft.silicon.centemobile.view.qr.ScanQRCode
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -99,7 +98,6 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
 
     private val scanQrCode = registerForActivityResult(ScanQRCode(), ::scanSuccess)
 
-    private val liveFormData = MutableLiveData<DynamicData?>()
     private val fetchRecentLive = MutableLiveData<FormControl>()
 
     private val baseViewModel: BaseViewModel by viewModels()
@@ -197,7 +195,6 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                                 )
                                 val action = it.first { a -> a.moduleID == formControl?.moduleID }
                                 apiCall(action, formControl, modules)
-
                             }
                         }, { it.printStackTrace() })
                     )
@@ -207,8 +204,6 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                 }
             }
         }
-
-
     }
 
     private fun apiCall(

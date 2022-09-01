@@ -741,6 +741,7 @@ fun EpoxyRecyclerView.serviceAlerts(callbacks: AppCallbacks?, data: AppData?) {
 
 @BindingAdapter("callback", "data")
 fun ImageButton.imageSelect(callbacks: AppCallbacks?, data: FormControl?) {
+    this.setImageDrawable(null)
     setDefaultValue(data, callbacks)
     this.setOnClickListener {
         callbacks?.onImageSelect(this, data)

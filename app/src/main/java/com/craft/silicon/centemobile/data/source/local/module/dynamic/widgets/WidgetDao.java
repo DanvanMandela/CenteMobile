@@ -12,6 +12,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
@@ -137,4 +138,21 @@ public interface WidgetDao extends WidgetDataSource {
     @Query("DELETE FROM notifications WHERE id=:id")
     @Override
     void deleteNotification(int id);
+
+
+    @Insert(onConflict = REPLACE)
+    @Override
+    void savePendingTransaction(PendingTransaction pendingTransaction);
+
+    @Query("DELETE FROM pending_table")
+    @Override
+    void deletePendingTransactions();
+
+    @Query("SELECT * FROM pending_table")
+    @Override
+    Observable<List<PendingTransaction>> getPendingTransaction();
+
+    @Query("DELETE FROM pending_table WHERE id=:id")
+    @Override
+    void deletePendingTransactionsByID(int id);
 }

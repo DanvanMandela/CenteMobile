@@ -10,10 +10,7 @@ import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
-import com.craft.silicon.centemobile.databinding.BlockAmountTextInputLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockDropDownLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockLinkedDropDownLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockTextInputLayoutBinding
+import com.craft.silicon.centemobile.databinding.*
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
@@ -53,29 +50,77 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
                     when (BaseClass.nonCaps(s.controlFormat)) {
                         BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
-                            val binding =
-                                BlockAmountTextInputLayoutBinding.inflate(
-                                    LayoutInflater.from(parent.root.context)
-                                )
-                            binding.data = s
-                            binding.callback = callbacks
-                            parent.childContainer.addView(binding.root)
-                            setLinkedToInput(parent, binding.child)
+
+                            if (!s.displayControl.isNullOrBlank()) {
+                                if (s.displayControl == "true") {
+                                    val binding =
+                                        BlockDisabledAmountTextInputLayoutBinding.inflate(
+                                            LayoutInflater.from(parent.root.context)
+                                        )
+                                    binding.data = s
+                                    binding.callback = callbacks
+                                    parent.childContainer.addView(binding.root)
+                                    setLinkedToInput(parent, binding.child)
+
+                                } else {
+                                    val binding =
+                                        BlockAmountTextInputLayoutBinding.inflate(
+                                            LayoutInflater.from(parent.root.context)
+                                        )
+                                    binding.data = s
+                                    binding.callback = callbacks
+                                    parent.childContainer.addView(binding.root)
+                                    setLinkedToInput(parent, binding.child)
+
+                                }
+                            } else {
+                                val binding =
+                                    BlockAmountTextInputLayoutBinding.inflate(
+                                        LayoutInflater.from(parent.root.context)
+                                    )
+                                binding.data = s
+                                binding.callback = callbacks
+                                parent.childContainer.addView(binding.root)
+                                setLinkedToInput(parent, binding.child)
+
+                            }
                         }
                         else -> {
-                            val binding =
-                                BlockTextInputLayoutBinding.inflate(
-                                    LayoutInflater
-                                        .from(parent.root.context)
-                                )
-                            binding.data = s
-                            binding.callback = callbacks
-                            parent.childContainer.addView(binding.root)
-                            setLinkedToInput(parent, binding.child)
+                            if (!s.displayControl.isNullOrBlank()) {
+                                if (s.displayControl == "true") {
+                                    val binding =
+                                        BlockTextInputDisabledLayoutBinding.inflate(
+                                            LayoutInflater.from(parent.root.context)
+                                        )
+                                    binding.data = s
+                                    binding.callback = callbacks
+                                    parent.childContainer.addView(binding.root)
+                                    setLinkedToInput(parent, binding.child)
+
+                                } else {
+                                    val binding =
+                                        BlockTextInputLayoutBinding.inflate(
+                                            LayoutInflater.from(parent.root.context)
+                                        )
+                                    binding.data = s
+                                    binding.callback = callbacks
+                                    parent.childContainer.addView(binding.root)
+                                    setLinkedToInput(parent, binding.child)
+
+                                }
+                            } else {
+                                val binding =
+                                    BlockTextInputLayoutBinding.inflate(
+                                        LayoutInflater.from(parent.root.context)
+                                    )
+                                binding.data = s
+                                binding.callback = callbacks
+                                parent.childContainer.addView(binding.root)
+                                setLinkedToInput(parent, binding.child)
+
+                            }
                         }
                     }
-
-
                 }
                 BaseClass.nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
                     val binding =

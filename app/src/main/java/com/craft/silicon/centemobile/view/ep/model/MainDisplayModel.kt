@@ -13,6 +13,7 @@ import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.databinding.BlockDisplayContainerBinding
 import com.craft.silicon.centemobile.databinding.BlockMainDisplayItemLayoutBinding
 import com.craft.silicon.centemobile.util.AppLogger
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.BaseClass.generateAlphaNumericString
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.DisplayContent
@@ -48,7 +49,9 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
         val parent = binding.displayLay
         parent.removeAllViews()
         for (e in data.entries) {
-            if (!TextUtils.isEmpty(e.value)) {
+            if (!TextUtils.isEmpty(e.value) && BaseClass.nonCaps(e.key)
+                != BaseClass.nonCaps("PendingUniqueID")
+            ) {
                 val display =
                     BlockMainDisplayItemLayoutBinding
                         .inflate(LayoutInflater.from(parent.context))
@@ -58,15 +61,15 @@ open class MainDisplayModel : DataBindingEpoxyModel() {
 
             }
 
-
         }
         if (form != null) {
-            if (form?.nextFormID != null)
-                if (!TextUtils.isEmpty(form?.nextFormID))
-                    binding.displayLay.setOnClickListener {
-                        val holderModule = module
-                        callbacks.onDisplay(form, holderModule, data)
-                    }
+            if (!form!!.nextFormID.isNullOrBlank()
+            )
+                binding.displayLay.setOnClickListener {
+                    val holderModule = module
+                    callbacks.onDisplay(form, holderModule, data)
+                }
+
         }
 
     }

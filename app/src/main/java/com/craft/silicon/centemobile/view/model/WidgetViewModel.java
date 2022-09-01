@@ -1,6 +1,5 @@
 package com.craft.silicon.centemobile.view.model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,9 +16,9 @@ import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
-import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.model.user.Beneficiary;
 import com.craft.silicon.centemobile.data.model.user.ModuleHide;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
@@ -28,7 +27,6 @@ import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData;
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver;
-import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 import com.craft.silicon.centemobile.view.navigation.NavigationDataSource;
@@ -240,5 +238,28 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     @Override
     public void saveAtms(List<AtmData> atmData) {
         widgetRepository.saveAtms(atmData);
+    }
+
+    @Override
+    public void savePendingTransaction(PendingTransaction pendingTransaction) {
+        widgetRepository.savePendingTransaction(pendingTransaction);
+    }
+
+    @Override
+    public void deletePendingTransactions() {
+        widgetRepository.deletePendingTransactions();
+    }
+
+    @Override
+    public Observable<List<PendingTransaction>> getPendingTransaction() {
+        return widgetRepository.getPendingTransaction()
+                .doOnSubscribe(t -> loadingUi.onNext(true))
+                .doOnError(t -> loadingUi.onNext(false))
+                .doOnComplete(() -> loadingUi.onNext(false));
+    }
+
+    @Override
+    public void deletePendingTransactionsByID(int id) {
+        widgetRepository.deletePendingTransactionsByID(id);
     }
 }

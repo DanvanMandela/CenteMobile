@@ -80,6 +80,7 @@ public class ValidationViewModel extends ViewModel implements ValidationDataSour
             if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.DB_CALL.getType()))) {
 
+                data.put("SessionID", uniqueID);
                 jsonObject.put("MerchantID", !TextUtils.isEmpty(modules.getMerchantID()) ?
                         modules.getMerchantID() : action.getMerchantID());
                 jsonObject.put("ModuleID", modules.getModuleID());

@@ -5,11 +5,11 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -26,7 +26,6 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.ep.adapter.AddressArrayAdapter
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
@@ -76,21 +75,21 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private lateinit var eaAdapter: AddressArrayAdapter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    ShowAlertDialog().showDialog(
-                        requireContext(),
-                        getString(R.string.exit_registration),
-                        getString(R.string.proceed_registration),
-                        this@AddressFragment
-                    )
-                }
-
-            }
-        )
+    override fun onResume() {
+        super.onResume()
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.exit_registration),
+                    getString(R.string.proceed_registration),
+                    this
+                )
+                true
+            } else false
+        }
     }
 
     private fun setToolbar() {
@@ -115,7 +114,15 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         setOnClick()
         setStep()
         setToolbar()
+        setOnCountryCode()
         return binding.root.rootView
+    }
+
+    private fun setOnCountryCode() {
+        binding.countryCodeHolder.setOnCountryChangeListener {
+            binding.codeInput.setText(binding.countryCodeHolder.selectedCountryCode)
+        }
+
     }
 
     override fun onPositive() {
@@ -584,11 +591,11 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     private fun setLoading(it: Boolean) {
-        if (it) {
-            LoadingFragment.show(requireActivity().supportFragmentManager)
-        } else {
-            LoadingFragment.dismiss(requireActivity().supportFragmentManager)
-        }
+        if (it) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
     }
 
     override fun onClick(p: View?) {

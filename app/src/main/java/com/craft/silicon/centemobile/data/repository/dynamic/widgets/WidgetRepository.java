@@ -6,6 +6,7 @@ import com.craft.silicon.centemobile.data.model.action.ActionControls;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.scope.Local;
 import com.craft.silicon.centemobile.data.scope.Remote;
@@ -29,7 +30,6 @@ public class WidgetRepository implements WidgetDataSource {
 
     private final WidgetDataSource remoteData;
     private final WidgetDataSource localData;
-
 
 
     @Inject
@@ -194,5 +194,25 @@ public class WidgetRepository implements WidgetDataSource {
     @Override
     public void deleteNotification(int id) {
         localData.deleteNotification(id);
+    }
+
+    @Override
+    public void savePendingTransaction(PendingTransaction pendingTransaction) {
+        localData.savePendingTransaction(pendingTransaction);
+    }
+
+    @Override
+    public void deletePendingTransactions() {
+        localData.deletePendingTransactions();
+    }
+
+    @Override
+    public Observable<List<PendingTransaction>> getPendingTransaction() {
+        return localData.getPendingTransaction();
+    }
+
+    @Override
+    public void deletePendingTransactionsByID(int id) {
+        localData.deletePendingTransactionsByID(id);
     }
 }

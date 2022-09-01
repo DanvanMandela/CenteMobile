@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,21 +58,21 @@ class OtherServiceFragment : Fragment(), AppCallbacks, PagerData, View.OnClickLi
     private lateinit var controller: OtherServicesController
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        activity?.onBackPressedDispatcher?.addCallback(this,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    ShowAlertDialog().showDialog(
-//                        requireContext(),
-//                        getString(R.string.exit_registration),
-//                        getString(R.string.proceed_registration),
-//                        this@OtherServiceFragment
-//                    )
-//                }
-//
-//            }
-//        )
+    override fun onResume() {
+        super.onResume()
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.exit_registration),
+                    getString(R.string.proceed_registration),
+                    this
+                )
+                true
+            } else false
+        }
     }
 
     override fun onPositive() {

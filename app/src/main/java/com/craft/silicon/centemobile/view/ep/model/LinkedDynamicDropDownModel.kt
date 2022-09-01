@@ -9,10 +9,9 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
 import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
-import com.craft.silicon.centemobile.databinding.BlockDymanicDropLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockHiddenInputLayoutBinding
-import com.craft.silicon.centemobile.databinding.BlockTextInputLayoutBinding
+import com.craft.silicon.centemobile.databinding.*
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.LinkedVault
@@ -52,14 +51,76 @@ open class LinkedDynamicDropDownModel : DataBindingEpoxyModel() {
         for (s in data.children) {
             when (BaseClass.nonCaps(s.controlType)) {
                 BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
-                    val text = BlockTextInputLayoutBinding
-                        .inflate(LayoutInflater.from(binding.root.context))
-                    text.child.tag = s.controlID
-                    text.data = s
-                    text.callback = callbacks
-                    text.outlinedTextField.layoutParams = param
-                    binding.childContainer.addView(text.root)
-                    editList.add(text.child)
+
+                    when (BaseClass.nonCaps(s.controlFormat)) {
+                        BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
+                            if (!s.displayControl.isNullOrBlank()) {
+                                if (s.displayControl == "true") {
+                                    val text = BlockDisabledAmountTextInputLayoutBinding
+                                        .inflate(LayoutInflater.from(binding.root.context))
+                                    text.child.tag = s.controlID
+                                    text.data = s
+                                    text.callback = callbacks
+                                    binding.childContainer.addView(text.root)
+                                    editList.add(text.child)
+                                } else {
+                                    val text = BlockAmountTextInputLayoutBinding
+                                        .inflate(LayoutInflater.from(binding.root.context))
+                                    text.child.tag = s.controlID
+                                    text.data = s
+                                    text.callback = callbacks
+                                    binding.childContainer.addView(text.root)
+                                    editList.add(text.child)
+                                }
+                            } else {
+                                val text = BlockAmountTextInputLayoutBinding
+                                    .inflate(LayoutInflater.from(binding.root.context))
+                                text.child.tag = s.controlID
+                                text.data = s
+                                text.callback = callbacks
+                                binding.childContainer.addView(text.root)
+                                editList.add(text.child)
+                            }
+                        }
+                        else -> {
+                            if (!s.displayControl.isNullOrBlank()) {
+                                if (s.displayControl == "true") {
+                                    val text = BlockTextInputDisabledLayoutBinding
+                                        .inflate(LayoutInflater.from(binding.root.context))
+                                    text.child.tag = s.controlID
+                                    text.data = s
+                                    text.callback = callbacks
+                                    binding.childContainer.addView(text.root)
+                                    editList.add(text.child)
+                                } else {
+                                    val text = BlockTextInputLayoutBinding
+                                        .inflate(LayoutInflater.from(binding.root.context))
+                                    text.child.tag = s.controlID
+                                    text.data = s
+                                    text.callback = callbacks
+                                    binding.childContainer.addView(text.root)
+                                    editList.add(text.child)
+
+                                }
+                            } else {
+                                val text = BlockTextInputLayoutBinding
+                                    .inflate(LayoutInflater.from(binding.root.context))
+                                text.child.tag = s.controlID
+                                text.data = s
+                                text.callback = callbacks
+                                binding.childContainer.addView(text.root)
+                                editList.add(text.child)
+                            }
+                        }
+                    }
+//                    val text = BlockTextInputLayoutBinding
+//                        .inflate(LayoutInflater.from(binding.root.context))
+//                    text.child.tag = s.controlID
+//                    text.data = s
+//                    text.callback = callbacks
+//                    text.outlinedTextField.layoutParams = param
+//                    binding.childContainer.addView(text.root)
+//                    editList.add(text.child)
                 }
                 BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> {
                     val text = BlockHiddenInputLayoutBinding
@@ -77,10 +138,7 @@ open class LinkedDynamicDropDownModel : DataBindingEpoxyModel() {
 
         if (editList.isNotEmpty())
             callbacks.onDynamicDropDown(binding.autoEdit, data.container, editList)
-
-
     }
-
 
 }
 

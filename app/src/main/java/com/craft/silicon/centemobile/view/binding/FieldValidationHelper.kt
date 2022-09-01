@@ -34,8 +34,12 @@ class FieldValidationHelper {
         params: List<String>,
         json: JSONObject,
         encrypted: JSONObject,
-        activity: Activity
+        activity: Activity,
+        all: Boolean = false
     ): Boolean {
+
+        if (all) AppLogger.instance.appLog("FIELD:Validation", "Allow for-> ALL")
+
         if (inputList.isNotEmpty()) {
             AppLogger.instance.appLog("FIELD:Validation", Gson().toJson(inputList))
             for (i in inputList) {
@@ -66,7 +70,7 @@ class FieldValidationHelper {
             if (validForm) {
                 for (s in inputList) {
                     for (p in params) {
-                        if (s.key == p) {
+                        if (s.key == p || all) {
                             if (s.encrypted) {
                                 encrypted.put(s.key!!, BaseClass.newEncrypt(s.value))
                             } else {

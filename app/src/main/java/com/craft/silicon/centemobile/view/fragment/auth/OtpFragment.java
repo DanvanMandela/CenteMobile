@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.converter.ResponseTypeConverter;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.remote.callback.ResponseDetails;
@@ -31,6 +32,7 @@ import com.craft.silicon.centemobile.view.activity.MainActivity;
 import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.dialog.MainDialogData;
+import com.craft.silicon.centemobile.view.ep.data.ActivateData;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OTP;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer;
@@ -65,7 +67,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     private final CompositeDisposable subscribe = new CompositeDisposable();
     private CountDownTimer countDownTimer;
     private static final String ARG_MOBILE = "mobile";
-    private String mobile;
+    private ActivateData data;
     private BaseViewModel baseViewModel;
 
 
@@ -80,10 +82,10 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
      * @return A new instance of fragment OtpFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OtpFragment newInstance(String mobile) {
+    public static OtpFragment newInstance(ActivateData mobile) {
         OtpFragment fragment = new OtpFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_MOBILE, mobile);
+        args.putParcelable(ARG_MOBILE, mobile);
         fragment.setArguments(args);
         return new OtpFragment();
     }
@@ -93,7 +95,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mobile = getArguments().getString(ARG_MOBILE);
+            data = getArguments().getParcelable(ARG_MOBILE);
         }
     }
 
@@ -162,12 +164,11 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
 
     private void resendOTP() {
         ((MainActivity) requireActivity()).initSMSBroadCast();
-        JSONObject jsonObject = new JSONObject();
         try {
             setLoading(true);
-            jsonObject.put("MOBILENUMBER", mobile);
-            jsonObject.put("SERVICENAME", "ACTIVATION");
-            subscribe.add(baseViewModel.createOTP(jsonObject, requireContext())
+            subscribe.add(authViewModel.activateAccount(data.getMobile(),
+                            data.getPin(),
+                            requireActivity())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(v -> {
@@ -179,7 +180,6 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                                         authViewModel.storage.getDeviceData()
                                                 .getValue().getRun()
                                 ));
-
                         if (v.getResponse() != null) {
                             if (!v.getResponse().equals(StatusEnum.ERROR.getType())) {
                                 setLoading(false);
@@ -226,7 +226,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                         }
                         setLoading(false);
                     }, Throwable::printStackTrace));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             new ShowToast(requireContext(), getString(R.string.something_));
         }
@@ -236,7 +236,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
         setLoading(true);
         subscribe.add(authViewModel.verifyOTP(String.valueOf(binding.verificationCodeEditText.getText()),
                         requireActivity(),
-                        mobile)
+                        data.getMobile())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setOnSuccess, Throwable::printStackTrace));
@@ -296,7 +296,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                     } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
                         authViewModel.saveActivationData(new ActivationData(responseDetails
-                                .getCustomerID(), mobile));
+                                .getCustomerID(), OtpFragment.this.data.getMobile()));
                         new ShowToast(requireContext(), responseDetails.getMessage());
                         new Handler(Looper.getMainLooper()).postDelayed(() ->
                                 ((MainActivity) requireActivity())

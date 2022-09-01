@@ -126,7 +126,8 @@ class WorkerViewModel @Inject constructor(
 
     fun routeData(owner: LifecycleOwner, status: WorkStatus) {
         val routeWorker = OneTimeWorkRequestBuilder<DynamicGETWorker>()
-            .addTag(WorkerCommons.TAG_OUTPUT).build()
+            .addTag(WorkerCommons.TAG_OUTPUT)
+            .build()
         worker.getWorkManger().enqueue(routeWorker)
         AppLogger.instance.appLog("workInfo:id", Gson().toJson(routeWorker.id))
         worker.getWorkManger().getWorkInfoByIdLiveData(routeWorker.id)
@@ -139,6 +140,7 @@ class WorkerViewModel @Inject constructor(
                 }
             }
     }
+
 
     fun timeOut(owner: LifecycleOwner, status: WorkStatus) {
         val routeWorker = OneTimeWorkRequestBuilder<SessionWorkManager>()

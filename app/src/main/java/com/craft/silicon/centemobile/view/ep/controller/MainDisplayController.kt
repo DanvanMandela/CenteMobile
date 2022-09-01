@@ -1,16 +1,22 @@
 package com.craft.silicon.centemobile.view.ep.controller
 
 import android.os.Parcelable
+import android.text.TextUtils
+import androidx.databinding.BindingAdapter
 import androidx.room.TypeConverter
+import com.airbnb.epoxy.EpoxyRecyclerView
 import com.airbnb.epoxy.TypedEpoxyController
 import com.craft.silicon.centemobile.*
 import com.craft.silicon.centemobile.data.model.StandingOrderList
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.user.Beneficiary
+import com.craft.silicon.centemobile.data.model.user.DisplayHash
+import com.craft.silicon.centemobile.data.model.user.PendingTransactionList
 import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.data.AppData
+import com.craft.silicon.centemobile.view.ep.data.DisplayContent
 import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.craft.silicon.centemobile.view.ep.model.mainDisplayLay
 import com.google.gson.Gson
@@ -36,11 +42,37 @@ class MainDisplayController(val callbacks: AppCallbacks) :
                 }
                 is StandingOrderList -> standingOrder(data)
                 is BeneficiaryList -> setBeneficiary(data)
+                is PendingTransactionList -> setPendingTransactions(data)
+                is DisplayHash -> setDisplayHash(data)
+
             }
     }
 
+    private fun setDisplayHash(data: DisplayHash) {
+        for (e in data.list.entries) {
+            if (!TextUtils.isEmpty(e.value) && BaseClass.nonCaps(e.key)
+                != BaseClass.nonCaps("PendingUniqueID")
+            ) {
+                displayItemLayout {
+                    id(BaseClass.generateAlphaNumericString(5))
+                    data(DisplayContent(key = e.key, value = e.value))
+                }
+            }
+        }
+    }
+
+    private fun setPendingTransactions(data: PendingTransactionList) {
+        data.list?.forEach {
+            pendingTransactionLayout {
+                id("P-${BaseClass.generateAlphaNumericString(5)}")
+                data(it)
+                callback(this@MainDisplayController.callbacks)
+            }
+        }
+    }
+
     private fun setBeneficiary(data: BeneficiaryList) {
-        for (s in data.list!!) {
+        for (s in data.list) {
             beneficiaryItemLayout {
                 id(BaseClass.generateAlphaNumericString(10))
                 data(s)
@@ -124,5 +156,13 @@ class HashTypeConverter {
             GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
     }
 }
+
+@BindingAdapter("pending", "callback")
+fun EpoxyRecyclerView.setPending(appData: AppData?, callbacks: AppCallbacks) {
+    val controller = MainDisplayController(callbacks)
+    controller.setData(appData)
+    this.setController(controller)
+}
+
 
 

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -14,7 +15,6 @@ import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
@@ -45,7 +45,6 @@ import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -77,21 +76,21 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     private var currencyData: String? = null
     private var accountData: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        activity?.onBackPressedDispatcher?.addCallback(this,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    ShowAlertDialog().showDialog(
-//                        context!!,
-//                        getString(R.string.exit_registration),
-//                        getString(R.string.proceed_registration),
-//                        this@CustomerProductFragment
-//                    )
-//                }
-//
-//            }
-//        )
+    override fun onResume() {
+        super.onResume()
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.exit_registration),
+                    getString(R.string.proceed_registration),
+                    this
+                )
+                true
+            } else false
+        }
     }
 
     override fun onCreateView(

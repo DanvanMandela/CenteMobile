@@ -399,13 +399,18 @@
     <string name="delete_s_message">Are you sure you want to delete the standing order</string>
     <string name="unable_to_delete">Unable to delete</string>
     <string name="account_alias">Account Alias</string>
-    <string name="delete_beneficiary">Delete beneficiary</string>
+    <string name="delete_beneficiary">Delete beneficiary?</string>
     <string name="delete_b_message">Are you sure you want to delete beneficiary</string>
     <string name="warmin_up">Warming up…</string>
     <string name="percentage">%</string>
     <string name="security">security</string>
     <string name="sorry_no_root">Sorry, CenteMobile is not supported on Rooted devices</string>
     <string name="we_take_security">We\'re serious about  keeping your data secure</string>
+    <string name="approve">Approve</string>
+    <string name="reject">Reject</string>
+    <string name="reject_transaction">Reject transaction?</string>
+    <string name="reject_transaction_con">Are you sure you want ot reject this transaction</string>
+    <string name="verse">verse</string>
 
 
 </resources>

@@ -56,6 +56,9 @@ data class GroupForm(
     @field:SerializedName("formList")
     @field:Expose
     val form: MutableList<FormControl>?,
+    @field:SerializedName("allow")
+    @field:Expose
+    val allow: Boolean = false
 ) : DynamicData()
 
 
@@ -244,11 +247,22 @@ data class NameBaseData(
     @field:SerializedName("id")
     @field:Expose
     val id: String?
-) : Parcelable{
+) : Parcelable {
     override fun toString(): String {
         return text!!
     }
 }
+
+
+@Parcelize
+data class ActivateData(
+    @field:SerializedName("mobile")
+    @field:Expose
+    val mobile: String?,
+    @field:SerializedName("pin")
+    @field:Expose
+    val pin: String?
+) : Parcelable
 
 
 

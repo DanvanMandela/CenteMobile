@@ -95,14 +95,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
-
-//            "APPNAME": "CENTEMOBILE",
-//                    "COUNTRY": "UGANDATEST",
-//                    "COMMENT": "Just a comment",
-//                    "RATING": "Average",
-//                    "HEADER": "FEEDBACK",
-//                    "BANKID": "16"
-
             data.put("HEADER", "FEEDBACK");
             data.put("COUNTRY", "UGANDATEST");
             data.put("BANKID", "UGANDATEST");
@@ -236,7 +228,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     }
 
     @Override
-    public Single<DynamicResponse> changePin(JSONObject json,JSONObject encrypted, Context context) {
+    public Single<DynamicResponse> changePin(JSONObject json, JSONObject encrypted, Context context) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
@@ -302,8 +294,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     true,
                     dataSource);
 
-
-            //String merchantID=if(TextUtils.isEmpty())
 
             if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.DB_CALL.getType()))) {
@@ -497,6 +487,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     true,
                     dataSource);
 
+            data.put("SessionID", uniqueID);
             data.put("MerchantID", "SELFRAO");
             data.put("BANKACCOUNTID", Constants.Data.BANK_ID);
             jsonObject.put("Validate", data);
@@ -535,6 +526,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
             data.put("MOBILENUMBER", mobile);
+            data.put("SessionID", uniqueID);
             data.put("MerchantID", "PINRESET");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
@@ -570,6 +562,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     true,
                     dataSource);
 
+            data.put("SessionID", uniqueID);
             data.put("MerchantID", "PINRESET");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
@@ -606,6 +599,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
 
+            data.put("SessionID", uniqueID);
             data.put("MerchantID", "SELFREG");
             jsonObject.put("MerchantID", "SELFREG");
             jsonObject.put("EncryptedFields", encrypted);
@@ -641,6 +635,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     true,
                     dataSource);
 
+            data.put("SessionID", uniqueID);
             data.put("HEADER", "CREATEOTP");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();
@@ -675,6 +670,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
 
+            data.put("SessionID", uniqueID);
             jsonObject.put("MerchantID", "OCR");
             data.put("MerchantID", "OCR");
             jsonObject.put("ModuleID", "CENTEXPRESS");
@@ -712,6 +708,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
 
+            data.put("SessionID", uniqueID);
             data.put("HEADER", "CHECKCUSTOMERACCOUNTEXISTS");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();
@@ -745,6 +742,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
 
+            data.put("SessionID", uniqueID);
             data.put("HEADER", "CHECKCUSTOMEREXISTS");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();

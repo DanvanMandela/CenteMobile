@@ -75,6 +75,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
                     true,
                     dataSource);
 
+            data.put("SessionID", uniqueID);
             jsonObject.put("ModuleID", moduleID);
             jsonObject.put("PayBill", data);
             jsonObject.put("EncryptedFields", encrypted);
@@ -123,6 +124,7 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
             if (BaseClass.nonCaps(action.getActionType())
                     .equals(BaseClass.nonCaps(ActionTypeEnum.DB_CALL.getType()))) {
 
+                data.put("SessionID", uniqueID);
                 jsonObject.put("MerchantID", !TextUtils.isEmpty(modules.getMerchantID()) ?
                         modules.getMerchantID() : action.getMerchantID());
                 jsonObject.put("ModuleID", modules.getModuleID());

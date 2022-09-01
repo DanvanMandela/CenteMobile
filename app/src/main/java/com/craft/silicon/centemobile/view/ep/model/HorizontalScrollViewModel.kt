@@ -13,7 +13,6 @@ import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.databinding.*
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.ep.controller.LinkedVault
 import com.google.android.material.chip.Chip
@@ -77,34 +76,78 @@ open class HorizontalScrollViewModel : DataBindingEpoxyModel() {
                     BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
                         when (BaseClass.nonCaps(s.controlFormat)) {
                             BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
-                                val binding =
-                                    BlockAmountTextInputLayoutBinding.inflate(
-                                        LayoutInflater.from(childContainer.context)
-                                    )
-                                binding.data = s
-                                binding.child.tag = s.controlID
-                                binding.callback = callbacks
-                                binding.value = formControl.controlText
-                                childContainer.addView(binding.root)
-                                binding.child.addTextChangedListener(
-                                    NumberTextWatcherForThousand(
-                                        binding.child,
-                                        callbacks,
-                                        s
-                                    )
-                                )
+
+                                if (!s.displayControl.isNullOrBlank()) {
+                                    if (s.displayControl == "true") {
+                                        val binding =
+                                            BlockDisabledAmountTextInputLayoutBinding.inflate(
+                                                LayoutInflater.from(childContainer.context)
+                                            )
+                                        binding.data = s
+                                        binding.child.tag = s.controlID
+                                        binding.callback = callbacks
+                                        binding.value = formControl.controlText
+                                        childContainer.addView(binding.root)
+                                    } else {
+                                        val binding =
+                                            BlockAmountTextInputLayoutBinding.inflate(
+                                                LayoutInflater.from(childContainer.context)
+                                            )
+                                        binding.data = s
+                                        binding.child.tag = s.controlID
+                                        binding.callback = callbacks
+                                        binding.value = formControl.controlText
+                                        childContainer.addView(binding.root)
+                                    }
+                                } else {
+                                    val binding =
+                                        BlockAmountTextInputLayoutBinding.inflate(
+                                            LayoutInflater.from(childContainer.context)
+                                        )
+                                    binding.data = s
+                                    binding.child.tag = s.controlID
+                                    binding.callback = callbacks
+                                    binding.value = formControl.controlText
+                                    childContainer.addView(binding.root)
+                                }
                             }
                             else -> {
-                                val binding =
-                                    BlockTextInputLayoutBinding.inflate(
-                                        LayoutInflater
-                                            .from(childContainer.context)
-                                    )
-                                binding.data = s
-                                binding.child.tag = s.controlID
-                                binding.callback = callbacks
-                                binding.value = formControl.controlText
-                                childContainer.addView(binding.root)
+                                if (!s.displayControl.isNullOrBlank()) {
+                                    if (s.displayControl == "true") {
+                                        val binding =
+                                            BlockTextInputDisabledLayoutBinding.inflate(
+                                                LayoutInflater
+                                                    .from(childContainer.context)
+                                            )
+                                        binding.data = s
+                                        binding.child.tag = s.controlID
+                                        binding.callback = callbacks
+                                        binding.value = formControl.controlText
+                                        childContainer.addView(binding.root)
+                                    } else {
+                                        val binding =
+                                            BlockTextInputLayoutBinding.inflate(
+                                                LayoutInflater
+                                                    .from(childContainer.context)
+                                            )
+                                        binding.data = s
+                                        binding.child.tag = s.controlID
+                                        binding.callback = callbacks
+                                        binding.value = formControl.controlText
+                                        childContainer.addView(binding.root)
+                                    }
+                                } else {
+                                    val binding =
+                                        BlockTextInputLayoutBinding.inflate(
+                                            LayoutInflater
+                                                .from(childContainer.context)
+                                        )
+                                    binding.data = s
+                                    binding.child.tag = s.controlID
+                                    binding.callback = callbacks
+                                    binding.value = formControl.controlText
+                                    childContainer.addView(binding.root)
+                                }
                             }
                         }
                     }

@@ -79,13 +79,18 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
         // Inflate the layout for this fragment
         binding = FragmentOnTheGoBinding.inflate(inflater, container, false)
         setBinding()
+        freshStart()
         return binding.root.rootView
+    }
+
+    private fun freshStart() {
+        val current = widgetViewModel.storageDataSource.currentPosition.value
+        if (current == null && current == 0) clearState()
     }
 
 
     private fun checkCurrent() {
         val currentPosition = widgetViewModel.storageDataSource.currentPosition.value
-
         if (currentPosition != null) {
             if (currentPosition != 0)
                 ShowAlertDialog().showDialog(

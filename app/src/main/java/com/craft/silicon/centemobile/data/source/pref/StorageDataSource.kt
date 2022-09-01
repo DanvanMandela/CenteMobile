@@ -139,8 +139,8 @@ interface StorageDataSource {
     fun deleteOtp()
 
 
-    fun setTimeout(value: Int?)
-    val timeout: StateFlow<Int?>
+    fun setTimeout(value: Long?)
+    val timeout: StateFlow<Long?>
     fun deleteTimeout()
 
     fun setSync(value: SyncData?)

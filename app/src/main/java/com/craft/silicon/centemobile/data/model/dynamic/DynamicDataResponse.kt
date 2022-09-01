@@ -54,44 +54,44 @@ data class DynamicDataResponse(
 data class DynamicAPIResponse(
     @field:SerializedName("Status")
     @field:Expose
-    var status: String?,
+    var status: String? = null,
     @field:SerializedName("Message")
     @field:Expose
-    var message: String?,
+    var message: String? = null,
     @field:SerializedName("NextFormSequence")
     @field:Expose
     @field:Nullable
-    var next: Int?,
+    var next: Int? = null,
     @field:SerializedName("FormID")
     @field:Expose
-    var formID: String?,
+    var formID: String? = null,
     @field:SerializedName("Data")
     @field:Expose
-    var resultsData: MutableList<FormField>?,
+    var resultsData: MutableList<FormField>? = null,
     @field:SerializedName("FormFields")
     @field:Expose
-    var formField: MutableList<FormField>?,
+    var formField: MutableList<FormField>? = null,
     @field:SerializedName("Beneficiary")
     @field:Expose
-    var beneficiary: MutableList<Beneficiary>?,
+    var beneficiary: MutableList<Beneficiary>? = null,
     @field:SerializedName("Display")
     @field:Expose
-    var display: MutableList<HashMap<String, String>>?,
+    var display: MutableList<HashMap<String, String>>? = null,
     @field:SerializedName("ReceiptDetails")
     @field:Expose
-    var receipt: MutableList<ReceiptDetails>?,
+    var receipt: MutableList<ReceiptDetails>? = null,
     @field:SerializedName("Notifications")
     @field:Expose
-    var notifications: MutableList<Notifications>?,
+    var notifications: MutableList<Notifications>? = null,
     @field:SerializedName("ResultsData")
     @field:Expose
-    var rData: MutableList<FormField>?,
+    var rData: MutableList<FormField>? = null,
     @field:SerializedName("AccountStatement")
     @field:Expose
-    var accountStatement: MutableList<HashMap<String, String>>?,
+    var accountStatement: MutableList<HashMap<String, String>>? = null,
     @field:SerializedName("NotificationData")
     @field:Expose
-    var notificationdata: MutableList<Notifications>?
+    var notificationdata: MutableList<Notifications>? = null
 
 ) : Parcelable
 

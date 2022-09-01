@@ -118,6 +118,7 @@ public class Constants {
         try {
             jsonObject.put("FormID", formID);
             jsonObject.put("UNIQUEID", uniqueID);
+            jsonObject.put("SessionID", dataSource.getUniqueID().getValue());
 
             MapData mapData = dataSource.getLatLng().getValue();
             LatLng latLng = new LatLng(0.0, 0.0);

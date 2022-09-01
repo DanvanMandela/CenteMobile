@@ -20,9 +20,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
+import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.converter.LoginDataTypeConverter;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
+import com.craft.silicon.centemobile.data.model.user.DisplayHash;
 import com.craft.silicon.centemobile.data.model.user.LoginUserData;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
+import com.craft.silicon.centemobile.data.model.user.PendingTrxActionControls;
+import com.craft.silicon.centemobile.data.model.user.PendingTrxFormControls;
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
 import com.craft.silicon.centemobile.data.source.sync.SyncData;
@@ -38,11 +43,15 @@ import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
+import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
 import com.craft.silicon.centemobile.view.model.WorkerViewModel;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -62,6 +71,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private FragmentAuthBinding binding;
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
+    private WidgetViewModel widgetViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
 
@@ -124,6 +134,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void setData() {
+        widgetViewModel.deletePendingTransactions();
         binding.setData(authViewModel.storage.getActivationData().getValue());
     }
 
@@ -133,6 +144,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     @Override
     public void setBinding() {
+
         binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
@@ -163,8 +175,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     public void onClick(View view) {
         if (view.equals(binding.materialButton)) {
             if (validateFields()) {
-                authUser(Objects.requireNonNull(binding.editPin.getText()).toString());
-
+                authUser(Objects
+                        .requireNonNull(binding.editPin.getText()).toString());
             }
         } else if (view.equals(binding.forgotPin)) {
             BindingAdapterKt.navigate(this,
@@ -175,14 +187,37 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private void authUser(String pin) {
         hideSoftKeyboard(requireActivity(), binding.getRoot());
         if (isOnline(requireActivity())) {
-            subscribe.add(authViewModel.loginAccount(pin,
-                            requireActivity())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
-            subscribe.add(authViewModel.loading.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::setLoading, Throwable::printStackTrace));
+            setLoading(true);
+            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                @Override
+                public void workDone(boolean b) {
+                    if (b) {
+                        subscribe.add(authViewModel.loginAccount(pin,
+                                        requireActivity())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(v -> setOnSuccess(v, pin), Throwable::printStackTrace));
+                        subscribe.add(authViewModel.loading.subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(v -> setLoading(v), Throwable::printStackTrace));
+                    }
+                }
+
+                @Override
+                public void progress(int p) {
+
+                }
+
+                @Override
+                public void error(@Nullable String p) {
+
+                }
+
+                @Override
+                public void onOCRData(@NonNull OCRData data, boolean b) {
+
+                }
+            });
         } else new ShowToast(requireContext(), getString(R.string.no_connection), true);
 
     }
@@ -191,6 +226,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     public void setViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
+        widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
     }
 
     private void setOnSuccess(DynamicResponse data, String pin) {
@@ -288,14 +324,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
 
     private void navigate() {
-        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                {
-                    authViewModel.storage.setLoginTime(System.currentTimeMillis());
-                    BindingAdapterKt.navigate(this,
-                            authViewModel.navigationDataSource.navigateToHome());
-                }
-
-                , 1500);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            authViewModel.storage.setLoginTime(System.currentTimeMillis());
+            BindingAdapterKt.navigate(this,
+                    authViewModel.navigationDataSource.navigateToHome());
+        }, 3500);
     }
 
     private void setLoading(boolean b) {
@@ -319,6 +352,38 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         if (res.getHideModule() != null)
             authViewModel.storage.setHiddenModule(res.getHideModule());
 
+        if (res.getPendingTrxDisplay() != null) {
+            setPending(res);
+        }
+
+    }
+
+    private void setPending(LoginUserData res) {
+        try {
+            for (HashMap<String, String> map : Objects.requireNonNull(res.getPendingTrxDisplay())) {
+                for (HashMap<String, String> pay : Objects.requireNonNull(res.getPendingTrxPayload())) {
+                    if (Objects.requireNonNull(pay.get("PendingUniqueID"))
+                            .equals(map.get("PendingUniqueID"))) {
+                        List<PendingTrxFormControls> forms =
+                                Objects.requireNonNull(res.getPendingTrxFormControls()).stream()
+                                        .filter(a -> Objects.equals(a.getModuleID(), pay.get("ModuleID")))
+                                        .collect(Collectors.toList());
+
+                        List<PendingTrxActionControls> action =
+                                Objects.requireNonNull(res.getPendingTrxActionControls()).stream()
+                                        .filter(a -> Objects.equals(a.getModuleID(), pay.get("ModuleID")))
+                                        .collect(Collectors.toList());
+
+                        PendingTransaction pendingTransaction = new PendingTransaction(
+                                new DisplayHash(map), new DisplayHash(pay), forms, action);
+                        widgetViewModel.savePendingTransaction(pendingTransaction);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -334,6 +399,10 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 if (live == null) {
                     if (!authViewModel.storage.getVersion().getValue().equals("1"))
                         workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
+                    else {
+                        authViewModel.storage.setVersion(version);
+                        navigate();
+                    }
                 } else {
                     if (live.getWork() == 8) {
                         navigate();

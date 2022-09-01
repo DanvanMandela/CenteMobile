@@ -32,6 +32,7 @@ import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.ep.data.ActivateData;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.WorkStatus;
@@ -201,15 +202,21 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                     } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
                         new ShowToast(requireContext(), responseDetails.getMessage());
-
+                        String mobile = Constants
+                                .setMobile(binding.countryCodeHolder
+                                                .getSelectedCountryCode(),
+                                        Objects.requireNonNull(binding
+                                                        .editMobile.getText())
+                                                .toString());
                         new Handler(Looper.getMainLooper()).postDelayed(() ->
                                 BindingAdapterKt.navigate(this,
-                                        authViewModel.navigationDataSource.navigateToOTP(Constants
-                                                .setMobile(binding.countryCodeHolder
-                                                                .getSelectedCountryCode(),
+                                        authViewModel.navigationDataSource.navigateToOTP(
+                                                new ActivateData(
+                                                        mobile,
                                                         Objects.requireNonNull(binding
-                                                                        .editMobile.getText())
-                                                                .toString()))), 1500);
+                                                                .editPin.getText()).toString()
+                                                )
+                                        )), 1500);
 
 
                     }

@@ -843,18 +843,18 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     }
 
     private val _timeout = MutableStateFlow(
-        sharedPreferences.getInt(
+        sharedPreferences.getLong(
             TAG_TIME_OUT,
-            600
+            120000
         )
     )
-    override val timeout: StateFlow<Int?>
+    override val timeout: StateFlow<Long?>
         get() = _timeout
 
-    override fun setTimeout(value: Int?) {
+    override fun setTimeout(value: Long?) {
         _timeout.value = value!!
         with(sharedPreferences.edit()) {
-            putInt(
+            putLong(
                 TAG_TIME_OUT,
                 value
             )

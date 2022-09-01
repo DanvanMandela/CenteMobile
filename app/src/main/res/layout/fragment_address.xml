@@ -5,567 +5,578 @@
 
     tools:context=".view.fragment.go.steps.AddressFragment">
 
-
-    <FrameLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene_loading_new">
 
-        <RelativeLayout
-            android:id="@+id/mainLay"
+        <include
+            android:id="@+id/loadingFrame"
+            layout="@layout/fragment_loading" />
+
+        <FrameLayout
+            android:id="@+id/userFrame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:navigationIcon="@drawable/ic_close_white_24dp"
-                    app:navigationIconTint="@color/white"
-                    app:title="@string/your_address_reach"
-                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                    app:titleTextColor="@color/white" />
-
-            </com.google.android.material.appbar.AppBarLayout>
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progressIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/appbar"
-                android:layout_marginHorizontal="@dimen/dimens_24dp"
-                android:layout_marginVertical="@dimen/dimens_16dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="24dp" />
-
-
-            <androidx.core.widget.NestedScrollView
+            <RelativeLayout
+                android:id="@+id/mainLay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/bottomBar"
-                android:layout_below="@id/progressIndicator"
-                android:fillViewport="true"
-                android:overScrollMode="never">
+                android:visibility="gone">
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true">
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:navigationIcon="@drawable/ic_close_white_24dp"
+                        app:navigationIconTint="@color/white"
+                        app:title="@string/your_address_reach"
+                        app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:titleTextColor="@color/white" />
+
+                </com.google.android.material.appbar.AppBarLayout>
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/appbar"
+                    android:layout_marginHorizontal="@dimen/dimens_24dp"
+                    android:layout_marginVertical="@dimen/dimens_16dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="24dp" />
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible">
+                    android:layout_above="@id/bottomBar"
+                    android:layout_below="@id/progressIndicator"
+                    android:fillViewport="true"
+                    android:overScrollMode="never">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/regionLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/region"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoRegion"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/districtLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/district"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/regionLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoDistrict"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/countyLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/county"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/districtLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoCounty"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/subCountyLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/sub_county"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/countyLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoSubCounty"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/parishLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/parish"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/subCountyLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoParish"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/villageLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/village"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/parishLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoVillage"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/eLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/e_a_name"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/villageLay">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/autoEA"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_medium"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/emailLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/email_address"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:hintTextColor="@color/dar_color_two"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/eLay"
-                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/emailInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/poppins_medium"
-                            android:inputType="textEmailAddress"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="SpeakableTextPresentCheck"
-                            tools:targetApi="o" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <FrameLayout
-                        android:id="@+id/mobileLayOne"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/emailLay">
-
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/inputMobile"
+                            android:id="@+id/regionLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/region"
                             app:boxBackgroundColor="@color/ghost_white"
-                            app:hintEnabled="false">
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/editMobile"
+                            <AutoCompleteTextView
+                                android:id="@+id/autoRegion"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
+                                android:focusable="false"
                                 android:fontFamily="@font/poppins_medium"
-                                android:hint="@string/phone_number"
-                                android:inputType="phone"
-                                android:maxLength="10"
-                                android:paddingVertical="@dimen/dimens_0dp"
-                                android:paddingStart="@dimen/dimens_110dp"
-                                android:paddingEnd="@dimen/dimens_0dp"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                android:textColor="@color/dar_color_one" />
+                                tools:ignore="LabelFor" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.hbb20.CountryCodePicker
-                            android:id="@+id/countryCodeHolder"
-                            android:layout_width="@dimen/dimens_160dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/transparent"
-                            android:gravity="start|center"
-                            android:padding="@dimen/dimens_5dp"
-                            android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            app:ccp_arrowSize="25dp"
-                            app:ccp_autoDetectCountry="true"
-                            app:ccp_autoDetectLanguage="true"
-                            app:ccp_countryAutoDetectionPref="SIM_ONLY"
-                            app:ccp_defaultNameCode="UG"
-                            app:ccp_showFlag="false"
-                            app:ccp_textSize="15sp" />
-                    </FrameLayout>
 
-                    <FrameLayout
-                        android:id="@+id/mobileLayTwo"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mobileLayOne">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/districtLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/district"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/regionLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoDistrict"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
 
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/inputMobileTwo"
+                            android:id="@+id/countyLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/county"
                             app:boxBackgroundColor="@color/ghost_white"
-                            app:hintEnabled="false">
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/districtLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoCounty"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/subCountyLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/sub_county"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/countyLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoSubCounty"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/parishLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/parish"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/subCountyLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoParish"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/villageLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/village"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/parishLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoVillage"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/eLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/e_a_name"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/villageLay">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autoEA"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/emailLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/email_address"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            app:hintTextColor="@color/dar_color_two"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/eLay"
+                            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/editMobileTwo"
+                                android:id="@+id/emailInput"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/poppins_medium"
-                                android:hint="@string/a_phone_number"
-                                android:inputType="phone"
-                                android:maxLength="10"
-                                android:paddingVertical="@dimen/dimens_0dp"
-                                android:paddingStart="@dimen/dimens_110dp"
-                                android:paddingEnd="@dimen/dimens_0dp"
+                                android:inputType="textEmailAddress"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                android:textColor="@color/dar_color_one"
+                                tools:ignore="SpeakableTextPresentCheck"
                                 tools:targetApi="o" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.hbb20.CountryCodePicker
-                            android:id="@+id/countryCodeHolderTwo"
-                            android:layout_width="@dimen/dimens_160dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/transparent"
-                            android:gravity="start|center"
-                            android:padding="@dimen/dimens_5dp"
-                            android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            app:ccp_arrowSize="25dp"
-                            app:ccp_autoDetectCountry="true"
-                            app:ccp_autoDetectLanguage="true"
-                            app:ccp_countryAutoDetectionPref="SIM_ONLY"
-                            app:ccp_defaultNameCode="UG"
-                            app:ccp_showFlag="false"
-                            app:ccp_textSize="15sp" />
-                    </FrameLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/addressLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        <FrameLayout
+                            android:id="@+id/mobileLayOne"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/emailLay">
+
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/inputMobile"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:boxBackgroundColor="@color/ghost_white"
+                                app:hintEnabled="false">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/editMobile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:hint="@string/phone_number"
+                                    android:inputType="phone"
+                                    android:maxLength="10"
+                                    android:paddingVertical="@dimen/dimens_0dp"
+                                    android:paddingStart="@dimen/dimens_110dp"
+                                    android:paddingEnd="@dimen/dimens_0dp"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                    android:textColor="@color/dar_color_one" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.hbb20.CountryCodePicker
+                                android:id="@+id/countryCodeHolder"
+                                android:layout_width="@dimen/dimens_160dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/transparent"
+                                android:gravity="start|center"
+                                android:padding="@dimen/dimens_5dp"
+                                android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                app:ccp_arrowSize="25dp"
+                                app:ccp_autoDetectCountry="true"
+                                app:ccp_autoDetectLanguage="true"
+                                app:ccp_countryAutoDetectionPref="SIM_ONLY"
+                                app:ccp_defaultNameCode="UG"
+                                app:ccp_showFlag="false"
+                                app:ccp_textSize="15sp" />
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/mobileLayTwo"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/mobileLayOne">
+
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/inputMobileTwo"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:boxBackgroundColor="@color/ghost_white"
+                                app:hintEnabled="false">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/editMobileTwo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:autoSizeTextType="uniform"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:hint="@string/a_phone_number"
+                                    android:inputType="phone"
+                                    android:maxLength="10"
+                                    android:paddingVertical="@dimen/dimens_0dp"
+                                    android:paddingStart="@dimen/dimens_110dp"
+                                    android:paddingEnd="@dimen/dimens_0dp"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                    android:textColor="@color/dar_color_one"
+                                    tools:targetApi="o" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.hbb20.CountryCodePicker
+                                android:id="@+id/countryCodeHolderTwo"
+                                android:layout_width="@dimen/dimens_160dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/transparent"
+                                android:gravity="start|center"
+                                android:padding="@dimen/dimens_5dp"
+                                android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                app:ccp_arrowSize="25dp"
+                                app:ccp_autoDetectCountry="true"
+                                app:ccp_autoDetectLanguage="true"
+                                app:ccp_countryAutoDetectionPref="SIM_ONLY"
+                                app:ccp_defaultNameCode="UG"
+                                app:ccp_showFlag="false"
+                                app:ccp_textSize="15sp" />
+                        </FrameLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/addressLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/address"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            app:hintTextColor="@color/dar_color_two"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/mobileLayTwo"
+                            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/addressInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/poppins_medium"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/cityLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/city"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            app:hintTextColor="@color/dar_color_two"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/addressLay"
+                            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/cityInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/poppins_medium"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/codeLay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_24dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:layout_marginEnd="24dp"
+                            android:hint="@string/code_country"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            app:hintTextColor="@color/dar_color_two"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/cityLay"
+                            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/codeInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:fontFamily="@font/poppins_medium"
+                                android:inputType="text"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.core.widget.NestedScrollView>
+
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottomBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_90dp"
+                    android:layout_alignParentBottom="true">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/address"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:hintTextColor="@color/dar_color_two"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/dimens_5dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mobileLayTwo"
-                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+                        app:layout_constraintTop_toBottomOf="@+id/signatureLay">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/addressInput"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonBack"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/poppins_medium"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="SpeakableTextPresentCheck" />
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_5dp"
+                            android:layout_weight="1"
+                            android:text="@string/previous"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/cityLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/city"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:hintTextColor="@color/dar_color_two"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/addressLay"
-                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/cityInput"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonNext"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/poppins_medium"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="SpeakableTextPresentCheck" />
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginHorizontal="@dimen/dimens_5dp"
+                            android:layout_weight="1"
+                            android:text="@string/next"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/codeLay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="@dimen/dimens_16dp"
-                        android:layout_marginEnd="24dp"
-                        android:hint="@string/code_country"
-                        app:boxBackgroundColor="@color/ghost_white"
-                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:hintTextColor="@color/dar_color_two"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cityLay"
-                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/codeInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/poppins_medium"
-                            android:inputType="text"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            tools:ignore="SpeakableTextPresentCheck" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 
+            </RelativeLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </androidx.core.widget.NestedScrollView>
-
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomBar"
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerContainer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_90dp"
-                android:layout_alignParentBottom="true">
+                android:layout_height="match_parent"
+                app:shimmer_repeat_mode="restart"
+                app:shimmer_shape="radial">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/dimens_5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signatureLay">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonBack"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_5dp"
-                        android:layout_weight="1"
-                        android:text="@string/previous"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                    <include layout="@layout/block_sand_of_time_layout" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonNext"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
-                        android:layout_marginHorizontal="@dimen/dimens_5dp"
-                        android:layout_weight="1"
-                        android:text="@string/next"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
                 </LinearLayout>
-            </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-
-        </RelativeLayout>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:shimmer_repeat_mode="restart"
-            app:shimmer_shape="radial">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include layout="@layout/block_sand_of_time_layout" />
-
-
-            </LinearLayout>
-        </com.facebook.shimmer.ShimmerFrameLayout>
-    </FrameLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+        </FrameLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
 </layout>

@@ -332,6 +332,9 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         if (nonCaps(modules.getModuleID()).equals(nonCaps("TRANSACTIONSCENTER")))
             BindingAdapterKt.navigate(this, widgetViewModel
                     .navigation().navigateToTransactionCenter(modules));
+        else if (nonCaps(modules.getModuleID()).equals(nonCaps("PENDINGTRANSACTIONS")))
+            BindingAdapterKt.navigate(this, widgetViewModel
+                    .navigation().navigateToPendingTransaction(modules));
         else if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
             subscribe.add(widgetViewModel.getModules(modules.getModuleID())
                     .subscribeOn(Schedulers.io())
@@ -539,14 +542,14 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
                 new Gson().toJson(modules));
         BindingAdapterKt.navigate(this,
-                widgetViewModel.navigation().navigateToLevelOne(new GroupForm(modules, forms)));
+                widgetViewModel.navigation().navigateToLevelOne(new GroupForm(modules, forms, false)));
 
     }
 
 
     private void validate(List<FormControl> forms, Modules modules) {
         ValidationFragment.setData(new GroupForm(
-                modules, forms));
+                modules, forms, false));
         ((MainActivity) requireActivity())
                 .provideNavigationGraph()
                 .navigate(widgetViewModel.navigation().navigateValidation());

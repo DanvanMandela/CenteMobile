@@ -26,11 +26,13 @@ import com.craft.silicon.centemobile.data.model.StandingOrderList
 import com.craft.silicon.centemobile.data.model.StandingResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
+import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
+import com.craft.silicon.centemobile.data.model.dynamic.FormField
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.ModuleCategory
 import com.craft.silicon.centemobile.data.model.module.Modules
@@ -142,46 +144,9 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         binding = FragmentLevelOneBinding.inflate(inflater, container, false)
         setBinding()
         setDynamicInputs()
-        // setServerFields()
         return binding.root.rootView
     }
 
-    private fun setServerFields() {
-        if (response != null) {
-            if (!response!!.formField.isNullOrEmpty()) {
-                response!!.formField?.forEach {
-                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
-                        nonCaps(it.controlID) != nonCaps("DISPLAY") ||
-                        nonCaps(it.controlID) != nonCaps("LOANDETAILS")
-                    )
-                        userInput(
-                            InputData(
-                                name = "ServerField",
-                                key = it.controlID,
-                                value = it.controlValue,
-                                encrypted = false,
-                                mandatory = true
-                            )
-                        )
-                }
-            } else if (!response!!.resultsData.isNullOrEmpty()) {
-                response!!.resultsData?.forEach {
-                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
-                        nonCaps(it.controlID) != nonCaps("DISPLAY")
-                    )
-                        userInput(
-                            InputData(
-                                name = "ServerField",
-                                key = it.controlID,
-                                value = it.controlValue,
-                                encrypted = false,
-                                mandatory = true
-                            )
-                        )
-                }
-            }
-        }
-    }
 
     private fun setDynamicInputs() {
         AppLogger.instance.appLog(
@@ -232,6 +197,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         binding.shimmerContainer.startShimmer()
     }
 
+
     override fun navigateUp() {
         inputData?.clear()
         requireActivity().onBackPressed()
@@ -251,7 +217,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                     moduleList.forEach { i ->
                         if (s.moduleID == i?.id) {
                             s.available = false
-                            s.message = i?.message
+                            s.message = i.message
                         }
                     }
                     filterModule.add(s)
@@ -650,91 +616,86 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                                 if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
+                                    if (!resData?.formID.isNullOrBlank()) {
+                                        if ("${resData!!.next}".isNotBlank()) {
+                                            if (nonCaps(resData.formID)
+                                                == nonCaps("STATEMENT")
+                                            ) {
+                                                DisplayDialogFragment.setData(
+                                                    data = resData.accountStatement
+                                                )
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
 
-                                    if (resData?.formID.isNullOrBlank()) {
-                                        if (resData!!.next != null) {
-                                            if ("${resData.next}".isNotEmpty()) {
-                                                if (!TextUtils.isEmpty(resData.formID)) {
-                                                    if (nonCaps(resData.formID)
-                                                        == nonCaps("STATEMENT")
-                                                    ) {
-                                                        DisplayDialogFragment.setData(
-                                                            data = resData.accountStatement
-                                                        )
-                                                        navigate(
-                                                            baseViewModel
-                                                                .navigationData
-                                                                .navigateToDisplayDialog(
-                                                                    DisplayData(
-                                                                        display = null,
-                                                                        modules = modules,
-                                                                        form = formControl
-                                                                    )
-                                                                )
-                                                        )
+                                            } else if (nonCaps(resData.formID)
+                                                == nonCaps("PAYMENTCONFIRMATIONFORM")
+                                            ) {
+                                                AppLogger.instance.appLog(
+                                                    "Pay",
+                                                    Gson().toJson(resData)
+                                                )
+                                                ReceiptFragment.newInstance(
+                                                    this, ReceiptList(
+                                                        receipt = resData.receipt!!
+                                                            .toMutableList(),
+                                                        notification = resData.notifications
+                                                    )
+                                                )
 
-                                                    } else if (nonCaps(resData.formID)
-                                                        == nonCaps("PAYMENTCONFIRMATIONFORM")
-                                                    ) {
-                                                        AppLogger.instance.appLog(
-                                                            "Pay",
-                                                            Gson().toJson(resData)
-                                                        )
-                                                        ReceiptFragment.newInstance(
-                                                            this, ReceiptList(
+                                                navigate(
+                                                    widgetViewModel.navigation()
+                                                        .navigateReceipt(
+                                                            ReceiptList(
                                                                 receipt = resData.receipt!!
                                                                     .toMutableList(),
                                                                 notification = resData.notifications
                                                             )
                                                         )
-
-                                                        navigate(
-                                                            widgetViewModel.navigation()
-                                                                .navigateReceipt(
-                                                                    ReceiptList(
-                                                                        receipt = resData.receipt!!
-                                                                            .toMutableList(),
-                                                                        notification = resData.notifications
-                                                                    )
-                                                                )
+                                                )
+                                            } else if (nonCaps(resData.formID) == nonCaps(
+                                                    "RELIGION"
+                                                ) || nonCaps(resData.formID) == nonCaps("FUNEXTRAS")
+                                            ) {
+                                                val mData =
+                                                    GlobalResponseTypeConverter().to(
+                                                        BaseClass.decryptLatest(
+                                                            it.response,
+                                                            baseViewModel.dataSource.deviceData.value!!.device,
+                                                            true,
+                                                            baseViewModel.dataSource.deviceData.value!!.run
                                                         )
-                                                    } else if (nonCaps(resData.formID) == nonCaps(
-                                                            "RELIGION"
-                                                        )
-                                                    ) {
-                                                        val mData =
-                                                            GlobalResponseTypeConverter().to(
-                                                                BaseClass.decryptLatest(
-                                                                    it.response,
-                                                                    baseViewModel.dataSource.deviceData.value!!.device,
-                                                                    true,
-                                                                    baseViewModel.dataSource.deviceData.value!!.run
-                                                                )
-                                                            )
-
-                                                        DisplayDialogFragment.setData(
-                                                            data = mData?.data
-                                                        )
-                                                        navigate(
-                                                            baseViewModel
-                                                                .navigationData
-                                                                .navigateToDisplayDialog(
-                                                                    DisplayData(
-                                                                        display = null,
-                                                                        modules = modules,
-                                                                        form = formControl
-                                                                    )
-                                                                )
-                                                        )
-
-                                                    } else setOnNextModule(
-                                                        formControl,
-                                                        resData.next,
-                                                        modules,
-                                                        resData.formID
                                                     )
-                                                } else setSuccess(resData.message)
-                                            } else setSuccess(resData.message)
+
+                                                DisplayDialogFragment.setData(
+                                                    data = mData?.data
+                                                )
+                                                navigate(
+                                                    baseViewModel
+                                                        .navigationData
+                                                        .navigateToDisplayDialog(
+                                                            DisplayData(
+                                                                display = null,
+                                                                modules = modules,
+                                                                form = formControl
+                                                            )
+                                                        )
+                                                )
+
+                                            } else setOnNextModule(
+                                                formControl,
+                                                resData.next,
+                                                modules,
+                                                resData.formID
+                                            )
                                         } else setSuccess(resData.message)
                                     } else setSuccess(resData!!.message)
                                 } else if (nonCaps(resData?.status)
@@ -774,6 +735,12 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                         }
 
                     }, {
+                        showError(
+                            MainDialogData(
+                                title = getString(R.string.error),
+                                message = getString(R.string.something_),
+                            )
+                        )
                         it.printStackTrace()
                     })
             )
@@ -1029,12 +996,14 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         val params = action?.serviceParamIDs?.split(",")
         val json = JSONObject()
         val encrypted = JSONObject()
+        val formData = data as GroupForm
         if (FieldValidationHelper.instance.validateFields(
                 inputList = inputList,
                 params = params!!,
                 activity = requireActivity(),
                 json = json,
-                encrypted = encrypted
+                encrypted = encrypted,
+                all = formData.allow
             )
         ) {
             when (nonCaps(formControl?.controlFormat)) {
@@ -1205,7 +1174,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                         )
 
                                     } else if (nonCaps(resData.formID) == nonCaps("STANDINGORDERADD")) {
-                                        setSuccess(resData!!.message)
+                                        setSuccess(resData.message)
                                     } else setOnNextModule(
                                         formControl,
                                         resData.next,
@@ -1262,6 +1231,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         inputData?.clear()
         if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("VIEWBENEFICIARY"))
             navigate(widgetViewModel.navigation().navigateToBeneficiary(modules))
+        else if (nonCaps(modules?.moduleID) == nonCaps("PENDINGTRANSACTIONS"))
+            navigate(widgetViewModel.navigation().navigateToPendingTransaction(modules))
         else
             if (modules?.available!!)
                 if (modules.moduleURLTwo != null) {
@@ -1482,18 +1453,22 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         val controller = MainDisplayController(this)
         layout?.setController(controller)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (listState.isNotEmpty()) {
-                try {
-                    val s = listState.single { it.id == formControl?.actionID }
-                    controller.setData(s.data)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    getListAction(formControl, modules, controller)
-                }
+        try {
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (listState.isNotEmpty()) {
+                    try {
+                        val s = listState.single { it.id == formControl?.actionID }
+                        controller.setData(s.data)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        getListAction(formControl, modules, controller)
+                    }
 
-            } else getListAction(formControl, modules, controller)
-        }, 150)
+                } else getListAction(formControl, modules, controller)
+            }, 150)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -1523,20 +1498,20 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         layout: MainDisplayController,
         control: FormControl
     ) {
-        layout.setData(LoadingState())
-        val json = JSONObject()
-        val encrypted = JSONObject()
-        subscribe.add(
-            baseViewModel.dynamicCall(
-                action,
-                json,
-                encrypted,
-                modules, requireActivity()
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    try {
+        try {
+            layout.setData(LoadingState())
+            val json = JSONObject()
+            val encrypted = JSONObject()
+            subscribe.add(
+                baseViewModel.dynamicCall(
+                    action,
+                    json,
+                    encrypted,
+                    modules, requireActivity()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
                         AppLogger.instance.appLog(
                             "LIST", BaseClass.decryptLatest(
                                 it.response,
@@ -1605,18 +1580,18 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                     e.printStackTrace()
                                 }
                             }
-                    } catch (e: Exception) {
-                        layout.setData(Nothing())
-                        showError(
-                            MainDialogData(
-                                title = getString(R.string.error),
-                                message = getString(R.string.something_),
-                            )
-                        )
-                        e.printStackTrace()
-                    }
-                }, { it.printStackTrace() })
-        )
+                    }, { it.printStackTrace() })
+            )
+        } catch (e: Exception) {
+            layout.setData(Nothing())
+            showError(
+                MainDialogData(
+                    title = getString(R.string.error),
+                    message = getString(R.string.something_),
+                )
+            )
+            e.printStackTrace()
+        }
     }
 
 
@@ -1826,7 +1801,6 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         modules: Modules?,
         formControl: FormControl
     ) {
-
         try {
             setLoading(false)
             AppLogger.instance.appLog(
@@ -1919,6 +1893,64 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
             ),
             requireActivity().supportFragmentManager, callback
         )
+    }
+
+
+    override fun onDisplay(
+        formControl: FormControl?,
+        modules: Modules?,
+        data: HashMap<String, String>?
+    ) {
+        AppLogger.instance.appLog(
+            "${LevelOneFragment::class.java.simpleName}:Display:click",
+            Gson().toJson(formControl)
+        )
+        if (nonCaps(modules?.moduleID) == nonCaps("Religion")
+            && nonCaps(formControl!!.linkedToControl) == nonCaps("ONLINEBIBLETAB")
+        ) {
+            val values = formControl.controlValue?.split(",")
+            val form = mutableListOf<FormControl>()
+            form.add(
+                FormControl(
+                    moduleID = formControl.moduleID,
+                    controlID = "Display",
+                    controlText = getString(R.string.verse),
+                    controlType = ControlTypeEnum.TEXTVIEW.type,
+                    controlFormat = ControlFormatEnum.JSON.type,
+                    displayOrder = formControl.displayOrder!!.toDouble().minus(1),
+                    actionType = formControl.actionType,
+                    serviceParamID = formControl.serviceParamID,
+                    displayControl = formControl.displayControl,
+                    isEncrypted = formControl.isEncrypted,
+                    isMandatory = formControl.isMandatory
+                )
+            )
+            userInput(
+                InputData(
+                    name = formControl.controlText,
+                    key = values?.get(1),
+                    value = data!![values!![0]],
+                    encrypted = false,
+                    mandatory = true
+                )
+            )
+            serverResponse.value = DynamicAPIResponse(
+                formField = mutableListOf(
+                    FormField(
+                        controlID = "JSON",
+                        controlValue = Gson().toJson(mutableListOf(data))
+                    )
+                )
+            )
+            val sequence = formControl.formSequence?.toInt()?.plus(1).toString()
+            subscribe.add(widgetViewModel.getFormControl(modules?.moduleID, sequence)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ f: List<FormControl> ->
+                    form.addAll(f)
+                    setFormNavigation(form, modules)
+                }) { obj: Throwable -> obj.printStackTrace() })
+        }
     }
 
 

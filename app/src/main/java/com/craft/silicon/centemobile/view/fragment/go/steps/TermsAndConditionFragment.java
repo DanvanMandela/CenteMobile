@@ -120,8 +120,6 @@ public class TermsAndConditionFragment extends Fragment implements AppCallbacks,
             } else if (view.equals(binding.buttonBack)) {
                 pagerData.onBack(1);
             }
-        }else{
-            //BaseClass.show_toast(getActivity(), "---pagerData null----");
         }
 
     }

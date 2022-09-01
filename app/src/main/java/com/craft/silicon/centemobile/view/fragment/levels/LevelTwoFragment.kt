@@ -26,11 +26,13 @@ import com.craft.silicon.centemobile.data.model.StandingOrderList
 import com.craft.silicon.centemobile.data.model.StandingResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.action.ActionControls
 import com.craft.silicon.centemobile.data.model.control.ControlFormatEnum
+import com.craft.silicon.centemobile.data.model.control.ControlTypeEnum
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.control.FormNavigation
 import com.craft.silicon.centemobile.data.model.converter.*
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
+import com.craft.silicon.centemobile.data.model.dynamic.FormField
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.ModuleCategory
 import com.craft.silicon.centemobile.data.model.module.Modules
@@ -138,45 +140,9 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         binding = FragmentLevelTwoBinding.inflate(inflater, container, false)
         setBinding()
         setDynamicInputs()
-        // setServerFields()
         return binding.root.rootView
     }
 
-    private fun setServerFields() {
-        if (response != null) {
-            if (!response!!.formField.isNullOrEmpty()) {
-                response!!.formField?.forEach {
-                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
-                        nonCaps(it.controlID) != nonCaps("DISPLAY")
-                    )
-                        userInput(
-                            InputData(
-                                name = "ServerField",
-                                key = it.controlID,
-                                value = it.controlValue,
-                                encrypted = false,
-                                mandatory = true
-                            )
-                        )
-                }
-            } else if (!response!!.resultsData.isNullOrEmpty()) {
-                response!!.resultsData?.forEach {
-                    if (nonCaps(it.controlID) != nonCaps("JSON") ||
-                        nonCaps(it.controlID) != nonCaps("DISPLAY")
-                    )
-                        userInput(
-                            InputData(
-                                name = "ServerField",
-                                key = it.controlID,
-                                value = it.controlValue,
-                                encrypted = false,
-                                mandatory = true
-                            )
-                        )
-                }
-            }
-        }
-    }
 
     private fun setDynamicInputs() {
         AppLogger.instance.appLog(
@@ -246,7 +212,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                     moduleList.forEach { i ->
                         if (s.moduleID == i?.id) {
                             s.available = false
-                            s.message = i?.message
+                            s.message = i.message
                         }
                     }
                     filterModule.add(s)
@@ -660,14 +626,17 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
 
                                             } else if (nonCaps(resData.formID)
-                                                == nonCaps("RELIGION")
+                                                == nonCaps("RELIGION") || nonCaps(resData.formID)
+                                                == nonCaps("FUNEXTRAS")
                                             ) {
                                                 val mData = GlobalResponseTypeConverter().to(
                                                     BaseClass.decryptLatest(
                                                         it.response,
-                                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                                        baseViewModel.dataSource
+                                                            .deviceData.value!!.device,
                                                         true,
-                                                        baseViewModel.dataSource.deviceData.value!!.run
+                                                        baseViewModel.dataSource
+                                                            .deviceData.value!!.run
                                                     )
                                                 )
 
@@ -982,6 +951,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         inputData?.clear()
         if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("VIEWBENEFICIARY"))
             navigate(widgetViewModel.navigation().navigateToBeneficiary(modules))
+        else if (nonCaps(modules?.moduleID) == nonCaps("PENDINGTRANSACTIONS"))
+            navigate(widgetViewModel.navigation().navigateToPendingTransaction(modules))
         else
             if (modules?.available!!)
                 if (modules.moduleURLTwo != null) {
@@ -1234,18 +1205,22 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         val controller = MainDisplayController(this)
         layout?.setController(controller)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (listState.isNotEmpty()) {
-                try {
-                    val s = listState.single { it.id == formControl?.actionID }
-                    controller.setData(s.data)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    getListAction(formControl, modules, controller)
-                }
+        try {
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (listState.isNotEmpty()) {
+                    try {
+                        val s = listState.single { it.id == formControl?.actionID }
+                        controller.setData(s.data)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        getListAction(formControl, modules, controller)
+                    }
 
-            } else getListAction(formControl, modules, controller)
-        }, 150)
+                } else getListAction(formControl, modules, controller)
+            }, 150)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -1274,100 +1249,104 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         layout: MainDisplayController,
         control: FormControl
     ) {
-        layout.setData(LoadingState())
-        val json = JSONObject()
-        val encrypted = JSONObject()
-        subscribe.add(
-            baseViewModel.dynamicCall(
-                action,
-                json,
-                encrypted,
-                modules, requireActivity()
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    try {
-                        AppLogger.instance.appLog(
-                            "LIST", BaseClass.decryptLatest(
-                                it.response,
-                                widgetViewModel.storageDataSource.deviceData.value!!.device,
-                                true,
-                                widgetViewModel.storageDataSource.deviceData.value!!.run
+        try {
+            layout.setData(LoadingState())
+            val json = JSONObject()
+            val encrypted = JSONObject()
+            subscribe.add(
+                baseViewModel.dynamicCall(
+                    action,
+                    json,
+                    encrypted,
+                    modules, requireActivity()
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        try {
+                            AppLogger.instance.appLog(
+                                "LIST", BaseClass.decryptLatest(
+                                    it.response,
+                                    widgetViewModel.storageDataSource.deviceData.value!!.device,
+                                    true,
+                                    widgetViewModel.storageDataSource.deviceData.value!!.run
+                                )
                             )
-                        )
-                        if (it.response == StatusEnum.ERROR.type) {
+                            if (it.response == StatusEnum.ERROR.type) {
+                                showError(
+                                    MainDialogData(
+                                        title = getString(R.string.error),
+                                        message = getString(R.string.something_)
+                                    )
+                                )
+                            } else
+                                if (nonCaps(it.response) != StatusEnum.ERROR.type) {
+                                    try {
+                                        val moduleData = GlobalResponseTypeConverter().to(
+                                            BaseClass.decryptLatest(
+                                                it.response,
+                                                widgetViewModel.storageDataSource.deviceData.value!!.device,
+                                                true,
+                                                widgetViewModel.storageDataSource.deviceData.value!!.run
+                                            )
+                                        )
+                                        AppLogger.instance.appLog("LIST", Gson().toJson(moduleData))
+                                        if (nonCaps(moduleData?.status)
+                                            == StatusEnum.SUCCESS.type
+                                        ) {
+
+                                            val s =
+                                                DisplayData(
+                                                    moduleData?.data!!.toMutableList(),
+                                                    control,
+                                                    modules
+                                                )
+                                            layout.setData(s)
+                                            listState.add(
+                                                DisplayState(
+                                                    id = action?.actionID!!,
+                                                    data = s
+                                                )
+                                            )
+                                        } else if (nonCaps(moduleData?.status)
+                                            == StatusEnum.TOKEN.type
+                                        ) {
+                                            InfoFragment.showDialog(this.childFragmentManager)
+
+                                        } else {
+                                            showError(
+                                                MainDialogData(
+                                                    title = getString(R.string.error),
+                                                    message = moduleData?.message
+                                                )
+                                            )
+                                        }
+                                    } catch (e: Exception) {
+                                        layout.setData(Nothing())
+                                        showError(
+                                            MainDialogData(
+                                                title = getString(R.string.error),
+                                                message = getString(R.string.something_)
+                                            )
+                                        )
+                                        e.printStackTrace()
+                                    }
+                                }
+                        } catch (e: Exception) {
+                            layout.setData(Nothing())
                             showError(
                                 MainDialogData(
                                     title = getString(R.string.error),
                                     message = getString(R.string.something_)
                                 )
                             )
-                        } else
-                            if (nonCaps(it.response) != StatusEnum.ERROR.type) {
-                                try {
-                                    val moduleData = GlobalResponseTypeConverter().to(
-                                        BaseClass.decryptLatest(
-                                            it.response,
-                                            widgetViewModel.storageDataSource.deviceData.value!!.device,
-                                            true,
-                                            widgetViewModel.storageDataSource.deviceData.value!!.run
-                                        )
-                                    )
-                                    AppLogger.instance.appLog("LIST", Gson().toJson(moduleData))
-                                    if (nonCaps(moduleData?.status)
-                                        == StatusEnum.SUCCESS.type
-                                    ) {
-
-                                        val s =
-                                            DisplayData(
-                                                moduleData?.data!!.toMutableList(),
-                                                control,
-                                                modules
-                                            )
-                                        layout.setData(s)
-                                        listState.add(
-                                            DisplayState(
-                                                id = action?.actionID!!,
-                                                data = s
-                                            )
-                                        )
-                                    } else if (nonCaps(moduleData?.status)
-                                        == StatusEnum.TOKEN.type
-                                    ) {
-                                        InfoFragment.showDialog(this.childFragmentManager)
-
-                                    } else {
-                                        showError(
-                                            MainDialogData(
-                                                title = getString(R.string.error),
-                                                message = moduleData?.message
-                                            )
-                                        )
-                                    }
-                                } catch (e: Exception) {
-                                    layout.setData(Nothing())
-                                    showError(
-                                        MainDialogData(
-                                            title = getString(R.string.error),
-                                            message = getString(R.string.something_)
-                                        )
-                                    )
-                                    e.printStackTrace()
-                                }
-                            }
-                    } catch (e: Exception) {
-                        layout.setData(Nothing())
-                        showError(
-                            MainDialogData(
-                                title = getString(R.string.error),
-                                message = getString(R.string.something_)
-                            )
-                        )
-                        e.printStackTrace()
-                    }
-                }, { it.printStackTrace() })
-        )
+                            e.printStackTrace()
+                        }
+                    }, { it.printStackTrace() })
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun bioPayment(view: TextInputEditText?) {
@@ -1491,7 +1470,7 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                 )
                             )
                             if (nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
-                                if (!resData?.formID.isNullOrEmpty()) {
+                                if (!resData?.formID.isNullOrBlank()) {
                                     if (!TextUtils.isEmpty(resData!!.formID)) {
                                         if (nonCaps(resData.formID)
                                             == nonCaps("STATEMENT")
@@ -1748,7 +1727,15 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                         )
                         e.printStackTrace()
                     }
-                }, { it.printStackTrace() })
+                }, {
+                    showError(
+                        MainDialogData(
+                            title = getString(R.string.error),
+                            message = getString(R.string.something_),
+                        )
+                    )
+                    it.printStackTrace()
+                })
         )
     }
 
@@ -1905,6 +1892,63 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
     override fun viewStandingOrder(standingOrder: StandingOrder?) {
         navigate(widgetViewModel.navigation().navigateToStandingDetails(standingOrder))
+    }
+
+    override fun onDisplay(
+        formControl: FormControl?,
+        modules: Modules?,
+        data: HashMap<String, String>?
+    ) {
+        AppLogger.instance.appLog(
+            "${LevelTwoFragment::class.java.simpleName}:Display:click",
+            Gson().toJson(formControl)
+        )
+        if (nonCaps(modules?.moduleID) == nonCaps("Religion")
+            && nonCaps(formControl!!.linkedToControl) == nonCaps("ONLINEBIBLETAB")
+        ) {
+            val values = formControl.controlValue?.split(",")
+            val form = mutableListOf<FormControl>()
+            form.add(
+                FormControl(
+                    moduleID = formControl.moduleID,
+                    controlID = "Display",
+                    controlText = getString(R.string.verse),
+                    controlType = ControlTypeEnum.TEXTVIEW.type,
+                    controlFormat = ControlFormatEnum.JSON.type,
+                    displayOrder = formControl.displayOrder!!.toDouble().minus(1),
+                    actionType = formControl.actionType,
+                    serviceParamID = formControl.serviceParamID,
+                    displayControl = formControl.displayControl,
+                    isEncrypted = formControl.isEncrypted,
+                    isMandatory = formControl.isMandatory
+                )
+            )
+            userInput(
+                InputData(
+                    name = formControl.controlText,
+                    key = values?.get(1),
+                    value = data!![values!![0]],
+                    encrypted = false,
+                    mandatory = true
+                )
+            )
+            serverResponse.value = DynamicAPIResponse(
+                formField = mutableListOf(
+                    FormField(
+                        controlID = "JSON",
+                        controlValue = Gson().toJson(mutableListOf(data))
+                    )
+                )
+            )
+            val sequence = formControl.formSequence?.toInt()?.plus(1).toString()
+            subscribe.add(widgetViewModel.getFormControl(modules?.moduleID, sequence)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ f: List<FormControl> ->
+                    form.addAll(f)
+                    setFormNavigation(form, modules)
+                }) { obj: Throwable -> obj.printStackTrace() })
+        }
     }
 
 

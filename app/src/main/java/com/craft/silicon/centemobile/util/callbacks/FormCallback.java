@@ -5,8 +5,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.chaos.view.PinView;
 import com.craft.silicon.centemobile.data.model.StandingOrder;
@@ -17,9 +15,9 @@ import com.craft.silicon.centemobile.data.model.module.Modules;
 import com.craft.silicon.centemobile.data.model.user.Accounts;
 import com.craft.silicon.centemobile.data.model.user.AlertServices;
 import com.craft.silicon.centemobile.data.model.user.Beneficiary;
+import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding;
-import com.craft.silicon.centemobile.view.ep.controller.MainDisplayController;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -127,6 +125,12 @@ public interface FormCallback {
     default void viewStandingOrder(StandingOrder standingOrder) {
     }
 
+
+    default void approveTransaction(PendingTransaction data) {
+    }
+
+    default void rejectTransaction(PendingTransaction data) {
+    }
 
     default void deleteBeneficiary(Modules modules,
                                    Beneficiary beneficiary) {

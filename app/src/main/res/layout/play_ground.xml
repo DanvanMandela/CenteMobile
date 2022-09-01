@@ -4,266 +4,177 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <data>
-
-        <variable
-            name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
-    </data>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/mainLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:navigationIcon="@drawable/ic_close_white_24dp"
+                    app:navigationIconTint="@color/white"
+                    app:title="@string/customer_product"
+                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    app:titleTextColor="@color/white" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/appbar"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:layout_marginVertical="@dimen/dimens_16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="24dp" />
 
 
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/cardItem"-->
-<!--            android:layout_width="@dimen/dimens_120dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="@dimen/dimens_10dp"-->
-<!--            android:onClick="@{()->callback.toBranch}"-->
-<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
-<!--            app:cardElevation="@dimen/dimens_5dp"-->
-<!--            app:layout_constraintDimensionRatio="4:6"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/cardItemTwo"-->
-<!--            app:layout_constraintHorizontal_bias="0.5"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:padding="@dimen/dimens_5dp">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/avatar"-->
-<!--                    android:layout_width="@dimen/dimens_60dp"-->
-<!--                    android:layout_height="@dimen/dimens_60dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    android:layout_marginEnd="8dp"-->
-<!--                    android:contentDescription="@string/avatar"-->
-<!--                    android:scaleType="fitXY"-->
-<!--                    android:src="@drawable/atm_machine"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bottomBar"
+                android:layout_below="@id/progressIndicator"
+                android:fillViewport="true"
+                android:overScrollMode="never">
 
 
-<!--                <TextView-->
-<!--                    android:id="@+id/title"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    android:autoSizeTextType="uniform"-->
-<!--                    android:fontFamily="@font/poppins_semi_bold"-->
-<!--                    android:gravity="center"-->
-<!--                    android:maxLines="2"-->
-<!--                    android:minLines="2"-->
-<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
-<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
-<!--                    android:text="@string/branch_atm"-->
-<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
-<!--                    android:textColor="@color/dar_color_one"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/avatar"-->
-<!--                    tools:ignore="UnusedAttribute" />-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--        </com.google.android.material.card.MaterialCardView>-->
-
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/cardItemTwo"-->
-<!--            android:layout_width="@dimen/dimens_120dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="@dimen/dimens_10dp"-->
-<!--            android:onClick="@{()->callback.toLogin}"-->
-<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
-<!--            app:cardElevation="@dimen/dimens_5dp"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/cardItemFour"-->
-<!--            app:layout_constraintDimensionRatio="4:6"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/cardItemThree"-->
-<!--            app:layout_constraintHorizontal_bias="0.5"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/cardItem"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:id="@+id/constraintLayout2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:padding="@dimen/dimens_5dp"-->
-<!--                app:layout_constraintBottom_toTopOf="@+id/constraintLayout"-->
-<!--                app:layout_constraintHorizontal_bias="0.5"-->
-<!--                app:layout_constraintTop_toTopOf="parent">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/avatarTwo"-->
-<!--                    android:layout_width="@dimen/dimens_60dp"-->
-<!--                    android:layout_height="@dimen/dimens_60dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    android:layout_marginEnd="8dp"-->
-<!--                    android:contentDescription="@string/cente_login"-->
-<!--                    android:scaleType="fitXY"-->
-<!--                    android:src="@drawable/lock"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
 
-<!--                <TextView-->
-<!--                    android:id="@+id/titleTwo"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    android:autoSizeTextType="uniform"-->
-<!--                    android:fontFamily="@font/poppins_semi_bold"-->
-<!--                    android:gravity="center"-->
-<!--                    android:maxLines="2"-->
-<!--                    android:minLines="2"-->
-<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
-<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
-<!--                    android:text="@string/cente_login"-->
-<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
-<!--                    android:textColor="@color/dar_color_one"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarTwo"-->
-<!--                    tools:ignore="UnusedAttribute" />-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+                    <LinearLayout
+                        android:id="@+id/customerLayMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-<!--        </com.google.android.material.card.MaterialCardView>-->
-
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/cardItemThree"-->
-<!--            android:layout_width="@dimen/dimens_120dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="@dimen/dimens_10dp"-->
-<!--            android:onClick="@{()->callback.toOnline}"-->
-<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
-<!--            app:cardElevation="@dimen/dimens_5dp"-->
-<!--            app:layout_constraintDimensionRatio="4:6"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/cardItemTwo"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:padding="@dimen/dimens_5dp">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/avatarThree"-->
-<!--                    android:layout_width="@dimen/dimens_60dp"-->
-<!--                    android:layout_height="@dimen/dimens_60dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    android:layout_marginEnd="8dp"-->
-<!--                    android:contentDescription="@string/online_banking"-->
-<!--                    android:scaleType="fitXY"-->
-<!--                    android:src="@drawable/checking"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+                        <include
+                            android:id="@+id/customerLay"
+                            layout="@layout/block_customer_type_tab"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimens_150dp"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--                <TextView-->
-<!--                    android:id="@+id/titleThree"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    android:autoSizeTextType="uniform"-->
-<!--                    android:fontFamily="@font/poppins_semi_bold"-->
-<!--                    android:gravity="center"-->
-<!--                    android:maxLines="2"-->
-<!--                    android:minLines="2"-->
-<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
-<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
-<!--                    android:text="@string/online_banking"-->
-<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
-<!--                    android:textColor="@color/dar_color_one"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarThree"-->
-<!--                    tools:ignore="UnusedAttribute" />-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--        </com.google.android.material.card.MaterialCardView>-->
+                    </LinearLayout>
 
 
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/cardItemFour"-->
-<!--            android:layout_width="@dimen/dimens_120dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="@dimen/dimens_10dp"-->
-<!--            android:onClick="@{()->callback.onTheGo()}"-->
-<!--            app:cardCornerRadius="@dimen/dimens_8dp"-->
-<!--            app:cardElevation="@dimen/dimens_5dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintDimensionRatio="4:6"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/cardItemTwo"-->
-<!--            app:layout_constraintHorizontal_bias="0.5"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/cardItemTwo"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/cardItemTwo">-->
+                    <include
+                        android:id="@+id/productLay"
+                        layout="@layout/block_on_the_go_account_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_180dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/customerLayMain" />
 
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:id="@+id/constraintLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:padding="@dimen/dimens_5dp"-->
-<!--                app:layout_constraintBottom_toBottomOf="@+id/cardItemTwo"-->
-<!--                app:layout_constraintHorizontal_bias="0.5"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/avatarFour"-->
-<!--                    android:layout_width="@dimen/dimens_60dp"-->
-<!--                    android:layout_height="@dimen/dimens_60dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    android:layout_marginEnd="8dp"-->
-<!--                    android:contentDescription="@string/cente_on_go"-->
-<!--                    android:scaleType="fitXY"-->
-<!--                    android:src="@drawable/cente"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+                    <include
+                        android:id="@+id/currencyLay"
+                        layout="@layout/block_on_go_currency_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/productLay" />
 
 
-<!--                <TextView-->
-<!--                    android:id="@+id/titleFour"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    android:autoSizeTextType="uniform"-->
-<!--                    android:fontFamily="@font/poppins_semi_bold"-->
-<!--                    android:gravity="center"-->
-<!--                    android:maxLines="2"-->
-<!--                    android:minLines="2"-->
-<!--                    android:paddingHorizontal="@dimen/dimens_10dp"-->
-<!--                    android:paddingVertical="@dimen/dimens_5dp"-->
-<!--                    android:text="@string/cente_on_go"-->
-<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
-<!--                    android:textColor="@color/dar_color_one"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/avatarFour"-->
-<!--                    tools:ignore="UnusedAttribute" />-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+                    <include
+                        android:id="@+id/branchLay"
+                        layout="@layout/block_go_branch_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/currencyLay" />
 
-<!--        </com.google.android.material.card.MaterialCardView>-->
-<!--    -->
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Space
+                        android:id="@+id/space2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_25dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/branchLay" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_90dp"
+                android:layout_alignParentBottom="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimens_5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/signatureLay">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/materialButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:fontFamily="@font/poppins_semi_bold"
+                        android:text="@string/proceed"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </LinearLayout>
+            </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+
+        </RelativeLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_shape="radial">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/block_sand_of_time_layout" />
+
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </FrameLayout>
 
 
 </layout>

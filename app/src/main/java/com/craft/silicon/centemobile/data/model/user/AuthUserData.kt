@@ -90,7 +90,27 @@ data class LoginUserData(
     @field:SerializedName("modulesToDisable")
     @field:ColumnInfo(name = "modulesToDisable")
     @field:Expose
-    var disableModule: MutableList<ModuleDisable>?
+    var disableModule: MutableList<ModuleDisable>?,
+
+    @field:SerializedName("PendingTrxDisplay")
+    @field:ColumnInfo(name = "pendingTrxDisplay")
+    @field:Expose
+    var pendingTrxDisplay: MutableList<HashMap<String, String>>?,
+
+    @field:SerializedName("PendingTrxPayload")
+    @field:ColumnInfo(name = "PendingTrxPayload")
+    @field:Expose
+    var pendingTrxPayload: MutableList<HashMap<String, String>>?,
+
+    @field:SerializedName("PendingTrxFormControls")
+    @field:ColumnInfo(name = "PendingTrxFormControls")
+    @field:Expose
+    var pendingTrxFormControls: MutableList<PendingTrxFormControls>?,
+
+    @field:SerializedName("PendingTrxActionControls")
+    @field:ColumnInfo(name = "PendingTrxActionControls")
+    @field:Expose
+    var PendingTrxActionControls: MutableList<PendingTrxActionControls>?
 ) : Parcelable
 
 @Parcelize

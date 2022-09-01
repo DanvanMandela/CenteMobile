@@ -23,11 +23,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/dimens_5dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_2dp"
-                android:background="@color/app_blue_light" />
         </LinearLayout>
 
 

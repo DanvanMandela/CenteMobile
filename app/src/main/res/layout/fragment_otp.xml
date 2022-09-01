@@ -153,14 +153,17 @@
                     </LinearLayout>
 
 
-                    <com.google.android.material.button.MaterialButton
+                    <TextView
                         android:id="@+id/resendButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/dimens_5dp"
+                        android:background="?selectableItemBackgroundBorderless"
                         android:fontFamily="@font/poppins_medium"
+                        android:gravity="center"
                         android:text="@string/resend_otp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textColor="@color/app_blue_light"
                         android:visibility="gone"
                         app:elevation="@dimen/dimens_0dp" />
 

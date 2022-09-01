@@ -12,10 +12,7 @@ import android.database.Cursor
 import android.graphics.ImageDecoder
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
@@ -29,7 +26,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.*
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -44,8 +41,13 @@ import com.craft.silicon.centemobile.util.image.compressImage
 import com.craft.silicon.centemobile.view.fragment.auth.bio.BioInterface
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTP
+import com.craft.silicon.centemobile.view.fragment.go.steps.OTPCountDownTimer
 import com.craft.silicon.centemobile.view.fragment.map.MapData
-import com.craft.silicon.centemobile.view.model.*
+import com.craft.silicon.centemobile.view.model.BaseViewModel
+import com.craft.silicon.centemobile.view.model.WidgetViewModel
+import com.craft.silicon.centemobile.view.model.WorkStatus
+import com.craft.silicon.centemobile.view.model.WorkerViewModel
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -58,13 +60,12 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.disposables.CompositeDisposable
 import java.io.IOException
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AppCallbacks,
-    NavController.OnDestinationChangedListener, BiometricAuthListener {
+    NavController.OnDestinationChangedListener, BiometricAuthListener, OTP {
     private val activityLauncher: MyActivityResult<Intent, ActivityResult> =
         MyActivityResult.registerActivityForResult(this)
     private var fusedLocationProvider: FusedLocationProviderClient? = null
@@ -76,18 +77,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var callbacks: AppCallbacks? = null
     private var cryptographyManager = CryptoManager()
     private var bioInterface: BioInterface? = null
-
-    private val composite = CompositeDisposable()
-
-    private val staticViewModel: StaticDataViewModel by viewModels()
+    private var countDownTimer: CountDownTimer? = null
 
 
-    private val otpSMS = MutableLiveData<String?>()
 
-
-    private lateinit var mHandler: Handler
-    private lateinit var mRunnable: Runnable
-    private var mTime: Long = 60000
+    private var startTime = (24 * 1000).toLong()
+    private val interval = (1 * 1000).toLong()
 
 
     fun initSMSBroadCast() {
@@ -116,9 +111,19 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         requestPermissions()
         listenToConnection()
         subscribePush()
-        inactivityMonitor()
+        //inactivityMonitor()
+        updateTimeout()
 
+    }
 
+    private fun updateTimeout() {
+        val timeout = baseViewModel.dataSource.timeout.asLiveData()
+        timeout.observe(this) { result ->
+            if (result != null) {
+                startTime = result
+            }
+        }
+        setTimer()
     }
 
     private fun appSignature() {
@@ -128,43 +133,15 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         )
     }
 
-    private fun inactivityMonitor() {
-        mHandler = Handler(Looper.getMainLooper())
-        mRunnable = Runnable {
-            when (provideNavigationGraph().currentDestination?.id) {
-                R.id.homeFragment,
-                R.id.levelOneFragment,
-                R.id.levelTwoFragment,
-                R.id.miniStatementFragment,
-                R.id.transactionCenterFragment
-                -> provideNavigationGraph().navigate(
-                    widgetViewModel.navigation().navigateLanding()
-                )
-                else -> {
-                    AppLogger.instance.appLog("Timeout:", "Not here")
-                }
-            }
-        }
-        startHandler()
 
-    }
 
 
     override fun onUserInteraction() {
         super.onUserInteraction()
-        stopHandler()
-        startHandler()
+        timerControl(false)
+        setTimer()
     }
 
-
-    private fun startHandler() {
-        mHandler.postDelayed(mRunnable, mTime)
-    }
-
-
-    private fun stopHandler() {
-        mHandler.removeCallbacks(mRunnable)
-    }
 
     private fun subscribePush() {
         FirebaseMessaging.getInstance().token
@@ -188,17 +165,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     override fun onResume() {
         super.onResume()
-        startHandler()
-    }
+        timerControl(false)
+        setTimer()
 
-    override fun onPause() {
-        super.onPause()
-        stopHandler()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopHandler()
     }
 
 
@@ -220,25 +189,27 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         Handler(Looper.getMainLooper()).postDelayed({
             val status = widgetViewModel.connectionObserver.observe().asLiveData()
 
-            status.observe(this) {
-                when (it) {
-                    ConnectionObserver.ConnectionEnum.Available -> {
-                        if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
-                            provideNavigationGraph().navigateUp()
-                    }
-                    ConnectionObserver.ConnectionEnum.UnAvailable,
-                    ConnectionObserver.ConnectionEnum.Losing,
-                    ConnectionObserver.ConnectionEnum.Lost -> {
-                        runOnUiThread {
-                            if (provideNavigationGraph().currentDestination?.id != R.id.connectionFragment)
-                                provideNavigationGraph().navigate(
-                                    widgetViewModel.navigation().navigateConnection()
-                                )
+            status.observe(this) { result ->
+                if (result != null)
+                    when (result) {
+                        ConnectionObserver.ConnectionEnum.Available -> {
+                            if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
+                                provideNavigationGraph().navigateUp()
                         }
-                    }
+                        ConnectionObserver.ConnectionEnum.UnAvailable,
+                        ConnectionObserver.ConnectionEnum.Losing,
+                        ConnectionObserver.ConnectionEnum.Lost -> {
+                            runOnUiThread {
+                                if (provideNavigationGraph().currentDestination?.id != R.id.connectionFragment)
+                                    provideNavigationGraph().navigate(
+                                        widgetViewModel.navigation().navigateConnection()
+                                    )
+                            }
+                        }
 
-                }
+                    }
             }
+
         }, animationDuration.toLong())
     }
 
@@ -789,16 +760,42 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         task.addOnFailureListener { }
     }
 
+    override fun timer(str: String) {
+        // AppLogger.instance.appLog("${MainActivity::class.simpleName}:Timeout", str)
+    }
+
+    private fun timerControl(startTimer: Boolean) {
+        if (startTimer) {
+            countDownTimer!!.start()
+        } else {
+            countDownTimer!!.cancel()
+        }
+    }
+
+    override fun done(boolean: Boolean) {
+        if (boolean) {
+            timerControl(false)
+            when (provideNavigationGraph().currentDestination?.id) {
+                R.id.homeFragment,
+                R.id.levelOneFragment,
+                R.id.levelTwoFragment,
+                R.id.miniStatementFragment,
+                R.id.transactionCenterFragment
+                -> provideNavigationGraph().navigate(
+                    widgetViewModel.navigation().navigateLanding()
+                )
+                else -> {
+                    AppLogger.instance.appLog("Timeout:", "Not here")
+                }
+            }
+        }
+    }
+
+    private fun setTimer() {
+        countDownTimer = OTPCountDownTimer(startTime = startTime, interval = interval, this)
+        timerControl(true)
+        done(false)
+    }
 
 }
 
-class AppLifecycleListener : DefaultLifecycleObserver {
-
-    override fun onStart(owner: LifecycleOwner) {
-
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-
-    }
-}

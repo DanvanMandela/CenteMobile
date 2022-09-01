@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -21,7 +22,6 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
-import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
@@ -310,6 +310,23 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                ShowAlertDialog().showDialog(
+                    requireContext(),
+                    getString(R.string.exit_registration),
+                    getString(R.string.proceed_registration),
+                    this
+                )
+                true
+            } else false
+        }
+    }
+
     override fun setOnClick() {
         binding.resendButton.setOnClickListener(this)
         binding.buttonBack.setOnClickListener(this)
@@ -335,11 +352,11 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
 
 
     private fun setLoading(it: Boolean) {
-        if (it) {
-            LoadingFragment.show(requireActivity().supportFragmentManager)
-        } else {
-            LoadingFragment.dismiss(requireActivity().supportFragmentManager)
-        }
+        if (it) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
     }
 
     override fun onPositive() {

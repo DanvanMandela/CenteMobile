@@ -15,7 +15,8 @@ class ShowAlertDialog {
             .setNegativeButton(context.resources.getString(R.string.cancel)) { _, _ ->
                 callback.onNegative()
             }
-            .setPositiveButton(context.resources.getString(R.string.accept_)) { _, _ ->
+            .setPositiveButton(context.resources.getString(R.string.accept_)) { d, _ ->
+                d.dismiss()
                 callback.onPositive()
             }
             .show()

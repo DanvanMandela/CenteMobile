@@ -12,9 +12,7 @@ import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTyp
 import com.craft.silicon.centemobile.data.model.converter.GroupFormTypeConverter
 import com.craft.silicon.centemobile.data.model.module.Modules
 import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails
-import com.craft.silicon.centemobile.data.model.user.Accounts
-import com.craft.silicon.centemobile.data.model.user.Beneficiary
-import com.craft.silicon.centemobile.data.model.user.FrequentModules
+import com.craft.silicon.centemobile.data.model.user.*
 import com.craft.silicon.centemobile.data.receiver.NotificationData
 import com.craft.silicon.centemobile.data.source.local.module.auth.AuthDao
 import com.craft.silicon.centemobile.data.source.local.module.dynamic.widgets.WidgetDao
@@ -31,7 +29,8 @@ import com.craft.silicon.centemobile.view.ep.data.LayoutData
         LayoutData::class,
         AtmData::class,
         CarouselData::class,
-        NotificationData::class
+        NotificationData::class,
+        PendingTransaction::class
     ],
     version = 1, exportSchema = false
 )
@@ -39,7 +38,10 @@ import com.craft.silicon.centemobile.view.ep.data.LayoutData
 @TypeConverters(
     GroupFormTypeConverter::class,
     DateConverter::class,
-    DynamicDataResponseTypeConverter::class
+    DynamicDataResponseTypeConverter::class,
+    DisplayHashTypeConverter::class,
+    PendingTrxFormControlsConverter::class,
+    PendingTrxActionControlsControlsConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
 
