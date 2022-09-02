@@ -180,6 +180,12 @@
 
 
     <action
+        android:id="@+id/action_nav_success"
+        app:destination="@+id/successDialogFragment"
+        app:popUpToInclusive="true" />
+
+
+    <action
         android:id="@+id/action_nav_standing"
         app:destination="@+id/standingOrderDetailsFragment"
         app:popUpToInclusive="true" />
@@ -222,6 +228,11 @@
     <action
         android:id="@+id/action_nav_mini"
         app:destination="@+id/miniStatementFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_reject"
+        app:destination="@+id/rejectPendingFragment"
         app:popUpToInclusive="true" />
 
     <action
@@ -530,7 +541,7 @@
         android:name="com.craft.silicon.centemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
         android:label="fragment_beneficiary_management"
         tools:layout="@layout/fragment_beneficiary_management" />
-    <fragment
+    <dialog
         android:id="@+id/logoutFeedback"
         android:name="com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback"
         android:label="fragment_logout_feedback"
@@ -540,6 +551,17 @@
         android:name="com.craft.silicon.centemobile.view.fragment.auth.DeviceRootedFragment"
         android:label="fragment_device_rooted"
         tools:layout="@layout/fragment_device_rooted" />
+    <dialog
+        android:id="@+id/rejectPendingFragment"
+        android:name="com.craft.silicon.centemobile.view.fragment.transaction.RejectPendingFragment"
+        android:label="fragment_reject_pending"
+        tools:layout="@layout/fragment_reject_pending" />
+
+    <dialog
+        android:id="@+id/successDialogFragment"
+        android:name="com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment"
+        android:label="fragment_success_dialog"
+        tools:layout="@layout/fragment_success_dialog" />
 
     <!--    Dialog-->
 </navigation>

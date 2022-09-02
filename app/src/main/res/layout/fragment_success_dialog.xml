@@ -32,7 +32,6 @@
 
                 <ImageView
                     android:id="@+id/banner"
-                    imageRes="@{data.avatar}"
                     android:layout_width="@dimen/dimens_80dp"
                     android:layout_height="@dimen/dimens_80dp"
                     android:layout_marginTop="24dp"
@@ -44,7 +43,6 @@
 
                 <TextView
                     android:id="@+id/title"
-                    textStrRes="@{data.title}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -76,7 +74,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/title">
 
                     <TextView
-                        textSet="@{data.subTitle}"
+                       android:id="@+id/message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoSizeTextType="uniform"

@@ -231,6 +231,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/dimens_40dp"
+                            android:fillViewport="true"
+                            android:overScrollMode="never"
                             android:padding="@dimen/dimens_8dp">
 
                             <LinearLayout
@@ -454,10 +456,11 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginHorizontal="@dimen/dimens_8dp"
                                         android:layout_weight="1"
-
                                         android:onClick="@{()->callback.rating_submit()}"
                                         android:paddingVertical="@dimen/dimens_16dp"
                                         android:text="@string/submit_"
+                                        android:textColor="@color/white"
+                                        app:backgroundTint="@color/app_blue_light"
                                         app:cornerRadius="@dimen/dimens_16dp" />
                                 </LinearLayout>
 

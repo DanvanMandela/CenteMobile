@@ -360,7 +360,7 @@ class ValidationFragment : Fragment(), AppCallbacks, Confirm, ScanCode {
                                                 ShowToast(requireContext(), resData.message)
                                                 setOnNextModule(
                                                     formControl,
-                                                    resData.next,
+                                                    resData.next!!.toInt(),
                                                     modules,
                                                     resData.formID
                                                 )

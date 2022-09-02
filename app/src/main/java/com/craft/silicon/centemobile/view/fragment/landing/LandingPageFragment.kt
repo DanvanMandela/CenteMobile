@@ -119,27 +119,31 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
     private fun setTimeOfDay() {
         val calendar: Calendar = Calendar.getInstance()
-        val hours = calendar.get(Calendar.HOUR_OF_DAY)
-        if (hours < 12) {
-            setDynamicImage(
-                message = R.string.good_morining,
-                image = R.drawable.noon_one
-            )
-        } else if (hours in 12..14) {
-            setDynamicImage(
-                message = R.string.good_afternoon,
-                image = R.drawable.morning
-            )
-        } else if (hours in 15..19) {
-            setDynamicImage(
-                message = R.string.good_evening,
-                image = R.drawable.noon
-            )
-        } else if (hours in 19..24) {
-            setDynamicImage(
-                message = R.string.good_night,
-                image = R.drawable.night
-            )
+        when (calendar.get(Calendar.HOUR_OF_DAY)) {
+            in 5..11 -> {
+                setDynamicImage(
+                    message = R.string.good_morining,
+                    image = R.drawable.noon_one
+                )
+            }
+            in 12..15 -> {
+                setDynamicImage(
+                    message = R.string.good_afternoon,
+                    image = R.drawable.morning
+                )
+            }
+            in 16..21 -> {
+                setDynamicImage(
+                    message = R.string.good_evening,
+                    image = R.drawable.noon
+                )
+            }
+            in 22 downTo 4 -> {
+                setDynamicImage(
+                    message = R.string.good_night,
+                    image = R.drawable.night
+                )
+            }
         }
     }
 

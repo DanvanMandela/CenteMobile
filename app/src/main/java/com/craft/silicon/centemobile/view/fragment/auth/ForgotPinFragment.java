@@ -37,6 +37,7 @@ import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
+import com.craft.silicon.centemobile.view.dialog.MainDialogData;
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment;
 import com.craft.silicon.centemobile.view.fragment.go.steps.OCRData;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
@@ -244,6 +245,7 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                                             R.drawable.success
                                     ), getChildFragmentManager(), this);
 
+
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
                             showError(resData.getMessage());
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
@@ -295,6 +297,12 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
                 string,
                 R.drawable.warning_app
         ), getChildFragmentManager());
+    }
+
+    private void showSuccess(MainDialogData mainDialogData) {
+        SuccessDialogFragment.setData(this);
+        BindingAdapterKt.navigate(this, baseViewModel
+                .navigationData.navigateToSuccessDialog(mainDialogData));
     }
 
 

@@ -54,6 +54,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     private val baseViewModel: BaseViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val composite = CompositeDisposable()
+    private lateinit var rate: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +86,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
 
 
     fun setData() {
+        baseViewModel.dataSource.setFeedbackTimer(1)
         val loginTime = widgetViewModel.storageDataSource.loginTime.value!!//1661523060000L
         val logoutTime = System.currentTimeMillis()
         val duration = ((System.currentTimeMillis() - loginTime))
@@ -163,8 +165,10 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
 
     override fun rating_dismiss() {
         Handler(Looper.getMainLooper()).postDelayed({
-            navigate(widgetViewModel.navigation().navigateLanding())
-        }, 500)
+            dialog?.dismiss()
+            callbacks.onDialog()
+
+        }, 200)
     }
 
     private fun setLoading(b: Boolean) {
@@ -187,7 +191,6 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
             if (rating < 3 && comment?.length!! < 3) {//bad rating comment required, comment require more than 3 characters
                 BaseClass.show_toast(activity, activity?.getString(R.string.add_comment))
             } else {
-                baseViewModel.dataSource.setFeedbackTimer(1)
                 createFeedback()
             }
         } else {
@@ -199,7 +202,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
     private fun createFeedback() {
         val json = JSONObject()
         json.put("COMMENT", binding.edtComment.text.toString())
-        json.put("RATING", binding.edtComment.text.toString())
+        json.put("RATING", rate)
         try {
             setLoading(true)
             composite.add(
@@ -227,12 +230,14 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
                                     )
                                 )
                                 if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                    setLoading(false)
                                     ShowToast(requireContext(), resData!!.message)
                                     callbacks.onDialog()
                                     dialog?.dismiss()
                                 } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                     InfoFragment.showDialog(this.childFragmentManager)
                                 } else {
+                                    setLoading(false)
                                     AppLogger.instance.appLog("Feedback", Gson().toJson(resData))
                                     Handler(Looper.getMainLooper()).postDelayed({
                                         showError(
@@ -245,6 +250,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
                                 }
                             }
                         } catch (e: Exception) {
+                            setLoading(false)
                             e.printStackTrace()
                         }
                     }, {
@@ -264,6 +270,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         override_images()
         BaseClass.animation_blow(activity, binding.imgVeryPoor)
         binding.imgVeryPoor.setImageResource(R.drawable.feedback_one_selected)
+        rate = getString(R.string.very_poor)
     }
 
     override fun rate_poor() {
@@ -271,6 +278,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         override_images()
         BaseClass.animation_blow(activity, binding.imgPoor)
         binding.imgPoor.setImageResource(R.drawable.feedback_two_selected)
+        rate = getString(R.string.poor)
     }
 
     override fun rate_average() {
@@ -278,13 +286,15 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         override_images()
         BaseClass.animation_blow(activity, binding.imgAverage)
         binding.imgAverage.setImageResource(R.drawable.feedback_three_selected)
+        rate = getString(R.string.average)
     }
 
     override fun rate_good() {
         rating = 4
         override_images()
-        BaseClass.animation_blow(activity, binding.imgGood);
+        BaseClass.animation_blow(activity, binding.imgGood)
         binding.imgGood.setImageResource(R.drawable.feedback_four_selected)
+        rate = getString(R.string.good)
     }
 
     override fun rate_excellent() {
@@ -292,6 +302,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         override_images()
         BaseClass.animation_blow(activity, binding.imgExcellent);
         binding.imgExcellent.setImageResource(R.drawable.feedback_five_selected)
+        rate = getString(R.string.excelent)
     }
 
     fun override_images() {
@@ -323,6 +334,7 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
         }
         return dialog
     }
+
 
     private fun setupFullHeight(bottomSheet: View) {
         val layoutParams = bottomSheet.layoutParams

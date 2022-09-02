@@ -87,7 +87,6 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     private lateinit var product: CustomerProduct
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -410,16 +409,16 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                                     if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                         setLoading(false)
 
-                                        if (resData?.display!!.isNotEmpty()) {
-                                            val display = resData.display?.first()
-                                            val name = display?.get("First Name")?.split(" ")
+
+                                        if (resData?.formField!!.isNotEmpty()) {
+                                            val map = resData.formField!!
                                             val data = OCRData(
-                                                names = name!![0],
-                                                surname = display["SurName"]!!,
-                                                dob = display["Date Of Birth"]!!,
-                                                idNo = display["National ID Number"]!!,
-                                                otherName = name[1],
-                                                gender = name[1]
+                                                names = map.find { a -> a.controlID == "FirstName" }?.controlValue!!,
+                                                surname = map.find { a -> a.controlID == "SurName" }?.controlValue!!,
+                                                dob = map.find { a -> a.controlID == "DateOfBirth" }?.controlValue!!,
+                                                idNo = map.find { a -> a.controlID == "NIN" }?.controlValue!!,
+                                                otherName = map.find { a -> a.controlID == "GivenName" }?.controlValue!!,
+                                                gender = map.find { a -> a.controlID == "Gender" }?.controlValue!!
                                             )
                                             AppLogger.instance.appLog(
                                                 "OCR:DATA",
@@ -458,6 +457,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                                 }
 
                             } catch (e: Exception) {
+                                e.printStackTrace()
                                 setLoading(false)
                                 AlertDialogFragment.newInstance(
                                     DialogData(

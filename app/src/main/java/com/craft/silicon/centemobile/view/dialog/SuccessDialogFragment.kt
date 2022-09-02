@@ -17,6 +17,7 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.google.gson.Gson
 
 private const val ARG_DATA = "data"
+private const val ARG_DATA_MAIN = "dialog"
 
 /**
  * A simple [Fragment] subclass.
@@ -27,12 +28,14 @@ private const val ARG_DATA = "data"
 class SuccessDialogFragment : DialogFragment(), AppCallbacks {
     private lateinit var binding: FragmentSuccessDialogBinding
     private var dialogData: DialogData? = null
+    private var mainDialogData: MainDialogData? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             dialogData = requireArguments().getParcelable(ARG_DATA)
+            mainDialogData = requireArguments().getParcelable(ARG_DATA_MAIN)
         }
     }
 
@@ -56,8 +59,10 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
             }
         }
         if (dialogData != null) {
-            binding.data = dialogData
+            binding.message.text = dialogData!!.subTitle
             Log.e("TAg", Gson().toJson(dialogData))
+        } else if (mainDialogData != null) {
+            binding.message.text = mainDialogData!!.message
         }
     }
 
@@ -84,6 +89,20 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
                 }
                 this@Companion.callBacks = callback
                 show(manager, SuccessDialogFragment::class.simpleName)
+            }
+
+        @JvmStatic
+        fun setData(callback: AppCallbacks?) =
+            SuccessDialogFragment().apply {
+                this@Companion.callBacks = callback
+            }
+
+        @JvmStatic
+        fun newInstance(data: MainDialogData) =
+            NewAlertDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_DATA, data)
+                }
             }
     }
 

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -70,8 +71,12 @@ class MiniStatementFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     private fun setDisplayData() {
-        val adapter = MiniAdapterItem(data!!.miniList, this)
-        binding.container.adapter = adapter
+        if (!data?.miniList.isNullOrEmpty()) {
+            val adapter = MiniAdapterItem(data!!.miniList, this)
+            binding.container.adapter = adapter
+        } else {
+            binding.noData.root.visibility = VISIBLE
+        }
     }
 
     private fun stopShimmer() {

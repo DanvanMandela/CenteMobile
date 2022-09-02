@@ -99,6 +99,6 @@ public class SplashFragment extends Fragment implements AppCallbacks {
         new Handler(Looper.getMainLooper()).postDelayed(() ->
                 BindingAdapterKt.navigate(this, rootBeer.isRooted() ? widgetViewModel
                         .navigation().navigateToDeviceRooted() : widgetViewModel
-                        .navigation().navigateLanding()), 300);
+                        .navigation().navigateLanding()), 1000);
     }
 }

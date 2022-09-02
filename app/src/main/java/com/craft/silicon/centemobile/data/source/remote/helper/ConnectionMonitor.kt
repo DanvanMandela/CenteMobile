@@ -3,6 +3,7 @@ package com.craft.silicon.centemobile.data.source.remote.helper
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,25 @@ class ConnectionMonitor @Inject constructor(@ApplicationContext context: Context
                     super.onUnavailable()
                     launch { send(ConnectionObserver.ConnectionEnum.UnAvailable) }
                 }
+
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
+                    super.onCapabilitiesChanged(network, networkCapabilities)
+                    launch {
+                        when {
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                                    || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                                    || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> send(
+                                ConnectionObserver.ConnectionEnum.Capable
+                            )
+                            else -> send(ConnectionObserver.ConnectionEnum.UnCapable)
+                        }
+
+                    }
+                }
+
             }
 
             connectivityManager.registerDefaultNetworkCallback(callback)
@@ -54,7 +74,7 @@ class ConnectionMonitor @Inject constructor(@ApplicationContext context: Context
 interface ConnectionObserver {
     fun observe(): Flow<ConnectionEnum>
     enum class ConnectionEnum {
-        Available, UnAvailable, Losing, Lost
+        Available, UnAvailable, Losing, Lost, Capable, UnCapable
     }
 }
 

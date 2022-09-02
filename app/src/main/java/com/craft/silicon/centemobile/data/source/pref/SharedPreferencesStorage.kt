@@ -940,6 +940,27 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     }
 
 
+    private val _feedbackTimerMax = MutableStateFlow(
+        sharedPreferences.getInt(
+            TAG_FEED_BACK_TIMER_MAX,
+            0
+        )
+    )
+    override val feedbackTimerMax: StateFlow<Int?>
+        get() = _feedbackTimerMax
+
+    override fun setFeedbackTimerMax(value: Int?) {
+        _feedbackTimerMax.value = value!!
+        with(sharedPreferences.edit()) {
+            putInt(
+                TAG_FEED_BACK_TIMER_MAX,
+                value
+            )
+            apply()
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val TAG_LOGIN = "auth"
@@ -986,7 +1007,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
 
         private const val TAG_NOTIFICATION_TOKEN = "pushToken"
 
-        private const val TAG_DISABLED_MODULE = "hiddenModule"
+        private const val TAG_DISABLED_MODULE = "disableModule"
 
         private const val TAG_OTP = "otpTag"
 
@@ -997,5 +1018,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_LOGIN_TIME = "login_time"
 
         private const val TAG_FEED_BACK_TIMER = "feed_back_timer"
+
+        private const val TAG_FEED_BACK_TIMER_MAX = "feed_back_timer_max"
     }
 }

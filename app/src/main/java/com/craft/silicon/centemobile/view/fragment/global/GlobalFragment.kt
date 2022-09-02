@@ -532,7 +532,7 @@ class GlobalFragment : Fragment(), AppCallbacks, Confirm {
                                                 ShowToast(requireContext(), resData.message)
                                                 setOnNextModule(
                                                     formControl,
-                                                    resData.next,
+                                                    resData.next!!.toInt(),
                                                     modules,
                                                     resData.formID
                                                 )

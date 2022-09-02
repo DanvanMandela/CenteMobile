@@ -28,11 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
+            <ImageView
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimens_250dp"
                 android:background="@color/ghost_white"
+                android:contentDescription="@string/image"
+                android:scaleType="center"
                 android:src="@drawable/noon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -67,7 +69,7 @@
                         android:background="@drawable/text_corner_back_morning"
                         android:fontFamily="@font/poppins_medium"
                         android:gravity="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -78,8 +80,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         android:layout_marginTop="@dimen/dimens_12dp"
+                        android:layout_marginEnd="16dp"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/poppins_medium"
                         android:text="@string/welcome_cente"
@@ -138,11 +140,12 @@
                             android:id="@+id/containerTwo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
+
                         <include
                             android:id="@+id/landingButtons"
-                            layout="@layout/block_landing_page_group_layout"
-                            />
+                            layout="@layout/block_landing_page_group_layout" />
+
                         <LinearLayout
                             android:id="@+id/selfReg"
                             android:layout_width="match_parent"
@@ -193,15 +196,15 @@
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/materialCardView5"
-                        app:layout_constraintDimensionRatio="16:6"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:elevation="@dimen/dimens_2dp"
-                        app:cardElevation="@dimen/dimens_2dp"
                         app:cardCornerRadius="@dimen/dimens_16dp"
+                        app:cardElevation="@dimen/dimens_2dp"
+                        app:layout_constraintDimensionRatio="16:6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/mainLay">
@@ -226,7 +229,6 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-
                     <Space
                         android:id="@+id/space"
                         android:layout_width="match_parent"
@@ -246,11 +248,12 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="32dp"
                         android:elevation="@dimen/dimens_2dp"
-                        app:cardElevation="@dimen/dimens_2dp"
                         app:cardCornerRadius="@dimen/dimens_16dp"
+                        app:cardElevation="@dimen/dimens_2dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
+
                         <RelativeLayout
                             android:id="@+id/relativeLayout"
                             android:layout_width="match_parent"
@@ -286,18 +289,18 @@
                                 android:id="@+id/childConnect"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dimens_20dp"
-                                android:visibility="gone"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/connect_banner" />
+                                android:src="@drawable/connect_banner"
+                                android:visibility="gone" />
 
 
                             <View
                                 android:id="@+id/view_spacer"
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
-                                android:alpha="0.7"
                                 android:layout_below="@id/imgContactUs"
-                                android:background="@color/grey_light"/>
+                                android:alpha="0.7"
+                                android:background="@color/grey_light" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -307,63 +310,58 @@
                                 android:orientation="horizontal">
 
 
-
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:layout_margin="@dimen/dimens_10dp"
+                                    android:layout_weight="1"
                                     android:contentDescription="@string/twitter"
-                                    android:padding="@dimen/dimens_5dp"
                                     android:onClick="@{()->callback.twitter()}"
+                                    android:padding="@dimen/dimens_5dp"
                                     android:src="@drawable/twitter" />
 
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:layout_margin="@dimen/dimens_10dp"
+                                    android:layout_weight="1"
                                     android:contentDescription="@string/twitter"
-                                    android:padding="@dimen/dimens_5dp"
                                     android:onClick="@{()->callback.facebook()}"
+                                    android:padding="@dimen/dimens_5dp"
                                     android:src="@drawable/facebook" />
 
 
-
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:layout_margin="@dimen/dimens_10dp"
+                                    android:layout_weight="1"
                                     android:contentDescription="@string/twitter"
-                                    android:padding="@dimen/dimens_5dp"
                                     android:onClick="@{()->callback.telephone()}"
+                                    android:padding="@dimen/dimens_5dp"
                                     android:src="@drawable/telephone" />
 
 
-
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:layout_margin="@dimen/dimens_10dp"
+                                    android:layout_weight="1"
                                     android:contentDescription="@string/twitter"
-                                    android:padding="@dimen/dimens_5dp"
                                     android:onClick="@{()->callback.email()}"
+                                    android:padding="@dimen/dimens_5dp"
                                     android:src="@drawable/email" />
 
 
-
                                 <ImageView
                                     android:layout_width="0dp"
-                                    android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:layout_margin="@dimen/dimens_10dp"
+                                    android:layout_weight="1"
                                     android:contentDescription="@string/twitter"
-                                    android:padding="@dimen/dimens_5dp"
                                     android:onClick="@{()->callback.chat()}"
+                                    android:padding="@dimen/dimens_5dp"
                                     android:src="@drawable/conversation" />
-
 
 
                             </LinearLayout>

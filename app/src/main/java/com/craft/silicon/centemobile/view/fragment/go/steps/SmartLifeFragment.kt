@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.SmartLifeResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.databinding.FragmentSmartLifeBinding
@@ -231,7 +232,7 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                             )
                             if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
                                 try {
-                                    val moduleData = DynamicDataResponseTypeConverter().to(
+                                    val moduleData = SmartLifeResponseTypeConverter().to(
                                         BaseClass.decryptLatest(
                                             it.response,
                                             baseViewModel.dataSource.deviceData.value!!.device,

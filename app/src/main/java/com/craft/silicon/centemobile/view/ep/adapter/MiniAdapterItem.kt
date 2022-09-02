@@ -60,8 +60,8 @@ class MiniAdapterItem(
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString()
-                if (charString.isEmpty()) {
-                    itemListFiltered = itemList
+                itemListFiltered = if (charString.isEmpty()) {
+                    itemList
                 } else {
                     val filteredList: MutableList<MiniStatement> = ArrayList()
                     for (row in itemList!!) {
@@ -73,7 +73,7 @@ class MiniAdapterItem(
                             filteredList.add(row)
                         }
                     }
-                    itemListFiltered = filteredList
+                    filteredList
                 }
                 val filterResults = FilterResults()
                 filterResults.values = itemListFiltered

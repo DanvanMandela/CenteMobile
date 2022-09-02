@@ -49,7 +49,6 @@ import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
 import com.craft.silicon.centemobile.view.dialog.InfoFragment;
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
-import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment;
 import com.craft.silicon.centemobile.view.ep.controller.AlertList;
 import com.craft.silicon.centemobile.view.ep.data.AccountData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
@@ -181,16 +180,17 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void onPositive() {
-//        int feedback = authViewModel.storage.getFeedbackTimer().getValue();
-//        if (feedback == 5) {
-//            LogoutFeedback.setData(this);
-//            BindingAdapterKt.navigate(this,
-//                    widgetViewModel.navigation().navigateToLogoutFeedBack());
-//        } else BindingAdapterKt.navigate(this,
-//                widgetViewModel.navigation().navigateLanding());
-//
-        BindingAdapterKt.navigate(this,
+        int feedback = authViewModel.storage.getFeedbackTimer().getValue();
+        int feedbackMax = authViewModel.storage.getFeedbackTimerMax().getValue() != null ?
+                authViewModel.storage.getFeedbackTimerMax().getValue() : 5;
+
+        if (feedback >= feedbackMax) {
+            LogoutFeedback.setData(this);
+            BindingAdapterKt.navigate(this,
+                    widgetViewModel.navigation().navigateToLogoutFeedBack());
+        } else BindingAdapterKt.navigate(this,
                 widgetViewModel.navigation().navigateLanding());
+
     }
 
     @Override
@@ -346,25 +346,22 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     private void setDynamicModules(List<Modules> m, Modules modules) {
         List<Modules> filterModules = new ArrayList<>();
         List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
-        if (moduleDisables != null) {
-            if (!moduleDisables.isEmpty()) {
-                for (Modules ms : m) {
-                    for (ModuleDisable moduleDisable : moduleDisables) {
-                        if (Objects.requireNonNull(ms.getModuleID()).equals(moduleDisable.getId())) {
-                            ms.setAvailable(false);
-                            ms.setMessage(moduleDisable.getMessage());
-                        }
-                        filterModules.add(ms);
-                    }
+        m.forEach(module -> {
+            if (moduleDisables != null)
+                if (!moduleDisables.isEmpty()) {
+                    boolean hide = moduleDisables.stream()
+                            .map(ModuleDisable::getId)
+                            .filter(Objects::nonNull)
+                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
+                    if (!hide) filterModules.add(module);
+                } else {
+                    filterModules.add(module);
                 }
+            else filterModules.add(module);
+        });
 
-                BindingAdapterKt.navigate(this, widgetViewModel.navigation()
-                        .navigateToLevelOne(new GroupModule(modules, filterModules)));
-
-            } else BindingAdapterKt.navigate(this, widgetViewModel.navigation()
-                    .navigateToLevelOne(new GroupModule(modules, m)));
-        } else BindingAdapterKt.navigate(this, widgetViewModel.navigation()
-                .navigateToLevelOne(new GroupModule(modules, m)));
+        BindingAdapterKt.navigate(this, widgetViewModel.navigation()
+                .navigateToLevelOne(new GroupModule(modules, filterModules)));
 
     }
 
@@ -494,7 +491,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                                     accountViewModel.dataSource.getDeviceData()
                                             .getValue().getRun()));
 
-
                     if (resData != null) {
                         if (nonCaps(resData.getStatus()).equals(nonCaps(StatusEnum.ERROR.getType()))) {
                             setLoading(false);
@@ -505,9 +501,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                             if (resData.getRData() != null) {
                                 for (FormField field : resData.getRData()) {
                                     if (Objects.equals(field.getControlID(), "BALTEXT")) {
-                                        String balance =
-                                                format.format(Double.parseDouble(Objects
-                                                        .requireNonNull(field.getControlValue())));
+                                        String balance = field.getControlValue();
                                         textView.setText(balance);
                                         setInfo(info, true);
                                     }
@@ -519,7 +513,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                             InfoFragment.showDialog(this.getChildFragmentManager());
                         } else {
                             setLoading(false);
-                            new ShowToast(requireContext(), getString(R.string.unable_to_get_balance));
+                            new ShowToast(requireContext(), resData.getMessage());
                         }
                     } else {
                         setLoading(false);
@@ -619,6 +613,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     @Override
     public void onDialog() {
         new Handler(Looper.getMainLooper())
-                .postDelayed(() -> requireActivity().onBackPressed(), 200);
+                .postDelayed(() -> BindingAdapterKt.navigate(this, widgetViewModel
+                        .navigation().navigateLanding()), 200);
     }
 }

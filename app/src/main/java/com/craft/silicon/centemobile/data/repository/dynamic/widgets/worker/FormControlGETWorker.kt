@@ -89,7 +89,6 @@ class FormControlGETWorker @AssistedInject constructor(
                     val status = data?.map { s -> s?.status }?.single()
                     if (status == StatusEnum.SUCCESS.type) {
                         val forms = data.map { s -> s?.formControls }.single()
-                        //forms?.forEach { s -> s.generateID() }
                         if (forms != null)
                             widgetRepository.saveFormControl(forms)
                         constructResponse(Result.success())

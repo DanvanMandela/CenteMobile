@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var countDownTimer: CountDownTimer? = null
 
 
-
     private var startTime = (24 * 1000).toLong()
     private val interval = (1 * 1000).toLong()
 
@@ -132,8 +131,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             AppSignatureHelper(this).appSignatures[0]
         )
     }
-
-
 
 
     override fun onUserInteraction() {
@@ -192,10 +189,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             status.observe(this) { result ->
                 if (result != null)
                     when (result) {
+                        ConnectionObserver.ConnectionEnum.Capable,
                         ConnectionObserver.ConnectionEnum.Available -> {
                             if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
                                 provideNavigationGraph().navigateUp()
                         }
+                        ConnectionObserver.ConnectionEnum.UnCapable,
                         ConnectionObserver.ConnectionEnum.UnAvailable,
                         ConnectionObserver.ConnectionEnum.Losing,
                         ConnectionObserver.ConnectionEnum.Lost -> {

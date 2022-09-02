@@ -1,42 +1,37 @@
 package com.craft.silicon.centemobile.data.model.static_data
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-@Entity(tableName = "static_data_tbl")
 data class StaticData(
     @field:SerializedName("Status")
-    @field:ColumnInfo(name = "status")
     @field:Expose
     var status: String,
     @field:SerializedName("Message")
-    @field:ColumnInfo(name = "message")
     @field:Expose
     var message: String,
 
     @field:SerializedName("Version")
-    @field:ColumnInfo(name = "version")
     @field:Expose
     var version: String,
 
     @field:SerializedName("UserCode")
-    @field:ColumnInfo(name = "userCode")
     @field:Expose
     var userCode: List<StaticDataDetails>,
 
     @field:SerializedName("AppIdleTimeout")
-    @field:ColumnInfo(name = "AppIdleTimeout")
     @field:Expose
-    var AppIdleTimeout: String?,
+    var appIdleTimeout: String?,
+
+    @field:SerializedName("AppRateLoginCount")
+    @field:Expose
+    var rateMax: String?,
 
     @field:SerializedName("OnlineAccountProduct")
-    @field:ColumnInfo(name = "accountProduct")
     @field:Expose
     var accountProduct: List<OnlineAccountProduct>,
 

@@ -126,6 +126,10 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateToSuccessDialog(MainDialogData data) {
+        return null;
+    }
+
     default NavDirections navigateToDisplayDialog(DisplayData data) {
         return null;
     }
@@ -156,6 +160,10 @@ public interface NavigationDataSource {
     }
 
     default NavDirections navigateToDeviceRooted() {
+        return null;
+    }
+
+    default NavDirections navigateToRejectTransaction() {
         return null;
     }
 }

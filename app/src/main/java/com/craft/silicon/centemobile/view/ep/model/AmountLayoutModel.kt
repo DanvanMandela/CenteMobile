@@ -130,7 +130,7 @@ fun setDefaultAmountWatcher(
                                     value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                                     encrypted = formControl.isEncrypted,
                                     mandatory = formControl.isMandatory,
-                                    validation = "Maximum amount is $max"
+                                    validation = "Amount more  than maximum"
                                 )
                             )
 
@@ -142,7 +142,7 @@ fun setDefaultAmountWatcher(
                                     value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                                     encrypted = formControl.isEncrypted,
                                     mandatory = formControl.isMandatory,
-                                    validation = "Minimum amount is $min"
+                                    validation = "Amount less than minimum"
                                 )
                             )
                         } else {

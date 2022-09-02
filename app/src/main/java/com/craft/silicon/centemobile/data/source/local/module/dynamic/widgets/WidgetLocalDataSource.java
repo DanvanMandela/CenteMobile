@@ -9,6 +9,7 @@ import com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails;
 import com.craft.silicon.centemobile.data.model.user.PendingTransaction;
 import com.craft.silicon.centemobile.data.receiver.NotificationData;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetDataSource;
+import com.craft.silicon.centemobile.util.AppLogger;
 import com.craft.silicon.centemobile.util.scheduler.BaseSchedulerProvider;
 import com.craft.silicon.centemobile.view.ep.data.LayoutData;
 
@@ -243,7 +244,7 @@ public class WidgetLocalDataSource implements WidgetDataSource {
 
     @Override
     public void deletePendingTransactionsByID(int id) {
-        Completable.fromRunnable(() -> deletePendingTransactionsByID(id))
+        Completable.fromRunnable(() -> widgetDao.deletePendingTransactionsByID(id))
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe();

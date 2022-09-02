@@ -93,9 +93,13 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.setBranchData(
                                 data.bankBranch.toMutableList()
                             )
-                        if (!data.AppIdleTimeout.isNullOrBlank())
+                        if (!data.appIdleTimeout.isNullOrBlank())
                             storageDataSource.setTimeout(
-                                data.AppIdleTimeout!!.toLong()
+                                data.appIdleTimeout!!.toLong()
+                            )
+                        if (!data.rateMax.isNullOrBlank())
+                            storageDataSource.setFeedbackTimerMax(
+                                data.rateMax!!.toInt()
                             )
                         constructResponse(Result.success())
                     } else {

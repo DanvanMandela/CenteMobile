@@ -249,6 +249,24 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         }
     }
 
+    override fun navigateToSuccessDialog(data: MainDialogData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_success
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(MainDialogData::class.java)) {
+                    result.putParcelable("dialog", data as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
     override fun navigateToDisplayDialog(data: DisplayData?): NavDirections {
         return object : NavDirections {
             override val actionId: Int
@@ -335,6 +353,10 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateToDeviceRooted(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_rooted)
+    }
+
+    override fun navigateToRejectTransaction(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_reject)
     }
 
 

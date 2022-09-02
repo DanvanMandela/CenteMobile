@@ -456,10 +456,20 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             ShowToast(requireContext(), getString(R.string.enter_country_code), true)
             false
         } else {
-            if (verifyEmail(binding.emailInput.text.toString())) true else {
-                ShowToast(requireContext(), getString(R.string.enter_valid_email), true)
+            if (!TextUtils.isEmpty(binding.emailInput.text.toString())) {
+                if (verifyEmail(binding.emailInput.text.toString())) true else {
+                    ShowToast(requireContext(), getString(R.string.enter_valid_email), true)
+                    false
+                }
+            } else if (binding.editMobile.text.toString().length < 8) {
+                ShowToast(requireContext(), getString(R.string.enter_valid_mobile), true)
                 false
-            }
+            } else if (!TextUtils.isEmpty(binding.editMobileTwo.text.toString())) {
+                if (binding.editMobileTwo.text.toString().length < 8) {
+                    ShowToast(requireContext(), getString(R.string.enter_valid_mobile), true)
+                    false
+                } else true
+            } else true
         }
     }
 

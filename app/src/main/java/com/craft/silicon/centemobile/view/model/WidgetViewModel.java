@@ -262,4 +262,6 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     public void deletePendingTransactionsByID(int id) {
         widgetRepository.deletePendingTransactionsByID(id);
     }
+
+
 }

@@ -351,6 +351,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             authViewModel.storage.setAlerts(res.getServiceAlerts());
         if (res.getHideModule() != null)
             authViewModel.storage.setHiddenModule(res.getHideModule());
+        if (res.getDisableModule() != null)
+            authViewModel.storage.setDisableModule(res.getDisableModule());
 
         if (res.getPendingTrxDisplay() != null) {
             setPending(res);
@@ -399,10 +401,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 if (live == null) {
                     if (!authViewModel.storage.getVersion().getValue().equals("1"))
                         workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
-                    else {
-                        authViewModel.storage.setVersion(version);
-                        navigate();
-                    }
                 } else {
                     if (live.getWork() == 8) {
                         navigate();

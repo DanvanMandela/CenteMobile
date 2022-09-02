@@ -99,7 +99,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             data.put("COUNTRY", "UGANDATEST");
             data.put("BANKID", "UGANDATEST");
             data.put("APPNAME", "CENTEMOBILE");
-            data.put("HEADER", "16");
             jsonObject.put("DynamicForm", data);
             String newRequest = jsonObject.toString();
 

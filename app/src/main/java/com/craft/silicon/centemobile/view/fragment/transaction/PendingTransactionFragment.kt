@@ -41,7 +41,6 @@ import com.craft.silicon.centemobile.view.ep.data.Nothing
 import com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -61,7 +60,7 @@ private const val ARG_DATA = "module"
  */
 
 @AndroidEntryPoint
-class PendingTransactionFragment : Fragment(), AppCallbacks {
+class PendingTransactionFragment : Fragment(), AppCallbacks, RejectTransaction {
     // TODO: Rename and change types of parameters
     private var data: Modules? = null
 
@@ -170,26 +169,30 @@ class PendingTransactionFragment : Fragment(), AppCallbacks {
     }
 
     override fun rejectTransaction(data: PendingTransaction?) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.reject_transaction))
-            .setMessage(getString(R.string.reject_transaction_con))
-            .setPositiveButton(
-                getString(R.string.reject)
-            ) { _, _ ->
-                onReject(data)
-            }
-            .setNegativeButton(
-                getString(R.string.cancel)
-            ) { _, _ -> }
-            .show()
+        pendingTransaction = data!!
+        RejectPendingFragment.setData(this)
+        navigate(widgetViewModel.navigation().navigateToRejectTransaction())
     }
 
-    private fun onReject(data: PendingTransaction?) {
+    override fun onReject(message: String) {
+        val data = pendingTransaction
         val inputList = mutableListOf<InputData>()
+
+        inputList.add(
+            InputData(
+                name = "Message",
+                key = "Message",
+                value = message,
+                encrypted = false,
+                mandatory = true,
+                validation = null
+            )
+        )
+
         val form = mutableListOf<FormControl>()
         form.add(
             FormControl(
-                moduleID = data!!.form.last().moduleID,
+                moduleID = data.form.last().moduleID,
                 controlID = "PAY",
                 controlText = getString(R.string.approve),
                 controlType = ControlTypeEnum.BUTTON.type,
@@ -251,6 +254,7 @@ class PendingTransactionFragment : Fragment(), AppCallbacks {
         }
 
     }
+
 
     private fun apiCall(
         action: ActionControls?,

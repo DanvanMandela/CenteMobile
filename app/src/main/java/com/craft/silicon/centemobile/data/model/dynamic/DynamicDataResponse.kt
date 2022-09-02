@@ -19,7 +19,7 @@ data class DynamicDataResponse(
     @field:SerializedName("NextFormSequence")
     @field:Expose
     @field:Nullable
-    var next: Int?,
+    var next: String?,
     @field:SerializedName("FormID")
     @field:Expose
     var formID: String?,
@@ -61,7 +61,7 @@ data class DynamicAPIResponse(
     @field:SerializedName("NextFormSequence")
     @field:Expose
     @field:Nullable
-    var next: Int? = null,
+    var next: String? = null,
     @field:SerializedName("FormID")
     @field:Expose
     var formID: String? = null,

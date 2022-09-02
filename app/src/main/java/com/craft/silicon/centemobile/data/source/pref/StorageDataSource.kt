@@ -150,5 +150,8 @@ interface StorageDataSource {
     fun setFeedbackTimer(value: Int?)
     val feedbackTimer: StateFlow<Int?>
 
+    fun setFeedbackTimerMax(value: Int?)
+    val feedbackTimerMax: StateFlow<Int?>
+
 
 }

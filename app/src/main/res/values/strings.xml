@@ -411,6 +411,14 @@
     <string name="reject_transaction">Reject transaction?</string>
     <string name="reject_transaction_con">Are you sure you want ot reject this transaction</string>
     <string name="verse">verse</string>
+    <string name="very_poor">VERY POOR</string>
+    <string name="poor">Poor</string>
+    <string name="average">Average</string>
+    <string name="good">GOOD</string>
+    <string name="excelent">EXCELENT</string>
+    <string name="enter_valid_mobile">Enter valid phone number</string>
+    <string name="message_required">Message is required</string>
+    <string name="invalid_message">Message is inavlid</string>
 
 
 </resources>
