@@ -224,7 +224,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
 
     override fun setViewModel() {
-
         val version = widgetViewModel.storageDataSource.version.value
         workViewModel.routeData(this, object : WorkStatus {
             override fun workDone(b: Boolean) {
@@ -236,7 +235,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     }
                 }
             }
-
             override fun progress(p: Int) {
                 AppLogger.instance.appLog("DATA:Progress", "$p")
             }

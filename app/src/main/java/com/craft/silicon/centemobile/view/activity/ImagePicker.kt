@@ -92,7 +92,6 @@ class ImagePicker : AppCompatActivity() {
                             )
 
 
-
                         }
 
                     }
@@ -119,7 +118,7 @@ class ImagePicker : AppCompatActivity() {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
 
-                       // activityLauncher.launch(pickPhoto)
+                        // activityLauncher.launch(pickPhoto)
 
                         startActivityForResult(
                             pickPhoto,
@@ -272,8 +271,8 @@ class ImagePicker : AppCompatActivity() {
             val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(context)
 
             val animals = arrayOf(
-                context.getString(R.string.camera_from),
-                context.getString(R.string.select_storage)
+                context.getString(R.string.camera_from)
+//                context.getString(R.string.select_storage)
             )
             builder.setItems(animals) { _, which ->
                 when (which) {

@@ -99,7 +99,7 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
 
         @JvmStatic
         fun newInstance(data: MainDialogData) =
-            NewAlertDialogFragment().apply {
+            SuccessDialogFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_DATA, data)
                 }

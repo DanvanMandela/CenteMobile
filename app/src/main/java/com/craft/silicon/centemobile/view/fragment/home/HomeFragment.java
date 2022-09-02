@@ -182,7 +182,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     public void onPositive() {
         int feedback = authViewModel.storage.getFeedbackTimer().getValue();
         int feedbackMax = authViewModel.storage.getFeedbackTimerMax().getValue() != null ?
-                authViewModel.storage.getFeedbackTimerMax().getValue() : 5;
+                authViewModel.storage.getFeedbackTimerMax().getValue() :
+                authViewModel.storage.getFeedbackTimerMax().getValue() == 0 ? 5 :
+                        authViewModel.storage.getFeedbackTimerMax().getValue();
+
+        new AppLogger().appLog("RATE", String.valueOf(feedbackMax));
 
         if (feedback >= feedbackMax) {
             LogoutFeedback.setData(this);

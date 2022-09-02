@@ -398,6 +398,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     binding.loadingFrame.loading.setData(live);
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                 }
+
                 if (live == null) {
                     if (!authViewModel.storage.getVersion().getValue().equals("1"))
                         workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
@@ -405,6 +406,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     if (live.getWork() == 8) {
                         navigate();
                         authViewModel.storage.setVersion(version);
+                        authViewModel.storage.setSync(null);
                     }
                 }
             } else navigate();

@@ -306,7 +306,7 @@ class BeneficiaryManagementFragment : Fragment(), AppCallbacks {
                 subTitle = message,
                 R.drawable.success
             ),
-            requireActivity().supportFragmentManager, callback
+            childFragmentManager, callback
         )
     }
 

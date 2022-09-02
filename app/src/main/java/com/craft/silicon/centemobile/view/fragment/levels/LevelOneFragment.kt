@@ -1886,7 +1886,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                 subTitle = message,
                 R.drawable.success
             ),
-            requireActivity().supportFragmentManager, callback
+            childFragmentManager, callback
         )
     }
 

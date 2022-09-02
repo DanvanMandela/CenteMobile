@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavDirections
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
@@ -42,6 +43,7 @@ import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.SplashViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.android.flexbox.*
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -91,7 +93,30 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         setBinding()
         getAdverts()
         setAdvert()
+        setLoading()
         return binding.root.rootView
+    }
+
+    private fun setLoading() {
+        val sync = baseViewModel.dataSource.sync.asLiveData()
+        sync.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.loadingFrame.loading.root.visibility = View.VISIBLE
+                binding.loadingFrame.loading.data = it
+                AppLogger().appLog("PROGRESS", Gson().toJson(it))
+                if (it.work >= 8) {
+                    setLoading(false)
+                } else setLoading(true)
+            }
+        }
+    }
+
+    private fun setLoading(b: Boolean) {
+        if (b) binding.motionContainer.setTransition(
+            R.id.loadingState, R.id.userState
+        ) else binding.motionContainer.setTransition(
+            R.id.userState, R.id.loadingState
+        )
     }
 
 
@@ -132,13 +157,13 @@ class LandingPageFragment : Fragment(), AppCallbacks {
                     image = R.drawable.morning
                 )
             }
-            in 16..21 -> {
+            in 16..20 -> {
                 setDynamicImage(
                     message = R.string.good_evening,
                     image = R.drawable.noon
                 )
             }
-            in 22 downTo 4 -> {
+            else -> {
                 setDynamicImage(
                     message = R.string.good_night,
                     image = R.drawable.night
@@ -356,8 +381,8 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     }
 
     override fun email() {
-        var title = "Contact Us"
-        var body = ""
+        val title = "Contact Us"
+        val body = ""
         BaseClass.emailCustomerCare(
             requireActivity(),
             title,

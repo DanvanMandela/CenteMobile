@@ -492,7 +492,7 @@ class PendingTransactionFragment : Fragment(), AppCallbacks, RejectTransaction {
                 subTitle = message,
                 R.drawable.success
             ),
-            requireActivity().supportFragmentManager, callback
+            childFragmentManager, callback
         )
     }
 

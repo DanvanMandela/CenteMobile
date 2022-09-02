@@ -116,7 +116,6 @@ class WorkerViewModel @Inject constructor(
                     this@WorkerViewModel.apply {
                         Handler(Looper.myLooper()!!).postDelayed({
                             worker.getWorkManger().cancelUniqueWork(WorkerCommons.TAG_DATA_WORKER)
-                            dataSource.setSync(null)
                         }, 2000)
                     }
                 }
