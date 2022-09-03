@@ -231,11 +231,16 @@ class NewFormController(
                 nonCaps(ControlFormatEnum.AMOUNT.type) -> {
                     if (!d.displayControl.isNullOrEmpty()) {
                         if (d.displayControl == "true") {
-                            inputDisabledModel(
-                                form = d,
-                                storage = storageDataSource,
-                                callbacks = callbacks
-                            )
+//                            inputDisabledModel(
+//                                form = d,
+//                                storage = storageDataSource,
+//                                callbacks = callbacks
+//                            )
+                            disabledAmountTextInputLayout {
+                                id(d.controlID)
+                                data(d)
+                                callback(this@NewFormController.callbacks)
+                            }
                         } else amountModel(
                             form = d, storage = storageDataSource, callbacks = callbacks
                         )

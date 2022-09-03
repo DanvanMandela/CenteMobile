@@ -6,7 +6,7 @@ buildscript {
     dependencies {
         classpath "com.jakewharton:butterknife-gradle-plugin:$butterKnife"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath 'com.google.gms:google-services:4.3.3'
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }
 

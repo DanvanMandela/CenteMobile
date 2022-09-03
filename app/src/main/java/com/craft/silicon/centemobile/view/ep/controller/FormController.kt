@@ -152,17 +152,18 @@ class FormController(
             BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
                 if (!d.displayControl.isNullOrEmpty()) {
                     if (d.displayControl == "true") {
-                        inputDisabledModel(
-                            form = d,
-                            storage = storage,
-                            callbacks = callbacks
-                        )
-                    } else amountModel(
-                        form = d, storage = storage, callbacks = callbacks
-                    )
-                } else amountModel(
-                    form = d, storage = storage, callbacks = callbacks
-                )
+//                        inputDisabledModel(
+//                            form = d,
+//                            storage = storage,
+//                            callbacks = callbacks
+//                        )
+                        disabledAmountTextInputLayout {
+                            id(d.controlID)
+                            data(d)
+                            callback(this@FormController.callbacks)
+                        }
+                    } else amountModel(form = d, storage = storage, callbacks = callbacks)
+                } else amountModel(form = d, storage = storage, callbacks = callbacks)
             }
             BaseClass.nonCaps(ControlFormatEnum.PIN_NUMBER.type),
             BaseClass.nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
@@ -183,22 +184,10 @@ class FormController(
                 else -> {
                     if (!d.displayControl.isNullOrEmpty()) {
                         if (d.displayControl == "true")
-                            inputDisabledModel(
-                                form = d,
-                                storage = storage,
-                                callbacks = callbacks
-                            )
-                        else inputModel(
-                            form = d,
-                            storage = storage,
-                            callbacks = callbacks
-                        )
+                            inputDisabledModel(form = d, storage = storage, callbacks = callbacks)
+                        else inputModel(form = d, storage = storage, callbacks = callbacks)
                     } else {
-                        inputModel(
-                            form = d,
-                            storage = storage,
-                            callbacks = callbacks
-                        )
+                        inputModel(form = d, storage = storage, callbacks = callbacks)
                     }
                 }
             }
