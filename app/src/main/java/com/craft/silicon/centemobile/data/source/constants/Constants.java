@@ -44,11 +44,11 @@ public class Constants {
 
 
         @NotNull
-        public static final String UAT = "https://uat.craftsilicon.com/ElmaAuthDynamic/";
+        public static final String UAT = "https://uat.craftsilicon.com/CentemobileAuthDynamic/";
 
 
         @NotNull
-        public static final String LIVE = "https://app.craftsilicon.com/ElmaAuthDynamic/";
+        public static final String LIVE = "https://app.craftsilicon.com/CentemobileAuthDynamic/";
 
         @NotNull
         public static final String OCR = "https://craftsiliconai.azurewebsites.net/";
@@ -73,7 +73,7 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = true;
+        public static final boolean TEST = false;
 
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";

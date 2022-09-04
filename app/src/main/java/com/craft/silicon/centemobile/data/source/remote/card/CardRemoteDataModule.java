@@ -9,6 +9,7 @@ import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.AuthorizationInterceptor;
 import com.craft.silicon.centemobile.data.source.remote.account.AccountApiService;
 import com.craft.silicon.centemobile.data.source.remote.dynamic.DynamicApiService;
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -34,8 +35,12 @@ public class CardRemoteDataModule {
     public CardApiService provideApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                Constants.BaseUrl.URL : Objects.requireNonNull(storage.getDeviceData().getValue().getCard())).getBase();
+                DynamicURL.INSTANCE.getCard()
+                : Objects.requireNonNull(storage.getDeviceData().getValue().getCard())).getBase();
+
+
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

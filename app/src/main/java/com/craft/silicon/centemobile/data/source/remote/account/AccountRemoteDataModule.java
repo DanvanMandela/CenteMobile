@@ -3,6 +3,7 @@ package com.craft.silicon.centemobile.data.source.remote.account;
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -27,7 +28,12 @@ public class AccountRemoteDataModule {
     public AccountApiService provideApiService(Gson gson, StorageDataSource storage) {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ? "https://uat.craftsilicon.com/ElmaWebAuthDynamic/api/elma/" : Objects.requireNonNull(storage.getDeviceData().getValue().getAccount())).getBase();
+
+        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
+                DynamicURL.INSTANCE.getAccount()
+                : Objects.requireNonNull(storage.getDeviceData().getValue().getAccount())).getBase();
+
+
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
