@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentReceiptBinding
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.util.callbacks.Confirm
@@ -70,7 +71,13 @@ class ReceiptFragment : BottomSheetDialogFragment(), AppCallbacks {
             val share = data?.notification
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, share!![0].notifyText)
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    share?.find {
+                        BaseClass.nonCaps(it.notifyType) ==
+                                BaseClass.nonCaps("APP")
+                    }?.notifyText
+                )
                 type = "text/plain"
             }
             val shareIntent = Intent.createChooser(sendIntent, null)

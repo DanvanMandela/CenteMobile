@@ -37,7 +37,7 @@ class AppLogger {
     }
 
     fun appLog(tag: String, message: String) {
-        if (Constants.Data.TEST) {
+        if (!Constants.Data.TEST) { //TODO CHECK TEST OFF
             Log.e(tag, message)
         }
     }

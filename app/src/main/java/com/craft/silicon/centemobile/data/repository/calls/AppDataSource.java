@@ -96,6 +96,8 @@ public interface AppDataSource {
         return null;
     }
 
+
+
     default Single<DynamicResponse> authCall(PayloadData data) {
         return null;
     }

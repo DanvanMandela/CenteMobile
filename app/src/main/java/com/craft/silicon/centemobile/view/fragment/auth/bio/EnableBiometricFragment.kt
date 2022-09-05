@@ -78,12 +78,8 @@ class EnableBiometricFragment : DialogFragment(), AppCallbacks, View.OnClickList
         return if (TextUtils.isEmpty(binding.editPin.text.toString())) {
             ShowToast(requireContext(), getString(R.string.pin_required), true)
             false
-        } else {
-            if (binding.editPin.text?.length!! < 6) {
-                ShowToast(requireContext(), getString(R.string.invalid_pin), true)
-                false
-            } else true
-        }
+        } else true
+
     }
 
     companion object {

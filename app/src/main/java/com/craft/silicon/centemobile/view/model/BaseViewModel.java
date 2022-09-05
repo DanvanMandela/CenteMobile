@@ -367,6 +367,11 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                                 payBillRequest);
 
                         return payBillCall(payloadData);
+                    } else if (action.getWebHeader().equalsIgnoreCase("card")) {
+                        AppLogger.Companion.getInstance().appLog("PayBill:card",
+                                payBillRequest);
+
+                        return cardCall(payloadData);
                     } else return null;
                 } else return payBillCall(payloadData);
 

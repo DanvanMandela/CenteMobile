@@ -40,7 +40,6 @@ class ImagePicker : AppCompatActivity() {
         setContentView(R.layout.image_picker)
         val view = window.decorView.rootView
 
-
         val intent = intent
         if (intent == null) {
             Toast.makeText(this, getString(R.string.option_missing), Toast.LENGTH_SHORT).show()
@@ -63,7 +62,6 @@ class ImagePicker : AppCompatActivity() {
             takeCameraImage()
         } else {
             chooseImageFromGallery()
-
         }
     }
 

@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     override fun onStart() {
         super.onStart()
         widgetViewModel.storageDataSource.deleteOtp()
+        checkLocationPermission()
     }
 
     override fun onStop() {
@@ -110,7 +111,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         requestPermissions()
         listenToConnection()
         subscribePush()
-        //inactivityMonitor()
         updateTimeout()
 
     }
@@ -235,6 +235,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     }
                 }
             }
+
             override fun progress(p: Int) {
                 AppLogger.instance.appLog("DATA:Progress", "$p")
             }
@@ -500,6 +501,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     }
 
+
+
     @SuppressLint("ServiceCast")
     fun checkLocationPermission() {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -518,9 +521,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                showSettingsDialog()
+
             } else {
-                requestLocationPermission()
+
             }
         } else {
             getCurrentLocation()

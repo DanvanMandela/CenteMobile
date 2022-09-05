@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -21,4 +21,10 @@
     <color name="dar_color_two">#393E46</color>
     <color name="green_indicator">#32CD32</color>
     <color name="yellow_indicator">#FFC300</color>
+
+
+    <color name="ucrop_color_statusbar" tools:ignore="PrivateResource">@color/app_blue_light</color>
+    <color name="ucrop_color_toolbar" tools:ignore="PrivateResource">@color/app_blue_light</color>
+    <color name="ucrop_color_toolbar_widget" tools:ignore="PrivateResource">@color/white</color>
+    <color name="ucrop_color_blaze_orange" tools:ignore="PrivateResource">#fff</color>
 </resources>

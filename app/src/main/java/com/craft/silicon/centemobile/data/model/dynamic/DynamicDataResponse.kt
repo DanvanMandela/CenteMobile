@@ -111,9 +111,8 @@ data class Notifications(
     var notifyText: String?,
     @field:SerializedName("NotifySMSText")
     @field:Expose
-    var notifySMSText: String?,
-
-    ) : Parcelable
+    var notifySMSText: String?
+) : Parcelable
 
 
 @Parcelize
