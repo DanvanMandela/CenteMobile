@@ -204,7 +204,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD26", parentData?.exposed?.value)
         json.put("INFOFIELD27", address?.city)
         json.put("INFOFIELD28", address?.countryCode)
-        json.put("INFOFIELD29", income?.income)
+        json.put("INFOFIELD29", NumberTextWatcherForThousand.trimCommaOfString(income?.income))
         json.put("INFOFIELD30", income?.profession?.value)
         json.put("INFOFIELD31", income?.occupation?.value)
         json.put("INFOFIELD32", income?.workPlace)
@@ -259,7 +259,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
                                 GoSuccessFragment.showDialog(
                                     this.childFragmentManager,
                                     pagerData,
-                                    resData?.notificationdata
+                                    resData?.formField
                                 )
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {

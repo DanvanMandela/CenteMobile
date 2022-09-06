@@ -521,6 +521,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                             formattedAddress =
                                 jArray.getJSONObject(0).getString("formatted_address")
 
+                            AppLogger.instance.appLog("Location", json.toString())
 
                             //get neighborhood
                             val results = json.getJSONArray("results")
@@ -531,7 +532,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                                 val types = rec1.getJSONArray("types")
                                 val comp = types.getString(0)
                             }
-                            binding.currentInput.setText(formattedAddress)
+                            binding.currentInput.setText("Uganda")
                         } catch (e: JSONException) {
                             //e.printStackTrace();
                         }

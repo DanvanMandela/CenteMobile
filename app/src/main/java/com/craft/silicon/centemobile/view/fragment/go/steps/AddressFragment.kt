@@ -500,7 +500,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         }
     }
 
-    private fun checkUserExist(mobile: String, first: Boolean) {
+    private fun checkUserExist(mobile: String) {
         setLoading(true)
         val json = JSONObject()
         json.put("CUSTOMERMOBILENUMBER", mobile)
@@ -543,26 +543,19 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
                             )
                             if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                 setLoading(false)
-                                if (!first || TextUtils.isEmpty(binding.editMobileTwo.text.toString())) {
-                                    AlertDialogFragment.newInstance(
-                                        DialogData(
-                                            title = R.string.error,
-                                            subTitle = resData?.message,
-                                            R.drawable.warning_app
-                                        ),
-                                        requireActivity().supportFragmentManager
-                                    )
-                                } else {
-                                    checkUserExist(
-                                        binding.countryCodeHolderTwo.selectedCountryCode +
-                                                binding.editMobileTwo.text.toString(), false
-                                    )
-                                }
+                                AlertDialogFragment.newInstance(
+                                    DialogData(
+                                        title = R.string.error,
+                                        subTitle = resData?.message,
+                                        R.drawable.warning_app
+                                    ),
+                                    requireActivity().supportFragmentManager
+                                )
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 workViewModel.routeData(viewLifecycleOwner, object : WorkStatus {
                                     override fun workDone(b: Boolean) {
                                         setLoading(false)
-                                        if (b) checkUserExist(mobile, first)
+                                        if (b) checkUserExist(mobile)
                                     }
                                 })
                             } else {
@@ -613,7 +606,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             if (validateFields()) {
                 checkUserExist(
                     binding.countryCodeHolder.selectedCountryCode +
-                            binding.editMobile.text.toString(), true
+                            binding.editMobile.text.toString()
                 )
             }
         } else if (p == binding.buttonBack) pagerData?.onBack(7)
