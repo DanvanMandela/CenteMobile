@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="end"
-                android:text="@{data.merchantID}"
+                android:text="@{data.merchantName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_one"
                 app:layout_constraintBottom_toBottomOf="@+id/icon"

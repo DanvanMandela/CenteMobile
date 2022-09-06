@@ -253,6 +253,11 @@ data class Beneficiary(
     @field:Expose
     var accountID: String?,
 
+    @field:SerializedName("MerchantName")
+    @field:ColumnInfo(name = "MerchantName")
+    @field:Expose
+    var merchantName: String?,
+
     @field:SerializedName("RowID")
     @field:ColumnInfo(name = "RowID")
     @field:Expose

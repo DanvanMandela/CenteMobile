@@ -186,7 +186,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD8", "${address?.phone?.key}${address?.phone?.value}")
         json.put("INFOFIELD9", "${address?.phoneTwo?.key}${address?.phoneTwo?.value}")
         json.put("INFOFIELD10", address?.email)
-        json.put("INFOFIELD11", "M")//TODO check gender
+        json.put("INFOFIELD11", idData?.data?.gender)
         json.put("INFOFIELD12", idData?.title)
         json.put("INFOFIELD13", productData?.currency?.value)
         json.put("INFOFIELD14", productData?.branch?.key)

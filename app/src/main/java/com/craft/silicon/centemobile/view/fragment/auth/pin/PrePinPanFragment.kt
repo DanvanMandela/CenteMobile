@@ -24,7 +24,6 @@ import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
-import com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
@@ -79,7 +78,6 @@ class PrePinPanFragment : Fragment(), AppCallbacks, View.OnClickListener {
         setOnClick()
         return binding.root.rootView
     }
-
 
 
     override fun setOnClick() {
@@ -268,7 +266,7 @@ class PrePinPanFragment : Fragment(), AppCallbacks, View.OnClickListener {
                         )
                     )
                     AppLogger.instance.appLog(
-                        "${LevelOneFragment::class.java.simpleName}:E:ResetPin",
+                        "${PrePinPanFragment::class.java.simpleName}:E:ResetPin",
                         Gson().toJson(moduleData)
                     )
                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
@@ -294,9 +292,14 @@ class PrePinPanFragment : Fragment(), AppCallbacks, View.OnClickListener {
                                     }
                                 }
                             })
+                    } else {
+                        setLoading(false)
+                        showError(getString(R.string.something_))
                     }
 
                 } catch (e: Exception) {
+                    setLoading(false)
+                    showError(getString(R.string.something_))
                     e.printStackTrace()
                 }
             }

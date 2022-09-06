@@ -125,6 +125,9 @@ public class Constants {
 
             ActivationData aData = dataSource.getActivationData().getValue();
 
+
+
+
             if (aData != null)
                 if (!TextUtils.isEmpty(customerID))
                     customerID = aData.getId();

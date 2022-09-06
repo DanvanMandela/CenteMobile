@@ -41,24 +41,27 @@ class BranchGetWorker @AssistedInject constructor(
             val jsonObject = JSONObject()
             val json = JSONObject()
 
-            val latLng= storageDataSource.latLng.value
+            val latLng = storageDataSource.latLng.value
 
             json.put("LON", latLng?.latLng?.longitude ?: 0.0)
             json.put("APPNAME", Constants.Data.APP_NAME)
-            json.put("LAT",latLng?.latLng?.latitude ?: 0.0)
+            json.put("LAT", latLng?.latLng?.latitude ?: 0.0)
             json.put("COUNTRY", Constants.Data.COUNTRY)
             json.put("BANKID", Constants.Data.BANK_ID)
             json.put("HEADER", "GetNearestBranch")
             jsonObject.put("DynamicForm", json)
+            val customerID: String? = storageDataSource.activationData.value?.id
             Constants.commonJSON(
                 jsonObject,
                 applicationContext,
                 uniqueID,
                 ActionTypeEnum.DB_CALL.type,
-                "",
+                if (customerID.isNullOrBlank()) "" else customerID,
                 true,
                 storageDataSource
             )
+
+            AppLogger.instance.appLog("Branch", jsonObject.toString())
 
             val newRequest = jsonObject.toString()
             val path =

@@ -349,7 +349,7 @@
 
                 <TextView
                     android:id="@+id/endDate"
-                    amountSet="@{data.lastExecutionDate}"
+                    amountSet="@{data.stoppedOn}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"

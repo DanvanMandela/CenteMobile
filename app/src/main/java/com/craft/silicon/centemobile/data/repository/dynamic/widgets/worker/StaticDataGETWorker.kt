@@ -38,13 +38,14 @@ class StaticDataGETWorker @AssistedInject constructor(
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
+            val customerID: String? = storageDataSource.activationData.value?.id
             val jsonObject = JSONObject()
             Constants.commonJSON(
                 jsonObject,
                 applicationContext,
                 uniqueID,
                 ActionTypeEnum.STATIC_DATA.type,
-                "",
+                if (customerID.isNullOrBlank()) "" else customerID,
                 true,
                 storageDataSource
             )

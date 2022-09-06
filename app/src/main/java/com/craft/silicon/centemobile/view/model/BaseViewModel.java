@@ -492,7 +492,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     dataSource);
 
             data.put("SessionID", uniqueID);
-            data.put("MerchantID", "SELFRAO");
+            data.put("MerchantID", "SELFRAOV2");
             data.put("BANKACCOUNTID", Constants.Data.BANK_ID);
             jsonObject.put("Validate", data);
             String validateRequest = jsonObject.toString();
