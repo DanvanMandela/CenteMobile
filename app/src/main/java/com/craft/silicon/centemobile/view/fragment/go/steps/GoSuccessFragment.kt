@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.data.model.dynamic.Notifications
 import com.craft.silicon.centemobile.databinding.FragmentGoSuccessBinding
+import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -68,7 +69,10 @@ class GoSuccessFragment : BottomSheetDialogFragment(), AppCallbacks, View.OnClic
     override fun setBinding() {
         if (data != null) {
             if (data!!.isNotEmpty()) {
-                val text = data!![0].notifySMSText
+                val text = data?.find {
+                    BaseClass.nonCaps(it.notifyType) ==
+                            BaseClass.nonCaps("APP")
+                }?.notifyText
                 text?.replace("\\t\\t\\t\\t", "\t")
                 binding.content.text = text
             }

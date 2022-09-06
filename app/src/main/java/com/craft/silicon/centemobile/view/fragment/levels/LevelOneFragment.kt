@@ -1172,7 +1172,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                                         modules,
                                         resData.formID
                                     )
-                                } else setSuccess(resData?.message)
+                                }
+                                else setSuccess(resData?.message)
                             } else if (nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(this.childFragmentManager)
                             } else if (nonCaps(resData?.status) == StatusEnum.OTP.type) {
