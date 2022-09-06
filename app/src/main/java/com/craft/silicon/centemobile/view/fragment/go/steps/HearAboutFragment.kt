@@ -14,6 +14,11 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.*
 import com.craft.silicon.centemobile.util.AppLogger
@@ -23,6 +28,7 @@ import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.fragment.go.PagerData
+import com.craft.silicon.centemobile.view.fragment.map.MapData
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -30,6 +36,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
+import org.json.JSONException
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,7 +97,15 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         setBinding()
         setOnClick()
         setToolbar()
+        setCurrentPosition()
         return binding.root.rootView
+    }
+
+    private fun setCurrentPosition() {
+        val latLang = widgetViewModel.storageDataSource.latLng.value
+        if (latLang != null) {
+            getLocationAddress(latLang)
+        }
     }
 
     private fun stopShimmer() {
@@ -485,6 +501,54 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
             this@Companion.pagerData = pagerData
         }
     }
+
+
+    private fun getLocationAddress(data: MapData?) {
+        try {
+            val url =
+                ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + data?.latLng!!.longitude + ","
+                        + data.latLng.latitude + "&key=AIzaSyDhZlL-z0dTCANCHwHSHbNQYnG96phvQ0c")
+            val queue: RequestQueue = Volley.newRequestQueue(requireContext())
+            val stringRequest = StringRequest(
+                Request.Method.GET, url,
+                { response ->
+                    if (!TextUtils.isEmpty(response)) {
+                        //c5.setText(result);
+                        var formattedAddress: String? = null
+                        try {
+                            val json = JSONObject(response)
+                            val jArray = json.getJSONArray("results")
+                            formattedAddress =
+                                jArray.getJSONObject(0).getString("formatted_address")
+
+
+                            //get neighborhood
+                            val results = json.getJSONArray("results")
+                            val rec = results.getJSONObject(0)
+                            val addressComponents = rec.getJSONArray("address_components")
+                            for (i in 0 until addressComponents.length()) {
+                                val rec1 = addressComponents.getJSONObject(i)
+                                val types = rec1.getJSONArray("types")
+                                val comp = types.getString(0)
+                            }
+                            binding.currentInput.setText(formattedAddress)
+                        } catch (e: JSONException) {
+                            //e.printStackTrace();
+                        }
+                    }
+                }) { }
+            stringRequest.retryPolicy = DefaultRetryPolicy(
+                60000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+            stringRequest.setShouldCache(false)
+            queue.add(stringRequest)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onClick(p: View?) {
         if (p == binding.buttonNext) {

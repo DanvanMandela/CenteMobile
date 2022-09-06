@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         listenToConnection()
         subscribePush()
         updateTimeout()
-
     }
 
     private fun updateTimeout() {

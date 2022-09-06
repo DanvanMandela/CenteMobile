@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_150dp"
             android:contentDescription="@string/finish"
-            android:src="@drawable/ic_completed_pana"
+            android:src="@drawable/success_last"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
