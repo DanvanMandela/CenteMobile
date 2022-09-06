@@ -346,7 +346,7 @@ class ONTHGFragmentAdapter(
 
     private fun setFragment(position: Int): Fragment {
         return when (position) {
-            0 -> OnTheLandingFragment.onStep(move) // TODO OnTheLandingFragment
+            0 -> OnTheLandingFragment.onStep(move)
             1 -> CustomerProductFragment.onStep(move)
             2 -> TermsAndConditionFragment.newInstance(move)
             3 -> IDFragment.onStep(move)

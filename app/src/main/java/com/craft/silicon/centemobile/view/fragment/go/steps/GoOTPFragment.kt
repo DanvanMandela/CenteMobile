@@ -189,8 +189,8 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD11", idData?.data?.gender)
         json.put("INFOFIELD12", idData?.title)
         json.put("INFOFIELD13", productData?.currency?.value)
-        json.put("INFOFIELD14", productData?.branch?.key)
-        json.put("INFOFIELD15", productData?.product?.key)
+        json.put("INFOFIELD14", productData?.branch?.value)
+        json.put("INFOFIELD15", productData?.product?.value)
         json.put("INFOFIELD16", parentData?.fFName)
         json.put("INFOFIELD17", parentData?.fMName)
         json.put("INFOFIELD18", parentData?.fLName)
@@ -201,12 +201,12 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD23", address?.address)
         json.put("INFOFIELD24", parentData?.homeDistrict)
         json.put("INFOFIELD25", parentData?.duration?.extra)
-        json.put("INFOFIELD26", parentData?.exposed)
+        json.put("INFOFIELD26", parentData?.exposed?.value)
         json.put("INFOFIELD27", address?.city)
         json.put("INFOFIELD28", address?.countryCode)
         json.put("INFOFIELD29", income?.income)
-        json.put("INFOFIELD30", income?.profession)
-        json.put("INFOFIELD31", income?.occupation)
+        json.put("INFOFIELD30", income?.profession?.value)
+        json.put("INFOFIELD31", income?.occupation?.value)
         json.put("INFOFIELD32", income?.workPlace)
         json.put("INFOFIELD33", income?.natureBusiness)
         json.put("INFOFIELD34", income?.duration?.extra)
@@ -219,8 +219,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD41", "${nok?.phoneTwo?.key}${nok?.phoneTwo?.value}")
         json.put("INFOFIELD42", nok?.address)
         json.put(
-            "INFOFIELD43", "${services!!.services[0].value},ATMCard,POS,Cheque Book" +
-                    "Internet Banking,${services.services[1].value}"
+            "INFOFIELD43", "${services!!.services[0].value},${services.services[1].value}"
         )
         json.put("INFOFIELD44", recommend?.data?.extra)
         json.put("INFOFIELD45", idData?.id?.image)
