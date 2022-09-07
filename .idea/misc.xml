@@ -20,6 +20,7 @@
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_button_layout.xml" value="0.20436083796494228" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_check_button_layout.xml" value="0.20436083796494228" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_container_layout.xml" value="0.20521590423257802" />
+        <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_customer_type_layout.xml" value="0.14959202175883954" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_drop_down_layout.xml" value="0.20436083796494228" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_frequent_module_item.xml" value="0.20436083796494228" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/block_header_item_card_layout.xml" value="0.4" />
@@ -37,6 +38,7 @@
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_address.xml" value="0.14959202175883954" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_alert_dialog.xml" value="0.4" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_auth.xml" value="0.176" />
+        <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_customer_product.xml" value="0.14959202175883954" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_dynamic.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_go_o_t_p.xml" value="0.14959202175883954" />
         <entry key="..\:/Users/danvan.mandela/AndroidStudioProjects/New/CenteMobile/app/src/main/res/layout/fragment_go_success.xml" value="0.14959202175883954" />

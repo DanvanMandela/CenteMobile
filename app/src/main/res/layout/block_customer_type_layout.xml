@@ -54,7 +54,7 @@
                 android:layout_marginBottom="-8dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_regular"
-                android:text="@string/i_am"
+                textStrRes="@{data.title}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintBottom_toTopOf="@+id/newUser"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -579,18 +579,24 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     }
 }
 
-data class CustomerType(@DrawableRes val avatar: Int, @StringRes val type: Int) {
+data class CustomerType(
+    @DrawableRes val avatar: Int,
+    @StringRes val type: Int,
+    @StringRes val title: Int
+) {
     val active: Boolean = true
 }
 
 val customerType = mutableListOf(
     CustomerType(
         avatar = R.drawable.add_user,
-        type = R.string.new_customer
+        type = R.string.new_customer,
+        title = R.string.i_am
     ),
     CustomerType(
         avatar = R.drawable.existing_user,
-        type = R.string.existing_customer
+        type = R.string.existing_customer,
+        title = R.string.i_an_
     )
 )
 

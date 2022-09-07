@@ -419,6 +419,7 @@
     <string name="enter_valid_mobile">Enter valid phone number</string>
     <string name="message_required">Message is required</string>
     <string name="invalid_message">Message is inavlid</string>
+    <string name="i_an_">I am an</string>
 
 
 </resources>
