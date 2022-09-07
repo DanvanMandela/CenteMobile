@@ -2,6 +2,8 @@ package com.craft.silicon.centemobile.util.callbacks;
 
 import android.graphics.Bitmap;
 
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.craft.silicon.centemobile.view.fragment.go.steps.ImageSelector;
 
 import org.jetbrains.annotations.Nullable;
@@ -63,4 +65,6 @@ public interface BaseView {
     default void rate_excellent(){}
     default void rating_dismiss(){}
     default void rating_submit(){}
+
+    default void setOnIndicator(ViewPager2 viewPager2){}
 }

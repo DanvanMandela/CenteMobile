@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.craft.silicon.centemobile.R;
 import com.craft.silicon.centemobile.data.model.control.FormControl;
@@ -64,6 +65,7 @@ import com.craft.silicon.centemobile.view.model.AccountViewModel;
 import com.craft.silicon.centemobile.view.model.AuthViewModel;
 import com.craft.silicon.centemobile.view.model.BaseViewModel;
 import com.craft.silicon.centemobile.view.model.WidgetViewModel;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
@@ -289,8 +291,18 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::getModuleData, Throwable::printStackTrace));
+
+
     }
 
+    @Override
+    public void setOnIndicator(ViewPager2 viewPager2) {
+        TabLayoutMediator tabLayoutMediator =
+                new TabLayoutMediator(binding.headerItem.indicator,
+                        viewPager2,
+                        true, (tab, position) -> {});
+        tabLayoutMediator.attach();
+    }
 
     @Override
     public void setBinding() {

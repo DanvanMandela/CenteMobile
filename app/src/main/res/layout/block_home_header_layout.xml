@@ -22,8 +22,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dimens_16dp"
             android:paddingVertical="@dimen/dimens_16dp"
+            android:paddingLeft="@dimen/dimens_16dp"
             android:showDividers="middle"
             app:checkedButton="@id/accountButton"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -46,27 +46,47 @@
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                 android:layout_width="@dimen/dimens_50dp"
                 android:layout_height="wrap_content"
-                app:cornerRadius="@dimen/dimens_8dp"
                 android:paddingVertical="@dimen/dimens_20dp"
+                app:cornerRadius="@dimen/dimens_8dp"
                 app:icon="@drawable/alarm_clock" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <androidx.constraintlayout.motion.widget.MotionLayout
-            android:id="@+id/motionContainer"
+        <LinearLayout
             android:layout_width="@dimen/dimens_0dp"
             android:layout_height="wrap_content"
-            app:layoutDescription="@xml/motion_scene_header"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/toggleGroup"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include
-                android:id="@+id/headerAux"
-                layout="@layout/block_header_views_layout" />
+            <androidx.constraintlayout.motion.widget.MotionLayout
+                android:id="@+id/motionContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutDescription="@xml/motion_scene_header">
 
-        </androidx.constraintlayout.motion.widget.MotionLayout>
+                <include
+                    android:id="@+id/headerAux"
+                    layout="@layout/block_header_views_layout" />
+
+            </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimens_16dp"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:background="@color/ghost_white"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
+
+        </LinearLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

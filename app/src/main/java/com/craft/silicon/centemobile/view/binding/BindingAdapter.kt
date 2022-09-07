@@ -704,6 +704,7 @@ fun ViewPager2.setRecentList(
         val adapter = AccountAdapterItem(accounts.account, callbacks!!)
         this.adapter = adapter
         callbacks.currentAccount(adapter.currentItem(0))
+        callbacks.setOnIndicator(this)
         this.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 callbacks.currentAccount(adapter.currentItem(position))

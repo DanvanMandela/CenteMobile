@@ -36,6 +36,7 @@ import com.craft.silicon.centemobile.data.model.dynamic.FormField
 import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.model.module.ModuleCategory
 import com.craft.silicon.centemobile.data.model.module.Modules
+import com.craft.silicon.centemobile.data.model.user.Beneficiary
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse
 import com.craft.silicon.centemobile.databinding.BlockCardReaderLayoutBinding
@@ -644,6 +645,16 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                         )
                                                     )
                                             )
+
+                                        } else if (nonCaps(resData.formID) == nonCaps("ADDBENEFICIARY") ||
+                                            nonCaps(resData.formID) == nonCaps("ADDBENEFICIARYOTHER")
+                                        ) {
+                                            val beneficiaries = resData.beneficiary
+                                            if (!beneficiaries.isNullOrEmpty())
+                                                baseViewModel.dataSource.setBeneficiary(
+                                                    beneficiaries
+                                                )
+                                            setSuccess(resData.message)
 
                                         } else setOnNextModule(
                                             formControl,
@@ -1530,6 +1541,21 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                                                     )
                                                 )
                                         )
+
+                                    } else if (nonCaps(resData.formID) == nonCaps("ADDBENEFICIARY") ||
+                                        nonCaps(resData.formID) == nonCaps("ADDBENEFICIARYOTHER")
+                                    ) {
+                                        val beneficiaries = resData.beneficiary
+                                        val b = mutableListOf<Beneficiary>()
+                                        if (!beneficiaries.isNullOrEmpty()) {
+
+                                            beneficiaries.forEach { ben ->
+                                                b.add(ben!!)
+                                            }
+                                            baseViewModel.dataSource.setBeneficiary(b)
+                                        }
+
+                                        setSuccess(resData.message)
 
                                     } else setOnNextModule(
                                         formControl,

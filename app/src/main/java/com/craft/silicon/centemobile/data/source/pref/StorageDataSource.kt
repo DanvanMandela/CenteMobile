@@ -154,4 +154,10 @@ interface StorageDataSource {
     val feedbackTimerMax: StateFlow<Int?>
 
 
+
+    val customerID: StateFlow<String?>
+
+
+    val phoneCustomer: StateFlow<String?>
+
 }

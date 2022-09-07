@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionObserver
@@ -112,6 +113,17 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         listenToConnection()
         subscribePush()
         updateTimeout()
+        setMigration()//TODO TO BE REMOVED IN FUTURE
+
+    }
+
+    private fun setMigration() {
+        val mobile = baseViewModel.dataSource.phoneCustomer.value
+        val customerID = baseViewModel.dataSource.customerID.value
+        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank())
+            baseViewModel.dataSource.setActivationData(
+                ActivationData(id = customerID, mobile = mobile)
+            )
     }
 
     private fun updateTimeout() {
@@ -499,7 +511,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
 
     }
-
 
 
     @SuppressLint("ServiceCast")

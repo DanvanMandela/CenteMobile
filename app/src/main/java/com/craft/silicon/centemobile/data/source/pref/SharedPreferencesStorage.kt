@@ -11,7 +11,6 @@ import com.craft.silicon.centemobile.data.model.user.*
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.data.source.sync.SyncDataTypeConverter
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.view.fragment.go.OnTheGoConverter
 import com.craft.silicon.centemobile.view.fragment.go.steps.*
 import com.craft.silicon.centemobile.view.fragment.map.MapData
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -403,19 +402,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             remove(TAG_RECOMMEND_STATE)
         }
     }
-
-
-    private val _onTheGoData =
-        MutableStateFlow(
-            OnTheGoConverter().to(
-                BaseClass.decrypt(
-                    sharedPreferences.getString(
-                        TAG_ON_THE_GO,
-                        ""
-                    )
-                )
-            )
-        )
 
 
     private val _currentPosition =
@@ -960,6 +946,25 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _customerID = MutableStateFlow(
+        sharedPreferences.getString(
+            TAG_CUSTOMER_ID,
+            ""
+        )
+    )
+    override val customerID: StateFlow<String?>
+        get() = _customerID
+
+    private val _phoneCustomer = MutableStateFlow(
+        sharedPreferences.getString(
+            TAG_CUSTOMER_PHONE,
+            ""
+        )
+    )
+
+    override val phoneCustomer: StateFlow<String?>
+        get() = _phoneCustomer
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1020,5 +1025,9 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_FEED_BACK_TIMER = "feed_back_timer"
 
         private const val TAG_FEED_BACK_TIMER_MAX = "feed_back_timer_max"
+
+        private const val TAG_CUSTOMER_ID = "CUSTOMERID"
+
+        private const val TAG_CUSTOMER_PHONE = "PHONE"
     }
 }
