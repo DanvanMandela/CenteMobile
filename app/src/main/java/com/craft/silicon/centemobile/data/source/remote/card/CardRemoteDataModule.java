@@ -1,15 +1,10 @@
 package com.craft.silicon.centemobile.data.source.remote.card;
 
-import androidx.annotation.Nullable;
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getCARD_BASE_URL;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
-import com.craft.silicon.centemobile.data.scope.Token;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
-import com.craft.silicon.centemobile.data.source.remote.AuthorizationInterceptor;
-import com.craft.silicon.centemobile.data.source.remote.account.AccountApiService;
-import com.craft.silicon.centemobile.data.source.remote.dynamic.DynamicApiService;
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -37,7 +32,7 @@ public class CardRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                DynamicURL.INSTANCE.getCard()
+                getCARD_BASE_URL()
                 : Objects.requireNonNull(storage.getDeviceData().getValue().getCard())).getBase();
 
 

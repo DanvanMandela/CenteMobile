@@ -98,7 +98,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:layout_marginEnd="16dp"
                             android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/poppins_semi_bold"
                             android:text="@string/welcome_cente"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             app:layout_constraintBottom_toBottomOf="@+id/textView7"

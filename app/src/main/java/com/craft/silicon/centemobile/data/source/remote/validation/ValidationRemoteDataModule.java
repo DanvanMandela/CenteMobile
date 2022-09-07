@@ -1,10 +1,10 @@
 package com.craft.silicon.centemobile.data.source.remote.validation;
 
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getVALIDATE_BASE_URL;
+
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
-import com.craft.silicon.centemobile.data.source.remote.account.AccountApiService;
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class ValidationRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                DynamicURL.INSTANCE.getValidate()
+                getVALIDATE_BASE_URL()
                 : Objects.requireNonNull(storage.getDeviceData().getValue().getValidate())).getBase();
 
 

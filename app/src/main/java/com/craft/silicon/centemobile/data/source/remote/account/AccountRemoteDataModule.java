@@ -3,7 +3,7 @@ package com.craft.silicon.centemobile.data.source.remote.account;
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL;
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -30,7 +30,7 @@ public class AccountRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                DynamicURL.INSTANCE.getAccount()
+                DynamicURLKt.getACCOUNT_BASE_URL()
                 : Objects.requireNonNull(storage.getDeviceData().getValue().getAccount())).getBase();
 
 

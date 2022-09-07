@@ -1,23 +1,22 @@
 package com.craft.silicon.centemobile.data.source.constants;
 
 
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getROUTE_BASE_URL;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.util.BaseClass;
 import com.craft.silicon.centemobile.view.fragment.map.MapData;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -54,7 +53,7 @@ public class Constants {
         public static final String OCR = "https://craftsiliconai.azurewebsites.net/";
 
         @NotNull
-        public static final String URL = Data.TEST ? UAT : LIVE;
+        public static final String URL = getROUTE_BASE_URL();
 
     }
 
@@ -73,7 +72,7 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = false;
+        public static final boolean TEST = true;
 
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";
@@ -124,8 +123,6 @@ public class Constants {
             LatLng latLng = new LatLng(0.0, 0.0);
 
             ActivationData aData = dataSource.getActivationData().getValue();
-
-
 
 
             if (aData != null)
