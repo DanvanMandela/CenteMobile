@@ -16,3 +16,19 @@ object DynamicURL {
 
     var validate = "https://$status.craftsilicon.com/CentemobileWebValidateDynamic/api/elma/"
 }
+
+
+object DynamicTestURL {
+
+    var other = "https://uat.craftsilicon.com/ElmaWebOtherDynamic/api/elma/"
+
+    var auth = "https://uat.craftsilicon.com/ElmaWebAuthDynamic/api/elma/"
+
+    var account = "https://uat.craftsilicon.com/ElmaWebBankDynamic/api/elma/"
+
+    var card = "https://uat.craftsilicon.com/ElmaWebCardDynamic/api/elma/"
+
+    var purchase = "https://uat.craftsilicon.com/ElmaWebPurchaseDynamic/api/elma/"
+
+    var validate = "https://uat.craftsilicon.com/ElmaWebValidateDynamic/api/elma/"
+}
