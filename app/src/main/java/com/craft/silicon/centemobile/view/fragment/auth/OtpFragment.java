@@ -266,43 +266,46 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                                     true,
                                     authViewModel.storage.getDeviceData().getValue().getRun()
                             ));
-                    assert responseDetails != null;
-                    if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
-                        setLoading(false);
-                        setError(responseDetails.getMessage());
-                    } else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
-                            @Override
-                            public void workDone(boolean b) {
-                                setLoading(false);
-                                if (b) verifyOTP();
-                            }
 
-                            @Override
-                            public void onOCRData(@NonNull OCRData data, boolean b) {
+                    if (responseDetails != null) {
+                        if (responseDetails.getStatus().equals(StatusEnum.FAILED.getType())) {
+                            setLoading(false);
+                            setError(responseDetails.getMessage());
+                        }
+                        else if (Objects.equals(responseDetails.getStatus(), StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                                @Override
+                                public void workDone(boolean b) {
+                                    setLoading(false);
+                                    if (b) verifyOTP();
+                                }
 
-                            }
+                                @Override
+                                public void onOCRData(@NonNull OCRData data, boolean b) {
 
-                            @Override
-                            public void error(@Nullable String p) {
+                                }
 
-                            }
+                                @Override
+                                public void error(@Nullable String p) {
 
-                            @Override
-                            public void progress(int p) {
+                                }
 
-                            }
-                        });
-                    } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
-                        setLoading(false);
-                        authViewModel.saveActivationData(new ActivationData(responseDetails
-                                .getCustomerID(), OtpFragment.this.data.getMobile()));
-                        new ShowToast(requireContext(), responseDetails.getMessage());
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                ((MainActivity) requireActivity())
-                                        .provideNavigationGraph()
-                                        .navigate(authViewModel
-                                                .navigationDataSource.navigateAuth()), 300);
+                                @Override
+                                public void progress(int p) {
+
+                                }
+                            });
+                        } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
+                            setLoading(false);
+                            authViewModel.saveActivationData(new ActivationData(responseDetails
+                                    .getCustomerID(), OtpFragment.this.data.getMobile()));
+                            new ShowToast(requireContext(), responseDetails.getMessage());
+                            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                    ((MainActivity) requireActivity())
+                                            .provideNavigationGraph()
+                                            .navigate(authViewModel
+                                                    .navigationDataSource.navigateAuth()), 300);
+                        }
                     }
                 }
             }
