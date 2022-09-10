@@ -42,6 +42,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +56,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -565,7 +567,7 @@ public class BaseClass {
 
 
     public static void emailCustomerCare(Activity activity, String title, String body, String email_address) {
-        String[]email = new String[]{email_address};
+        String[] email = new String[]{email_address};
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, email);
@@ -578,14 +580,14 @@ public class BaseClass {
         }
     }
 
-    public static void show_toast(Activity activity, String message){
-        if(activity!=null && message!=null && !message.trim().isEmpty()){
+    public static void show_toast(Activity activity, String message) {
+        if (activity != null && message != null && !message.trim().isEmpty()) {
             Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
         }
     }
 
-    final public static void animation_blow(Activity activity, View viewToAnimate){
-        if(activity!=null && viewToAnimate!=null){
+    final public static void animation_blow(Activity activity, View viewToAnimate) {
+        if (activity != null && viewToAnimate != null) {
             viewToAnimate.setVisibility(View.VISIBLE);
             Animation animation = AnimationUtils.loadAnimation(activity, R.anim.blow);
             animation.setDuration(1000);
@@ -604,6 +606,30 @@ public class BaseClass {
             }
         } else {
             Toast.makeText(activity, "The phone number provided is not valid", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static String decompressStaticData(String strEncoded) {
+        byte[] decoded = android.util.Base64.decode(strEncoded, android.util.Base64.NO_WRAP);
+        return decompress(decoded);
+    }
+
+    public static String decompress(byte[] compressed) {
+        try {
+            final int BUFFER_SIZE = 32;
+            ByteArrayInputStream is = new ByteArrayInputStream(compressed);
+            GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
+            byte[] data = new byte[BUFFER_SIZE];
+            int bytesRead;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            while ((bytesRead = gis.read(data)) != -1) {
+                baos.write(data, 0, bytesRead);
+            }
+            gis.close();
+            is.close();
+            return baos.toString("UTF-8");
+        } catch (IOException ex) {
+            return null;
         }
     }
 

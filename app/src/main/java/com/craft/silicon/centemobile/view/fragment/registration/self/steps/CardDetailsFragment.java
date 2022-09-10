@@ -258,6 +258,8 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     private void generateOTP() {
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("BANKACCOUNTID", Objects
+                    .requireNonNull(binding.editAccountNumber.getText()).toString());
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
             jsonObject.put("SERVICENAME", "SELFREG");
             disposable.add(baseViewModel.createOTP(jsonObject, requireContext())

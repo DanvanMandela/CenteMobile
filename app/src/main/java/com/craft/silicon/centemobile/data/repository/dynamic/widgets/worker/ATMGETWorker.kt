@@ -13,6 +13,7 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepos
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -46,7 +47,7 @@ class ATMGETWorker @AssistedInject constructor(
             json.put("COUNTRY", Constants.Data.COUNTRY)
             json.put("LON", latLng?.latLng?.longitude ?: 0.0)
             json.put("APPNAME", Constants.Data.APP_NAME)
-            json.put("LAT",latLng?.latLng?.latitude ?: 0.0)
+            json.put("LAT", latLng?.latLng?.latitude ?: 0.0)
             json.put("BANKID", Constants.Data.BANK_ID)
             json.put("HEADER", "GetNearestATM")
             jsonObject.put("DynamicForm", json)
@@ -60,10 +61,14 @@ class ATMGETWorker @AssistedInject constructor(
                 storageDataSource
             )
 
+            AppLogger.instance.appLog(
+                "${ATMGETWorker::class.simpleName}:Form", jsonObject.toString()
+            )
+
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.other
+                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData //TODO CHECK ATM DATA WORKER
                 ))?.let {
                     SpiltURL(
                         it
@@ -86,13 +91,20 @@ class ATMGETWorker @AssistedInject constructor(
                         )
                     )
 
+                    val dec = BaseClass.decompressStaticData(it.response)
+                    AppLogger.instance.appLog(
+                        "${ATMGETWorker::class.simpleName}:Decode", dec
+                    )
+
+
                     val data = ATMTypeConverter().to(
-                        BaseClass.decryptLatest(
-                            it.response,
-                            storageDataSource.deviceData.value!!.device,
-                            true,
-                            storageDataSource.deviceData.value!!.run
-                        )
+//                        BaseClass.decryptLatest(
+//                            it.response,
+//                            storageDataSource.deviceData.value!!.device,
+//                            true,
+//                            storageDataSource.deviceData.value!!.run
+//                        )
+                        dec
                     )
                     AppLogger.instance.appLog("ATMS", Gson().toJson(data))
 

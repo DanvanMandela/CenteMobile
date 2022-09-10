@@ -10,4 +10,8 @@ public interface DialogCallback {
 
     default void onOCR(OCRData ocrData) {
     }
+
+    default void onSuccess() {
+
+    }
 }

@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -61,6 +62,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 
@@ -114,7 +116,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         subscribePush()
         updateTimeout()
         setMigration()//TODO TO BE REMOVED IN FUTURE
-
     }
 
     private fun setMigration() {
@@ -240,7 +241,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             override fun workDone(b: Boolean) {
                 if (b) {
                     AppLogger.instance.appLog("DATA:Version", version!!)
-                    if (TextUtils.isEmpty(version)) {
+                    if (!TextUtils.isEmpty(version)) {
                         widgetViewModel.storageDataSource.setVersion("1")
                         workViewModel.onWidgetData(this@MainActivity, null)
                     }
@@ -784,20 +785,25 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     override fun done(boolean: Boolean) {
         if (boolean) {
-            timerControl(false)
+            AppLogger.instance.appLog("Timeout:", "oops!")
             when (provideNavigationGraph().currentDestination?.id) {
                 R.id.homeFragment,
                 R.id.levelOneFragment,
                 R.id.levelTwoFragment,
                 R.id.miniStatementFragment,
                 R.id.transactionCenterFragment
-                -> provideNavigationGraph().navigate(
-                    widgetViewModel.navigation().navigateLanding()
-                )
+                -> {
+                    lifecycleScope.launch {
+                        provideNavigationGraph().navigate(
+                            widgetViewModel.navigation().navigateLanding()
+                        )
+                    }
+                }
                 else -> {
                     AppLogger.instance.appLog("Timeout:", "Not here")
                 }
             }
+            timerControl(false)
         }
     }
 
@@ -805,6 +811,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         countDownTimer = OTPCountDownTimer(startTime = startTime, interval = interval, this)
         timerControl(true)
         done(false)
+    }
+
+
+    private fun decodeString() {
+        val str = getString(R.string.decode_str)
+        val dec = BaseClass.decompressStaticData(str)
+        AppLogger.instance.appLog("${MainActivity::class.simpleName}:Data", dec)
     }
 
 }

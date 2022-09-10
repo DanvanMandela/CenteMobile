@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.databinding.ViewDataBinding
 import com.airbnb.epoxy.*
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockTabGroupLayoutBinding
 import com.craft.silicon.centemobile.util.AppLogger
@@ -41,7 +42,7 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
         onSelectItem(tab, binding.childContainer)
         data.children.forEachIndexed { index, formControl ->
             val item = tab.newTab().setText(formControl.controlText)
-            item.tag = formControl.controlID
+            item.tag = "${formControl.controlID},${formControl.serviceParamID}"
             item.id = index
             tab.addTab(item)
 
@@ -58,14 +59,26 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
         tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 callbacks.clearInputData()
+                val tag = tab?.tag.toString().split(",")
                 val linked =
                     data.mainData.forms.form?.filter { a ->
-                        a.linkedToControl == tab?.tag.toString()
+                        a.linkedToControl == tag[0]
                     }
                 AppLogger.instance.appLog("TAB:Data", Gson().toJson(data))
                 AppLogger.instance.appLog("TAB:Linked", Gson().toJson(linked))
-                AppLogger.instance.appLog("TAB:Tag", Gson().toJson(tab?.tag))
+                AppLogger.instance.appLog("TAB:Tag", Gson().toJson(tag))
                 AppLogger.instance.appLog("TAB:Storage", Gson().toJson(storage))
+
+                callbacks.userInput(
+                    InputData(
+                        name = "tab",
+                        key = tag[1],
+                        value = tag[0],
+                        encrypted = false,
+                        mandatory = true
+                    )
+                )
+
 
                 if (linked!!.isNotEmpty())
                     Handler(Looper.getMainLooper()).postDelayed({

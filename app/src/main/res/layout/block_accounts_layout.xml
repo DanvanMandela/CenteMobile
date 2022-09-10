@@ -19,7 +19,7 @@
         android:orientation="vertical">
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/accountPager"
+            android:id="@+id/accountContainer"
             accounts="@{data}"
             callback="@{callback}"
             android:layout_width="match_parent"

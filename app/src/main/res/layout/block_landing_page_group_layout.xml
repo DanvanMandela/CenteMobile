@@ -15,29 +15,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <com.google.android.material.card.MaterialCardView
-                    android:onClick="@{()->callback.toBranch()}"
                     android:id="@+id/cardItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_10dp"
+                    android:onClick="@{()->callback.toBranch()}"
                     app:cardCornerRadius="@dimen/dimens_8dp"
                     app:cardElevation="@dimen/dimens_5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="@dimen/dimens_5dp">
 
                         <ImageView
@@ -68,25 +71,27 @@
 
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <com.google.android.material.card.MaterialCardView
-                    android:onClick="@{()->callback.toLogin()}"
                     android:id="@+id/cardItemTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_10dp"
+                    android:onClick="@{()->callback.toLogin()}"
                     app:cardCornerRadius="@dimen/dimens_8dp"
                     app:cardElevation="@dimen/dimens_5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="@dimen/dimens_5dp">
 
                         <ImageView
@@ -96,7 +101,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/cente_login"
                             android:scaleType="fitXY"
-                            android:src="@drawable/lock"/>
+                            android:src="@drawable/lock" />
 
 
                         <TextView
@@ -111,30 +116,32 @@
                             android:paddingVertical="@dimen/dimens_5dp"
                             android:text="@string/cente_login"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                            android:textColor="@color/dar_color_one"/>
+                            android:textColor="@color/dar_color_one" />
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <com.google.android.material.card.MaterialCardView
-                    android:onClick="@{()->callback.toOnline()}"
                     android:id="@+id/cardItemThree"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_10dp"
+                    android:onClick="@{()->callback.toOnline()}"
                     app:cardCornerRadius="@dimen/dimens_8dp"
                     app:cardElevation="@dimen/dimens_5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="@dimen/dimens_5dp">
 
                         <ImageView
@@ -166,15 +173,18 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -182,25 +192,28 @@
 
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/onGoLay"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <com.google.android.material.card.MaterialCardView
-                    android:onClick="@{()->callback.onTheGo()}"
                     android:id="@+id/cardItemFour"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_10dp"
+                    android:onClick="@{()->callback.onTheGo()}"
                     app:cardCornerRadius="@dimen/dimens_8dp"
                     app:cardElevation="@dimen/dimens_5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="@dimen/dimens_5dp">
 
                         <ImageView
@@ -210,7 +223,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/cente_on_go"
                             android:scaleType="fitXY"
-                            android:src="@drawable/cente"/>
+                            android:src="@drawable/cente" />
 
 
                         <TextView
@@ -231,10 +244,11 @@
 
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout

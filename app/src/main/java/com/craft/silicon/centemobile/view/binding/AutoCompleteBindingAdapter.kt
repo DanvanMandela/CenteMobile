@@ -40,8 +40,8 @@ fun AutoCompleteTextView.contacts(
                 InputData(
                     name = formControl?.controlText,
                     key = formControl?.serviceParamID,
-                    value = e.toString().replace("+", "")
-                        .replace(" ", ""),
+                    value = e.toString().replace("[\\D]", "")
+                        .replace(" ", "").replace("+", ""),
                     encrypted = formControl?.isEncrypted!!,
                     mandatory = formControl.isMandatory
                 )

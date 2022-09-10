@@ -183,9 +183,8 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     @Override
     public void onPositive() {
         int feedback = authViewModel.storage.getFeedbackTimer().getValue();
-        int feedbackMax = authViewModel.storage.getFeedbackTimerMax().getValue() != null ?
-                authViewModel.storage.getFeedbackTimerMax().getValue() :
-                authViewModel.storage.getFeedbackTimerMax().getValue() == 0 ? 5 :
+        int feedbackMax = authViewModel.storage.getFeedbackTimerMax().getValue() == null ?
+                5 : authViewModel.storage.getFeedbackTimerMax().getValue() == 0 ? 5 :
                         authViewModel.storage.getFeedbackTimerMax().getValue();
 
         new AppLogger().appLog("RATE", String.valueOf(feedbackMax));
@@ -298,9 +297,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     @Override
     public void setOnIndicator(ViewPager2 viewPager2) {
         TabLayoutMediator tabLayoutMediator =
-                new TabLayoutMediator(binding.headerItem.indicator,
+                new TabLayoutMediator(binding.headerItem.indicatorTab,
                         viewPager2,
-                        true, (tab, position) -> {});
+                        true, (tab, position) -> {
+                });
         tabLayoutMediator.attach();
     }
 
@@ -471,6 +471,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         }
     }
 
+
     private void setOnSuccessBalance(DynamicResponse data,
                                      TextView textView,
                                      TextView info) {
@@ -577,7 +578,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setOnMini, Throwable::printStackTrace));
-
 
     }
 

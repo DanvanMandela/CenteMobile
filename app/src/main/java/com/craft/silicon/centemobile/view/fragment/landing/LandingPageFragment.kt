@@ -249,6 +249,7 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
         if (active != null) {
             binding.selfReg.visibility = GONE
+            binding.landingButtons.onGoLay.visibility = GONE
         }
 
 

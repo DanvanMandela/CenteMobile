@@ -55,6 +55,7 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
             } else false
         }
     }
+
     override fun onPositive() {
         saveState()
         pagerData?.currentPosition()
@@ -155,6 +156,15 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
             setStep()
             setState()
         }, animationDuration.toLong())
+        checkNSSF()
+    }
+
+    private fun checkNSSF() {
+        val product = widgetViewModel.storageDataSource.customerProduct.value
+
+        if (product?.product?.value == "32217") {
+            binding.idLay.hint = getString(R.string.nssf_number)
+        }
     }
 
 

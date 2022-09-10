@@ -231,7 +231,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     }
 
     private fun stateCustomer(type: TwoDMap) {
-        binding.customerLay.parent.getTabAt(type.key!!)?.select()
+        binding.customerLay.parentCustomer.getTabAt(type.key!!)?.select()
         hashMap["Type"] = type
     }
 
@@ -395,7 +395,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     private fun setCustomerType() {
         val user = customerType
         val active = widgetViewModel.storageDataSource.activationData.value
-        val tab = binding.customerLay.parent
+        val tab = binding.customerLay.parentCustomer
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -535,6 +535,16 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     }
 
     override fun onConfirm() {
+        if (hashMap["Type"]?.value == getString(R.string.existing_customer)) {
+            OnGoPanFragment.showDialog(childFragmentManager, this)
+        } else {
+            saveState()
+            pagerData?.onNext(2)
+        }
+        //onSuccess()
+    }
+
+    override fun onSuccess() {
         saveState()
         pagerData?.onNext(2)
     }

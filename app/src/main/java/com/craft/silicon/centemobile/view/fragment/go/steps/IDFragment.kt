@@ -565,6 +565,12 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         })
 
     }
+
+    override fun onOCR(ocrData: OCRData?) {
+        this.ocrData = ocrData
+        saveState()
+        pagerData?.onNext(4)
+    }
 }
 
 enum class ImageSelector {
@@ -591,19 +597,19 @@ data class IDDetails(
 data class OCRData(
     @field:SerializedName("F-5")
     @field:Expose
-    val names: String,
+    val names: String?,
     @field:SerializedName("F-3")
     @field:Expose
-    val surname: String,
+    val surname: String?,
     @field:SerializedName("F-14")
     @field:Expose
-    val idNo: String,
+    val idNo: String?,
     @field:SerializedName("F-11")
     @field:Expose
-    val dob: String,
+    val dob: String?,
     @field:SerializedName("F-6")
     @field:Expose
-    val otherName: String,
+    val otherName: String?,
     @field:SerializedName("F-7")
     @field:Expose
     val gender: String?,

@@ -14,11 +14,11 @@ import com.craft.silicon.centemobile.data.model.input.InputData
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.databinding.BlockTextInputPanLayoutBinding
 import com.craft.silicon.centemobile.util.BaseClass
-import com.craft.silicon.centemobile.util.NumberTextWatcherForThousand
 import com.craft.silicon.centemobile.util.TextHelper
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.setDefaultValue
 import com.google.android.material.textfield.TextInputEditText
+import java.util.*
 
 open class TextInputPanModel : DataBindingEpoxyModel() {
 
@@ -68,7 +68,8 @@ fun TextInputEditText.setPanInputLayout(
             InputData(
                 name = formControl.controlText,
                 key = formControl.serviceParamID,
-                value = NumberTextWatcherForThousand.trimCommaOfString(value),
+                value =Objects.requireNonNull(value)
+                    .toString().replace("-", ""),
                 encrypted = formControl.isEncrypted,
                 mandatory = formControl.isMandatory
             )
@@ -111,7 +112,8 @@ fun setPanTextWatcher(
                             InputData(
                                 name = formControl.controlText,
                                 key = formControl.serviceParamID,
-                                value = inputEdit.text.toString(),
+                                value = Objects.requireNonNull(inputEdit.text.toString())
+                                    .toString().replace("-", ""),
                                 encrypted = formControl.isEncrypted,
                                 mandatory = formControl.isMandatory,
                                 validation = "minimum required characters $min"
@@ -122,7 +124,8 @@ fun setPanTextWatcher(
                             InputData(
                                 name = formControl.controlText,
                                 key = formControl.serviceParamID,
-                                value = inputEdit.text.toString(),
+                                value = Objects.requireNonNull(inputEdit.text.toString())
+                                    .toString().replace("-", ""),
                                 encrypted = formControl.isEncrypted,
                                 mandatory = formControl.isMandatory,
                                 validation = null

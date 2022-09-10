@@ -10,52 +10,62 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class SmartLifeData(
-    @field:SerializedName("accountStatus")
+    @field:SerializedName("AccountStatus")
     @field:Expose
     var accountStatus: String?,
-    @field:SerializedName("birthplaceDistrict")
+    @field:SerializedName("DateOfBirth")
+    @field:Expose
+    var dob: String?,
+    @field:SerializedName("BirthPlaceDistrict")
     @field:Expose
     var birthplaceDistrict: String?,
-    @field:SerializedName("birthplaceVillage")
+    @field:SerializedName("BirthPlaceVillage")
     @field:Expose
     var birthplaceVillage: String?,
-    @field:SerializedName("customerCreated")
+    @field:SerializedName("CustomerCreated")
     @field:Expose
     var customerCreated: String?,
-    @field:SerializedName("employername")
+    @field:SerializedName("EmployerName")
     @field:Expose
     var employerName: String?,
-    @field:SerializedName("fathersurname")
+    @field:SerializedName("FatherSurname")
     @field:Expose
     var fatherSurname: String?,
-    @field:SerializedName("gender")
+    @field:SerializedName("Gender")
     @field:Expose
     var gender: String?,
-    @field:SerializedName("homeDistrictKey")
+    @field:SerializedName("MaritalStatus")
+    @field:Expose
+    var maritalStatus: String?,
+    @field:SerializedName("HomeDistrictKey")
     @field:Expose
     var homeDistrictKey: String?,
-    @field:SerializedName("mothersurname")
+    @field:SerializedName("MotherSurname")
     @field:Expose
     var motherSurname: String?,
-    @field:SerializedName("name")
+    @field:SerializedName("Name")
     @field:Expose
     var name: String?,
-    @field:SerializedName("nssfNumber")
+    @field:SerializedName("NSSFNumber")
     @field:Expose
-    var nssfNumber: String?,
-    @field:SerializedName("othername")
+    var number: String?,
+    @field:SerializedName("NationalID")
+    @field:Expose
+    var nationalID: String?,
+
+    @field:SerializedName("OtherName")
     @field:Expose
     var othername: String?,
-    @field:SerializedName("phoneNumber")
+    @field:SerializedName("PhoneNumber")
     @field:Expose
     var phoneNumber: String?,
-    @field:SerializedName("physicaladdress")
+    @field:SerializedName("PhysicalAddress")
     @field:Expose
     var physicalAddress: String?,
-    @field:SerializedName("postaladdress")
+    @field:SerializedName("PostalAddress")
     @field:Expose
     var postalAddress: String?,
-    @field:SerializedName("surname")
+    @field:SerializedName("Surname")
     @field:Expose
     var surname: String?
 ) : Parcelable
@@ -74,9 +84,9 @@ data class SmartLifeResponse(
     @field:SerializedName("returnMessage")
     @field:Expose
     var returnMessage: String?,
-    @field:SerializedName("returnObject")
+    @field:SerializedName("ExtraData")
     @field:Expose
-    var returnObject: SmartLifeData?
+    var returnObject: String?
 ) : Parcelable
 
 class SmartLifeResponseTypeConverter {
@@ -92,5 +102,22 @@ class SmartLifeResponseTypeConverter {
         return if (s == null) {
             null
         } else Gson().fromJson(s, SmartLifeResponse::class.java)
+    }
+}
+
+
+class SmartLifeConverter {
+    @TypeConverter
+    fun from(data: SmartLifeData?): String? {
+        return if (data == null) {
+            null
+        } else Gson().toJson(data, SmartLifeData::class.java)
+    }
+
+    @TypeConverter
+    fun to(s: String?): SmartLifeData? {
+        return if (s == null) {
+            null
+        } else Gson().fromJson(s, SmartLifeData::class.java)
     }
 }

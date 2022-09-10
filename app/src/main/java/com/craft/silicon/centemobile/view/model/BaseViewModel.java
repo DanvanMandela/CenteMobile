@@ -122,6 +122,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
 
+
             JSONObject jsonObject = new JSONObject();
             JSONObject json = new JSONObject();
 
@@ -132,6 +133,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
+
 
             json.put("BANKACCOUNTID", accounts.getId());
             json.put("MerchantID", "STATEMENT");
@@ -210,6 +212,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
+
 
             data.put("MerchantID", "NSSFCARDVALIDATION");
             jsonObject.put("Validate", data);
@@ -606,6 +609,44 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             data.put("SessionID", uniqueID);
             data.put("MerchantID", "SELFREG");
             jsonObject.put("MerchantID", "SELFREG");
+            jsonObject.put("EncryptedFields", encrypted);
+            jsonObject.put("PayBill", data);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("CARD:VALID", newRequest);
+
+            return cardCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Single<DynamicResponse> validateCardOnTheGo(JSONObject data,
+                                                       JSONObject encrypted, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            String uniqueID = Constants.getUniqueID();
+
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.PAY_BILL.getType(),
+                    "",
+                    true,
+                    dataSource);
+
+
+            data.put("SessionID", uniqueID);
+            data.put("MerchantID", "CARDVALIDATION");
+            jsonObject.put("MerchantID", "CARDVALIDATION");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
             String newRequest = jsonObject.toString();

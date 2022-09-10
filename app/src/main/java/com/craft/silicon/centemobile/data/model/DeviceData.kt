@@ -40,6 +40,10 @@ data class DeviceData(
     @field:Expose
     @Nullable
     val balance: String?,
+    @field:SerializedName("staticdata")
+    @field:Expose
+    @Nullable
+    val staticData: String?,
     @field:SerializedName("run")
     @field:Expose
     @Nullable

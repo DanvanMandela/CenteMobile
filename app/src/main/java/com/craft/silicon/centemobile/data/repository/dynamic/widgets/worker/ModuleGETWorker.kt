@@ -13,6 +13,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -54,8 +55,8 @@ class ModuleGETWorker @AssistedInject constructor(
             AppLogger.instance.appLog("MODULES:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.other
+                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData //TODO CHECK MODULE WORKER
                 ))?.let {
                     SpiltURL(
                         it
@@ -77,13 +78,20 @@ class ModuleGETWorker @AssistedInject constructor(
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
+
+                    val dec = BaseClass.decompressStaticData(it.response)
+                    AppLogger.instance.appLog(
+                        "${ModuleGETWorker::class.simpleName}:Decode", dec
+                    )
+
                     val data = WidgetDataTypeConverter().from(
-                        BaseClass.decryptLatest(
-                            it.response,
-                            storageDataSource.deviceData.value!!.device,
-                            true,
-                            storageDataSource.deviceData.value!!.run
-                        )
+//                        BaseClass.decryptLatest(
+//                            it.response,
+//                            storageDataSource.deviceData.value!!.device,
+//                            true,
+//                            storageDataSource.deviceData.value!!.run
+//                        )
+                        dec
                     )
                     AppLogger.instance.appLog("MODULES", Gson().toJson(data))
                     val status = data?.map { s -> s!!.status }?.single()
@@ -92,7 +100,7 @@ class ModuleGETWorker @AssistedInject constructor(
                         activeData?.message = message
                         activeData?.let { it1 -> storageDataSource.setActivationData(it1) }
                         val modules = data.map { s -> s?.modules }.single()
-                       // modules?.forEach { s -> s.generateID() }
+                        // modules?.forEach { s -> s.generateID() }
                         widgetRepository.saveModule(modules)
                         constructResponse(Result.success())
 
@@ -124,6 +132,7 @@ class ModuleGETWorker @AssistedInject constructor(
     private fun constructResponse(result: Result): Result {
         return result
     }
+
     private fun setSyncData(data: SyncData) {
         if (!dataSource.version.value.isNullOrEmpty())
             dataSource.setSync(data)

@@ -13,6 +13,7 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepos
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -61,12 +62,14 @@ class BranchGetWorker @AssistedInject constructor(
                 storageDataSource
             )
 
+
+
             AppLogger.instance.appLog("Branch", jsonObject.toString())
 
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.other
+                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData //TODO CHECK BRANCH WORKER
                 ))?.let {
                     SpiltURL(
                         it
@@ -90,14 +93,19 @@ class BranchGetWorker @AssistedInject constructor(
                         )
                     )
 
+                    val dec = BaseClass.decompressStaticData(it.response)
+                    AppLogger.instance.appLog(
+                        "${BranchGetWorker::class.simpleName}:Decode", dec
+                    )
 
                     val data = ATMTypeConverter().to(
-                        BaseClass.decryptLatest(
-                            it.response,
-                            storageDataSource.deviceData.value!!.device,
-                            true,
-                            storageDataSource.deviceData.value!!.run
-                        )
+//                        BaseClass.decryptLatest(
+//                            it.response,
+//                            storageDataSource.deviceData.value!!.device,
+//                            true,
+//                            storageDataSource.deviceData.value!!.run
+//                        )
+                        dec
                     )
                     AppLogger.instance.appLog("Branch", Gson().toJson(data))
                     if (data?.data != null) {

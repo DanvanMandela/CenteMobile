@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.go.steps.OnGoPanFragment">
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene_loading_new">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/userFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:elevation="@dimen/dimens_0dp">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:navigationIcon="@drawable/ic_close_white_24dp"
+                    app:navigationIconTint="@color/white"
+                    app:title="@string/account_details"
+                    app:titleTextColor="@color/white" />
+
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:alpha="0.8"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="@color/app_blue_light"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="@string/please_enter_account_your_info"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:targetApi="o" />
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layAccountNumber"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_24dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/account_number"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editAccountNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="number"
+                            android:paddingHorizontal="@dimen/dimens_5dp"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:targetApi="o" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layATMNumber"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/atm_card_number"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layAccountNumber">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editATM"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="phone"
+                            android:maxLength="19"
+                            android:paddingHorizontal="@dimen/dimens_5dp"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:targetApi="o" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layATMPin"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/atm_card_pin"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layATMNumber"
+                        app:passwordToggleEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editATMPin"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="numberPassword"
+                            android:maxLength="4"
+                            android:paddingHorizontal="@dimen/dimens_5dp"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:targetApi="o" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/materialButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/continue_"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/app_blue_light"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+        <include
+            android:id="@+id/loadingFrame"
+            layout="@layout/fragment_loading" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+</layout>

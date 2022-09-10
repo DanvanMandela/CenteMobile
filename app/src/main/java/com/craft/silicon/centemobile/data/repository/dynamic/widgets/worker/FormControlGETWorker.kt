@@ -14,6 +14,7 @@ import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
+import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -54,8 +55,8 @@ class FormControlGETWorker @AssistedInject constructor(
             AppLogger.instance.appLog("FORM:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.other
+                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData //TODO CHECK FORM WORKER
                 ))?.let {
                     SpiltURL(
                         it
@@ -77,13 +78,19 @@ class FormControlGETWorker @AssistedInject constructor(
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
+                    val dec = BaseClass.decompressStaticData(it.response)
+                    AppLogger.instance.appLog(
+                        "${FormControlGETWorker::class.simpleName}:Decode", dec
+                    )
+
                     val data = WidgetDataTypeConverter().from(
-                        BaseClass.decryptLatest(
-                            it.response,
-                            storageDataSource.deviceData.value!!.device,
-                            true,
-                            storageDataSource.deviceData.value!!.run
-                        )
+//                        BaseClass.decryptLatest(
+//                            it.response,
+//                            storageDataSource.deviceData.value!!.device,
+//                            true,
+//                            storageDataSource.deviceData.value!!.run
+//                        )
+                        dec
                     )
                     AppLogger.instance.appLog("FORMS", Gson().toJson(data))
                     val status = data?.map { s -> s?.status }?.single()

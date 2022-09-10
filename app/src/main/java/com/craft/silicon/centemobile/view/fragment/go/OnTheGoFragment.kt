@@ -85,7 +85,7 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
 
     private fun freshStart() {
         val current = widgetViewModel.storageDataSource.currentPosition.value
-        if (current == null && current == 0) clearState()
+        if (current == null || current == 0) clearState()
     }
 
 

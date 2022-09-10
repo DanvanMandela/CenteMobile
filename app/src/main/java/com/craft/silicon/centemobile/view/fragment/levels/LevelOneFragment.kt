@@ -1,5 +1,7 @@
 package com.craft.silicon.centemobile.view.fragment.levels
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -102,6 +104,8 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
     private var data: DynamicData? = null
     private lateinit var binding: FragmentLevelOneBinding
 
+    private lateinit var mActivity: Activity
+
     private val baseViewModel: BaseViewModel by viewModels()
     private val inputList = mutableListOf<InputData>()
 
@@ -136,6 +140,11 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         })
     }
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = requireActivity()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -455,12 +464,13 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
     }
 
     override fun onContactSelect(view: AutoCompleteTextView?) {
-        (requireActivity() as MainActivity).requestContactsPermission(object : AppCallbacks {
-            override fun setContact(contact: String?) {
-                view?.setText(contact)
-            }
-        })
-
+        lifecycleScope.launch {
+            (mActivity as MainActivity).requestContactsPermission(object : AppCallbacks {
+                override fun setContact(contact: String?) {
+                    view?.setText(contact)
+                }
+            })
+        }
     }
 
 

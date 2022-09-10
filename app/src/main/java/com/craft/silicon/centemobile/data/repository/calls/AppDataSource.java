@@ -70,6 +70,12 @@ public interface AppDataSource {
         return null;
     }
 
+    default Single<DynamicResponse> validateCardOnTheGo(JSONObject jsonObject,
+                                                 JSONObject encrypted,
+                                                 Context context) {
+        return null;
+    }
+
     default Single<DynamicResponse> saveUserDataSelf(JSONObject jsonObject,
                                                      Context context) {
         return null;

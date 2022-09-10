@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.SmartLifeConverter
 import com.craft.silicon.centemobile.data.model.SmartLifeResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
@@ -23,7 +24,6 @@ import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.LoadingFragment
-import com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
@@ -162,7 +162,7 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                                         )
                                     )
                                     AppLogger.instance.appLog(
-                                        "${LevelOneFragment::class.java.simpleName}:E:NSSF",
+                                        "${SmartLifeFragment::class.java.simpleName}:E:NSSF",
                                         Gson().toJson(moduleData)
                                     )
                                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
@@ -240,15 +240,44 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                                             baseViewModel.dataSource.deviceData.value!!.run
                                         )
                                     )
+                                    val sRes = SmartLifeConverter().to(moduleData?.returnObject)
+
                                     AppLogger.instance.appLog(
-                                        "${LevelOneFragment::class.java.simpleName}:E:NSSF",
+                                        "${SmartLifeFragment::class.java.simpleName}:E:NSSF",
                                         Gson().toJson(moduleData)
                                     )
                                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
+                                        var parentDetails =
+                                            baseViewModel.dataSource.parentDetails.value
+
+                                        if (parentDetails == null) {
+                                            parentDetails = ParentDetails(
+                                                fFName = sRes?.fatherSurname,
+                                                fMName = null,
+                                                fLName = null,
+                                                mFName = sRes?.motherSurname,
+                                                mMName = null,
+                                                mLName = null,
+                                                duration = null,
+                                                exposed = null,
+                                                homeDistrict = null,
+                                                autoPosition = null
+                                            )
+                                            baseViewModel.dataSource.setParentDetails(parentDetails)
+                                        }
+                                        callbacks.onOCR(
+                                            OCRData(
+                                                names = sRes?.name,
+                                                surname = sRes?.surname,
+                                                idNo = sRes?.number,
+                                                dob = sRes?.dob,
+                                                otherName = sRes?.othername,
+                                                gender = sRes?.gender
+                                            )
+                                        )
                                         setProgress(100)
                                         setLoading(false)
                                         navigateUp()
-                                        callbacks.onOCR(null)
                                     } else if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.FAILED.type) {
                                         setLoading(false)
                                         showError(moduleData?.message!!)
@@ -380,6 +409,6 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
     }
 
     override fun navigateUp() {
-        requireActivity().onBackPressed()
+        dialog?.dismiss()
     }
 }

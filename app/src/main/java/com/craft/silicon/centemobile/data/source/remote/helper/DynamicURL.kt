@@ -17,10 +17,14 @@ object DynamicURL {
     const val purchase = "https://app.craftsilicon.com/CentemobileWebPurchaseDynamic/api/elma/"
 
     const val validate = "https://app.com/CentemobileWebValidateDynamic/api/elma/"
+
+    const val static = "https://uat.craftsilicon.com/ElmaWebDataDynamic/api/elma/"
 }
 
 
 object DynamicTestURL {
+
+    const val static = "https://uat.craftsilicon.com/ElmaWebDataDynamic/api/elma/"
 
     const val uat = "https://uat.craftsilicon.com/ElmaAuthDynamic/"
 
@@ -40,6 +44,8 @@ object DynamicTestURL {
 
 
 var OTHER_BASE_URL = if (!Constants.Data.TEST) DynamicURL.other else DynamicTestURL.other
+
+var STATIC_BASE_URL = if (!Constants.Data.TEST) DynamicURL.static else DynamicTestURL.static
 
 var AUTH_BASE_URL = if (!Constants.Data.TEST) DynamicURL.auth else DynamicTestURL.auth
 

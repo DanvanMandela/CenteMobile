@@ -208,10 +208,14 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
                 binding.countryCodeHolderTwo.setCountryForPhoneCode(sData.phoneTwo?.key!!)
                 binding.editMobileTwo.setText(sData.phoneTwo!!.value)
             }
-
             binding.addressInput.setText(sData.address)
             binding.cityInput.setText(sData.city)
             binding.codeInput.setText(sData.countryCode)
+        } else {
+            val customerType = baseViewModel.dataSource.customerProduct
+            if (customerType.value!!.type!!.value == getString(R.string.existing_customer)) {
+                binding.editMobile.setText(baseViewModel.dataSource.activationData.value?.mobile)
+            }
         }
     }
 

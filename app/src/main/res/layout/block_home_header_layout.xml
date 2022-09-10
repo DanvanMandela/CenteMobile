@@ -75,7 +75,7 @@
 
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/indicator"
+                android:id="@+id/indicatorTab"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimens_16dp"
                 android:layout_marginHorizontal="@dimen/dimens_24dp"
