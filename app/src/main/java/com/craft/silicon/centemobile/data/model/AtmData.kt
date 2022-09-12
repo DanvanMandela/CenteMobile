@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.data.model
 
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -8,7 +9,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "atm_branch_tbl")
 data class AtmData(
     @field:SerializedName("Longitude")
@@ -31,13 +35,15 @@ data class AtmData(
     @field:Expose
     var distance: Double?
 
-) {
+) : Parcelable {
+    @IgnoredOnParcel
     @field:ColumnInfo(name = "id")
     @field:PrimaryKey(autoGenerate = true)
     @field:NonNull
     @field:Expose
     var id: Int? = null
 
+    @IgnoredOnParcel
     @field:ColumnInfo(name = "type")
     @field:Expose
     var isATM: Boolean? = null

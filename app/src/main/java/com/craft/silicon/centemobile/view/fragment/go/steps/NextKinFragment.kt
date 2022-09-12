@@ -49,7 +49,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private lateinit var stateData: NextKinData
 
     private val widgetViewModel: WidgetViewModel by viewModels()
-    private var customerKey = 0
+    private var customerKey = ""
 
 
     override fun onResume() {
@@ -89,7 +89,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 
     override fun statePersist() {
         stateData = NextKinData(
-            account = if (customerKey == 1) binding.accountInput.text.toString() else "",
+            account = if (customerKey == getString(R.string.existing_customer)) binding.accountInput.text.toString() else "",
             firstName = binding.nKFNameInput.text.toString(),
             middleName = binding.nKMNameInput.text.toString(),
             lastName = binding.nKLNameInput.text.toString(),
@@ -117,6 +117,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         setBinding()
 
         setAccountField()
+
         return binding.root.rootView
     }
 
@@ -124,12 +125,16 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         val customerProduct = widgetViewModel.storageDataSource.customerProduct.asLiveData()
         customerProduct.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (it.type?.key == 0) {
-                    customerKey = it.type.key!!
+                customerKey = it.type?.value!!
+                if (it.type.value != getString(R.string.existing_customer)) {
                     binding.accountLay.visibility = GONE
+                } else {
+                    val nextKinData = widgetViewModel.storageDataSource.nextOfKin.value
+                    binding.accountInput.setText(nextKinData?.account)
                 }
             }
         }
+
     }
 
     private fun setToolbar() {
@@ -184,7 +189,10 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     override fun validateFields(): Boolean {
-        return if (TextUtils.isEmpty(binding.accountInput.text.toString()) && customerKey == 1) {
+        return if (TextUtils.isEmpty(binding.accountInput.text.toString()) && customerKey == getString(
+                R.string.existing_customer
+            )
+        ) {
             ShowToast(requireContext(), getString(R.string.cente_account_required), true)
             false
         } else if (TextUtils.isEmpty(binding.nKFNameInput.text.toString())) {

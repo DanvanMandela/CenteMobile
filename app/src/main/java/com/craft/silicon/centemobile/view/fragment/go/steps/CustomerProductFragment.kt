@@ -214,14 +214,14 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     private fun stateBranch(branch: TwoDMap) {
         val value = branchAdapter.getItem(branch.key!!)
         branchData = value?.description
-        binding.branchLay.autoEdit.setText(value?.description, false)
+        binding.branchLay.autoEditBranch.setText(value?.description, false)
         hashMap["Branch"] = branch
     }
 
     private fun stateProduct(product: TwoDMap, sData: CustomerProduct) {
         try {
             Handler(Looper.getMainLooper()).postDelayed({
-                binding.productLay.parent.getTabAt(product.key!!)?.select()
+                binding.productLay.parentAccount.getTabAt(product.key!!)?.select()
             }, 200)
             hashMap["Product"] = product
             stateCurrency(sData.currency!!)
@@ -245,8 +245,8 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         val branch = widgetViewModel.storageDataSource.branchData.value
         if (branch != null) {
             branchAdapter = BranchAdapterItem(requireContext(), 0, branch.toMutableList())
-            binding.branchLay.autoEdit.setAdapter(branchAdapter)
-            binding.branchLay.autoEdit.onItemClickListener =
+            binding.branchLay.autoEditBranch.setAdapter(branchAdapter)
+            binding.branchLay.autoEditBranch.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, p2, _ ->
                     hashMap["Branch"] = TwoDMap(
                         key = p2,
@@ -260,7 +260,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
 
     private fun setProductType() {
-        val tab = binding.productLay.parent
+        val tab = binding.productLay.parentAccount
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -528,7 +528,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         return if (TextUtils.isEmpty(binding.currencyLay.autoEdit.editableText.toString())) {
             ShowToast(requireContext(), getString(R.string.select_currency), true)
             false
-        } else if (TextUtils.isEmpty(binding.branchLay.autoEdit.text.toString())) {
+        } else if (TextUtils.isEmpty(binding.branchLay.autoEditBranch.text.toString())) {
             ShowToast(requireContext(), getString(R.string.select_branch), true)
             false
         } else true
@@ -541,7 +541,6 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
             saveState()
             pagerData?.onNext(2)
         }
-        //onSuccess()
     }
 
     override fun onSuccess() {

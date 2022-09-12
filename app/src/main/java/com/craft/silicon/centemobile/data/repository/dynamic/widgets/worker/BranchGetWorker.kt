@@ -10,6 +10,7 @@ import com.craft.silicon.centemobile.data.model.AtmData
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
+import com.craft.silicon.centemobile.data.repository.forms.FormsRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
@@ -31,6 +32,7 @@ class BranchGetWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val widgetRepository: WidgetRepository,
+    private val formsRepository: FormsRepository,
     private val storageDataSource: StorageDataSource
 ) : RxWorker(context, workerParameters) {
 
@@ -62,15 +64,12 @@ class BranchGetWorker @AssistedInject constructor(
                 storageDataSource
             )
 
-
-
             AppLogger.instance.appLog("Branch", jsonObject.toString())
 
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.staticData //TODO CHECK BRANCH WORKER
-                ))?.let {
+                (if (storageDataSource.deviceData.value == null) DynamicURL.static
+                else Objects.requireNonNull(storageDataSource.deviceData.value!!.staticData))?.let {
                     SpiltURL(
                         it
                     ).path
@@ -93,19 +92,14 @@ class BranchGetWorker @AssistedInject constructor(
                         )
                     )
 
-                    val dec = BaseClass.decompressStaticData(it.response)
-                    AppLogger.instance.appLog(
-                        "${BranchGetWorker::class.simpleName}:Decode", dec
-                    )
 
                     val data = ATMTypeConverter().to(
-//                        BaseClass.decryptLatest(
-//                            it.response,
-//                            storageDataSource.deviceData.value!!.device,
-//                            true,
-//                            storageDataSource.deviceData.value!!.run
-//                        )
-                        dec
+                        BaseClass.decryptLatest(
+                            it.response,
+                            storageDataSource.deviceData.value!!.device,
+                            true,
+                            storageDataSource.deviceData.value!!.run
+                        )
                     )
                     AppLogger.instance.appLog("Branch", Gson().toJson(data))
                     if (data?.data != null) {

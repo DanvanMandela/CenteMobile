@@ -1,6 +1,8 @@
 package com.craft.silicon.centemobile.data.model.static_data
 
 import android.os.Parcelable
+import com.craft.silicon.centemobile.data.model.AtmData
+import com.craft.silicon.centemobile.data.model.CarouselData
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -37,7 +39,19 @@ data class StaticData(
 
     @field:SerializedName("BankBranch")
     @field:Expose
-    var bankBranch: List<OnlineAccountProduct>
+    var bankBranch: List<OnlineAccountProduct>,
+
+    @field:SerializedName("BranchLocations")
+    @field:Expose
+    var branch: MutableList<AtmData>?,
+
+    @field:SerializedName("ATMLocations")
+    @field:Expose
+    var atms: MutableList<AtmData>?,
+
+    @field:SerializedName("Images")
+    @field:Expose
+    var carousel: MutableList<CarouselData>?
 ) : Parcelable
 
 

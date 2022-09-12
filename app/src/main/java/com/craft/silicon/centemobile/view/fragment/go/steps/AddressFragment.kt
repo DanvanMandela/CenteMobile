@@ -119,6 +119,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     private fun setOnCountryCode() {
+        binding.codeInput.setText(binding.countryCodeHolder.selectedCountryCode)
         binding.countryCodeHolder.setOnCountryChangeListener {
             binding.codeInput.setText(binding.countryCodeHolder.selectedCountryCode)
         }

@@ -12,7 +12,6 @@ import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepos
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -64,8 +63,8 @@ class CarouselGETWorker @AssistedInject constructor(
 
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.staticData //TODO CHECK CAROUSEL WORKER
+                (if (storageDataSource.deviceData.value == null) Constants.BaseUrl.UAT else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.other
                 ))?.let {
                     SpiltURL(
                         it
@@ -89,19 +88,14 @@ class CarouselGETWorker @AssistedInject constructor(
                         )
                     )
 
-                    val dec = BaseClass.decompressStaticData(it.response)
-                    AppLogger.instance.appLog(
-                        "${CarouselGETWorker::class.simpleName}:Decode", dec
-                    )
 
                     val data = CarouselConverter().to(
-//                        BaseClass.decryptLatest(
-//                            it.response,
-//                            storageDataSource.deviceData.value!!.device,
-//                            true,
-//                            storageDataSource.deviceData.value!!.run
-//                        )
-                        dec
+                        BaseClass.decryptLatest(
+                            it.response,
+                            storageDataSource.deviceData.value!!.device,
+                            true,
+                            storageDataSource.deviceData.value!!.run
+                        )
                     )
                     AppLogger.instance.appLog("Carousel", Gson().toJson(data))
                     if (data?.data != null) {

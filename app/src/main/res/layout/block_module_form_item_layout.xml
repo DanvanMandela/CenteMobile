@@ -16,11 +16,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        app:cardBackgroundColor="@color/ghost_white"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/dimens_2dp"
         android:layout_marginStart="@dimen/dimens_8dp"
-        android:layout_marginTop="@dimen/dimens_8dp">
+        android:layout_marginTop="@dimen/dimens_8dp"
+        app:cardBackgroundColor="@color/ghost_white"
+        app:cardElevation="@dimen/dimens_2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,8 +32,8 @@
             <ImageView
                 android:id="@+id/avatar"
                 imageUri="@{data.moduleURL}"
-                android:layout_width="@dimen/dimens_40dp"
-                android:layout_height="@dimen/dimens_40dp"
+                android:layout_width="@dimen/dimens_48dp"
+                android:layout_height="@dimen/dimens_48dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -41,7 +41,8 @@
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/user_icon" />
 
 
             <TextView
@@ -53,11 +54,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
-                android:maxLines="3"
-                android:minLines="3"
-                android:ellipsize="end"
+                android:maxLines="2"
+                android:minLines="2"
                 android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_one"

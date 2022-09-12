@@ -241,7 +241,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             override fun workDone(b: Boolean) {
                 if (b) {
                     AppLogger.instance.appLog("DATA:Version", version!!)
-                    if (!TextUtils.isEmpty(version)) {
+                    if (TextUtils.isEmpty(version)) {
                         widgetViewModel.storageDataSource.setVersion("1")
                         workViewModel.onWidgetData(this@MainActivity, null)
                     }

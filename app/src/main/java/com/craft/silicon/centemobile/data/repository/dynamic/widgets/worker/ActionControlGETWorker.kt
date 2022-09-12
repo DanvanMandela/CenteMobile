@@ -9,11 +9,12 @@ import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.WidgetDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
+import com.craft.silicon.centemobile.data.repository.forms.FormsRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
+import com.craft.silicon.centemobile.data.source.remote.helper.STATIC_BASE_URL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -31,7 +32,8 @@ class ActionControlGETWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val widgetRepository: WidgetRepository,
-    private val storageDataSource: StorageDataSource
+    private val storageDataSource: StorageDataSource,
+    private val formsRepository: FormsRepository
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
@@ -52,14 +54,14 @@ class ActionControlGETWorker @AssistedInject constructor(
             AppLogger.instance.appLog("ACTION:REQ", Gson().toJson(jsonObject))
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.staticData //TODO CHECK FORM WORKER
+                (if (storageDataSource.deviceData.value == null) STATIC_BASE_URL else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData
                 ))?.let {
                     SpiltURL(
                         it
                     ).path
                 }
-            widgetRepository.requestWidget(
+            formsRepository.requestWidget(
                 PayloadData(
                     storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
@@ -75,26 +77,14 @@ class ActionControlGETWorker @AssistedInject constructor(
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
-
                     val dec = BaseClass.decompressStaticData(it.response)
-                    AppLogger.instance.appLog(
-                        "${ActionControlGETWorker::class.simpleName}:Decode", dec
-                    )
+                    AppLogger.instance.appLog("Actions:Decode", dec)
 
-                    val data = WidgetDataTypeConverter().from(
-//                        BaseClass.decryptLatest(
-//                            it.response,
-//                            storageDataSource.deviceData.value!!.device,
-//                            true,
-//                            storageDataSource.deviceData.value!!.run
-//                        )
-                        dec
-                    )
+                    val data = WidgetDataTypeConverter().from(dec)
                     AppLogger.instance.appLog("ACTION", Gson().toJson(data))
                     val status = data?.map { s -> s?.status }?.single()
                     if (status == StatusEnum.SUCCESS.type) {
                         val actions = data.map { s -> s?.actionControls }.single()
-                        //actions?.forEach { a -> a.generateID() }
                         widgetRepository.saveAction(actions)
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())

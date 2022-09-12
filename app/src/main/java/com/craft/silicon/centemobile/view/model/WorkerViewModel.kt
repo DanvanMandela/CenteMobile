@@ -12,7 +12,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import com.craft.silicon.centemobile.data.model.ocr.ImageRequestData
 import com.craft.silicon.centemobile.data.model.ocr.ImageRequestDataTypeConverter
-import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.*
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
+import com.craft.silicon.centemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
 import com.craft.silicon.centemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.craft.silicon.centemobile.data.repository.ocr.worker.IDProcessingWorker
 import com.craft.silicon.centemobile.data.repository.ocr.worker.ImageProcessingWorker
@@ -55,20 +58,20 @@ class WorkerViewModel @Inject constructor(
             .addTag(WorkerCommons.TAG_OUTPUT)
         continuation = continuation.then(staticWorker.build())
 
-        val atmWorker = OneTimeWorkRequestBuilder<ATMGETWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(atmWorker.build())
+//        val atmWorker = OneTimeWorkRequestBuilder<ATMGETWorker>()
+//            .setConstraints(worker.getConstraint())
+//            .addTag(WorkerCommons.TAG_OUTPUT)
+//        continuation = continuation.then(atmWorker.build())
+//
+//        val branchWorker = OneTimeWorkRequestBuilder<BranchGetWorker>()
+//            .setConstraints(worker.getConstraint())
+//            .addTag(WorkerCommons.TAG_OUTPUT)
+//        continuation = continuation.then(branchWorker.build())
 
-        val branchWorker = OneTimeWorkRequestBuilder<BranchGetWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(branchWorker.build())
-
-        val carouselWorker = OneTimeWorkRequestBuilder<CarouselGETWorker>()
-            .setConstraints(worker.getConstraint())
-            .addTag(WorkerCommons.TAG_OUTPUT)
-        continuation = continuation.then(carouselWorker.build())
+//        val carouselWorker = OneTimeWorkRequestBuilder<CarouselGETWorker>()
+//            .setConstraints(worker.getConstraint())
+//            .addTag(WorkerCommons.TAG_OUTPUT)
+//        continuation = continuation.then(carouselWorker.build())
 
 
         val moduleWorker = OneTimeWorkRequestBuilder<ModuleGETWorker>()

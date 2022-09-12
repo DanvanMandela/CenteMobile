@@ -33,7 +33,7 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
     private static final String ARG_DATA = "data";
     private FragmentAlertDialogBinding binding;
     private DialogData dialogData;
-
+    private AppCallbacks appCallbacks;
 
     public AlertDialogFragment() {
         // Required empty public constructor
@@ -49,6 +49,18 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
     // TODO: Rename and change types and number of parameters
     public static AlertDialogFragment newInstance(DialogData data, FragmentManager manager) {
         AlertDialogFragment fragment = new AlertDialogFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_DATA, data);
+        fragment.setArguments(args);
+        fragment.show(manager, AlertDialogFragment.class.getSimpleName());
+        return fragment;
+    }
+
+    public static AlertDialogFragment setCallback(AppCallbacks appCallbacks,
+                                                  DialogData data,
+                                                  FragmentManager manager) {
+        AlertDialogFragment fragment = new AlertDialogFragment();
+        fragment.appCallbacks = appCallbacks;
         Bundle args = new Bundle();
         args.putParcelable(ARG_DATA, data);
         fragment.setArguments(args);
@@ -83,10 +95,10 @@ public class AlertDialogFragment extends DialogFragment implements AppCallbacks 
     }
 
 
-
     @Override
     public void onDialog() {
         Objects.requireNonNull(getDialog()).dismiss();
+        if (appCallbacks != null) appCallbacks.onDialog();
     }
 
     @Override

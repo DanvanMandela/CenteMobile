@@ -118,7 +118,12 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
                                 baseViewModel.dataSource.deviceData.value!!.run
                             )
                         )
-                        if (it.response == StatusEnum.ERROR.type) {
+
+
+
+                        if (it.response == StatusEnum.ERROR.type ||
+                            it.response.isNullOrBlank()
+                        ) {
                             setLoading(false)
                             showError(getString(R.string.something_))
                         } else {
@@ -242,7 +247,9 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
                         )
                     )
                     try {
-                        if (it.response == StatusEnum.ERROR.type) {
+                        if (it.response == StatusEnum.ERROR.type
+                            || it.response.isNullOrBlank()
+                        ) {
                             setLoading(false)
                             ShowToast(requireContext(), getString(R.string.something_))
                         } else {

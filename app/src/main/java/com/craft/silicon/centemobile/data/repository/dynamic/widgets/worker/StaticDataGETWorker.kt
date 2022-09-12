@@ -6,15 +6,17 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.AtmData
 import com.craft.silicon.centemobile.data.model.SpiltURL
 import com.craft.silicon.centemobile.data.model.action.ActionTypeEnum
 import com.craft.silicon.centemobile.data.model.converter.StaticDataTypeConverter
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository
+import com.craft.silicon.centemobile.data.repository.forms.FormsRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.constants.StatusEnum
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
+import com.craft.silicon.centemobile.data.source.remote.helper.STATIC_BASE_URL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -31,6 +33,7 @@ import java.util.*
 class StaticDataGETWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
+    private val forms: FormsRepository,
     private val widgetRepository: WidgetRepository,
     private val storageDataSource: StorageDataSource
 ) : RxWorker(context, workerParameters) {
@@ -52,14 +55,14 @@ class StaticDataGETWorker @AssistedInject constructor(
             )
             val newRequest = jsonObject.toString()
             val path =
-                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.staticData //TODO CHECK STATIC DATA WORKER
+                (if (storageDataSource.deviceData.value == null) STATIC_BASE_URL else Objects.requireNonNull(
+                    storageDataSource.deviceData.value!!.staticData
                 ))?.let {
                     SpiltURL(
                         it
                     ).path
                 }
-            widgetRepository.requestWidget(
+            forms.requestWidget(
                 PayloadData(
                     storageDataSource.uniqueID.value!!,
                     BaseClass.encryptString(newRequest, device, iv)
@@ -75,23 +78,16 @@ class StaticDataGETWorker @AssistedInject constructor(
                             message = applicationContext.getString(R.string.loading_)
                         )
                     )
-
                     val dec = BaseClass.decompressStaticData(it.response)
-                    AppLogger.instance.appLog(
-                        "${StaticDataGETWorker::class.simpleName}:Decode", dec
-                    )
+                    AppLogger.instance.appLog("STATIC:Decode", dec)
 
 
-                    val data = StaticDataTypeConverter().to(
-//                        BaseClass.decryptLatest(
-//                            it.response,
-//                            storageDataSource.deviceData.value!!.device,
-//                            true,
-//                            storageDataSource.deviceData.value!!.run
-//                        )
-                        dec
-                    )
+                    val data = StaticDataTypeConverter().to(dec)
                     AppLogger.instance.appLog("STATIC:DATA", Gson().toJson(data))
+                    AppLogger.instance.appLog("STATIC:ATM", Gson().toJson(data?.atms))
+                    AppLogger.instance.appLog("STATIC:Branch", Gson().toJson(data?.branch))
+                    AppLogger.instance.appLog("STATIC:Carousel", Gson().toJson(data?.carousel))
+
                     if (data?.status == StatusEnum.SUCCESS.type) {
                         if (data.userCode.isNotEmpty())
                             storageDataSource.setStaticData(data.userCode.toMutableList())
@@ -111,6 +107,44 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.setFeedbackTimerMax(
                                 data.rateMax!!.toInt()
                             )
+                        if (!data.branch.isNullOrEmpty()) {
+                            val branches = mutableListOf<AtmData>()
+                            data.branch?.forEach { a ->
+                                a.isATM = false
+                                branches.add(a)
+                            }
+                            widgetRepository.saveAtms(branches)
+                            setSyncData(
+                                SyncData(
+                                    work = 3,
+                                    message = applicationContext.getString(R.string.loading_)
+                                )
+                            )
+                        }
+                        if (!data.atms.isNullOrEmpty()) {
+                            val branches = mutableListOf<AtmData>()
+                            data.atms?.forEach { a ->
+                                a.isATM = true
+                                branches.add(a)
+                            }
+                            widgetRepository.saveAtms(branches)
+                            setSyncData(
+                                SyncData(
+                                    work = 4,
+                                    message = applicationContext.getString(R.string.loading_)
+                                )
+                            )
+                        }
+                        if (!data.carousel.isNullOrEmpty()) {
+                            val carousels = data.carousel!!.filter { c -> c.category == "ADDS" }
+                            widgetRepository.saveCarousel(carousels)
+                            setSyncData(
+                                SyncData(
+                                    work = 5,
+                                    message = applicationContext.getString(R.string.loading_)
+                                )
+                            )
+                        }
                         constructResponse(Result.success())
                     } else {
                         constructResponse(Result.retry())

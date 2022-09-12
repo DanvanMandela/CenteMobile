@@ -18,7 +18,7 @@ object DynamicURL {
 
     const val validate = "https://app.com/CentemobileWebValidateDynamic/api/elma/"
 
-    const val static = "https://uat.craftsilicon.com/ElmaWebDataDynamic/api/elma/"
+    const val static = "https://app.craftsilicon.com/CentemobileWebDataDynamic/api/elma/"
 }
 
 

@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.data.model
 
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -8,8 +9,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 
+@Parcelize
 @Entity(tableName = "carousel_tbl")
 data class CarouselData(
     @field:SerializedName("ImageURL")
@@ -20,7 +24,12 @@ data class CarouselData(
     @field:ColumnInfo(name = "imageInfoURL")
     @field:Expose
     var imageInfoURL: String?,
-) {
+    @field:SerializedName("ImageCategory")
+    @field:ColumnInfo(name = "imageCategory")
+    @field:Expose
+    var category: String?,
+) : Parcelable {
+    @IgnoredOnParcel
     @field:ColumnInfo(name = "id")
     @field:PrimaryKey(autoGenerate = true)
     @field:NonNull

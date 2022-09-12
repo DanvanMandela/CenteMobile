@@ -594,14 +594,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
             String uniqueID = Constants.getUniqueID();
-
+            ActivationData customerID = dataSource.getActivationData().getValue();
             JSONObject jsonObject = new JSONObject();
 
             Constants.commonJSON(jsonObject,
                     context,
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
-                    "",
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
@@ -631,6 +631,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
             String uniqueID = Constants.getUniqueID();
 
             JSONObject jsonObject = new JSONObject();
@@ -639,14 +640,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                     context,
                     uniqueID,
                     ActionTypeEnum.PAY_BILL.getType(),
-                    "",
+                    customerID != null ? customerID.getId() : "",
                     true,
                     dataSource);
 
 
             data.put("SessionID", uniqueID);
-            data.put("MerchantID", "CARDVALIDATION");
-            jsonObject.put("MerchantID", "CARDVALIDATION");
+            data.put("MerchantID", "CENTEONTHEGO");
+            jsonObject.put("MerchantID", "CENTEONTHEGO");
             jsonObject.put("EncryptedFields", encrypted);
             jsonObject.put("PayBill", data);
             String newRequest = jsonObject.toString();
@@ -668,6 +669,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
+
             String uniqueID = Constants.getUniqueID();
             ActivationData customerID = dataSource.getActivationData().getValue();
             JSONObject jsonObject = new JSONObject();

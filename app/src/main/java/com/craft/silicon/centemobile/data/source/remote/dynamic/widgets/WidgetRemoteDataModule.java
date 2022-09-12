@@ -1,6 +1,6 @@
 package com.craft.silicon.centemobile.data.source.remote.dynamic.widgets;
 
-import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getSTATIC_BASE_URL;
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getOTHER_BASE_URL;
 
 import android.content.Context;
 
@@ -43,9 +43,7 @@ public class WidgetRemoteDataModule {
 
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                getSTATIC_BASE_URL() : Objects.requireNonNull(storage.getDeviceData().getValue().getStaticData())).getBase();
-
-        //TODO CHECK DYNAMIC URL
+                getOTHER_BASE_URL() : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
 
         new AppLogger().appLog("Live:URL", new Gson().toJson(deviceLive.getValue()));
         new AppLogger().appLog("Old:URL", base);

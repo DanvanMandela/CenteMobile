@@ -257,6 +257,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
 
     override fun setState() {
         val data = widgetViewModel.storageDataSource.recommendState.value
+        if (data != null) stateData = data
         AppLogger.instance.appLog("STATE:DATA", Gson().toJson(data))
         try {
             if (data != null) {
@@ -506,8 +507,8 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
     private fun getLocationAddress(data: MapData?) {
         try {
             val url =
-                ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + data?.latLng!!.longitude + ","
-                        + data.latLng.latitude + "&key=AIzaSyDhZlL-z0dTCANCHwHSHbNQYnG96phvQ0c")
+                ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + data?.latLng!!.latitude + ","
+                        + data.latLng.longitude + "&key=AIzaSyDhZlL-z0dTCANCHwHSHbNQYnG96phvQ0c")
             val queue: RequestQueue = Volley.newRequestQueue(requireContext())
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
@@ -532,9 +533,9 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                                 val types = rec1.getJSONArray("types")
                                 val comp = types.getString(0)
                             }
-                            binding.currentInput.setText("Uganda")
+                            binding.currentInput.setText(formattedAddress)
                         } catch (e: JSONException) {
-                            //e.printStackTrace();
+                            e.printStackTrace()
                         }
                     }
                 }) { }

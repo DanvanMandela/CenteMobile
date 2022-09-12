@@ -405,13 +405,14 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void currentAccount(Accounts accounts) {
+        binding.headerItem.headerAux.utilPager.setCallback(this);
         List<AlertServices> servicesList = authViewModel
                 .storage.getAlerts().getValue();
         if (servicesList != null) {
-            servicesList = authViewModel
-                    .storage.getAlerts().getValue().stream()
-                    .filter(a -> a.getBankAccountID().equals(accounts.getId()))
-                    .collect(Collectors.toList());
+//            servicesList = authViewModel
+//                    .storage.getAlerts().getValue().stream()
+//                    .filter(a -> a.getBankAccountID().equals(accounts.getId()))
+//                    .collect(Collectors.toList());
             if (!servicesList.isEmpty()) {
                 servicesList.sort(Comparator.comparing(AlertServices::getDueDate));
             }
@@ -421,7 +422,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
             binding.headerItem.headerAux.utilPager
                     .setData(null);
         }
-        binding.headerItem.headerAux.utilPager.setCallback(this);
+
 
     }
 

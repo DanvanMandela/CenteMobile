@@ -22,7 +22,7 @@
 
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/parent"
+            android:id="@+id/parentAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
