@@ -959,6 +959,8 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
         inputData?.clear()
         if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("VIEWBENEFICIARY"))
             navigate(widgetViewModel.navigation().navigateToBeneficiary(modules))
+        else if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("TRANSACTIONSCENTER"))
+            navigate(widgetViewModel.navigation().navigateToTransactionCenter(modules))
         else if (nonCaps(modules?.moduleID) == nonCaps("PENDINGTRANSACTIONS"))
             navigate(widgetViewModel.navigation().navigateToPendingTransaction(modules))
         else
@@ -1176,8 +1178,9 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
                 )
             )
             Handler(Looper.getMainLooper()).postDelayed({
-                requireActivity().runOnUiThread {
+                lifecycleScope.launch {
                     onForm(scanControl, modules)
+                    scanQrCode.unregister()
                 }
             }, 200)
         } else {
@@ -1969,3 +1972,4 @@ class LevelTwoFragment : Fragment(), AppCallbacks, Confirm {
 
 
 }
+

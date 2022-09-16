@@ -28,13 +28,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
     <application
-        android:windowSoftInputMode="adjustNothing"
         android:name=".di.app.InitApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -45,8 +43,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CenteMobile"
+        android:windowSoftInputMode="adjustNothing"
         tools:targetApi="31">
+        <activity
+            android:name=".view.activity.transaction.PendingTransactionActivity"
+            android:exported="false" />
 
+        <activity
+            android:name=".view.activity.transaction.TransactionCenterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.beneficiary.BeneficiaryManageActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.activity.level.FalconHeavyActivity"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -82,7 +94,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".view.activity.ScanActivity"
             android:screenOrientation="behind"
@@ -101,7 +112,6 @@
                 tools:node="remove" />
         </provider>
 
-
         <receiver
             android:name=".data.receiver.SMSMonitor"
             android:enabled="true"
@@ -111,8 +121,6 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
             </intent-filter>
         </receiver>
-
-
         <receiver
             android:name=".data.receiver.BroadcastSMSReceiver"
             android:exported="true"
@@ -121,9 +129,6 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
             </intent-filter>
         </receiver>
-
-
-
 
         <provider
             android:name="androidx.core.content.FileProvider"

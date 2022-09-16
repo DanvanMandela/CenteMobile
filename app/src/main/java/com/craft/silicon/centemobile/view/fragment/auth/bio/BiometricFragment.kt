@@ -1,11 +1,14 @@
 package com.craft.silicon.centemobile.view.fragment.auth.bio
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.craft.silicon.centemobile.R
@@ -17,13 +20,16 @@ import com.craft.silicon.centemobile.data.source.pref.EncryptedData
 import com.craft.silicon.centemobile.databinding.FragmentBiometricBinding
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.activity.MainActivity
+import com.craft.silicon.centemobile.view.activity.level.FalconHeavyActivity
 import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
 import com.craft.silicon.centemobile.view.ep.data.GroupForm
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.craft.silicon.centemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.crypto.Cipher
 
@@ -39,7 +45,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInterface,
+class BiometricFragment : BottomSheetDialogFragment(), AppCallbacks, View.OnClickListener,
+    BioInterface,
     BiometricAuthListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -125,7 +132,7 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
                     subTitle = getString(R.string.fingerprint_disabled),
                     R.drawable.success
                 ),
-                requireActivity().supportFragmentManager, this
+                childFragmentManager, this
             )
         } else ShowToast(requireContext(), getString(R.string.invalid_pin), true)
     }
@@ -144,7 +151,7 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
                 subTitle = getString(R.string.fingerprint_enabled),
                 R.drawable.success
             ),
-            requireActivity().supportFragmentManager, this
+            childFragmentManager, this
         )
     }
 
@@ -197,6 +204,19 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
                 this@Companion.form = form
                 this@Companion.module = module
             }
+
+        @JvmStatic
+        fun show(
+            form: MutableList<FormControl>?,
+            module: Modules?, manager: FragmentManager
+        ) =
+            BiometricFragment().apply {
+                this@Companion.form = form
+                this@Companion.module = module
+
+                show(manager, this.tag)
+            }
+
     }
 
     override fun onPin(pin: String) {
@@ -245,12 +265,34 @@ class BiometricFragment : Fragment(), AppCallbacks, View.OnClickListener, BioInt
             "${getString(R.string.app_name)} ${getString(R.string.auth_)}",
             getString(R.string.use_password),
             getString(R.string.auth_finger),
-            requireActivity() as MainActivity,
+            requireActivity() as FalconHeavyActivity,
             this,
             BiometricPrompt.CryptoObject(cipher)
         )
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            val parentLayout =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            parentLayout?.let { data ->
+                val behaviour = BottomSheetBehavior.from(data)
+                setupFullHeight(data)
+                behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+                behaviour.setDraggable(false)
+            }
+        }
+        return dialog
+    }
+
+    private fun setupFullHeight(bottomSheet: View) {
+        val layoutParams = bottomSheet.layoutParams
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        bottomSheet.layoutParams = layoutParams
+    }
 
 }
 

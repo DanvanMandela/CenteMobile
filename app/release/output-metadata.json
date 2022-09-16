@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.craft.silicon.centemobile",
+  "applicationId": "com.elmacentemobile",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
+      "versionCode": 121,
+      "versionName": "121",
       "outputFile": "app-release.apk"
     }
   ],

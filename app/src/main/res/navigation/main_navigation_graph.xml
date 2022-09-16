@@ -53,11 +53,7 @@
     <action
         android:id="@+id/action_nav_land"
         app:destination="@+id/landingPageFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
         app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpTo="@+id/main_navigation_graph"
         app:popUpToInclusive="true" />
 

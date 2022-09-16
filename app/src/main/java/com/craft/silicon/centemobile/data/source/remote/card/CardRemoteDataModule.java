@@ -1,6 +1,6 @@
 package com.craft.silicon.centemobile.data.source.remote.card;
 
-import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getCARD_BASE_URL;
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.liveTest;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
@@ -32,7 +32,7 @@ public class CardRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                getCARD_BASE_URL()
+                liveTest()
                 : Objects.requireNonNull(storage.getDeviceData().getValue().getCard())).getBase();
 
 

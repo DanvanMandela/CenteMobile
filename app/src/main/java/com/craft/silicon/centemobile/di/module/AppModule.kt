@@ -2,6 +2,10 @@ package com.craft.silicon.centemobile.di.module
 
 import android.app.Application
 import android.content.Context
+import com.craft.silicon.centemobile.data.service.CurrentActivity
+import com.craft.silicon.centemobile.data.service.CurrentActivityDataSource
+import com.craft.silicon.centemobile.data.service.InteractionDataSource
+import com.craft.silicon.centemobile.data.service.UserInteractionWatcher
 import com.craft.silicon.centemobile.data.source.pref.SharedPreferencesStorage
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.helper.ConnectionMonitor
@@ -50,5 +54,11 @@ abstract class AppModule {
 
     @Binds
     abstract fun provideSimDetails(simUtil: SimUtil): SimData
+
+    @Binds
+    abstract fun provideCurrentActivity(currentActivity: CurrentActivity): CurrentActivityDataSource
+
+    @Binds
+    abstract fun provideInteraction(userInteractionWatcher: UserInteractionWatcher): InteractionDataSource
 
 }

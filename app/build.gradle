@@ -328,6 +328,8 @@ dependencies {
 
     implementation 'com.scottyab:rootbeer-lib:0.0.8'
 
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
 
 
 

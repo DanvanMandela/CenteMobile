@@ -20,7 +20,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.craft.silicon.centemobile.R;
-import com.craft.silicon.centemobile.data.model.control.FormControl;
 import com.craft.silicon.centemobile.data.model.converter.LoginDataTypeConverter;
 import com.craft.silicon.centemobile.data.model.user.ActivationData;
 import com.craft.silicon.centemobile.data.model.user.DisplayHash;
@@ -325,6 +324,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void navigate() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            authViewModel.storage.setInactivity(false);
             authViewModel.storage.setLoginTime(System.currentTimeMillis());
             BindingAdapterKt.navigate(this,
                     authViewModel.navigationDataSource.navigateToHome());

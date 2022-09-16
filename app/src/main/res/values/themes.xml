@@ -26,4 +26,10 @@
     <style name="CropActivity" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/transparent</item>
     </style>
+    <style name="Theme.CenteMobile.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.CenteMobile.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.CenteMobile.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

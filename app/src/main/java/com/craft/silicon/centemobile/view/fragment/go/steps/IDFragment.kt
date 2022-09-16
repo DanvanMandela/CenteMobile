@@ -1,5 +1,6 @@
 package com.craft.silicon.centemobile.view.fragment.go.steps
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
@@ -41,6 +42,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.koushikdutta.ion.Ion
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -149,6 +155,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         setOnClick()
         setTitle()
         setToolbar()
+        requestPermissions()
         return binding.root.rootView
     }
 
@@ -189,6 +196,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     override fun setOnClick() {
         binding.idLay.avatar.setOnClickListener {
+            AppLogger.instance.appLog("ID", "Clicked")
             imageSelector(ImageSelector.ID, 3, 2)
         }
         binding.signatureLay.avatar.setOnClickListener {
@@ -297,6 +305,33 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     override fun imageSelector(selector: ImageSelector?, x: Int, y: Int) {
         imageLive = selector
         (requireActivity() as MainActivity).onImagePicker(this, x, y)
+    }
+
+    private fun requestPermissions() {
+        Dexter.withContext(requireContext())
+            .withPermissions(
+                Manifest.permission.CAMERA
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
+                    if (multiplePermissionsReport.areAllPermissionsGranted()) {
+
+                    }
+                    if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied) {
+                        AppLogger.instance.appLog("PERMISSIONS", "permissions are Denied")
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    list: List<PermissionRequest?>?,
+                    permissionToken: PermissionToken
+                ) {
+                    permissionToken.continuePermissionRequest()
+                }
+            }).withErrorListener {
+                AppLogger.instance.appLog("PERMISSIONS", it.name)
+            }
+            .onSameThread().check()
     }
 
     companion object {

@@ -8,6 +8,7 @@ import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.control.FormControl
 import com.craft.silicon.centemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.converter.GroupFormTypeConverter
+import com.craft.silicon.centemobile.data.model.dynamic.DynamicAPIResponse
 import com.craft.silicon.centemobile.data.model.dynamic.DynamicDataResponse
 import com.craft.silicon.centemobile.data.model.dynamic.Notifications
 import com.craft.silicon.centemobile.data.model.dynamic.ResultsData
@@ -44,6 +45,20 @@ data class BodyData(
 
 @Parcelize
 open class DynamicData : Parcelable
+
+
+@Parcelize
+data class BusData(
+    @field:SerializedName("data")
+    @Expose
+    var data: DynamicData?,
+    @field:SerializedName("response")
+    @Expose
+    var res: DynamicAPIResponse? = null,
+    @field:SerializedName("inputs")
+    @Expose
+    var inputs: MutableList<InputData>? = null
+) : Parcelable
 
 @Parcelize
 data class GroupModule(val parent: Modules, val module: MutableList<Modules>) : DynamicData()

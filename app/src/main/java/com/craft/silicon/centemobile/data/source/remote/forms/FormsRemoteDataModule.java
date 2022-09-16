@@ -1,6 +1,6 @@
 package com.craft.silicon.centemobile.data.source.remote.forms;
 
-import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getSTATIC_BASE_URL;
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.liveTest;
 
 import androidx.lifecycle.LiveData;
 
@@ -40,9 +40,8 @@ public class FormsRemoteDataModule {
         LiveData<DeviceData> deviceLive = BindingAdapterKt.deviceLive(storage.getDeviceData());
 
 
-
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                getSTATIC_BASE_URL() : Objects.requireNonNull(storage
+                liveTest() : Objects.requireNonNull(storage
                 .getDeviceData().getValue().getStaticData())).getBase();
 
         new AppLogger().appLog("Live:URL", new Gson().toJson(deviceLive.getValue()));

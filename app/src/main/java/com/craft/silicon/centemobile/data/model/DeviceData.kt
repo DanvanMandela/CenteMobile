@@ -2,6 +2,8 @@ package com.craft.silicon.centemobile.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.net.MalformedURLException
+import java.net.URL
 import javax.annotation.Nullable
 
 data class DeviceData(
@@ -54,13 +56,33 @@ data class DeviceData(
     var device: String?
 )
 
-open class SpiltURL(url: String) {
-    var base: String
-    var path: String
+open class SpiltURL(str: String) {
+    lateinit var base: String
+    lateinit var path: String
 
     init {
-        val split = url.split("/").toMutableList()
-        path = split.removeAt(split.size.minus(1))
-        base = split.joinToString("/").plus("/")
+        try {
+            val url = URL(str)
+            base = "${url.protocol}://${url.host}/"
+            path = url.path.substring(1)
+        } catch (e: MalformedURLException) {
+            e.printStackTrace()
+        }
     }
+}
+
+open class GetBaseURL(str: String) {
+    lateinit var base: String
+    lateinit var path: String
+
+    init {
+        try {
+            val url = URL(str)
+            base = "${url.protocol}://${url.host}/"
+            path = url.path.substring(1)
+        } catch (e: MalformedURLException) {
+            e.printStackTrace()
+        }
+    }
+
 }

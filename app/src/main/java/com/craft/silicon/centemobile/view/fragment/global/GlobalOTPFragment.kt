@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.craft.silicon.centemobile.R
@@ -252,6 +253,28 @@ class GlobalOTPFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                 this@Companion.action = action
                 this@Companion.form = formControl
                 //show(manager, TAG)
+            }
+
+        @JvmStatic
+        fun show(
+            json: JSONObject?,
+            encrypted: JSONObject?,
+            inputList: MutableList<InputData>,
+            module: Modules?,
+            action: ActionControls?,
+            formControl: FormControl?,
+            confirm: Confirm,
+            manager: FragmentManager
+        ) =
+            GlobalOTPFragment().apply {
+                this@Companion.data = inputList
+                this@Companion.confirm = confirm
+                this@Companion.encrypted = encrypted
+                this@Companion.json = json
+                this@Companion.module = module
+                this@Companion.action = action
+                this@Companion.form = formControl
+                show(manager, TAG)
             }
     }
 

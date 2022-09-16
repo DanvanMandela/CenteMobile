@@ -3,17 +3,14 @@ package com.craft.silicon.centemobile.view.fragment.transaction
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
-import com.craft.silicon.centemobile.data.model.converter.DynamicAPIResponseConverter
-import com.craft.silicon.centemobile.data.model.converter.GlobalResponseTypeConverter
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionResponseResponseConverter
 import com.craft.silicon.centemobile.data.model.module.Modules
@@ -25,18 +22,8 @@ import com.craft.silicon.centemobile.util.BaseClass
 import com.craft.silicon.centemobile.util.ShowToast
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
 import com.craft.silicon.centemobile.view.binding.navigate
-import com.craft.silicon.centemobile.view.binding.setDynamic
-import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment
-import com.craft.silicon.centemobile.view.dialog.DialogData
 import com.craft.silicon.centemobile.view.dialog.InfoFragment
-import com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment
-import com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment
-import com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment
 import com.craft.silicon.centemobile.view.ep.adapter.TransactionAdapterItem
-import com.craft.silicon.centemobile.view.ep.data.DynamicData
-import com.craft.silicon.centemobile.view.ep.data.ReceiptList
-import com.craft.silicon.centemobile.view.fragment.global.GlobalOTPFragment
-import com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment
 import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.google.gson.Gson
@@ -91,7 +78,6 @@ class TransactionCenterFragment : Fragment(), AppCallbacks {
         binding.toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
-
     }
 
     override fun setController() {
@@ -160,7 +146,7 @@ class TransactionCenterFragment : Fragment(), AppCallbacks {
                 } else if (BaseClass.nonCaps(response?.status)
                     == StatusEnum.TOKEN.type
                 ) {
-                    InfoFragment.showDialog(this.childFragmentManager)
+                    InfoFragment.showDialog(this.childFragmentManager,this)
                 }
             } else {
                 ShowToast(requireContext(), getString(R.string.error_fetching_transactions))
@@ -170,6 +156,12 @@ class TransactionCenterFragment : Fragment(), AppCallbacks {
         }
 
     }
+
+    override fun timeOut() {
+
+    }
+
+
 
     private fun setNoData(b: Boolean) {
         if (b) binding.noData.root.visibility = VISIBLE

@@ -131,6 +131,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
                 } else {
                     val nextKinData = widgetViewModel.storageDataSource.nextOfKin.value
                     binding.accountInput.setText(nextKinData?.account)
+                    binding.accountInput.isEnabled = false
                 }
             }
         }
@@ -160,6 +161,7 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         Handler(Looper.getMainLooper()).postDelayed({
             stopShimmer()
             setStep()
+
             setState()
         }, animationDuration.toLong())
     }
@@ -171,10 +173,13 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             binding.nKFNameInput.setText(sData.firstName)
             binding.nKMNameInput.setText(sData.middleName)
             binding.nKLNameInput.setText(sData.lastName)
-            binding.countryCodeHolder.setCountryForPhoneCode(sData.phone?.key!!)
-            binding.editMobile.setText(sData.phone.value)
-            binding.countryCodeHolderTwo.setCountryForPhoneCode(sData.phoneTwo?.key!!)
-            binding.editMobileTwo.setText(sData.phoneTwo.value)
+            if (sData.phone != null)
+                binding.countryCodeHolder.setCountryForPhoneCode(sData.phone.key!!)
+            binding.editMobile.setText(sData.phone?.value)
+
+            if (sData.phoneTwo != null)
+                binding.countryCodeHolderTwo.setCountryForPhoneCode(sData.phoneTwo.key!!)
+            binding.editMobileTwo.setText(sData.phoneTwo?.value)
             binding.addressInput.setText(sData.address)
         }
     }

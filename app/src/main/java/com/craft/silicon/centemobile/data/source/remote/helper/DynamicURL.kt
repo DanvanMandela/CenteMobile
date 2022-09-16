@@ -19,6 +19,12 @@ object DynamicURL {
     const val validate = "https://app.com/CentemobileWebValidateDynamic/api/elma/"
 
     const val static = "https://app.craftsilicon.com/CentemobileWebDataDynamic/api/elma/"
+
+
+}
+
+fun liveTest(): String {
+    return if (Constants.Data.TEST) "https://uat.craftsilicon.com/" else "https://app.craftsilicon.com/"
 }
 
 
@@ -44,17 +50,5 @@ object DynamicTestURL {
 
 
 var OTHER_BASE_URL = if (!Constants.Data.TEST) DynamicURL.other else DynamicTestURL.other
-
-var STATIC_BASE_URL = if (!Constants.Data.TEST) DynamicURL.static else DynamicTestURL.static
-
-var AUTH_BASE_URL = if (!Constants.Data.TEST) DynamicURL.auth else DynamicTestURL.auth
-
-var ACCOUNT_BASE_URL = if (!Constants.Data.TEST) DynamicURL.account else DynamicTestURL.account
-
-var CARD_BASE_URL = if (!Constants.Data.TEST) DynamicURL.card else DynamicTestURL.card
-
-var PURCHASE_BASE_URL = if (!Constants.Data.TEST) DynamicURL.purchase else DynamicTestURL.purchase
-
-var VALIDATE_BASE_URL = if (!Constants.Data.TEST) DynamicURL.validate else DynamicTestURL.validate
 
 var ROUTE_BASE_URL = if (!Constants.Data.TEST) DynamicURL.live else DynamicTestURL.uat

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentRejectPendingBinding
 import com.craft.silicon.centemobile.util.ShowToast
@@ -100,6 +101,14 @@ class RejectPendingFragment : DialogFragment(), AppCallbacks {
             RejectPendingFragment().apply {
                 this@Companion.reject = reject
             }
+
+        @JvmStatic
+        fun show(reject: RejectTransaction, manager: FragmentManager) =
+            RejectPendingFragment().apply {
+                this@Companion.reject = reject
+                show(manager, this.tag)
+            }
+
     }
 
 

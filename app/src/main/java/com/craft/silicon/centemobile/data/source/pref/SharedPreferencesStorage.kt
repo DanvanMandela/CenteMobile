@@ -966,6 +966,49 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         get() = _phoneCustomer
 
 
+    private val _inActivity = MutableStateFlow(
+        sharedPreferences.getBoolean(
+            TAG_IN_ACTIVITY,
+            false
+        )
+    )
+
+    override val inActivity: StateFlow<Boolean?>
+        get() = _inActivity
+
+    override fun setInactivity(value: Boolean?) {
+        _inActivity.value = value!!
+        with(sharedPreferences.edit()) {
+            putBoolean(
+                TAG_IN_ACTIVITY,
+                value
+            )
+            apply()
+        }
+    }
+
+    private val _activity = MutableStateFlow(
+        sharedPreferences.getString(
+            TAG_CURRENT_ACTIVITY,
+            ""
+        )
+    )
+
+    override val activity: StateFlow<String?>
+        get() = _activity
+
+    override fun activity(value: String?) {
+        _activity.value = value!!
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_CURRENT_ACTIVITY,
+                value
+            )
+            apply()
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val TAG_LOGIN = "auth"
@@ -1029,5 +1072,10 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_CUSTOMER_ID = "CUSTOMERID"
 
         private const val TAG_CUSTOMER_PHONE = "PHONE"
+
+        private const val TAG_IN_ACTIVITY = "inActivity"
+
+        private const val TAG_CURRENT_ACTIVITY = "currentActivity"
+
     }
 }

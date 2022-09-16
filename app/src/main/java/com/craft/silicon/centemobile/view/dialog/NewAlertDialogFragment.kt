@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentNewAlertDialogBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
@@ -72,7 +73,18 @@ class NewAlertDialogFragment : DialogFragment(), AppCallbacks {
                     putParcelable(ARG_DATA, data)
                 }
             }
+
+        @JvmStatic
+        fun show(data: MainDialogData, manager: FragmentManager) =
+            NewAlertDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_DATA, data)
+                }
+                show(manager, this.tag)
+            }
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

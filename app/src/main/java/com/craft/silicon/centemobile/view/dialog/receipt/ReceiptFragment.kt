@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentReceiptBinding
 import com.craft.silicon.centemobile.util.BaseClass
@@ -110,6 +111,15 @@ class ReceiptFragment : BottomSheetDialogFragment(), AppCallbacks {
             ReceiptFragment().apply {
                 this@Companion.confirm = confirm
                 this@Companion.data = data
+
+            }
+
+        @JvmStatic
+        fun show(confirm: Confirm, data: ReceiptList, manager: FragmentManager) =
+            ReceiptFragment().apply {
+                this@Companion.confirm = confirm
+                this@Companion.data = data
+                show(manager, this.tag)
             }
 
 

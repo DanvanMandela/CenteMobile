@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.data.model.dynamic.TransactionData
 import com.craft.silicon.centemobile.databinding.FragmentTransactionDetailsBinding
@@ -97,23 +98,17 @@ class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
                     putParcelable(ARG_DATA, transactionData)
                 }
             }
+
+        @JvmStatic
+        fun show(transactionData: TransactionData?, manager: FragmentManager) =
+            TransactionDetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_DATA, transactionData)
+                }
+                show(manager, this.tag)
+            }
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        dialog!!.window!!.attributes.windowAnimations = R.style.MyDialogAnimation
-//    }
-//
-//    override fun onStart() {
-//        super.onStart()
-//        if (dialog != null && dialog!!.window != null) {
-//            dialog!!.window!!.setLayout(
-//                WindowManager.LayoutParams.MATCH_PARENT,
-//                WindowManager.LayoutParams.WRAP_CONTENT
-//            )
-//        }
-//
-//    }
 
 
 }

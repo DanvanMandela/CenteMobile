@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.craft.silicon.centemobile.view.ep.data.BusData;
 import com.craft.silicon.centemobile.view.fragment.go.steps.ImageSelector;
 
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +51,8 @@ public interface BaseView {
 
     default void onOTP(String s){}
 
+    default void onQRCode(String s){}
+
     default void cleanLevel(){}
 
     default void twitter(){}
@@ -67,4 +70,6 @@ public interface BaseView {
     default void rating_submit(){}
 
     default void setOnIndicator(ViewPager2 viewPager2){}
+
+    default void onEvent(BusData busData){}
 }

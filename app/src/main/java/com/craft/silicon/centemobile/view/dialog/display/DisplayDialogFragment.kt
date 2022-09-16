@@ -135,6 +135,14 @@ class DisplayDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
         ) = DisplayDialogFragment().apply {
             this@Companion.data = data
         }
+
+        @JvmStatic
+        fun show(
+            data: MutableList<HashMap<String, String>>?, manager: FragmentManager
+        ) = DisplayDialogFragment().apply {
+            this@Companion.data = data
+            show(manager, this.tag)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

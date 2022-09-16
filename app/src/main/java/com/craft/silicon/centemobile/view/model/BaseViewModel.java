@@ -19,6 +19,7 @@ import com.craft.silicon.centemobile.data.repository.card.CardRepository;
 import com.craft.silicon.centemobile.data.repository.dynamic.widgets.WidgetRepository;
 import com.craft.silicon.centemobile.data.repository.payment.PaymentRepository;
 import com.craft.silicon.centemobile.data.repository.validation.ValidationRepository;
+import com.craft.silicon.centemobile.data.service.InteractionDataSource;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource;
 import com.craft.silicon.centemobile.data.source.remote.callback.DynamicResponse;
@@ -54,6 +55,8 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     public final StorageDataSource dataSource;
     public final NavigationDataSource navigationData;
 
+    public final InteractionDataSource interactionDataSource;
+
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
@@ -67,7 +70,8 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                          CardRepository cardRepository,
                          SimData simData,
                          StorageDataSource dataSource,
-                         NavigationDataSource navigationData) {
+                         NavigationDataSource navigationData,
+                         InteractionDataSource interactionDataSource) {
         this.repository = repository;
         this.widgetRepository = widgetRepository;
         this.paymentRepository = paymentRepository;
@@ -77,6 +81,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         this.simData = simData;
         this.dataSource = dataSource;
         this.navigationData = navigationData;
+        this.interactionDataSource = interactionDataSource;
     }
 
     @Override
@@ -308,13 +313,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("DynamicForm", data);
 
                 String dbRequest = jsonObject.toString();
+
                 AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
+                new AppLogger().logTXT(new Gson().toJson(dbRequest), (context));
 
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(dbRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), (context));
 
                 return dbCall(payloadData);
 
@@ -328,12 +334,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("ModuleID", modules.getModuleID());
                 jsonObject.put("Validate", data);
                 String validateRequest = jsonObject.toString();
+
                 AppLogger.Companion.getInstance().appLog("Validation", validateRequest);
+                new AppLogger().logTXT(new Gson().toJson(validateRequest), context);
+
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(validateRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
 
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("auth")) {
@@ -352,13 +360,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("PayBill", data);
                 jsonObject.put("EncryptedFields", encrypted);
                 String payBillRequest = jsonObject.toString();
-                AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
 
+                AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
+                new AppLogger().logTXT(new Gson().toJson(payBillRequest), context);
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(payBillRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
+
 
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("account")) {
@@ -390,13 +399,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("CHANGEPIN", data);
                 jsonObject.put("EncryptedFields", encrypted);
                 String changePinRequest = jsonObject.toString();
+
                 AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
+                new AppLogger().logTXT(new Gson().toJson(changePinRequest), (context));
 
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(changePinRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
                 return authCall(payloadData);
             }
             return null;

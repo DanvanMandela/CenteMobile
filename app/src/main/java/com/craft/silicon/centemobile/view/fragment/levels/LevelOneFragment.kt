@@ -1255,20 +1255,20 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
         inputData?.clear()
         if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("VIEWBENEFICIARY"))
             navigate(widgetViewModel.navigation().navigateToBeneficiary(modules))
+        else if (nonCaps(nonCaps(modules?.moduleID)) == nonCaps("TRANSACTIONSCENTER"))
+            navigate(widgetViewModel.navigation().navigateToTransactionCenter(modules))
         else if (nonCaps(modules?.moduleID) == nonCaps("PENDINGTRANSACTIONS"))
             navigate(widgetViewModel.navigation().navigateToPendingTransaction(modules))
-        else
-            if (modules?.available!!) {
+        else if (modules?.available!!) {
+            val moduleDisable = widgetViewModel.storageDataSource.disableModule.value
+            AppLogger.instance.appLog("DISABLE", Gson().toJson(moduleDisable))
 
-                val moduleDisable = widgetViewModel.storageDataSource.disableModule.value
-                AppLogger.instance.appLog("DISABLE", Gson().toJson(moduleDisable))
-
-                if (modules.moduleURLTwo != null) {
-                    if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
-                        openUrl(modules.moduleURLTwo)
-                    } else navigateTo(modules)
+            if (modules.moduleURLTwo != null) {
+                if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
+                    openUrl(modules.moduleURLTwo)
                 } else navigateTo(modules)
-            } else ShowToast(requireContext(), modules.message)
+            } else navigateTo(modules)
+        } else ShowToast(requireContext(), modules.message)
     }
 
     private fun navigateTo(modules: Modules?) {
@@ -1422,6 +1422,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
 
 
     private fun scanSuccess(result: QRResult?) {
+        AppLogger.instance.appLog("TAG","YEs")
         val text = when (result) {
             is QRResult.QRSuccess -> result.content.rawValue
             QRResult.QRUserCanceled -> getString(R.string.scan_cancel)
@@ -1444,7 +1445,7 @@ class LevelOneFragment : Fragment(), AppCallbacks, Confirm {
                 )
             )
             Handler(Looper.getMainLooper()).postDelayed({
-                requireActivity().runOnUiThread {
+                lifecycleScope.launch {
                     onForm(scanControl, modules)
                 }
             }, 200)

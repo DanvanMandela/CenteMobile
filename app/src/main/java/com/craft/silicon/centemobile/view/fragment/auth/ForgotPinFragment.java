@@ -237,15 +237,11 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
 
                     if (resData != null) {
                         if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
-                            if (resData.getNotifications() != null)
-                                if (!resData.getNotifications().isEmpty())
-                                    SuccessDialogFragment.showDialog(new DialogData(
-                                            R.string.success,
-                                            resData.getNotifications().get(0).getNotifyText(),
-                                            R.drawable.success
-                                    ), getChildFragmentManager(), this);
-
-
+                            SuccessDialogFragment.showDialog(new DialogData(
+                                    R.string.success,
+                                    resData.getMessage(),
+                                    R.drawable.success
+                            ), getChildFragmentManager(), this);
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
                             showError(resData.getMessage());
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {

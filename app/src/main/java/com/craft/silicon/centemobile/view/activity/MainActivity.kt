@@ -26,12 +26,14 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.craft.silicon.centemobile.R
+import com.craft.silicon.centemobile.data.model.GetBaseURL
 import com.craft.silicon.centemobile.data.model.user.ActivationData
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.CryptoManager
@@ -50,6 +52,9 @@ import com.craft.silicon.centemobile.view.model.BaseViewModel
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import com.craft.silicon.centemobile.view.model.WorkStatus
 import com.craft.silicon.centemobile.view.model.WorkerViewModel
+import com.craft.silicon.centemobile.view.qr.QRContent
+import com.craft.silicon.centemobile.view.qr.QRResult
+import com.craft.silicon.centemobile.view.qr.ScanQRCode
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -82,9 +87,11 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var bioInterface: BioInterface? = null
     private var countDownTimer: CountDownTimer? = null
 
-
+    private val scanQrCode = registerForActivityResult(ScanQRCode(), ::scanSuccess)
     private var startTime = (24 * 1000).toLong()
     private val interval = (1 * 1000).toLong()
+
+    private val qrcode = MutableLiveData<String>()
 
 
     fun initSMSBroadCast() {
@@ -116,6 +123,14 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         subscribePush()
         updateTimeout()
         setMigration()//TODO TO BE REMOVED IN FUTURE
+
+    }
+
+    private fun testBase() {
+        val base="https://app.craftsilicon.com/CentemobileWebValidateDynamic/api/elma/validate"
+
+        AppLogger.instance.appLog("PATH", GetBaseURL(base).path)
+        AppLogger.instance.appLog("URL", GetBaseURL(base).base)
     }
 
     private fun setMigration() {
@@ -174,9 +189,20 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     override fun onResume() {
         super.onResume()
-        timerControl(false)
-        setTimer()
-
+        val inActivity = baseViewModel.dataSource.inActivity.value
+        if (inActivity == null) {
+            timerControl(false)
+            setTimer()
+        } else {
+            if (inActivity) {
+                runOnUiThread {
+                    done(true)
+                }
+            } else {
+                timerControl(false)
+                setTimer()
+            }
+        }
     }
 
 
@@ -818,6 +844,39 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         val str = getString(R.string.decode_str)
         val dec = BaseClass.decompressStaticData(str)
         AppLogger.instance.appLog("${MainActivity::class.simpleName}:Data", dec)
+    }
+
+
+    private fun scanSuccess(result: QRResult?) {
+        AppLogger.instance.appLog("TAG", "YEs")
+        val text = when (result) {
+            is QRResult.QRSuccess -> result.content.rawValue
+            QRResult.QRUserCanceled -> getString(R.string.scan_cancel)
+            QRResult.QRMissingPermission -> getString(R.string.permision_camera)
+            is QRResult.QRError -> "${result.exception.javaClass.simpleName}: ${result.exception.localizedMessage}"
+            else -> {
+                throw Exception("Not implemented")
+            }
+        }
+        if (result is QRResult.QRSuccess && result.content is QRContent.Url) {
+            openUrl(result.content.rawValue)
+        } else if (result is QRResult.QRSuccess) {
+            qrcode.value = text
+        } else {
+            AppLogger.instance.appLog("SCAN:QR", text)
+        }
+    }
+
+    fun startQRCode(callbacks: AppCallbacks) {
+        this.callbacks = callbacks
+        scanQrCode.launch(null)
+
+        qrcode.observe(this) { qr ->
+            if (!qr.isNullOrEmpty()) {
+                ShowToast(this, qr)
+            }
+        }
+
     }
 
 }

@@ -468,6 +468,7 @@ class OTPCountDownTimer(
     CountDownTimer(startTime, interval) {
     override fun onFinish() {
         otp.done(true)
+        cancel()
     }
 
     override fun onTick(millisUntilFinished: Long) {

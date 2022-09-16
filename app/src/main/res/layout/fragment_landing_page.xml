@@ -92,6 +92,7 @@
                             tools:text="Good Evening" />
 
                         <TextView
+                            android:gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
@@ -100,7 +101,7 @@
                             android:autoSizeTextType="uniform"
                             android:fontFamily="@font/poppins_semi_bold"
                             android:text="@string/welcome_cente"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             app:layout_constraintBottom_toBottomOf="@+id/textView7"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView7"

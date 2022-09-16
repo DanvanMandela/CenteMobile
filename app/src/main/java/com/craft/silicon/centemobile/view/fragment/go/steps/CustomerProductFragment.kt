@@ -409,6 +409,9 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         if (active != null) {
             if (user.size != 1)
                 user.removeAt(0)
+        }else {
+            if (user.size != 1)
+                user.removeAt(1)
         }
 
         user.forEachIndexed { index, type ->

@@ -223,7 +223,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/cente_on_go"
                             android:scaleType="fitXY"
-                            android:src="@drawable/cente" />
+                            android:src="@drawable/go" />
 
 
                         <TextView

@@ -3,18 +3,17 @@ package com.craft.silicon.centemobile.view.dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.craft.silicon.centemobile.R
 import com.craft.silicon.centemobile.databinding.FragmentInfoBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
-import com.craft.silicon.centemobile.view.activity.MainActivity
 import com.craft.silicon.centemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,9 +44,9 @@ class InfoFragment : DialogFragment(), AppCallbacks {
     }
 
     override fun timeOut() {
+        widgetViewModel.storageDataSource.setInactivity(true)
         dialog?.dismiss()
-        val destination = widgetViewModel.navigation().navigateAuth()
-        (requireActivity() as MainActivity).provideNavigationGraph().navigate(destination)
+        appCallbacks.timeOut()
     }
 
     override fun onCreateView(
@@ -73,6 +72,8 @@ class InfoFragment : DialogFragment(), AppCallbacks {
     }
 
     companion object {
+        private lateinit var appCallbacks: AppCallbacks
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -95,6 +96,13 @@ class InfoFragment : DialogFragment(), AppCallbacks {
         fun showDialog(manager: FragmentManager) =
             InfoFragment().apply {
                 show(manager, this.tag)
+            }
+
+        @JvmStatic
+        fun showDialog(manager: FragmentManager, callbacks: AppCallbacks) =
+            InfoFragment().apply {
+                show(manager, this.tag)
+                this@Companion.appCallbacks = callbacks
             }
     }
 

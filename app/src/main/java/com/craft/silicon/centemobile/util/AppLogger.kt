@@ -56,7 +56,7 @@ class AppLogger {
                     val dir =
                         File("${storage.absolutePath}/${context.getString(R.string.app_name)}")
                     dir.mkdir()
-                    val file = File(dir, "logs.json")
+                    val file = File(dir, "logs${BaseClass.generateAlphaNumericString(5)}.json")
                     if (file.exists()) file.delete()
                     val os: FileOutputStream?
                     try {
@@ -109,7 +109,7 @@ class AppLogger {
                             val uri = Uri.parse(file.path)
 
                             val fileUri = FileProvider.getUriForFile(
-                               context,
+                                context,
                                 context.packageName.toString() + ".provider",
                                 file
                             )

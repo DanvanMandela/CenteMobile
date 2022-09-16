@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.craft.silicon.centemobile.data.model.StandingOrder
 import com.craft.silicon.centemobile.databinding.FragmentStandingOrderDetailsBinding
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks
@@ -48,7 +49,7 @@ class StandingOrderDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     override fun setOnClick() {
         binding.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
+            dialog?.dismiss()
         }
     }
 
@@ -67,11 +68,12 @@ class StandingOrderDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(data: StandingOrder) =
+        fun newInstance(data: StandingOrder?, manager: FragmentManager) =
             StandingOrderDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_DATA, data)
                 }
+                show(manager, this.tag)
             }
     }
 }

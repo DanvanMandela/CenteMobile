@@ -154,10 +154,15 @@ interface StorageDataSource {
     val feedbackTimerMax: StateFlow<Int?>
 
 
-
     val customerID: StateFlow<String?>
 
 
     val phoneCustomer: StateFlow<String?>
+
+    fun setInactivity(value: Boolean?)
+    val inActivity: StateFlow<Boolean?>
+
+    fun activity(value: String?)
+    val activity: StateFlow<String?>
 
 }

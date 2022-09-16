@@ -1,6 +1,6 @@
 package com.craft.silicon.centemobile.data.source.remote.payment;
 
-import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.getPURCHASE_BASE_URL;
+import static com.craft.silicon.centemobile.data.source.remote.helper.DynamicURLKt.liveTest;
 
 import com.craft.silicon.centemobile.data.model.SpiltURL;
 import com.craft.silicon.centemobile.data.source.constants.Constants;
@@ -31,7 +31,7 @@ public class PaymentRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                getPURCHASE_BASE_URL()
+                liveTest()
                 : Objects.requireNonNull(storage.getDeviceData().getValue().getPurchase())).getBase();
 
 

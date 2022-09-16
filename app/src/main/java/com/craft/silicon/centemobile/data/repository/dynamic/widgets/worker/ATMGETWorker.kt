@@ -14,7 +14,6 @@ import com.craft.silicon.centemobile.data.repository.forms.FormsRepository
 import com.craft.silicon.centemobile.data.source.constants.Constants
 import com.craft.silicon.centemobile.data.source.pref.StorageDataSource
 import com.craft.silicon.centemobile.data.source.remote.callback.PayloadData
-import com.craft.silicon.centemobile.data.source.remote.helper.DynamicURL
 import com.craft.silicon.centemobile.data.source.sync.SyncData
 import com.craft.silicon.centemobile.util.AppLogger
 import com.craft.silicon.centemobile.util.BaseClass
@@ -25,7 +24,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
-import java.util.*
 
 @HiltWorker
 class ATMGETWorker @AssistedInject constructor(
@@ -64,14 +62,11 @@ class ATMGETWorker @AssistedInject constructor(
             )
 
             val newRequest = jsonObject.toString()
-            val path =
-                (if (storageDataSource.deviceData.value == null) DynamicURL.static else Objects.requireNonNull(
-                    storageDataSource.deviceData.value!!.staticData
-                ))?.let {
-                    SpiltURL(
-                        it
-                    ).path
-                }
+            val path = storageDataSource.deviceData.value!!.staticData?.let {
+                SpiltURL(
+                    it
+                ).path
+            }
             formsRepository.requestWidget(
                 PayloadData(
                     storageDataSource.uniqueID.value!!,

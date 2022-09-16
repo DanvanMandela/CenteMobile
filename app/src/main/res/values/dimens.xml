@@ -43,6 +43,7 @@
     <dimen name="dimens_4dp">4dp</dimen>
     <dimen name="toolbar_elevation">0dp</dimen>
     <dimen name="dimens_32dp">32dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
     <!--    <dimen name="activity_horizontal_margin">16dp</dimen>-->
 <!--    <dimen name="activity_vertical_margin">16dp</dimen>-->

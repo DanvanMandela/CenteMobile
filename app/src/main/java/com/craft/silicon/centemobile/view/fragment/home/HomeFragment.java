@@ -45,6 +45,10 @@ import com.craft.silicon.centemobile.util.ShowAlertDialog;
 import com.craft.silicon.centemobile.util.ShowToast;
 import com.craft.silicon.centemobile.util.callbacks.AppCallbacks;
 import com.craft.silicon.centemobile.view.activity.MainActivity;
+import com.craft.silicon.centemobile.view.activity.beneficiary.BeneficiaryManageActivity;
+import com.craft.silicon.centemobile.view.activity.level.FalconHeavyActivity;
+import com.craft.silicon.centemobile.view.activity.transaction.PendingTransactionActivity;
+import com.craft.silicon.centemobile.view.activity.transaction.TransactionCenterActivity;
 import com.craft.silicon.centemobile.view.binding.BindingAdapterKt;
 import com.craft.silicon.centemobile.view.dialog.AlertDialogFragment;
 import com.craft.silicon.centemobile.view.dialog.DialogData;
@@ -53,6 +57,7 @@ import com.craft.silicon.centemobile.view.dialog.LoadingFragment;
 import com.craft.silicon.centemobile.view.ep.controller.AlertList;
 import com.craft.silicon.centemobile.view.ep.data.AccountData;
 import com.craft.silicon.centemobile.view.ep.data.BodyData;
+import com.craft.silicon.centemobile.view.ep.data.BusData;
 import com.craft.silicon.centemobile.view.ep.data.GroupForm;
 import com.craft.silicon.centemobile.view.ep.data.GroupModule;
 import com.craft.silicon.centemobile.view.ep.data.MiniList;
@@ -68,6 +73,7 @@ import com.craft.silicon.centemobile.view.model.WidgetViewModel;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONException;
@@ -79,7 +85,6 @@ import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -185,7 +190,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         int feedback = authViewModel.storage.getFeedbackTimer().getValue();
         int feedbackMax = authViewModel.storage.getFeedbackTimerMax().getValue() == null ?
                 5 : authViewModel.storage.getFeedbackTimerMax().getValue() == 0 ? 5 :
-                        authViewModel.storage.getFeedbackTimerMax().getValue();
+                authViewModel.storage.getFeedbackTimerMax().getValue();
 
         new AppLogger().appLog("RATE", String.valueOf(feedbackMax));
 
@@ -346,11 +351,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     private void navigateTo(Modules modules) {
         if (nonCaps(modules.getModuleID()).equals(nonCaps("TRANSACTIONSCENTER")))
-            BindingAdapterKt.navigate(this, widgetViewModel
-                    .navigation().navigateToTransactionCenter(modules));
+            navigateToTransactionCenter(modules);
+        else if (nonCaps(modules.getModuleID()).equals(nonCaps("VIEWBENEFICIARY")))
+            navigateToBeneficiary(modules);
         else if (nonCaps(modules.getModuleID()).equals(nonCaps("PENDINGTRANSACTIONS")))
-            BindingAdapterKt.navigate(this, widgetViewModel
-                    .navigation().navigateToPendingTransaction(modules));
+            navigateToPendingTransaction(modules);
         else if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
             subscribe.add(widgetViewModel.getModules(modules.getModuleID())
                     .subscribeOn(Schedulers.io())
@@ -358,6 +363,25 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                     .subscribe(m -> setDynamicModules(m, modules), Throwable::printStackTrace));
         } else getFormControl(modules);
     }
+
+    private void navigateToBeneficiary(Modules modules) {
+        EventBus.getDefault().postSticky(modules);
+        Intent i = new Intent(getActivity(), BeneficiaryManageActivity.class);
+        startActivity(i);
+    }
+
+    private void navigateToPendingTransaction(Modules modules) {
+        EventBus.getDefault().postSticky(modules);
+        Intent i = new Intent(getActivity(), PendingTransactionActivity.class);
+        startActivity(i);
+    }
+
+    private void navigateToTransactionCenter(Modules modules) {
+        EventBus.getDefault().postSticky(modules);
+        Intent i = new Intent(getActivity(), TransactionCenterActivity.class);
+        startActivity(i);
+    }
+
 
     private void setDynamicModules(List<Modules> m, Modules modules) {
         List<Modules> filterModules = new ArrayList<>();
@@ -376,8 +400,12 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
             else filterModules.add(module);
         });
 
-        BindingAdapterKt.navigate(this, widgetViewModel.navigation()
-                .navigateToLevelOne(new GroupModule(modules, filterModules)));
+        EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, filterModules),
+                null,
+                null));
+        Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
+        startActivity(i);
+
 
     }
 
@@ -528,7 +556,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
                         } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
                             setLoading(false);
-                            InfoFragment.showDialog(this.getChildFragmentManager());
+                            InfoFragment.showDialog(this.getChildFragmentManager(), this);
                         } else {
                             setLoading(false);
                             new ShowToast(requireContext(), resData.getMessage());
@@ -553,9 +581,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
         AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
                 new Gson().toJson(modules));
-        BindingAdapterKt.navigate(this,
-                widgetViewModel.navigation().navigateToLevelOne(new GroupForm(modules, forms, false)));
-
+        EventBus.getDefault().postSticky(new BusData(new GroupForm(modules, forms, false),
+                null,
+                null));
+        Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
+        startActivity(i);
     }
 
 
@@ -566,6 +596,12 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                 .provideNavigationGraph()
                 .navigate(widgetViewModel.navigation().navigateValidation());
     }
+
+    @Override
+    public void timeOut() {
+        BindingAdapterKt.navigate(this, baseViewModel.navigationData.navigateLanding());
+    }
+
 
     private void setLoading(boolean b) {
         if (b) LoadingFragment.show(getChildFragmentManager());
@@ -605,7 +641,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                     BindingAdapterKt.navigate(this, widgetViewModel.navigation().navigateToMini());
                 } else if (Objects.equals(response.getStatus(), StatusEnum.TOKEN.getType())) {
                     setLoading(false);
-                    InfoFragment.showDialog(this.getChildFragmentManager());
+                    InfoFragment.showDialog(this.getChildFragmentManager(), this);
                 } else {
                     AlertDialogFragment.newInstance(
                             new DialogData(

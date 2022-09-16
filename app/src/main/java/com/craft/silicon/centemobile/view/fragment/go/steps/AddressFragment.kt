@@ -212,12 +212,8 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             binding.addressInput.setText(sData.address)
             binding.cityInput.setText(sData.city)
             binding.codeInput.setText(sData.countryCode)
-        } else {
-            val customerType = baseViewModel.dataSource.customerProduct
-            if (customerType.value!!.type!!.value == getString(R.string.existing_customer)) {
-                binding.editMobile.setText(baseViewModel.dataSource.activationData.value?.mobile)
-            }
         }
+
     }
 
     private fun stateEA(ea: TwoDMap) {
@@ -608,12 +604,17 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 
     override fun onClick(p: View?) {
         if (p == binding.buttonNext) {
-            if (validateFields()) {
-                checkUserExist(
-                    binding.countryCodeHolder.selectedCountryCode +
-                            binding.editMobile.text.toString()
-                )
-            }
+
+            val customerType = baseViewModel.dataSource.customerProduct
+            if (customerType.value!!.type!!.value != getString(R.string.existing_customer)) {
+                if (validateFields()) {
+                    checkUserExist(
+                        binding.countryCodeHolder.selectedCountryCode +
+                                binding.editMobile.text.toString()
+                    )
+                }
+            } else pagerData?.onNext(9)
+
         } else if (p == binding.buttonBack) pagerData?.onBack(7)
     }
 }
