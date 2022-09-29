@@ -6,11 +6,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.BodyData" />
+            type="com.elmacentemobile.view.ep.data.BodyData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

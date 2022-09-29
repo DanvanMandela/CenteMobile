@@ -12,6 +12,7 @@
     <color name="app_blue_light">#3988F0</color>
     <color name="app_blue_dark">#337AD8</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="transparent_white">#4DFFFFFF</color>
     <color name="translucent">#60222831</color>
     <color name="grey_light">#d3d3d3</color>
     <color name="ghost_white">#f8f8ff</color>

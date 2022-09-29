@@ -8,11 +8,11 @@
 
         <variable
             name="userData"
-            type="com.craft.silicon.centemobile.data.model.user.ActivationData" />
+            type="com.elmacentemobile.data.model.user.ActivationData" />
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -98,7 +98,7 @@
                         layout="@layout/block_home_body_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/headerItem" />

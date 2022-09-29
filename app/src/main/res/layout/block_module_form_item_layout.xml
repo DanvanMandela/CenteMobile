@@ -7,11 +7,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+            type="com.elmacentemobile.data.model.module.Modules" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -32,8 +32,8 @@
             <ImageView
                 android:id="@+id/avatar"
                 imageUri="@{data.moduleURL}"
-                android:layout_width="@dimen/dimens_40dp"
-                android:layout_height="@dimen/dimens_40dp"
+                android:layout_width="@dimen/dimens_48dp"
+                android:layout_height="@dimen/dimens_48dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -55,8 +55,8 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
-                android:maxLines="3"
-                android:minLines="3"
+                android:maxLines="2"
+                android:minLines="2"
                 android:ellipsize="end"
                 android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"

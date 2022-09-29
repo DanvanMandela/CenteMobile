@@ -11,15 +11,15 @@
 
         <variable
             name="storage"
-            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
+            type="com.elmacentemobile.data.source.pref.StorageDataSource" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+            type="com.elmacentemobile.data.model.control.FormControl" />
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
     </data>
 
@@ -49,7 +49,7 @@
                 app:prefixText="@string/ugx"
                 app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
 
-                <com.craft.silicon.centemobile.util.custom.CurrencyInput
+                <com.elmacentemobile.util.custom.CurrencyInput
                     android:id="@+id/child"
                     amount="@{data}"
                     callback="@{callback}"

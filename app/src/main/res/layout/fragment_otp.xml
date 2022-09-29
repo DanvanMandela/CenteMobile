@@ -8,7 +8,7 @@
 
         <variable
             name="model"
-            type="com.craft.silicon.centemobile.view.model.AuthViewModel" />
+            type="com.elmacentemobile.view.model.AuthViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

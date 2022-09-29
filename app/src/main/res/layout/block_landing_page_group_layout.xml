@@ -8,7 +8,7 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
     <LinearLayout
@@ -47,7 +47,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/avatar"
                             android:scaleType="fitXY"
-                            android:src="@drawable/atm_machine" />
+                            android:src="@drawable/atm_machine_past" />
 
 
                         <TextView
@@ -144,7 +144,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/online_banking"
                             android:scaleType="fitXY"
-                            android:src="@drawable/checking" />
+                            android:src="@drawable/checking_past" />
 
 
                         <TextView
@@ -183,6 +183,7 @@
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/onGoLay"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -210,7 +211,7 @@
                             android:layout_marginTop="@dimen/dimens_12dp"
                             android:contentDescription="@string/cente_on_go"
                             android:scaleType="fitXY"
-                            android:src="@drawable/cente"/>
+                            android:src="@drawable/go"/>
 
 
                         <TextView

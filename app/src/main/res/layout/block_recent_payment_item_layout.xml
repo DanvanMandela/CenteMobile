@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.dynamic.ResultsData" />
+            type="com.elmacentemobile.data.model.dynamic.ResultsData" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

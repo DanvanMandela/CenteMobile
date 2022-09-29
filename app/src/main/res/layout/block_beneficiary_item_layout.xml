@@ -7,16 +7,16 @@
 
         <variable
             name="module"
-            type="com.craft.silicon.centemobile.data.model.module.Modules" />
+            type="com.elmacentemobile.data.model.module.Modules" />
 
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.user.Beneficiary" />
+            type="com.elmacentemobile.data.model.user.Beneficiary" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

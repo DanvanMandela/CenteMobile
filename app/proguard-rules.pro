@@ -23,3 +23,10 @@
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+#dexguard
+-keepattributes SourceFile, LineNumberTable, *Annotation*
+-keep @interface com.dexprotector.annotations.** { *; }
+-keep interface com.dexprotector.annotations.ClassEncryption
+-keep interface com.dexprotector.annotations.HideAccess
+-keep interface com.dexprotector.annotations.StringEncryption

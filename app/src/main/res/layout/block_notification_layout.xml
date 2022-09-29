@@ -8,11 +8,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.receiver.NotificationData" />
+            type="com.elmacentemobile.data.receiver.NotificationData" />
     </data>
 
 
@@ -117,7 +117,7 @@
                         tools:text="@string/lorem" />
 
 
-                    <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
+                    <com.elmacentemobile.view.custom.AspectRatioImageView
                         android:id="@+id/image"
                         image="@{data.image}"
                         android:layout_width="match_parent"

@@ -7,15 +7,42 @@ buildscript {
         classpath "com.jakewharton:butterknife-gradle-plugin:$butterKnife"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
+        classpath ':dexprotector-gradle-plugin'
+        classpath ':dexprotector'
+
+//        classpath 'dexprotector-gradle-plugin'
+//        classpath 'dexprotector'
+//        classpath 'com.dynatrace.tools.android:gradle-plugin:8.243.1.1007'
     }
 }
+
 
 plugins {
     id 'com.android.application' version '7.2.1' apply false
     id 'com.android.library' version '7.2.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.0' apply false
+
+   // id 'com.dynatrace.instrumentation'
 }
+
+//dynatrace {
+//    configurations {
+//        sampleConfig {
+//            autoStart {
+//                /*  applicationId '664bd943-77c9-49dc-857d-35d583cae7b0'
+//                  beaconUrl 'https://bf18347pov.bf.dynatrace.com/mbeacon'*/
+//                applicationId '2c7c3081-bf53-46a8-8819-d6e27a0316f1'
+//                beaconUrl 'https://bf18347pov.bf.dynatrace.com/mbeacon'
+//            }
+//            /*  debug {
+//                  agentLogging(true)
+//              }*/
+//            userOptIn false
+//        }
+//    }
+//}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

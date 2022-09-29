@@ -7,11 +7,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.view.fragment.go.PagerData" />
+            type="com.elmacentemobile.view.fragment.go.PagerData" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.fragment.go.steps.OtherService" />
+            type="com.elmacentemobile.view.fragment.go.steps.OtherService" />
     </data>
 
 

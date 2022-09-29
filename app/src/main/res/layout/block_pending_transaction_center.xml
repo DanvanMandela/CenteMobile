@@ -7,11 +7,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.user.PendingTransaction" />
+            type="com.elmacentemobile.data.model.user.PendingTransaction" />
     </data>
 
 

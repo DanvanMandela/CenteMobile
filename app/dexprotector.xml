@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dexprotector>
+    <verbose>false</verbose>
+    <optimize>false</optimize>
+    <signMode>release</signMode>
+    <stripLogging>debug,verbose,warning,error,info,wtf</stripLogging>
+    <v2SigningEnabled>true</v2SigningEnabled>
+    <v3SigningEnabled>true</v3SigningEnabled>
+    <stringEncryption mode="all">
+        <filters>
+            <filter><![CDATA[glob:!android/**]]></filter>
+            <filter><![CDATA[glob:!com/crashlytics/**]]></filter>
+            <filter><![CDATA[glob:!com/facebook/**]]></filter>
+            <filter><![CDATA[glob:!com/google/commons/**]]></filter>
+            <filter><![CDATA[glob:!com/activeandroid/**]]></filter>
+            <filter><![CDATA[glob:!com/twitter/**]]></filter>
+            <filter><![CDATA[glob:!com/flurry/**]]></filter>
+            <filter><![CDATA[glob:!org/**]]></filter>
+            <filter><![CDATA[glob:!java/**]]></filter>
+            <filter><![CDATA[glob:!javax/**]]></filter>
+            <filter><![CDATA[glob:!rx/**]]></filter>
+            <filter><![CDATA[glob:!retrofit/**]]></filter>
+            <filter><![CDATA[glob:!io/fabric/**]]></filter>
+            <filter><![CDATA[glob:!twitter4j/**]]></filter>
+            <filter><![CDATA[glob:!com/newrelic/**]]></filter>
+            <filter><![CDATA[glob:!com/squareup/**]]></filter>
+            <filter><![CDATA[glob:!com/google/**]]></filter>
+            <filter><![CDATA[glob:!io/github/**]]></filter>
+            <filter><![CDATA[glob:!com/github/**]]></filter>
+            <filter><![CDATA[glob:!com/android/**]]></filter>
+            <filter><![CDATA[glob:!com/wang/**]]></filter>
+            <filter><![CDATA[glob:!com/jackandphantom/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+            <filter><![CDATA[glob:!com/ahmedjazzar/**]]></filter>
+            <filter><![CDATA[glob:!hari/bounceview/**]]></filter>
+            <filter><![CDATA[glob:!com/pnikosis/**]]></filter>
+            <filter><![CDATA[glob:!com/andkulikov/**]]></filter>
+            <filter><![CDATA[glob:!com/amitshekhar/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!com/tapadoo/**]]></filter>
+            <filter><![CDATA[glob:!com/eftimoff/**]]></filter>
+            <filter><![CDATA[glob:!com/shagi/**]]></filter>
+            <filter><![CDATA[glob:!com/fxn769/**]]></filter>
+            <filter><![CDATA[glob:!at/favre/**]]></filter>
+            <filter><![CDATA[glob:!org/fabiomsr/**]]></filter>
+            <filter><![CDATA[glob:!com/karumi/**]]></filter>
+            <filter><![CDATA[glob:!com/andrognito/**]]></filter>
+            <filter><![CDATA[glob:!com/whiteelephant/**]]></filter>
+            <filter><![CDATA[glob:!co/paystack/**]]></filter>
+            <filter><![CDATA[glob:!androidx/**]]></filter>
+            <filter><![CDATA[glob:!android/arch/**]]></filter>
+            <filter><![CDATA[glob:!com/daimajia/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!com/nineoldandroids/**]]></filter>
+            <filter><![CDATA[glob:!com/krsticdragan/**]]></filter>
+            <filter><![CDATA[glob:!ru/egslava/**]]></filter>
+            <filter><![CDATA[glob:!com/airbnb/**]]></filter>
+            <filter><![CDATA[glob:!com/madgag/**]]></filter>
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+            <filter><![CDATA[glob:!com/synnapps/**]]></filter>
+            <filter><![CDATA[glob:!com/synnapps/**]]></filter>
+            <filter><![CDATA[glob:!com/bumptech/**]]></filter>
+
+            <filter><![CDATA[glob:!com/kofigyan/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+
+            <filter><![CDATA[glob:!com/google/dagger/**]]></filter>
+            <filter><![CDATA[glob:!androidx/hilt/**]]></filter>
+            <filter><![CDATA[glob:!javax/xml/bind/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!org/jsoup/**]]></filter>
+            <filter><![CDATA[glob:!org/ocpsoft.prettytime/**]]></filter>
+
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+            <filter><![CDATA[glob:!com/github/yalantis/**]]></filter>
+            <filter><![CDATA[glob:!net/yslibrary/keyboardvisibilityevent/**]]></filter>
+
+            <filter><![CDATA[glob:!androidx/room/**]]></filter>
+
+            <filter><![CDATA[glob:!io/reactivex/**]]></filter>
+
+            <filter><![CDATA[glob:!org/mockito/**]]></filter>
+
+            <filter><![CDATA[glob:!org/jetbrains/kotlinx/**]]></filter>
+
+            <filter><![CDATA[glob:!com/ismaeldivita/chipnavigation/**]]></filter>
+
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+
+            <filter><![CDATA[glob:!com/github/ybq/**]]></filter>
+
+            <filter><![CDATA[glob:!com/redmadrobot/**]]></filter>
+
+            <filter><![CDATA[glob:!androidx/swiperefreshlayout/**]]></filter>
+
+            <filter><![CDATA[glob:!com/jakewharton/**]]></filter>
+
+            <filter><![CDATA[glob:!androidx/datastore/**]]></filter>
+
+
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/amitshekhar/android/**]]></filter>
+
+            <filter><![CDATA[glob:!com/koushikdutta/ion/**]]></filter>
+
+            <filter><![CDATA[glob:!com/justkiddingbaby/**]]></filter>
+
+            <filter><![CDATA[glob:!com/github/saeed-lotfi/**]]></filter>
+
+            <filter><![CDATA[glob:!com/google/android/flexbox/**]]></filter>
+
+
+            <filter><![CDATA[glob:!com/android/support/**]]></filter>
+
+            <filter><![CDATA[glob:!org/imaginativeworld/whynotimagecarousel/**]]></filter>
+
+            <filter><![CDATA[glob:!androidx/biometric/**]]></filter>
+
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+
+            <filter><![CDATA[glob:!org.greenrobot/**]]></filter>
+
+        </filters>
+    </stringEncryption>
+    <classEncryption mode="all">
+        <filters>
+            <filter><![CDATA[glob:!android/**]]></filter>
+            <filter><![CDATA[glob:!com/crashlytics/**]]></filter>
+            <filter><![CDATA[glob:!com/facebook/**]]></filter>
+            <filter><![CDATA[glob:!com/google/commons/**]]></filter>
+            <filter><![CDATA[glob:!com/activeandroid/**]]></filter>
+            <filter><![CDATA[glob:!com/twitter/**]]></filter>
+            <filter><![CDATA[glob:!com/flurry/**]]></filter>
+            <filter><![CDATA[glob:!org/**]]></filter>
+            <filter><![CDATA[glob:!java/**]]></filter>
+            <filter><![CDATA[glob:!javax/**]]></filter>
+            <filter><![CDATA[glob:!rx/**]]></filter>
+            <filter><![CDATA[glob:!retrofit/**]]></filter>
+            <filter><![CDATA[glob:!io/fabric/**]]></filter>
+            <filter><![CDATA[glob:!twitter4j/**]]></filter>
+            <filter><![CDATA[glob:!com/newrelic/**]]></filter>
+            <filter><![CDATA[glob:!com/squareup/**]]></filter>
+            <filter><![CDATA[glob:!com/google/**]]></filter>
+            <filter><![CDATA[glob:!io/github/**]]></filter>
+            <filter><![CDATA[glob:!com/github/**]]></filter>
+            <filter><![CDATA[glob:!com/android/**]]></filter>
+            <filter><![CDATA[glob:!com/wang/**]]></filter>
+            <filter><![CDATA[glob:!com/jackandphantom/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+            <filter><![CDATA[glob:!com/ahmedjazzar/**]]></filter>
+            <filter><![CDATA[glob:!hari/bounceview/**]]></filter>
+            <filter><![CDATA[glob:!com/pnikosis/**]]></filter>
+            <filter><![CDATA[glob:!com/andkulikov/**]]></filter>
+            <filter><![CDATA[glob:!com/amitshekhar/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!com/tapadoo/**]]></filter>
+            <filter><![CDATA[glob:!com/eftimoff/**]]></filter>
+            <filter><![CDATA[glob:!com/shagi/**]]></filter>
+            <filter><![CDATA[glob:!com/fxn769/**]]></filter>
+            <filter><![CDATA[glob:!at/favre/**]]></filter>
+            <filter><![CDATA[glob:!org/fabiomsr/**]]></filter>
+            <filter><![CDATA[glob:!com/karumi/**]]></filter>
+            <filter><![CDATA[glob:!com/andrognito/**]]></filter>
+            <filter><![CDATA[glob:!com/whiteelephant/**]]></filter>
+            <filter><![CDATA[glob:!co/paystack/**]]></filter>
+            <filter><![CDATA[glob:!androidx/**]]></filter>
+            <filter><![CDATA[glob:!android/arch/**]]></filter>
+            <filter><![CDATA[glob:!com/daimajia/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!com/nineoldandroids/**]]></filter>
+            <filter><![CDATA[glob:!com/krsticdragan/**]]></filter>
+            <filter><![CDATA[glob:!ru/egslava/**]]></filter>
+            <filter><![CDATA[glob:!com/airbnb/**]]></filter>
+            <filter><![CDATA[glob:!com/madgag/**]]></filter>
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+            <filter><![CDATA[glob:!com/synnapps/**]]></filter>
+            <filter><![CDATA[glob:!com/bumptech/**]]></filter>
+
+            <filter><![CDATA[glob:!com/kofigyan/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+
+
+            <filter><![CDATA[glob:!com/google/dagger/**]]></filter>
+            <filter><![CDATA[glob:!androidx/hilt/**]]></filter>
+            <filter><![CDATA[glob:!javax/xml/bind/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!org/jsoup/**]]></filter>
+            <filter><![CDATA[glob:!org/ocpsoft.prettytime/**]]></filter>
+
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+
+            <filter><![CDATA[glob:!com/github/yalantis/**]]></filter>
+            <filter><![CDATA[glob:!net/yslibrary/keyboardvisibilityevent/**]]></filter>
+
+            <filter><![CDATA[glob:!net/yslibrary/keyboardvisibilityevent/**]]></filter>
+
+            <filter><![CDATA[glob:!androidx/room/**]]></filter>
+
+            <filter><![CDATA[glob:!io/reactivex/**]]></filter>
+            <filter><![CDATA[glob:!org/mockito/**]]></filter>
+            <filter><![CDATA[glob:!org/jetbrains/kotlinx/**]]></filter>
+            <filter><![CDATA[glob:!com/ismaeldivita/chipnavigation/**]]></filter>
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+            <filter><![CDATA[glob:!com/github/ybq/**]]></filter>
+            <filter><![CDATA[glob:!com/redmadrobot/**]]></filter>
+            <filter><![CDATA[glob:!androidx/swiperefreshlayout/**]]></filter>
+            <filter><![CDATA[glob:!com/jakewharton/**]]></filter>
+            <filter><![CDATA[glob:!androidx/datastore/**]]></filter>
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/amitshekhar/android/**]]></filter>
+            <filter><![CDATA[glob:!com/koushikdutta/ion/**]]></filter>
+            <filter><![CDATA[glob:!com/justkiddingbaby/**]]></filter>
+            <filter><![CDATA[glob:!com/github/saeed-lotfi/**]]></filter>
+            <filter><![CDATA[glob:!com/google/android/flexbox/**]]></filter>
+            <filter><![CDATA[glob:!com/android/support/**]]></filter>
+            <filter><![CDATA[glob:!org/imaginativeworld/whynotimagecarousel/**]]></filter>
+            <filter><![CDATA[glob:!androidx/biometric/**]]></filter>
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+            <filter><![CDATA[glob:!org.greenrobot/**]]></filter>
+        </filters>
+    </classEncryption>
+    <hideAccess mode="all">
+        <filters>
+            <filter><![CDATA[glob:!android/**]]></filter>
+            <filter><![CDATA[glob:!com/crashlytics/**]]></filter>
+            <filter><![CDATA[glob:!com/facebook/**]]></filter>
+            <filter><![CDATA[glob:!com/google/commons/**]]></filter>
+            <filter><![CDATA[glob:!com/activeandroid/**]]></filter>
+            <filter><![CDATA[glob:!com/twitter/**]]></filter>
+            <filter><![CDATA[glob:!com/flurry/**]]></filter>
+            <filter><![CDATA[glob:!org/**]]></filter>
+            <filter><![CDATA[glob:!java/**]]></filter>
+            <filter><![CDATA[glob:!javax/**]]></filter>
+            <filter><![CDATA[glob:!rx/**]]></filter>
+            <filter><![CDATA[glob:!retrofit/**]]></filter>
+            <filter><![CDATA[glob:!io/fabric/**]]></filter>
+            <filter><![CDATA[glob:!twitter4j/**]]></filter>
+            <filter><![CDATA[glob:!com/newrelic/**]]></filter>
+            <filter><![CDATA[glob:!com/squareup/**]]></filter>
+            <filter><![CDATA[glob:!com/google/**]]></filter>
+            <filter><![CDATA[glob:!io/github/**]]></filter>
+            <filter><![CDATA[glob:!com/github/**]]></filter>
+            <filter><![CDATA[glob:!com/android/**]]></filter>
+            <filter><![CDATA[glob:!com/wang/**]]></filter>
+            <filter><![CDATA[glob:!com/jackandphantom/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+            <filter><![CDATA[glob:!com/ahmedjazzar/**]]></filter>
+            <filter><![CDATA[glob:!hari/bounceview/**]]></filter>
+            <filter><![CDATA[glob:!com/pnikosis/**]]></filter>
+            <filter><![CDATA[glob:!com/andkulikov/**]]></filter>
+            <filter><![CDATA[glob:!com/amitshekhar/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!com/tapadoo/**]]></filter>
+            <filter><![CDATA[glob:!com/eftimoff/**]]></filter>
+            <filter><![CDATA[glob:!com/shagi/**]]></filter>
+            <filter><![CDATA[glob:!com/fxn769/**]]></filter>
+            <filter><![CDATA[glob:!at/favre/**]]></filter>
+            <filter><![CDATA[glob:!org/fabiomsr/**]]></filter>
+            <filter><![CDATA[glob:!com/karumi/**]]></filter>
+            <filter><![CDATA[glob:!com/andrognito/**]]></filter>
+            <filter><![CDATA[glob:!com/whiteelephant/**]]></filter>
+            <filter><![CDATA[glob:!co/paystack/**]]></filter>
+            <filter><![CDATA[glob:!androidx/**]]></filter>
+            <filter><![CDATA[glob:!android/arch/**]]></filter>
+            <filter><![CDATA[glob:!com/daimajia/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!com/nineoldandroids/**]]></filter>
+            <filter><![CDATA[glob:!com/krsticdragan/**]]></filter>
+            <filter><![CDATA[glob:!ru/egslava/**]]></filter>
+            <filter><![CDATA[glob:!com/airbnb/**]]></filter>
+            <filter><![CDATA[glob:!com/madgag/**]]></filter>
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+            <filter><![CDATA[glob:!com/synnapps/**]]></filter>
+            <filter><![CDATA[glob:!com/bumptech/**]]></filter>
+            <filter><![CDATA[glob:!pl/droidsonroids/**]]></filter>
+            <filter><![CDATA[glob:!com/journeyapps/**]]></filter>
+
+            <filter><![CDATA[glob:!com/kofigyan/**]]></filter>
+            <filter><![CDATA[glob:!com/chaos/**]]></filter>
+            <filter><![CDATA[glob:!id/zelory/**]]></filter>
+
+
+            <filter><![CDATA[glob:!com/google/dagger/**]]></filter>
+            <filter><![CDATA[glob:!androidx/hilt/**]]></filter>
+            <filter><![CDATA[glob:!javax/xml/bind/**]]></filter>
+            <filter><![CDATA[glob:!de/hdodenhof/**]]></filter>
+            <filter><![CDATA[glob:!org/jsoup/**]]></filter>
+            <filter><![CDATA[glob:!org/ocpsoft.prettytime/**]]></filter>
+
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+            <filter><![CDATA[glob:!com/github/yalantis/**]]></filter>
+            <filter><![CDATA[glob:!net/yslibrary/keyboardvisibilityevent/**]]></filter>
+
+
+            <filter><![CDATA[glob:!androidx/room/**]]></filter>
+            <filter><![CDATA[glob:!io/reactivex/**]]></filter>
+            <filter><![CDATA[glob:!org/mockito/**]]></filter>
+            <filter><![CDATA[glob:!org/jetbrains/kotlinx/**]]></filter>
+            <filter><![CDATA[glob:!com/ismaeldivita/chipnavigation/**]]></filter>
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+
+            <filter><![CDATA[glob:!com/hbb20/**]]></filter>
+            <filter><![CDATA[glob:!com/github/ybq/**]]></filter>
+            <filter><![CDATA[glob:!com/redmadrobot/**]]></filter>
+            <filter><![CDATA[glob:!androidx/swiperefreshlayout/**]]></filter>
+            <filter><![CDATA[glob:!com/jakewharton/**]]></filter>
+            <filter><![CDATA[glob:!androidx/datastore/**]]></filter>
+            <filter><![CDATA[glob:!com/ernestoyaquello/stepperform/**]]></filter>
+            <filter><![CDATA[glob:!com/amitshekhar/android/**]]></filter>
+            <filter><![CDATA[glob:!com/koushikdutta/ion/**]]></filter>
+            <filter><![CDATA[glob:!com/justkiddingbaby/**]]></filter>
+            <filter><![CDATA[glob:!com/github/saeed-lotfi/**]]></filter>
+            <filter><![CDATA[glob:!com/google/android/flexbox/**]]></filter>
+            <filter><![CDATA[glob:!com/android/support/**]]></filter>
+            <filter><![CDATA[glob:!org/imaginativeworld/whynotimagecarousel/**]]></filter>
+            <filter><![CDATA[glob:!androidx/biometric/**]]></filter>
+            <filter><![CDATA[glob:!com/scottyab/**]]></filter>
+            <filter><![CDATA[glob:!org.greenrobot/**]]></filter>
+
+        </filters>
+    </hideAccess>
+    <!--    <detect>-->
+    <!--        <root>-->
+    <!--            <positiveCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.positiveRootCheck-->
+    <!--            </positiveCheckCallback>-->
+    <!--            <negativeCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.negativeRootCheck-->
+    <!--            </negativeCheckCallback>-->
+    <!--            <probeMethod>com.elmacentemobile.view.activity.MainActivity.doProbe</probeMethod>-->
+    <!--        </root>-->
+    <!--        <debug>-->
+    <!--            <positiveCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.positiveDebugCheck-->
+    <!--            </positiveCheckCallback>-->
+    <!--            <negativeCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.negativeDebugCheck-->
+    <!--            </negativeCheckCallback>-->
+    <!--            <probeMethod>com.elmacentemobile.view.activity.MainActivity.doProbe</probeMethod>-->
+    <!--        </debug>-->
+    <!--        <emulator>-->
+    <!--            <positiveCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.positiveEmulatorCheck-->
+    <!--            </positiveCheckCallback>-->
+    <!--            <negativeCheckCallback>-->
+    <!--                com.elmacentemobile.view.activity.MainActivity.negativeEmulatorCheck-->
+    <!--            </negativeCheckCallback>-->
+    <!--            <probeMethod>com.elmacentemobile.view.activity.MainActivity.doProbe</probeMethod>-->
+    <!--        </emulator>-->
+    <!--    </detect>-->
+
+
+    <integrityControl mode="all">
+        <checkCertificate>on</checkCertificate>
+    </integrityControl>
+    <!--<uiProtection/>-->  <!--todo uiProtection before Store Upload-->
+    <antiDebug>true</antiDebug>
+    <antiEmulator>true</antiEmulator>
+    <antiManualInstall>false
+    </antiManualInstall>  <!--todo antiManualInstall true before Store Upload false-->
+    <!--<runtimeChecks><paranoidMode>true</paranoidMode></runtimeChecks>-->  <!--will crash if positive-->
+    <!--<runtimeChecks><userMode>true</userMode></runtimeChecks>-->   <!--will display user choice dialog-->
+    <runtimeChecks />
+    <crashHandler />
+    <platformApplicationSupport>on</platformApplicationSupport> <!-- display crash details dialog-->
+    <securityAssessment>
+        <signingCertificateCompromised mode="error" />
+        <signingCertificateWeakKey mode="error" />
+        <dependencyCheck mode="warning" />
+    </securityAssessment>
+
+    <crashHandler />
+    <platformApplicationSupport>on</platformApplicationSupport>
+    <!-- display crash details dialog-->
+
+
+</dexprotector>

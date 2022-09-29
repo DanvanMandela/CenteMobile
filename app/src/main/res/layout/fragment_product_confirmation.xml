@@ -8,11 +8,11 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.fragment.go.steps.ProductConfirm" />
+            type="com.elmacentemobile.view.fragment.go.steps.ProductConfirm" />
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.Confirm" />
+            type="com.elmacentemobile.util.callbacks.Confirm" />
     </data>
 
 

@@ -53,11 +53,7 @@
     <action
         android:id="@+id/action_nav_land"
         app:destination="@+id/landingPageFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
         app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpTo="@+id/main_navigation_graph"
         app:popUpToInclusive="true" />
 
@@ -72,35 +68,10 @@
         app:popUpTo="@+id/main_navigation_graph"
         app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_validation"
-        app:destination="@+id/validationFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_dynamic"
-        app:destination="@+id/dynamicFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_level_one"
-        app:destination="@+id/levelOneFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
+
+
 
     <action
         android:id="@+id/action_nav_change_pin"
@@ -122,15 +93,6 @@
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_level_two"
-        app:destination="@+id/levelTwoFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/action_nav_transaction_center"
@@ -142,15 +104,7 @@
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_purchase"
-        app:destination="@+id/purchaseFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
+
 
     <action
         android:id="@+id/action_nav_notification"
@@ -162,15 +116,7 @@
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_global"
-        app:destination="@+id/globalFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
+
 
 
     <action
@@ -245,15 +191,7 @@
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
 
-    <action
-        android:id="@+id/action_nav_pending_transaction"
-        app:destination="@+id/pendingTransactionFragment"
-        app:enterAnim="@anim/anim_slide_in_right"
-        app:exitAnim="@anim/anim_slide_out_right"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/anim_slide_in_right"
-        app:popExitAnim="@anim/anim_slide_out_right"
-        app:popUpToInclusive="true" />
+
 
     <action
         android:id="@+id/action_nav_beneficiary_management"
@@ -269,17 +207,17 @@
     <!--    Fragments-->
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.LoginFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.splash.SplashFragment"
+        android:name="com.elmacentemobile.view.fragment.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" />
     <fragment
         android:id="@+id/authFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.AuthFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.AuthFragment"
         android:label="fragment_auth"
         tools:layout="@layout/fragment_auth">
         <action
@@ -293,17 +231,17 @@
     </fragment>
     <fragment
         android:id="@+id/otpFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.OtpFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.OtpFragment"
         android:label="fragment_otp"
         tools:layout="@layout/fragment_otp" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.home.HomeFragment"
+        android:name="com.elmacentemobile.view.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/landingPageFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.landing.LandingPageFragment"
+        android:name="com.elmacentemobile.view.fragment.landing.LandingPageFragment"
         android:label="fragment_landing_page"
         tools:layout="@layout/fragment_landing_page">
 
@@ -359,21 +297,6 @@
 
 
     </fragment>
-    <fragment
-        android:id="@+id/validationFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.validation.ValidationFragment"
-        android:label="fragment_validation"
-        tools:layout="@layout/fragment_validation" />
-    <fragment
-        android:id="@+id/dynamicFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.dynamic.DynamicFragment"
-        android:label="fragment_dynamic"
-        tools:layout="@layout/fragment_dynamic" />
-    <fragment
-        android:id="@+id/purchaseFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.payment.PurchaseFragment"
-        android:label="fragment_purchase"
-        tools:layout="@layout/fragment_purchase" />
 
 
     <!--    End-->
@@ -382,22 +305,18 @@
 
     <dialog
         android:id="@+id/receiptFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.receipt.ReceiptFragment"
+        android:name="com.elmacentemobile.view.dialog.receipt.ReceiptFragment"
         android:label="fragment_receipt"
         tools:layout="@layout/fragment_receipt" />
-    <fragment
-        android:id="@+id/globalFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.global.GlobalFragment"
-        android:label="fragment_global"
-        tools:layout="@layout/fragment_global" />
+
     <fragment
         android:id="@+id/forgotPinFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.ForgotPinFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.ForgotPinFragment"
         android:label="fragment_forgot_pin"
         tools:layout="@layout/fragment_forgot_pin" />
     <fragment
         android:id="@+id/selfRegistrationFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.registration.self.SelfRegistrationFragment"
+        android:name="com.elmacentemobile.view.fragment.registration.self.SelfRegistrationFragment"
         android:label="fragment_self_registration"
         tools:layout="@layout/fragment_self_registration">
         <action
@@ -412,12 +331,12 @@
     </fragment>
     <fragment
         android:id="@+id/cardDetailsFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.registration.self.steps.CardDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.registration.self.steps.CardDetailsFragment"
         android:label="fragment_card_details"
         tools:layout="@layout/fragment_card_details" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.map.MapsFragment"
+        android:name="com.elmacentemobile.view.fragment.map.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps">
         <action
@@ -428,7 +347,7 @@
 
     <fragment
         android:id="@+id/onTheGoFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.go.OnTheGoFragment"
+        android:name="com.elmacentemobile.view.fragment.go.OnTheGoFragment"
         android:label="fragment_on_the_go"
         tools:layout="@layout/fragment_on_the_go" />
 
@@ -438,52 +357,43 @@
 
     <dialog
         android:id="@+id/connectionFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.conn.ConnectionFragment"
+        android:name="com.elmacentemobile.view.dialog.conn.ConnectionFragment"
         android:label="fragment_connection"
         tools:layout="@layout/fragment_connection" />
     <dialog
         android:id="@+id/mapBottomSheetFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.map.MapBottomSheetFragment"
+        android:name="com.elmacentemobile.view.fragment.map.MapBottomSheetFragment"
         android:label="fragment_map_bottom_sheet"
         tools:layout="@layout/fragment_map_bottom_sheet" />
     <fragment
         android:id="@+id/biometricFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.bio.BiometricFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.bio.BiometricFragment"
         android:label="fragment_biometric"
         tools:layout="@layout/fragment_biometric" />
     <dialog
         android:id="@+id/loadingFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.LoadingFragment"
+        android:name="com.elmacentemobile.view.dialog.LoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" />
     <dialog
         android:id="@+id/disclaimerFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.DisclaimerFragment"
+        android:name="com.elmacentemobile.view.dialog.DisclaimerFragment"
         android:label="fragment_disclaimer"
         tools:layout="@layout/fragment_disclaimer" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.notifications.NotificationFragment"
+        android:name="com.elmacentemobile.view.fragment.notifications.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
     <dialog
         android:id="@+id/globalOTPFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.global.GlobalOTPFragment"
+        android:name="com.elmacentemobile.view.fragment.global.GlobalOTPFragment"
         android:label="fragment_global_o_t_p"
         tools:layout="@layout/fragment_global_o_t_p" />
-    <fragment
-        android:id="@+id/levelOneFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.levels.LevelOneFragment"
-        android:label="fragment_level_one"
-        tools:layout="@layout/fragment_level_one" />
-    <fragment
-        android:id="@+id/levelTwoFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.levels.LevelTwoFragment"
-        android:label="fragment_level_two"
-        tools:layout="@layout/fragment_level_two" />
+
     <fragment
         android:id="@+id/transactionCenterFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.transaction.TransactionCenterFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.TransactionCenterFragment"
         android:label="fragment_transaction_center"
         tools:layout="@layout/fragment_transaction_center">
         <action
@@ -493,73 +403,69 @@
     </fragment>
     <dialog
         android:id="@+id/transactionDetailsFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.transaction.TransactionDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.TransactionDetailsFragment"
         android:label="fragment_transaction_details"
         tools:layout="@layout/fragment_transaction_details" />
     <fragment
         android:id="@+id/customerProductFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.go.steps.CustomerProductFragment"
+        android:name="com.elmacentemobile.view.fragment.go.steps.CustomerProductFragment"
         android:label="fragment_customer_product"
         tools:layout="@layout/fragment_customer_product" />
     <fragment
         android:id="@+id/preForgotFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.PreForgotFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.pin.PreForgotFragment"
         android:label="fragment_pre_forgot"
         tools:layout="@layout/fragment_pre_forgot" />
     <dialog
         android:id="@+id/newAlertDialogFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.NewAlertDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.NewAlertDialogFragment"
         android:label="fragment_new_alert_dialog"
         tools:layout="@layout/fragment_new_alert_dialog" />
     <dialog
         android:id="@+id/displayDialogFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.display.DisplayDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.display.DisplayDialogFragment"
         android:label="fragment_display_dialog"
         tools:layout="@layout/fragment_display_dialog" />
     <dialog
         android:id="@+id/miniStatementFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.MiniStatementFragment"
+        android:name="com.elmacentemobile.view.fragment.MiniStatementFragment"
         android:label="fragment_mini_statement"
         tools:layout="@layout/fragment_mini_statement" />
     <fragment
         android:id="@+id/changePinFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.pin.ChangePinFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.pin.ChangePinFragment"
         android:label="fragment_change_pin"
         tools:layout="@layout/fragment_change_pin" />
     <dialog
         android:id="@+id/standingOrderDetailsFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.transaction.StandingOrderDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.StandingOrderDetailsFragment"
         android:label="fragment_standing_order_details"
         tools:layout="@layout/fragment_standing_order_details" />
-    <fragment
-        android:id="@+id/pendingTransactionFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.transaction.PendingTransactionFragment"
-        android:label="fragment_pending_transaction"
-        tools:layout="@layout/fragment_pending_transaction" />
+
     <fragment
         android:id="@+id/beneficiaryManagementFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
+        android:name="com.elmacentemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
         android:label="fragment_beneficiary_management"
         tools:layout="@layout/fragment_beneficiary_management" />
     <dialog
         android:id="@+id/logoutFeedback"
-        android:name="com.craft.silicon.centemobile.view.fragment.landing.LogoutFeedback"
+        android:name="com.elmacentemobile.view.fragment.landing.LogoutFeedback"
         android:label="fragment_logout_feedback"
         tools:layout="@layout/fragment_logout_feedback" />
     <fragment
         android:id="@+id/deviceRootedFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.auth.DeviceRootedFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.DeviceRootedFragment"
         android:label="fragment_device_rooted"
         tools:layout="@layout/fragment_device_rooted" />
     <dialog
         android:id="@+id/rejectPendingFragment"
-        android:name="com.craft.silicon.centemobile.view.fragment.transaction.RejectPendingFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.RejectPendingFragment"
         android:label="fragment_reject_pending"
         tools:layout="@layout/fragment_reject_pending" />
 
     <dialog
         android:id="@+id/successDialogFragment"
-        android:name="com.craft.silicon.centemobile.view.dialog.SuccessDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.SuccessDialogFragment"
         android:label="fragment_success_dialog"
         tools:layout="@layout/fragment_success_dialog" />
 

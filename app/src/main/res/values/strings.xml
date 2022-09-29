@@ -48,10 +48,10 @@
     <string name="branch_atm"><![CDATA[Branches\n& ATM]]></string>
     <string name="cente_login">CenteMobile\nLogin</string>
     <string name="online_banking">Internet\nBanking</string>
-    <string name="good_night">Good Night</string>
-    <string name="good_afternoon">Good Afternoon</string>
-    <string name="good_morining">Good  Morning</string>
-    <string name="good_evening">Good Evening</string>
+    <string name="good_night">Good\nNight!</string>
+    <string name="good_afternoon">Good\nAfternoon!</string>
+    <string name="good_morining">Good\nMorning!</string>
+    <string name="good_evening">Good\nEvening!</string>
     <string name="cente_on_go">Cente\nOn The Go</string>
     <string name="recent">Recent</string>
     <string name="close">Close</string>
@@ -355,7 +355,7 @@
     <string name="trans_details">TRANSACTION DETAILS</string>
     <string name="ugx">UGX</string>
     <string name="welcome_to_cente">Welcome To\nCentenary Bank</string>
-    <string name="not_reg">Not registered for CENETEMOBILE?</string>
+    <string name="not_reg">Not registered for CENTEMOBILE?</string>
     <string name="tap_to_rate">Tap below to rate your experience</string>
 
     <string name="your_feedback_is_important">Your feedback is important to us</string>
@@ -418,8 +418,15 @@
     <string name="excelent">EXCELENT</string>
     <string name="enter_valid_mobile">Enter valid phone number</string>
     <string name="message_required">Message is required</string>
-    <string name="invalid_message">Message is inavlid</string>
+    <string name="invalid_message">Message is invalid</string>
     <string name="i_an_">I am an</string>
+    <string name="please_enter_account_your_info">Please enter your Account Details below</string>
+    <string name="account_details">Account Details</string>
+    <string name="existing_account_details">Existing Account Details</string>
+    <string name="existing_customer_details">Existing Customer Details</string>
+    <string name="welcome_to">Welcome To</string>
+    <string name="welcome_cente_mobile">Centenary Bank Mobile Banking</string>
+    <string name="good_afternoon_">Good\nAfternoon</string>
 
 
 </resources>

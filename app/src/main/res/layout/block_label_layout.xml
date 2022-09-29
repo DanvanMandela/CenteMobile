@@ -11,11 +11,11 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.control.FormControl" />
+            type="com.elmacentemobile.data.model.control.FormControl" />
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
     <FrameLayout

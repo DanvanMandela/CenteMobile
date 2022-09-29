@@ -7,11 +7,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.user.Accounts" />
+            type="com.elmacentemobile.data.model.user.Accounts" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -102,8 +102,8 @@
                 android:id="@+id/textView6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
@@ -113,9 +113,12 @@
                 android:text="@string/view_statement"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/white"
+                app:cornerRadius="@dimen/dimens_16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/aspectRatioImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
+                app:strokeColor="@color/white"
+                app:strokeWidth="@dimen/dimens_1dp"
                 tools:ignore="UnusedAttribute" />
 
 
@@ -125,7 +128,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_semi_bold"
                 android:letterSpacing="0.2"
@@ -133,10 +135,11 @@
                 android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/aspectRatioImageView"
+                app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView6"
                 tools:ignore="UnusedAttribute"
                 tools:text="1234324567" />
         </androidx.constraintlayout.widget.ConstraintLayout>

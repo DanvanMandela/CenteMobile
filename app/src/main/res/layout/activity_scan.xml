@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.craft.silicon.centemobile.view.qr.QROverlayView
+        <com.elmacentemobile.view.qr.QROverlayView
             android:id="@+id/overlay_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

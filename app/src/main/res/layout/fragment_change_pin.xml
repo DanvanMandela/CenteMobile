@@ -9,7 +9,7 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -128,7 +128,7 @@
                                     android:layout_height="match_parent"
                                     android:autoSizeTextType="uniform"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:inputType="textPassword"
+                                    android:inputType="numberPassword"
                                     android:paddingHorizontal="@dimen/dimens_5dp"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     tools:targetApi="o" />
@@ -157,7 +157,7 @@
                                     android:layout_height="match_parent"
                                     android:autoSizeTextType="uniform"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:inputType="textPassword"
+                                    android:inputType="numberPassword"
                                     android:paddingHorizontal="@dimen/dimens_5dp"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     tools:targetApi="o" />
@@ -186,7 +186,7 @@
                                     android:layout_height="match_parent"
                                     android:autoSizeTextType="uniform"
                                     android:fontFamily="@font/poppins_medium"
-                                    android:inputType="textPassword"
+                                    android:inputType="numberPassword"
                                     android:paddingHorizontal="@dimen/dimens_5dp"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     tools:targetApi="o" />

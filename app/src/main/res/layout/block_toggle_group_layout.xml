@@ -6,12 +6,12 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.GroupForm" />
+            type="com.elmacentemobile.view.ep.data.GroupForm" />
 
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
     <com.google.android.material.button.MaterialButtonToggleGroup

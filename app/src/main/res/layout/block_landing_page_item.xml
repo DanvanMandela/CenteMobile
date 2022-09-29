@@ -7,29 +7,30 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.LandingPageItem" />
+            type="com.elmacentemobile.view.ep.data.LandingPageItem" />
     </data>
-
 
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardItem"
-        android:layout_width="@dimen/dimens_120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimens_5dp"
-        app:cardCornerRadius="@dimen/dimens_8dp"
-        app:cardElevation="@dimen/dimens_5dp">
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/dimens_10dp"
+        app:cardElevation="@dimen/dimens_0dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="@dimen/dimens_2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:onClick="@{()->callback.onLanding(data)}"
-            android:padding="@dimen/dimens_5dp">
+            android:background="@color/transparent_white"
+            android:onClick="@{()->callback.onLanding(data)}">
 
             <ImageView
                 android:id="@+id/avatar"
@@ -37,10 +38,13 @@
                 android:layout_width="@dimen/dimens_60dp"
                 android:layout_height="@dimen/dimens_60dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:contentDescription="@string/avatar"
+                android:padding="@dimen/dimens_8dp"
                 android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@+id/title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -49,10 +53,10 @@
             <TextView
                 android:id="@+id/title"
                 textStrRes="@{data.title}"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:autoSizeTextType="uniform"
+                android:background="@color/white"
                 android:fontFamily="@font/poppins_semi_bold"
                 android:gravity="center"
                 android:maxLines="2"
@@ -64,7 +68,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatar"
                 tools:ignore="UnusedAttribute" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

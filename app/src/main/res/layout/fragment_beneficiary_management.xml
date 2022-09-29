@@ -8,15 +8,15 @@
 
         <variable
             name="storage"
-            type="com.craft.silicon.centemobile.data.source.pref.StorageDataSource" />
+            type="com.elmacentemobile.data.source.pref.StorageDataSource" />
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.DynamicData" />
+            type="com.elmacentemobile.view.ep.data.DynamicData" />
     </data>
 
 

@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.MiniStatement" />
+            type="com.elmacentemobile.view.ep.data.MiniStatement" />
     </data>
 
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/parent"
+        android:id="@+id/parentCustomer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimens_150dp"
         android:clipToPadding="false"

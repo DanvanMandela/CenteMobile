@@ -9,11 +9,11 @@
 
         <variable
             name="callback"
-            type="com.craft.silicon.centemobile.util.callbacks.AppCallbacks" />
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.GroupLanding" />
+            type="com.elmacentemobile.view.ep.data.GroupLanding" />
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -37,7 +37,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1">
 
-                    <com.craft.silicon.centemobile.view.custom.AspectRatioImageView
+                    <com.elmacentemobile.view.custom.AspectRatioImageView
                         android:id="@+id/banner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

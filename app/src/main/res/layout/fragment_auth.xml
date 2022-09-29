@@ -8,7 +8,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.user.ActivationData" />
+            type="com.elmacentemobile.data.model.user.ActivationData" />
     </data>
 
 
@@ -133,7 +133,7 @@
                                 android:fontFamily="@font/poppins_medium"
                                 android:gravity="center"
                                 android:hint="@string/pin"
-                                android:inputType="textPassword"
+                                android:inputType="numberPassword"
                                 android:paddingHorizontal="@dimen/dimens_5dp"
                                 android:paddingVertical="@dimen/dimens_0dp"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />

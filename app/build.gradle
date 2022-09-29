@@ -7,17 +7,19 @@ plugins {
     id 'kotlin-parcelize'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'com.google.gms.google-services'
+    id 'dexprotector'
+//    id 'com.google.firebase.crashlytics'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
-        applicationId "com.craft.silicon.centemobile"
-        minSdk 24
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        applicationId "com.elmacentemobile"
+        minSdk 21
+        targetSdk 33
+        versionCode 125
+        versionName "125"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,8 +37,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ext.set("dexprotector.configFile", "${projectDir}/dexprotector.xml")
+            signingConfig signingConfigs.release
         }
     }
+
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -64,9 +76,9 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
@@ -80,11 +92,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //****Firebase
-    implementation 'com.google.firebase:firebase-messaging:23.0.7'
-    implementation 'com.google.firebase:firebase-dynamic-links:21.0.1'
-    implementation 'com.google.firebase:firebase-database:20.0.5'
-    implementation 'com.google.firebase:firebase-database-ktx:20.0.5'
-    implementation 'com.google.firebase:firebase-core:21.1.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.8'
+    implementation 'com.google.firebase:firebase-dynamic-links:21.0.2'
+    implementation 'com.google.firebase:firebase-database:20.0.6'
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.6'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+
+//    implementation 'com.google.firebase:firebase-crashlytics'
+//    implementation 'com.google.firebase:firebase-analytics'
 
 
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -317,7 +332,7 @@ dependencies {
     implementation group: 'com.google.android.gms', name: 'play-services-auth-api-phone', version: '18.0.1'
 
     // https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth
-    implementation group: 'com.google.android.gms', name: 'play-services-auth', version: '20.2.0'
+    implementation group: 'com.google.android.gms', name: 'play-services-auth', version: '20.3.0'
 
     // https://mvnrepository.com/artifact/com.github.beigirad/ZigzagView
     implementation group: 'com.github.beigirad', name: 'ZigzagView', version: '1.0.6'
@@ -328,7 +343,7 @@ dependencies {
 
     implementation 'com.scottyab:rootbeer-lib:0.0.8'
 
-
+    implementation 'org.greenrobot:eventbus:3.0.0'
 
 
 }

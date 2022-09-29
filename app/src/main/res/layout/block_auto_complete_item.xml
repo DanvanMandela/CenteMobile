@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.data.model.static_data.StaticDataDetails" />
+            type="com.elmacentemobile.data.model.static_data.StaticDataDetails" />
 
     </data>
 

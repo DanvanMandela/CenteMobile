@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.ResultDataList" />
+            type="com.elmacentemobile.view.ep.data.ResultDataList" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

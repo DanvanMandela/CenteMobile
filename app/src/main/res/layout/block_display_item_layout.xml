@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.craft.silicon.centemobile.view.ep.data.DisplayContent" />
+            type="com.elmacentemobile.view.ep.data.DisplayContent" />
     </data>
 
     <LinearLayout
