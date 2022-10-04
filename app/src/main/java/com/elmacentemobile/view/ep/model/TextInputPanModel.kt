@@ -62,6 +62,9 @@ fun TextInputEditText.setPanInputLayout(
     setDefaultValue(formControl, callbacks)
     setPanTextWatcher(this, callbacks, formControl!!)
     callbacks?.onServerValue(formControl, this)
+    if (!formControl.controlValue.isNullOrBlank())
+        this.setText(formControl.controlValue)
+
     if (!TextUtils.isEmpty(value)) {
         this.setText(value)
         callbacks?.userInput(
@@ -75,6 +78,7 @@ fun TextInputEditText.setPanInputLayout(
             )
         )
     }
+
 }
 
 
@@ -85,7 +89,17 @@ fun setPanTextWatcher(
 ) {
     inputEdit.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-        override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+        override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            if (!formControl.controlValue.isNullOrBlank()) {
+                if (charSequence.toString().length
+                    < formControl.controlValue!!.length
+                ) {
+                    inputEdit.setText(formControl.controlValue)
+                    inputEdit.setSelection(inputEdit.text!!.length)
+                }
+            }
+        }
+
         override fun afterTextChanged(editable: Editable) {
             if (!TextHelper.isInputCorrect(
                     editable,

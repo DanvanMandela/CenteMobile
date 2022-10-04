@@ -65,10 +65,10 @@
                             android:layout_marginBottom="-30dp">
 
                             <ImageView
-                                android:scaleType="centerCrop"
                                 android:id="@+id/banner"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
+                                android:scaleType="centerCrop"
                                 android:src="@drawable/mapeera_house"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintDimensionRatio="7:7.7"
@@ -147,43 +147,48 @@
                                         tools:targetApi="o" />
 
 
-                                    <com.google.android.material.button.MaterialButton
-                                        android:id="@+id/registration"
-                                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="0dp"
-                                        android:layout_marginEnd="5dp"
-                                        android:autoSizeMaxTextSize="14sp"
-                                        android:autoSizeMinTextSize="12sp"
-                                        android:autoSizeStepGranularity="2sp"
-                                        android:autoSizeTextType="uniform"
-                                        android:onClick="@{()->callback.toSelf()}"
-                                        android:text="@string/register"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintDimensionRatio="2:0.6"
-                                        app:layout_constraintEnd_toStartOf="@+id/login"
-                                        app:layout_constraintHorizontal_bias="0.5"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:strokeColor="@color/app_blue_dark"
-                                        tools:targetApi="o" />
-
-                                    <com.google.android.material.button.MaterialButton
-                                        android:id="@+id/login"
-                                        android:layout_width="0dp"
-                                        android:layout_height="0dp"
-                                        android:layout_marginStart="5dp"
-                                        android:autoSizeMaxTextSize="14sp"
-                                        android:autoSizeMinTextSize="12sp"
-                                        android:autoSizeStepGranularity="2sp"
-                                        android:autoSizeTextType="uniform"
-                                        android:onClick="@{()->callback.toLogin()}"
-                                        android:text="@string/login"
-                                        app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintDimensionRatio="2:0.6"
+                                        app:layout_constraintDimensionRatio="6:1"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintHorizontal_bias="0.5"
-                                        app:layout_constraintStart_toEndOf="@+id/registration"
-                                        tools:targetApi="o" />
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/bankWelcome">
+
+                                        <com.google.android.material.button.MaterialButton
+                                            android:id="@+id/registration"
+                                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginEnd="5dp"
+                                            android:layout_weight="1"
+                                            android:autoSizeMaxTextSize="14sp"
+                                            android:autoSizeMinTextSize="12sp"
+                                            android:autoSizeStepGranularity="2sp"
+                                            android:autoSizeTextType="uniform"
+                                            android:onClick="@{()->callback.toSelf()}"
+                                            android:text="@string/register"
+                                            app:strokeColor="@color/app_blue_dark"
+                                            tools:targetApi="o" />
+
+                                        <com.google.android.material.button.MaterialButton
+                                            android:id="@+id/login"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:layout_weight="1"
+                                            android:autoSizeMaxTextSize="14sp"
+                                            android:autoSizeMinTextSize="12sp"
+                                            android:autoSizeStepGranularity="2sp"
+                                            android:autoSizeTextType="uniform"
+                                            android:onClick="@{()->callback.toLogin()}"
+                                            android:text="@string/login"
+                                            tools:targetApi="o" />
+                                    </LinearLayout>
+
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -193,8 +198,10 @@
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginStart="16dp"
-                                android:layout_marginTop="16dp"
+                                android:layout_marginTop="8dp"
                                 android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="8dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/banner"
                                 app:layout_constraintDimensionRatio="6:2.2"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -453,444 +460,463 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                        <RelativeLayout
-                            android:id="@+id/relativeLayout"
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/white"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent">
+                            android:layout_height="match_parent">
 
                             <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="50dp"
-                                android:layout_toLeftOf="@+id/imgContactUs"
+                                android:layout_marginBottom="8dp"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/poppins_medium"
-                                android:gravity="center"
+                                android:gravity="start"
+                                android:paddingHorizontal="@dimen/dimens_16dp"
                                 android:text="@string/connect_with_us"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                                 android:textColor="@color/app_blue_dark"
                                 android:textStyle="bold"
+                                app:layout_constraintBottom_toTopOf="@+id/imageView9"
+                                app:layout_constraintDimensionRatio="1:0.12"
+                                app:layout_constraintEnd_toStartOf="@+id/imgContactUs"
+                                app:layout_constraintStart_toStartOf="parent"
                                 tools:targetApi="o" />
 
                             <ImageView
                                 android:id="@+id/imgContactUs"
-                                android:layout_width="80dp"
-                                android:layout_height="80dp"
-                                android:layout_alignParentRight="true"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
                                 android:adjustViewBounds="true"
-                                android:src="@drawable/contactus_bg" />
+                                android:contentDescription="@string/image"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/contactus_bg"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="8:11"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                            <com.elmacentemobile.view.custom.AspectRatioImageView
-                                android:id="@+id/childConnect"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/dimens_20dp"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/connect_banner"
-                                android:visibility="gone" />
+                            <ImageButton
+                                android:id="@+id/imageView8"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/twitter"
+                                android:onClick="@{()->callback.twitter()}"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/twitter"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent" />
 
+                            <ImageButton
+                                android:id="@+id/imageView7"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/twitter"
+                                android:onClick="@{()->callback.facebook()}"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/facebook"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toStartOf="@+id/imageView9"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/imageView8" />
 
-                            <View
-                                android:id="@+id/view_spacer"
-                                android:layout_width="match_parent"
-                                android:layout_height="2dp"
-                                android:layout_below="@id/imgContactUs"
-                                android:alpha="0.7"
-                                android:background="@color/grey_light" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/view_spacer"
-                                android:gravity="center"
-                                android:orientation="horizontal">
-
-
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="50dp"
-                                    android:layout_margin="@dimen/dimens_10dp"
-                                    android:layout_weight="1"
-                                    android:contentDescription="@string/twitter"
-                                    android:onClick="@{()->callback.twitter()}"
-                                    android:padding="@dimen/dimens_5dp"
-                                    android:src="@drawable/twitter" />
-
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="50dp"
-                                    android:layout_margin="@dimen/dimens_10dp"
-                                    android:layout_weight="1"
-                                    android:contentDescription="@string/twitter"
-                                    android:onClick="@{()->callback.facebook()}"
-                                    android:padding="@dimen/dimens_5dp"
-                                    android:src="@drawable/facebook" />
-
-
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="50dp"
-                                    android:layout_margin="@dimen/dimens_10dp"
-                                    android:layout_weight="1"
-                                    android:contentDescription="@string/twitter"
-                                    android:onClick="@{()->callback.telephone()}"
-                                    android:padding="@dimen/dimens_5dp"
-                                    android:src="@drawable/telephone" />
-
-
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="50dp"
-                                    android:layout_margin="@dimen/dimens_10dp"
-                                    android:layout_weight="1"
-                                    android:contentDescription="@string/twitter"
-                                    android:onClick="@{()->callback.email()}"
-                                    android:padding="@dimen/dimens_5dp"
-                                    android:src="@drawable/email" />
+                            <ImageButton
+                                android:id="@+id/imageView9"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/twitter"
+                                android:onClick="@{()->callback.telephone()}"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/telephone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toStartOf="@+id/imageView10"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/imageView7" />
 
 
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="50dp"
-                                    android:layout_margin="@dimen/dimens_10dp"
-                                    android:layout_weight="1"
-                                    android:contentDescription="@string/twitter"
-                                    android:onClick="@{()->callback.chat()}"
-                                    android:padding="@dimen/dimens_5dp"
-                                    android:src="@drawable/conversation" />
+                            <ImageButton
+                                android:id="@+id/imageView10"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/twitter"
+                                android:onClick="@{()->callback.email()}"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/email"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toStartOf="@+id/imageView11"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/imageView9" />
 
 
-                            </LinearLayout>
+                            <ImageButton
+                                android:id="@+id/imageView11"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/twitter"
+                                android:onClick="@{()->callback.chat()}"
+                                android:padding="@dimen/dimens_8dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/conversation"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toStartOf="@+id/imgContactUs"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/imageView10" />
 
-                        </RelativeLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--                <RelativeLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:visibility="gone">-->
+                <!--                <RelativeLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:visibility="gone">-->
 
-<!--                    <ImageView-->
-<!--                        android:id="@+id/banner"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="@dimen/dimens_250dp"-->
-<!--                        android:background="@color/ghost_white"-->
-<!--                        android:contentDescription="@string/image"-->
-<!--                        android:scaleType="center"-->
-<!--                        android:src="@drawable/noon"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintHorizontal_bias="0.0"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/banner"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="@dimen/dimens_250dp"-->
+                <!--                        android:background="@color/ghost_white"-->
+                <!--                        android:contentDescription="@string/image"-->
+                <!--                        android:scaleType="center"-->
+                <!--                        android:src="@drawable/noon"-->
+                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                        app:layout_constraintHorizontal_bias="0.0"-->
+                <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-<!--                    <com.google.android.material.card.MaterialCardView-->
-<!--                        android:id="@+id/materialCardView"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:layout_below="@id/banner"-->
-<!--                        android:layout_marginTop="-40dp"-->
-<!--                        android:layout_marginBottom="-20dp"-->
-<!--                        app:cardBackgroundColor="@color/ghost_white"-->
-<!--                        app:cardCornerRadius="@dimen/dimens_24dp"-->
-<!--                        app:cardElevation="@dimen/dimens_0dp"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintHorizontal_bias="1.0"-->
-<!--                        app:layout_constraintStart_toStartOf="parent">-->
+                <!--                    <com.google.android.material.card.MaterialCardView-->
+                <!--                        android:id="@+id/materialCardView"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:layout_below="@id/banner"-->
+                <!--                        android:layout_marginTop="-40dp"-->
+                <!--                        android:layout_marginBottom="-20dp"-->
+                <!--                        app:cardBackgroundColor="@color/ghost_white"-->
+                <!--                        app:cardCornerRadius="@dimen/dimens_24dp"-->
+                <!--                        app:cardElevation="@dimen/dimens_0dp"-->
+                <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                        app:layout_constraintHorizontal_bias="1.0"-->
+                <!--                        app:layout_constraintStart_toStartOf="parent">-->
 
-<!--                        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent">-->
-
-
-<!--                            <LinearLayout-->
-<!--                                android:id="@+id/welcomeLay"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:gravity="center_horizontal"-->
-<!--                                android:orientation="horizontal"-->
-<!--                                app:layout_constraintStart_toStartOf="parent"-->
-<!--                                app:layout_constraintTop_toTopOf="parent">-->
-
-<!--                                <TextView-->
-<!--                                    android:id="@+id/textView7"-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="match_parent"-->
-<!--                                    android:layout_marginStart="@dimen/dimens_8dp"-->
-<!--                                    android:autoSizeTextType="uniform"-->
-<!--                                    android:background="@drawable/text_corner_back_morning"-->
-<!--                                    android:fontFamily="@font/poppins_medium"-->
-<!--                                    android:gravity="center"-->
-<!--                                    android:maxLines="1"-->
-<!--                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
-<!--                                    android:textColor="@color/white"-->
-<!--                                    tools:targetApi="o"-->
-<!--                                    tools:text="Good Evening" />-->
-
-<!--                                <TextView-->
-<!--                                    android:layout_width="0dp"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:layout_weight="1"-->
-<!--                                    android:autoSizeTextType="uniform"-->
-<!--                                    android:fontFamily="@font/poppins_semi_bold"-->
-<!--                                    android:gravity="center"-->
-<!--                                    android:paddingHorizontal="@dimen/dimens_8dp"-->
-<!--                                    android:paddingVertical="@dimen/dimens_5dp"-->
-<!--                                    android:text="@string/welcome_cente"-->
-<!--                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
-<!--                                    tools:targetApi="o" />-->
-<!--                            </LinearLayout>-->
-
-<!--                            <LinearLayout-->
-<!--                                android:id="@+id/mainLay"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginTop="16dp"-->
-<!--                                android:orientation="vertical"-->
-<!--                                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                app:layout_constraintStart_toStartOf="parent"-->
-<!--                                app:layout_constraintTop_toBottomOf="@+id/welcomeLay">-->
+                <!--                        <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                            android:layout_width="match_parent"-->
+                <!--                            android:layout_height="match_parent">-->
 
 
-<!--                                <include-->
-<!--                                    android:id="@+id/landingButtons"-->
-<!--                                    layout="@layout/block_landing_page_group_layout" />-->
+                <!--                            <LinearLayout-->
+                <!--                                android:id="@+id/welcomeLay"-->
+                <!--                                android:layout_width="match_parent"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:gravity="center_horizontal"-->
+                <!--                                android:orientation="horizontal"-->
+                <!--                                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                                app:layout_constraintTop_toTopOf="parent">-->
 
-<!--                                <LinearLayout-->
-<!--                                    android:id="@+id/selfReg"-->
-<!--                                    android:layout_width="match_parent"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:gravity="center"-->
-<!--                                    android:orientation="vertical"-->
-<!--                                    android:visibility="visible">-->
+                <!--                                <TextView-->
+                <!--                                    android:id="@+id/textView7"-->
+                <!--                                    android:layout_width="wrap_content"-->
+                <!--                                    android:layout_height="match_parent"-->
+                <!--                                    android:layout_marginStart="@dimen/dimens_8dp"-->
+                <!--                                    android:autoSizeTextType="uniform"-->
+                <!--                                    android:background="@drawable/text_corner_back_morning"-->
+                <!--                                    android:fontFamily="@font/poppins_medium"-->
+                <!--                                    android:gravity="center"-->
+                <!--                                    android:maxLines="1"-->
+                <!--                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"-->
+                <!--                                    android:textColor="@color/white"-->
+                <!--                                    tools:targetApi="o"-->
+                <!--                                    tools:text="Good Evening" />-->
 
-<!--                                    <TextView-->
-<!--                                        android:layout_width="wrap_content"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:autoSizeTextType="uniform"-->
-<!--                                        android:fontFamily="@font/poppins_medium"-->
-<!--                                        android:text="@string/not_reg"-->
-<!--                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
-<!--                                        tools:targetApi="o" />-->
+                <!--                                <TextView-->
+                <!--                                    android:layout_width="0dp"-->
+                <!--                                    android:layout_height="wrap_content"-->
+                <!--                                    android:layout_weight="1"-->
+                <!--                                    android:autoSizeTextType="uniform"-->
+                <!--                                    android:fontFamily="@font/poppins_semi_bold"-->
+                <!--                                    android:gravity="center"-->
+                <!--                                    android:paddingHorizontal="@dimen/dimens_8dp"-->
+                <!--                                    android:paddingVertical="@dimen/dimens_5dp"-->
+                <!--                                    android:text="@string/welcome_cente"-->
+                <!--                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
+                <!--                                    tools:targetApi="o" />-->
+                <!--                            </LinearLayout>-->
 
-<!--                                    <com.google.android.material.button.MaterialButton-->
-<!--                                        android:layout_width="wrap_content"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_marginVertical="@dimen/dimens_16dp"-->
-<!--                                        android:onClick="@{()->callback.toSelf()}"-->
-<!--                                        android:paddingHorizontal="50dp"-->
-<!--                                        android:paddingVertical="@dimen/dimens_16dp"-->
-<!--                                        android:text="@string/register"-->
-<!--                                        app:cornerRadius="@dimen/dimens_30dp" />-->
-
-<!--                                </LinearLayout>-->
-
-
-<!--                            </LinearLayout>-->
-
-
-<!--                            &lt;!&ndash;                    <com.airbnb.epoxy.EpoxyRecyclerView&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:id="@+id/container"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        callback="@{callback}"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        controller="@{data}"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:layout_width="match_parent"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:layout_marginTop="24dp"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:clipToPadding="false"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:padding="@dimen/dimens_5dp"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        android:visibility="gone"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-<!--                            &lt;!&ndash;                        app:layout_constraintTop_toBottomOf="@+id/textView7" />&ndash;&gt;-->
+                <!--                            <LinearLayout-->
+                <!--                                android:id="@+id/mainLay"-->
+                <!--                                android:layout_width="match_parent"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_marginTop="16dp"-->
+                <!--                                android:orientation="vertical"-->
+                <!--                                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                                app:layout_constraintTop_toBottomOf="@+id/welcomeLay">-->
 
 
-<!--                            <com.google.android.material.card.MaterialCardView-->
-<!--                                android:id="@+id/materialCardView5"-->
-<!--                                android:layout_width="0dp"-->
-<!--                                android:layout_height="0dp"-->
-<!--                                android:layout_marginStart="16dp"-->
-<!--                                android:layout_marginTop="16dp"-->
-<!--                                android:layout_marginEnd="16dp"-->
-<!--                                android:elevation="@dimen/dimens_2dp"-->
-<!--                                app:cardCornerRadius="@dimen/dimens_16dp"-->
-<!--                                app:cardElevation="@dimen/dimens_2dp"-->
-<!--                                app:layout_constraintDimensionRatio="16:6"-->
-<!--                                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                app:layout_constraintStart_toStartOf="parent"-->
-<!--                                app:layout_constraintTop_toBottomOf="@+id/mainLay">-->
+                <!--                                <include-->
+                <!--                                    android:id="@+id/landingButtons"-->
+                <!--                                    layout="@layout/block_landing_page_group_layout" />-->
 
-<!--                                <org.imaginativeworld.whynotimagecarousel.ImageCarousel-->
-<!--                                    android:id="@+id/carousel"-->
-<!--                                    android:layout_width="match_parent"-->
-<!--                                    android:layout_height="match_parent"-->
-<!--                                    app:autoPlay="true"-->
-<!--                                    app:autoPlayDelay="3000"-->
-<!--                                    app:autoWidthFixing="true"-->
-<!--                                    app:carouselType="BLOCK"-->
-<!--                                    app:imagePlaceholder="@drawable/logo"-->
-<!--                                    app:imageScaleType="centerCrop"-->
-<!--                                    app:scaleOnScroll="false"-->
-<!--                                    app:scalingFactor="0.15"-->
-<!--                                    app:showBottomShadow="false"-->
-<!--                                    app:showCaption="false"-->
-<!--                                    app:showIndicator="true"-->
-<!--                                    app:showNavigationButtons="false"-->
-<!--                                    app:showTopShadow="false" />-->
+                <!--                                <LinearLayout-->
+                <!--                                    android:id="@+id/selfReg"-->
+                <!--                                    android:layout_width="match_parent"-->
+                <!--                                    android:layout_height="wrap_content"-->
+                <!--                                    android:gravity="center"-->
+                <!--                                    android:orientation="vertical"-->
+                <!--                                    android:visibility="visible">-->
 
-<!--                            </com.google.android.material.card.MaterialCardView>-->
+                <!--                                    <TextView-->
+                <!--                                        android:layout_width="wrap_content"-->
+                <!--                                        android:layout_height="wrap_content"-->
+                <!--                                        android:autoSizeTextType="uniform"-->
+                <!--                                        android:fontFamily="@font/poppins_medium"-->
+                <!--                                        android:text="@string/not_reg"-->
+                <!--                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
+                <!--                                        tools:targetApi="o" />-->
 
-<!--                            <Space-->
-<!--                                android:id="@+id/space"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="@dimen/dimens_16dp"-->
-<!--                                android:layout_marginTop="@dimen/dimens_8dp"-->
-<!--                                android:layout_marginBottom="@dimen/dimens_8dp"-->
-<!--                                app:layout_constraintBottom_toTopOf="@+id/materialCardView6"-->
-<!--                                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                app:layout_constraintStart_toStartOf="parent"-->
-<!--                                app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />-->
+                <!--                                    <com.google.android.material.button.MaterialButton-->
+                <!--                                        android:layout_width="wrap_content"-->
+                <!--                                        android:layout_height="wrap_content"-->
+                <!--                                        android:layout_marginVertical="@dimen/dimens_16dp"-->
+                <!--                                        android:onClick="@{()->callback.toSelf()}"-->
+                <!--                                        android:paddingHorizontal="50dp"-->
+                <!--                                        android:paddingVertical="@dimen/dimens_16dp"-->
+                <!--                                        android:text="@string/register"-->
+                <!--                                        app:cornerRadius="@dimen/dimens_30dp" />-->
 
-<!--                            <com.google.android.material.card.MaterialCardView-->
-<!--                                android:id="@+id/materialCardView6"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginStart="16dp"-->
-<!--                                android:layout_marginEnd="16dp"-->
-<!--                                android:layout_marginBottom="32dp"-->
-<!--                                android:elevation="@dimen/dimens_2dp"-->
-<!--                                app:cardCornerRadius="@dimen/dimens_16dp"-->
-<!--                                app:cardElevation="@dimen/dimens_2dp"-->
-<!--                                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                app:layout_constraintStart_toStartOf="parent">-->
-
-<!--                                <RelativeLayout-->
-<!--                                    android:id="@+id/relativeLayout"-->
-<!--                                    android:layout_width="match_parent"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:background="@color/white"-->
-<!--                                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                    app:layout_constraintStart_toStartOf="parent">-->
-
-<!--                                    <TextView-->
-<!--                                        android:layout_width="match_parent"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_centerHorizontal="true"-->
-<!--                                        android:layout_marginTop="50dp"-->
-<!--                                        android:layout_toLeftOf="@+id/imgContactUs"-->
-<!--                                        android:fontFamily="@font/poppins_medium"-->
-<!--                                        android:gravity="center"-->
-<!--                                        android:text="@string/connect_with_us"-->
-<!--                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
-<!--                                        android:textColor="@color/app_blue_dark"-->
-<!--                                        android:textStyle="bold"-->
-<!--                                        tools:targetApi="o" />-->
-
-<!--                                    <ImageView-->
-<!--                                        android:id="@+id/imgContactUs"-->
-<!--                                        android:layout_width="wrap_content"-->
-<!--                                        android:layout_height="80dp"-->
-<!--                                        android:layout_alignParentRight="true"-->
-<!--                                        android:adjustViewBounds="true"-->
-<!--                                        android:src="@drawable/contactus_bg" />-->
-
-<!--                                    <com.elmacentemobile.view.custom.AspectRatioImageView-->
-<!--                                        android:id="@+id/childConnect"-->
-<!--                                        android:layout_width="match_parent"-->
-<!--                                        android:layout_height="@dimen/dimens_20dp"-->
-<!--                                        android:layout_centerHorizontal="true"-->
-<!--                                        android:src="@drawable/connect_banner"-->
-<!--                                        android:visibility="gone" />-->
+                <!--                                </LinearLayout>-->
 
 
-<!--                                    <View-->
-<!--                                        android:id="@+id/view_spacer"-->
-<!--                                        android:layout_width="match_parent"-->
-<!--                                        android:layout_height="2dp"-->
-<!--                                        android:layout_below="@id/imgContactUs"-->
-<!--                                        android:alpha="0.7"-->
-<!--                                        android:background="@color/grey_light" />-->
-
-<!--                                    <LinearLayout-->
-<!--                                        android:layout_width="match_parent"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_below="@id/view_spacer"-->
-<!--                                        android:gravity="center"-->
-<!--                                        android:orientation="horizontal">-->
+                <!--                            </LinearLayout>-->
 
 
-<!--                                        <ImageView-->
-<!--                                            android:layout_width="0dp"-->
-<!--                                            android:layout_height="50dp"-->
-<!--                                            android:layout_margin="@dimen/dimens_10dp"-->
-<!--                                            android:layout_weight="1"-->
-<!--                                            android:contentDescription="@string/twitter"-->
-<!--                                            android:onClick="@{()->callback.twitter()}"-->
-<!--                                            android:padding="@dimen/dimens_5dp"-->
-<!--                                            android:src="@drawable/twitter" />-->
-
-<!--                                        <ImageView-->
-<!--                                            android:layout_width="0dp"-->
-<!--                                            android:layout_height="50dp"-->
-<!--                                            android:layout_margin="@dimen/dimens_10dp"-->
-<!--                                            android:layout_weight="1"-->
-<!--                                            android:contentDescription="@string/twitter"-->
-<!--                                            android:onClick="@{()->callback.facebook()}"-->
-<!--                                            android:padding="@dimen/dimens_5dp"-->
-<!--                                            android:src="@drawable/facebook" />-->
+                <!--                            &lt;!&ndash;                    <com.airbnb.epoxy.EpoxyRecyclerView&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:id="@+id/container"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        callback="@{callback}"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        controller="@{data}"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:layout_width="match_parent"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:layout_marginTop="24dp"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:clipToPadding="false"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:padding="@dimen/dimens_5dp"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        android:visibility="gone"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        app:layout_constraintTop_toBottomOf="@+id/textView7" />&ndash;&gt;-->
 
 
-<!--                                        <ImageView-->
-<!--                                            android:layout_width="0dp"-->
-<!--                                            android:layout_height="50dp"-->
-<!--                                            android:layout_margin="@dimen/dimens_10dp"-->
-<!--                                            android:layout_weight="1"-->
-<!--                                            android:contentDescription="@string/twitter"-->
-<!--                                            android:onClick="@{()->callback.telephone()}"-->
-<!--                                            android:padding="@dimen/dimens_5dp"-->
-<!--                                            android:src="@drawable/telephone" />-->
+                <!--                            <com.google.android.material.card.MaterialCardView-->
+                <!--                                android:id="@+id/materialCardView5"-->
+                <!--                                android:layout_width="0dp"-->
+                <!--                                android:layout_height="0dp"-->
+                <!--                                android:layout_marginStart="16dp"-->
+                <!--                                android:layout_marginTop="16dp"-->
+                <!--                                android:layout_marginEnd="16dp"-->
+                <!--                                android:elevation="@dimen/dimens_2dp"-->
+                <!--                                app:cardCornerRadius="@dimen/dimens_16dp"-->
+                <!--                                app:cardElevation="@dimen/dimens_2dp"-->
+                <!--                                app:layout_constraintDimensionRatio="16:6"-->
+                <!--                                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                                app:layout_constraintTop_toBottomOf="@+id/mainLay">-->
+
+                <!--                                <org.imaginativeworld.whynotimagecarousel.ImageCarousel-->
+                <!--                                    android:id="@+id/carousel"-->
+                <!--                                    android:layout_width="match_parent"-->
+                <!--                                    android:layout_height="match_parent"-->
+                <!--                                    app:autoPlay="true"-->
+                <!--                                    app:autoPlayDelay="3000"-->
+                <!--                                    app:autoWidthFixing="true"-->
+                <!--                                    app:carouselType="BLOCK"-->
+                <!--                                    app:imagePlaceholder="@drawable/logo"-->
+                <!--                                    app:imageScaleType="centerCrop"-->
+                <!--                                    app:scaleOnScroll="false"-->
+                <!--                                    app:scalingFactor="0.15"-->
+                <!--                                    app:showBottomShadow="false"-->
+                <!--                                    app:showCaption="false"-->
+                <!--                                    app:showIndicator="true"-->
+                <!--                                    app:showNavigationButtons="false"-->
+                <!--                                    app:showTopShadow="false" />-->
+
+                <!--                            </com.google.android.material.card.MaterialCardView>-->
+
+                <!--                            <Space-->
+                <!--                                android:id="@+id/space"-->
+                <!--                                android:layout_width="match_parent"-->
+                <!--                                android:layout_height="@dimen/dimens_16dp"-->
+                <!--                                android:layout_marginTop="@dimen/dimens_8dp"-->
+                <!--                                android:layout_marginBottom="@dimen/dimens_8dp"-->
+                <!--                                app:layout_constraintBottom_toTopOf="@+id/materialCardView6"-->
+                <!--                                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                                app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />-->
+
+                <!--                            <com.google.android.material.card.MaterialCardView-->
+                <!--                                android:id="@+id/materialCardView6"-->
+                <!--                                android:layout_width="match_parent"-->
+                <!--                                android:layout_height="wrap_content"-->
+                <!--                                android:layout_marginStart="16dp"-->
+                <!--                                android:layout_marginEnd="16dp"-->
+                <!--                                android:layout_marginBottom="32dp"-->
+                <!--                                android:elevation="@dimen/dimens_2dp"-->
+                <!--                                app:cardCornerRadius="@dimen/dimens_16dp"-->
+                <!--                                app:cardElevation="@dimen/dimens_2dp"-->
+                <!--                                app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                                app:layout_constraintStart_toStartOf="parent">-->
+
+                <!--                                <RelativeLayout-->
+                <!--                                    android:id="@+id/relativeLayout"-->
+                <!--                                    android:layout_width="match_parent"-->
+                <!--                                    android:layout_height="wrap_content"-->
+                <!--                                    android:background="@color/white"-->
+                <!--                                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                                    app:layout_constraintStart_toStartOf="parent">-->
+
+                <!--                                    <TextView-->
+                <!--                                        android:layout_width="match_parent"-->
+                <!--                                        android:layout_height="wrap_content"-->
+                <!--                                        android:layout_centerHorizontal="true"-->
+                <!--                                        android:layout_marginTop="50dp"-->
+                <!--                                        android:layout_toLeftOf="@+id/imgContactUs"-->
+                <!--                                        android:fontFamily="@font/poppins_medium"-->
+                <!--                                        android:gravity="center"-->
+                <!--                                        android:text="@string/connect_with_us"-->
+                <!--                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
+                <!--                                        android:textColor="@color/app_blue_dark"-->
+                <!--                                        android:textStyle="bold"-->
+                <!--                                        tools:targetApi="o" />-->
+
+                <!--                                    <ImageView-->
+                <!--                                        android:id="@+id/imgContactUs"-->
+                <!--                                        android:layout_width="wrap_content"-->
+                <!--                                        android:layout_height="80dp"-->
+                <!--                                        android:layout_alignParentRight="true"-->
+                <!--                                        android:adjustViewBounds="true"-->
+                <!--                                        android:src="@drawable/contactus_bg" />-->
+
+                <!--                                    <com.elmacentemobile.view.custom.AspectRatioImageView-->
+                <!--                                        android:id="@+id/childConnect"-->
+                <!--                                        android:layout_width="match_parent"-->
+                <!--                                        android:layout_height="@dimen/dimens_20dp"-->
+                <!--                                        android:layout_centerHorizontal="true"-->
+                <!--                                        android:src="@drawable/connect_banner"-->
+                <!--                                        android:visibility="gone" />-->
 
 
-<!--                                        <ImageView-->
-<!--                                            android:layout_width="0dp"-->
-<!--                                            android:layout_height="50dp"-->
-<!--                                            android:layout_margin="@dimen/dimens_10dp"-->
-<!--                                            android:layout_weight="1"-->
-<!--                                            android:contentDescription="@string/twitter"-->
-<!--                                            android:onClick="@{()->callback.email()}"-->
-<!--                                            android:padding="@dimen/dimens_5dp"-->
-<!--                                            android:src="@drawable/email" />-->
+                <!--                                    <View-->
+                <!--                                        android:id="@+id/view_spacer"-->
+                <!--                                        android:layout_width="match_parent"-->
+                <!--                                        android:layout_height="2dp"-->
+                <!--                                        android:layout_below="@id/imgContactUs"-->
+                <!--                                        android:alpha="0.7"-->
+                <!--                                        android:background="@color/grey_light" />-->
+
+                <!--                                    <LinearLayout-->
+                <!--                                        android:layout_width="match_parent"-->
+                <!--                                        android:layout_height="wrap_content"-->
+                <!--                                        android:layout_below="@id/view_spacer"-->
+                <!--                                        android:gravity="center"-->
+                <!--                                        android:orientation="horizontal">-->
 
 
-<!--                                        <ImageView-->
-<!--                                            android:layout_width="0dp"-->
-<!--                                            android:layout_height="50dp"-->
-<!--                                            android:layout_margin="@dimen/dimens_10dp"-->
-<!--                                            android:layout_weight="1"-->
-<!--                                            android:contentDescription="@string/twitter"-->
-<!--                                            android:onClick="@{()->callback.chat()}"-->
-<!--                                            android:padding="@dimen/dimens_5dp"-->
-<!--                                            android:src="@drawable/conversation" />-->
+                <!--                                        <ImageView-->
+                <!--                                            android:layout_width="0dp"-->
+                <!--                                            android:layout_height="50dp"-->
+                <!--                                            android:layout_margin="@dimen/dimens_10dp"-->
+                <!--                                            android:layout_weight="1"-->
+                <!--                                            android:contentDescription="@string/twitter"-->
+                <!--                                            android:onClick="@{()->callback.twitter()}"-->
+                <!--                                            android:padding="@dimen/dimens_5dp"-->
+                <!--                                            android:src="@drawable/twitter" />-->
+
+                <!--                                        <ImageView-->
+                <!--                                            android:layout_width="0dp"-->
+                <!--                                            android:layout_height="50dp"-->
+                <!--                                            android:layout_margin="@dimen/dimens_10dp"-->
+                <!--                                            android:layout_weight="1"-->
+                <!--                                            android:contentDescription="@string/twitter"-->
+                <!--                                            android:onClick="@{()->callback.facebook()}"-->
+                <!--                                            android:padding="@dimen/dimens_5dp"-->
+                <!--                                            android:src="@drawable/facebook" />-->
 
 
-<!--                                    </LinearLayout>-->
+                <!--                                        <ImageView-->
+                <!--                                            android:layout_width="0dp"-->
+                <!--                                            android:layout_height="50dp"-->
+                <!--                                            android:layout_margin="@dimen/dimens_10dp"-->
+                <!--                                            android:layout_weight="1"-->
+                <!--                                            android:contentDescription="@string/twitter"-->
+                <!--                                            android:onClick="@{()->callback.telephone()}"-->
+                <!--                                            android:padding="@dimen/dimens_5dp"-->
+                <!--                                            android:src="@drawable/telephone" />-->
 
-<!--                                </RelativeLayout>-->
-<!--                            </com.google.android.material.card.MaterialCardView>-->
+
+                <!--                                        <ImageView-->
+                <!--                                            android:layout_width="0dp"-->
+                <!--                                            android:layout_height="50dp"-->
+                <!--                                            android:layout_margin="@dimen/dimens_10dp"-->
+                <!--                                            android:layout_weight="1"-->
+                <!--                                            android:contentDescription="@string/twitter"-->
+                <!--                                            android:onClick="@{()->callback.email()}"-->
+                <!--                                            android:padding="@dimen/dimens_5dp"-->
+                <!--                                            android:src="@drawable/email" />-->
 
 
-<!--                        </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <!--                                        <ImageView-->
+                <!--                                            android:layout_width="0dp"-->
+                <!--                                            android:layout_height="50dp"-->
+                <!--                                            android:layout_margin="@dimen/dimens_10dp"-->
+                <!--                                            android:layout_weight="1"-->
+                <!--                                            android:contentDescription="@string/twitter"-->
+                <!--                                            android:onClick="@{()->callback.chat()}"-->
+                <!--                                            android:padding="@dimen/dimens_5dp"-->
+                <!--                                            android:src="@drawable/conversation" />-->
 
 
-<!--                    </com.google.android.material.card.MaterialCardView>-->
+                <!--                                    </LinearLayout>-->
 
-<!--                </RelativeLayout>-->
+                <!--                                </RelativeLayout>-->
+                <!--                            </com.google.android.material.card.MaterialCardView>-->
+
+
+                <!--                        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+                <!--                    </com.google.android.material.card.MaterialCardView>-->
+
+                <!--                </RelativeLayout>-->
             </FrameLayout>
 
 

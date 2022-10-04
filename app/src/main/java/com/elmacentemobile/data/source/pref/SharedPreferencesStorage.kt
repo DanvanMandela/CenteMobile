@@ -761,6 +761,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    override fun removeHiddenModule() {
+        _hiddenModule.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_HIDDEN_MODULE)
+        }
+    }
+
     private val _disableModule = MutableStateFlow(
         DisableModulesConverter().from(
             sharedPreferences.getString(
@@ -780,6 +787,13 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
                 DisableModulesConverter().to(value)
             )
             apply()
+        }
+    }
+
+    override fun removeDisableModule() {
+        _disableModule.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_DISABLED_MODULE)
         }
     }
 

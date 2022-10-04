@@ -1,5 +1,6 @@
 package com.elmacentemobile.view.fragment.go.steps
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -101,7 +102,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         val encrypted = JSONObject()
         json.put("MOBILENUMBER", phoneData)
         json.put("EMAILID", userData?.email)
-        json.put("SERVICENAME", "SELFRAO")
+        json.put("SERVICENAME", "CENTEONTHEGO")
         json.put("OTPKEY", binding.verificationCodeEditText.text.toString())
 
         subscribe.add(
@@ -345,6 +346,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         done(false)
     }
 
+    @SuppressLint("NewApi")
     private fun setStep() {
         binding.progressIndicator.setProgress(100, true)
     }

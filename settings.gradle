@@ -4,6 +4,7 @@ pluginManagement {
         google()
         mavenCentral()
         flatDir dirs: 'C://Users/danvan.mandela/Downloads/Telegram Desktop/dexprotector-ent-12.1.53/dexprotector-ent-12.7.87'
+        flatDir dirs: 'C://Users/danvan.mandela/Documents/dex/dexprotector-ent-12.7.87/dexprotector-ent-12.7.87'
     }
 }
 dependencyResolutionManagement {
@@ -15,7 +16,7 @@ dependencyResolutionManagement {
         jcenter()
         flatDir dirs: 'C://Users/danvan.mandela/Downloads/Telegram Desktop/dexprotector-ent-12.1.53/dexprotector-ent-12.7.87'
        // flatDir dirs: 'C://Users/danvan.mandela/Downloads/Telegram Desktop/dexprotector-ent-12.1.53/dexprotector-ent-12.1.53'
-
+       // flatDir dirs: 'C://Users/danvan.mandela/Documents/dex/dexprotector-ent-12.7.87/dexprotector-ent-12.7.87'
     }
 }
 rootProject.name = "CenteMobile"

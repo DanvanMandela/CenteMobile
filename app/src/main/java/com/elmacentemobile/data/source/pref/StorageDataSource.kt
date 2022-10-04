@@ -30,9 +30,11 @@ interface StorageDataSource {
 
     fun setHiddenModule(value: List<ModuleHide?>)
     val hiddenModule: StateFlow<List<ModuleHide?>?>
+    fun removeHiddenModule()
 
     fun setDisableModule(value: List<ModuleDisable?>)
     val disableModule: StateFlow<List<ModuleDisable?>?>
+    fun removeDisableModule()
 
     fun clearDevice()
 

@@ -353,8 +353,10 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             authViewModel.storage.setAlerts(res.getServiceAlerts());
         if (res.getHideModule() != null)
             authViewModel.storage.setHiddenModule(res.getHideModule());
+        else authViewModel.storage.removeHiddenModule();
         if (res.getDisableModule() != null)
             authViewModel.storage.setDisableModule(res.getDisableModule());
+        else authViewModel.storage.removeDisableModule();
 
         if (res.getPendingTrxDisplay() != null) {
             setPending(res);
@@ -369,7 +371,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 for (HashMap<String, String> pay : Objects.requireNonNull(res.getPendingTrxPayload())) {
                     if (Objects.requireNonNull(pay.get("PendingUniqueID"))
                             .equals(map.get("PendingUniqueID"))) {
-                         List<PendingTrxFormControls> forms =
+                        List<PendingTrxFormControls> forms =
                                 Objects.requireNonNull(res.getPendingTrxFormControls()).stream()
                                         .filter(a -> Objects.equals(a.getModuleID(), pay.get("ModuleID")))
                                         .collect(Collectors.toList());

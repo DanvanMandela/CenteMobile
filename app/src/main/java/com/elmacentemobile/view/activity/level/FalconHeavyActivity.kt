@@ -992,6 +992,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             if (data != null) {
                 AppLogger.instance.appLog("DYNAMIC:RESULT:DATA", Gson().toJson(data.resultsData))
                 AppLogger.instance.appLog("DYNAMIC:FIELD:DATA", Gson().toJson(data.formField))
+
                 startShimmer()
                 val controller = MainDisplayController(this)
                 if (!data.resultsData.isNullOrEmpty()) {
@@ -1007,8 +1008,9 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
                     binding.detailsContainer.visibility = View.VISIBLE
                     stopShimmer()
-                    val list = data.formField?.single { a -> a.controlID == form?.controlID }
-                    val hashMaps = HashTypeConverter().from(list?.controlValue)
+                    // val list = data.formField?.single { a -> a.controlID == form?.controlID }
+                    val newList = data.formField?.find { a -> a.controlID == form?.controlID }
+                    val hashMaps = HashTypeConverter().from(newList?.controlValue)
 
                     controller.setData(DisplayData(hashMaps!!.toMutableList(), form, modules))
                     binding.detailsContainer.setController(controller)
@@ -1115,17 +1117,14 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             } else if (BaseClass.nonCaps(formControl?.controlID) == BaseClass.nonCaps("JSON")) {
                 val data = busData.res
                 if (data != null) {
-                    AppLogger.instance.appLog(
-                        "DYNAMIC:JSON:RESULT:DATA",
-                        Gson().toJson(data.resultsData)
-                    )
-                    AppLogger.instance.appLog(
-                        "DYNAMIC:JSON:FIELD:DATA",
-                        Gson().toJson(data.formField)
-                    )
+
                     startShimmer()
                     val controller = MainDisplayController(this)
                     if (!data.resultsData.isNullOrEmpty()) {
+                        AppLogger.instance.appLog(
+                            "DYNAMIC:JSON:RESULT:DATA",
+                            Gson().toJson(data.resultsData)
+                        )
                         stopShimmer()
                         val list =
                             data.resultsData?.single { a -> a.controlID == formControl?.controlID }
@@ -1141,6 +1140,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                         container?.setController(controller)
 
                     } else if (!data.formField.isNullOrEmpty()) {
+
+                        AppLogger.instance.appLog(
+                            "DYNAMIC:JSON:FIELD:DATA",
+                            Gson().toJson(data.formField)
+                        )
                         stopShimmer()
                         val list =
                             data.formField?.single { a -> a.controlID == formControl?.controlID }

@@ -2,10 +2,6 @@ package com.elmacentemobile.view.fragment.landing
 
 
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,7 +22,6 @@ import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.databinding.FragmentLandingPageBinding
 import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass
-import com.elmacentemobile.util.ScreenHelper
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.activity.MainActivity
@@ -186,22 +181,22 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
 
 
-        if (vibrant != null) {
-            ScreenHelper.fullScreen(requireActivity(), false, false, vibrant.rgb)
-            when (val background: Drawable = binding.textView15.background) {
-                is ShapeDrawable -> {
-                    background.paint.color = vibrant.rgb
-                }
-                is GradientDrawable -> {
-                    background.setColor(vibrant.rgb)
-
-                }
-                is ColorDrawable -> {
-
-                    background.color = vibrant.rgb
-                }
-            }
-        }
+//        if (vibrant != null) {
+//            ScreenHelper.fullScreen(requireActivity(), false, false, vibrant.rgb)
+//            when (val background: Drawable = binding.textView15.background) {
+//                is ShapeDrawable -> {
+//                    background.paint.color = vibrant.rgb
+//                }
+//                is GradientDrawable -> {
+//                    background.setColor(vibrant.rgb)
+//
+//                }
+//                is ColorDrawable -> {
+//
+//                    background.color = vibrant.rgb
+//                }
+//            }
+//        }
 
     }
 

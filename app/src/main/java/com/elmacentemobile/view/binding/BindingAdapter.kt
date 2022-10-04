@@ -63,11 +63,8 @@ import com.elmacentemobile.databinding.BlockCardReaderLayoutBinding
 import com.elmacentemobile.databinding.BlockRadioButtonLayoutBinding
 import com.elmacentemobile.databinding.DotLayoutBinding
 import com.elmacentemobile.databinding.RectangleILayoutBinding
-import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.util.*
 import com.elmacentemobile.util.BaseClass.nonCaps
-import com.elmacentemobile.util.ColorUtil
-import com.elmacentemobile.util.HorizontalMarginItemDecoration
-import com.elmacentemobile.util.NumberTextWatcherForThousand
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.adapter.AccountAdapterItem
 import com.elmacentemobile.view.ep.controller.*
@@ -77,6 +74,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 import java.text.*

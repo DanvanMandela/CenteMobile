@@ -181,8 +181,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 //        baseViewModel.dataSource.setActivated(true)
 //        baseViewModel.dataSource.setActivationData(
 //            ActivationData(
-//                id = BaseClass.decryptCustomer(),
-//                mobile = BaseClass.decryptCustomer()//1234 pass
+//                id = "1479373461",
+//                mobile = "254708835301"//1234 pass
 //            )
 //        )
     }
