@@ -127,7 +127,7 @@ dependencies {
     testImplementation("androidx.room:room-testing:$room_version")
 
     //***Android Architecture Components***
-    def lifecycle_version = "2.6.0-alpha01"
+    def lifecycle_version = "2.6.0-alpha02"
 
     implementation group: 'androidx.lifecycle', name: 'lifecycle-runtime-ktx', version: "$lifecycle_version"
     implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: "$lifecycle_version"
@@ -139,7 +139,7 @@ dependencies {
     implementation group: 'androidx.lifecycle', name: 'lifecycle-reactivestreams-ktx', version: "$lifecycle_version"
 
     //**Navigation Graph***
-    def nav_version = "2.5.1"
+    def nav_version = "2.5.2"
 
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -313,7 +313,7 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
 
     // Kotlin
-    implementation("androidx.biometric:biometric:1.2.0-alpha04")
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 
 
     // CameraX core library using the camera2 implementation

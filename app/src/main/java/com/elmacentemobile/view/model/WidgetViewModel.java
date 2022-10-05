@@ -1,5 +1,6 @@
 package com.elmacentemobile.view.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -84,6 +85,7 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         return new MutableLiveData<>(storageDataSource.getAccounts().getValue());
     }
 
+    @SuppressLint("NewApi")
     @Override
     public Observable<List<Modules>> getModules(String moduleID) {
         return widgetRepository.getModules(moduleID).map(modules -> {

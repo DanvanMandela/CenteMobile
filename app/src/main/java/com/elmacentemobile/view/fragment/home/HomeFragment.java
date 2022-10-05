@@ -2,6 +2,7 @@ package com.elmacentemobile.view.fragment.home;
 
 import static com.elmacentemobile.util.BaseClass.nonCaps;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.elmacentemobile.data.model.user.Accounts;
 import com.elmacentemobile.data.model.user.AlertServices;
 import com.elmacentemobile.data.model.user.FrequentModules;
 import com.elmacentemobile.data.model.user.ModuleDisable;
+import com.elmacentemobile.data.model.user.ModuleHide;
 import com.elmacentemobile.data.source.constants.StatusEnum;
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
 import com.elmacentemobile.databinding.FragmentHomeBinding;
@@ -144,6 +146,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
 
+    @SuppressLint("NewApi")
     private void getAdverts() {
         subscribe.add(widgetViewModel.getCarousel()
                 .subscribeOn(Schedulers.io())
@@ -333,12 +336,19 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         binding.shimmerContainer.setVisibility(View.GONE);
     }
 
-
+    @SuppressLint("NewApi")
     @Override
     public void onModule(Modules modules) {
-        if (modules.getModuleURLTwo() != null) {
-            if (!TextUtils.isEmpty(modules.getModuleURLTwo())) {
-                openUrl(modules.getModuleURLTwo());
+        List<ModuleDisable> moduleDisable = baseViewModel.dataSource.getDisableModule().getValue();
+        if (!moduleDisable.isEmpty()) {
+            ModuleDisable isDisabled = moduleDisable.stream().parallel()
+                    .filter(type -> Objects.equals(type.getId(), modules.getModuleID()))
+                    .findAny().orElse(null);
+            if (isDisabled != null) new ShowToast(requireContext(), isDisabled.getMessage());
+            else if (modules.getModuleURLTwo() != null) {
+                if (!TextUtils.isEmpty(modules.getModuleURLTwo())) {
+                    openUrl(modules.getModuleURLTwo());
+                } else navigateTo(modules);
             } else navigateTo(modules);
         } else navigateTo(modules);
 
@@ -383,24 +393,25 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
 
+    @SuppressLint("NewApi")
     private void setDynamicModules(List<Modules> m, Modules modules) {
-        List<Modules> filterModules = new ArrayList<>();
-        List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
-        m.forEach(module -> {
-            if (moduleDisables != null)
-                if (!moduleDisables.isEmpty()) {
-                    boolean hide = moduleDisables.stream()
-                            .map(ModuleDisable::getId)
-                            .filter(Objects::nonNull)
-                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
-                    if (!hide) filterModules.add(module);
-                } else {
-                    filterModules.add(module);
-                }
-            else filterModules.add(module);
-        });
+//        List<Modules> filterModules = new ArrayList<>();
+//        List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
+//        m.forEach(module -> {
+//            if (moduleDisables != null)
+//                if (!moduleDisables.isEmpty()) {
+//                    boolean hide = moduleDisables.stream()
+//                            .map(ModuleDisable::getId)
+//                            .filter(Objects::nonNull)
+//                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
+//                    if (!hide) filterModules.add(module);
+//                } else {
+//                    filterModules.add(module);
+//                }
+//            else filterModules.add(module);
+//        });
 
-        EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, filterModules),
+        EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
                 null,
                 null));
         Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
@@ -431,6 +442,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         binding.headerItem.headerAux.accountPager.setData(new AccountData(accountData));
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void currentAccount(Accounts accounts) {
         binding.headerItem.headerAux.utilPager.setCallback(this);
@@ -587,8 +599,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
         startActivity(i);
     }
-
-
 
 
     private void setLoading(boolean b) {

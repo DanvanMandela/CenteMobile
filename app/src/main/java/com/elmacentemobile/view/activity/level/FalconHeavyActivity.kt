@@ -1451,15 +1451,19 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onModule(modules: Modules?) {
         val moduleDisable = baseViewModel.dataSource.disableModule.value
-        val isDisabled = moduleDisable?.find { it?.id == modules?.moduleID }
-        if (isDisabled != null) ShowToast(this, isDisabled.message)
-        else {
-            if (modules!!.moduleURLTwo != null) {
-                if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
-                    openUrl(modules.moduleURLTwo)
+        if (!moduleDisable.isNullOrEmpty()) {
+            val isDisabled = moduleDisable.find { it?.id == modules?.moduleID }
+            if (isDisabled != null) ShowToast(this, isDisabled.message)
+            else {
+                if (modules!!.moduleURLTwo != null) {
+                    if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
+                        openUrl(modules.moduleURLTwo)
+                    } else navigateTo(modules)
                 } else navigateTo(modules)
-            } else navigateTo(modules)
-        }
+            }
+        } else navigateTo(modules)
+
+
     }
 
     private fun navigateTransaction(modules: Modules?) {
