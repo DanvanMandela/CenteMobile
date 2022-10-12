@@ -169,22 +169,22 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private fun setMigration() {
         val mobile = baseViewModel.dataSource.phoneCustomer.value
         val customerID = baseViewModel.dataSource.customerID.value
-        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
-            baseViewModel.dataSource.setActivated(true)
-            baseViewModel.dataSource.setActivationData(
-                ActivationData(
-                    id = BaseClass.decryptCustomer(customerID),
-                    mobile = BaseClass.decryptCustomer(mobile)
-                )
-            )
-        }
-//        baseViewModel.dataSource.setActivated(true)
-//        baseViewModel.dataSource.setActivationData(
-//            ActivationData(
-//                id = "1479373461",
-//                mobile = "254708835301"//1234 pass
+//        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
+//            baseViewModel.dataSource.setActivated(true)
+//            baseViewModel.dataSource.setActivationData(
+//                ActivationData(
+//                    id = BaseClass.decryptCustomer(customerID),
+//                    mobile = BaseClass.decryptCustomer(mobile)
+//                )
 //            )
-//        )
+//        }
+        baseViewModel.dataSource.setActivated(true)
+        baseViewModel.dataSource.setActivationData(
+            ActivationData(
+                id = "1479373461",
+                mobile = "254708835301"//1234 pass
+            )
+        )
     }
 
 

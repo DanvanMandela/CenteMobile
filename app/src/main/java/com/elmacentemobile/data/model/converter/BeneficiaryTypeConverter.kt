@@ -28,4 +28,7 @@ class BeneficiaryTypeConverter {
         private val gsonBuilder: Gson =
             GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
     }
+
+
+
 }

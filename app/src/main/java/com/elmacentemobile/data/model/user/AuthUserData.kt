@@ -162,7 +162,6 @@ data class Accounts(
     @field:SerializedName("BankAccountID")
     @field:ColumnInfo(name = "bankAccountID")
     @field:PrimaryKey
-    @field:NonNull
     @field:Expose
     var id: String,
 

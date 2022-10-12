@@ -346,7 +346,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             authViewModel.storage.setAccounts(res.getAccounts());
         if (res.getBeneficiary() != null)
             authViewModel.storage.setBeneficiary(res.getBeneficiary());
-
         if (res.getModules() != null)
             authViewModel.saveFrequentModule(res.getModules());
         if (res.getServiceAlerts() != null)
@@ -403,12 +402,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     binding.loadingFrame.loading.setData(live);
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                 }
-
                 if (live == null) {
                     if (!authViewModel.storage.getVersion().getValue().equals("1"))
                         workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
                 } else {
-                    if (live.getWork() == 8) {
+                    if (live.getWork() >= 8) {
                         navigate();
                         authViewModel.storage.setVersion(version);
                         authViewModel.storage.setSync(null);

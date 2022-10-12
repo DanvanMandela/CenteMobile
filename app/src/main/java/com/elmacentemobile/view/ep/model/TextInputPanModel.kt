@@ -13,7 +13,6 @@ import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.model.input.InputData
 import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.databinding.BlockTextInputPanLayoutBinding
-import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.TextHelper
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.binding.setDefaultValue
@@ -43,11 +42,11 @@ open class TextInputPanModel : DataBindingEpoxyModel() {
         binding.data = form
         binding.callback = callbacks
         binding.storage = storage
-        if (form.maxValue != null) {
-            if (!TextUtils.isEmpty(form.maxValue)) {
-                BaseClass.setMaxLength(binding.child, form.maxValue!!.toInt())
-            }
-        }
+//        if (form.maxValue != null) {
+//            if (!TextUtils.isEmpty(form.maxValue)) {
+//                BaseClass.setMaxLength(binding.child, form.maxValue!!.toInt())
+//            }
+//        }
 
     }
 }
@@ -78,6 +77,28 @@ fun TextInputEditText.setPanInputLayout(
             )
         )
     }
+
+    addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+        }
+
+        override fun onTextChanged(p: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(e: Editable?) {
+            callbacks?.userInput(
+                InputData(
+                    name = formControl.controlText,
+                    key = formControl.serviceParamID,
+                    value = Objects.requireNonNull(this@setPanInputLayout.text.toString())
+                        .toString().replace("-", ""),
+                    encrypted = formControl.isEncrypted,
+                    mandatory = formControl.isMandatory
+                )
+            )
+        }
+    })
 
 }
 
@@ -119,36 +140,48 @@ fun setPanTextWatcher(
                     )
                 )
 
-                try {
-                    val min = formControl.minValue!!.length
-                    if (inputEdit.text!!.length < min) {
-                        callbacks?.userInput(
-                            InputData(
-                                name = formControl.controlText,
-                                key = formControl.serviceParamID,
-                                value = Objects.requireNonNull(inputEdit.text.toString())
-                                    .toString().replace("-", ""),
-                                encrypted = formControl.isEncrypted,
-                                mandatory = formControl.isMandatory,
-                                validation = "minimum required characters $min"
-                            )
-                        )
-                    } else {
-                        callbacks?.userInput(
-                            InputData(
-                                name = formControl.controlText,
-                                key = formControl.serviceParamID,
-                                value = Objects.requireNonNull(inputEdit.text.toString())
-                                    .toString().replace("-", ""),
-                                encrypted = formControl.isEncrypted,
-                                mandatory = formControl.isMandatory,
-                                validation = null
-                            )
-                        )
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+//                callbacks?.userInput(
+//                    InputData(
+//                        name = formControl.controlText,
+//                        key = formControl.serviceParamID,
+//                        value = Objects.requireNonNull(editable.toString())
+//                            .toString().replace("-", ""),
+//                        encrypted = formControl.isEncrypted,
+//                        mandatory = formControl.isMandatory,
+//                        validation = null
+//                    )
+//                )
+
+//                try {
+//                    val min = formControl.minValue!!.length
+//                    if (inputEdit.text!!.length < min) {
+//                        callbacks?.userInput(
+//                            InputData(
+//                                name = formControl.controlText,
+//                                key = formControl.serviceParamID,
+//                                value = Objects.requireNonNull(inputEdit.text.toString())
+//                                    .toString().replace("-", ""),
+//                                encrypted = formControl.isEncrypted,
+//                                mandatory = formControl.isMandatory,
+//                                validation = "minimum required characters $min"
+//                            )
+//                        )
+//                    } else {
+//                        callbacks?.userInput(
+//                            InputData(
+//                                name = formControl.controlText,
+//                                key = formControl.serviceParamID,
+//                                value = Objects.requireNonNull(inputEdit.text.toString())
+//                                    .toString().replace("-", ""),
+//                                encrypted = formControl.isEncrypted,
+//                                mandatory = formControl.isMandatory,
+//                                validation = null
+//                            )
+//                        )
+//                    }
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
 
             }
         }
