@@ -29,6 +29,7 @@ enum class ControlFormatEnum(var type: String) {
     VERTICAL("Vertical"),
     LIST_BUTTON("ListButton"),
     LIST_DATA("LISTDATA"),
+    LABEL_TEXT("TEXT"),
     HORIZONTAL("HORIZONTAL"),
     HORIZONTAL_SCROLL("HORIZONTALSCROLL"),
     CATEGORY("CATEGORY"),

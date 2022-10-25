@@ -74,7 +74,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 import java.text.*
@@ -879,7 +878,6 @@ fun TextView.setLabel(
     }
 
 
-
     if (formControl != null)
         if (formControl.controlValue != null)
             if (!TextUtils.isEmpty(formControl.controlValue)) {
@@ -894,6 +892,34 @@ fun TextView.setLabel(
                 )
                 this.text = formControl.controlValue
             }
+}
+
+
+@BindingAdapter("labelText", "callback", "data")
+fun TextView.setLabelText(
+    formControl: FormControl?,
+    callbacks: AppCallbacks?,
+    data: String?
+) {
+
+    this.text = formControl?.controlText
+    if (data != null) {
+        this.text = data
+    }
+    if (formControl != null)
+        if (formControl.controlValue != null)
+            if (!TextUtils.isEmpty(formControl.controlValue)) {
+                callbacks?.userInput(
+                    InputData(
+                        name = formControl.controlText,
+                        key = formControl.serviceParamID,
+                        value = formControl.controlValue,
+                        encrypted = formControl.isEncrypted,
+                        mandatory = formControl.isMandatory
+                    )
+                )
+            }
+    callbacks?.onServerValue(formControl, this)
 }
 
 
@@ -1000,6 +1026,19 @@ fun findBinary(binaryName: String): Boolean {
     return found
 }
 
+
+fun parameters(obj: Any): Map<String, Any> {
+    val map: MutableMap<String, Any> = HashMap()
+    for (field in obj.javaClass.declaredFields) {
+        field.isAccessible = true
+        try {
+            map[field.name] = field[obj] as Any
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+    return map
+}
 
 
 

@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.room.*
 import com.elmacentemobile.R
+import com.elmacentemobile.data.model.action.ActionControls
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
 import com.elmacentemobile.data.model.converter.GroupFormTypeConverter
@@ -54,6 +55,9 @@ data class GroupForm(
     @field:SerializedName("modules")
     @field:Expose
     val module: Modules,
+    @field:SerializedName("action")
+    @field:Expose
+    val action: ActionControls? = null,
     @field:SerializedName("formList")
     @field:Expose
     val form: MutableList<FormControl>?,

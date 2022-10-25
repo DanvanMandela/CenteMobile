@@ -156,6 +156,11 @@ class NewFormController(
                                     module(data.forms.module)
                                     callback(this@NewFormController.callbacks)
                                 }
+                                nonCaps(ControlFormatEnum.LABEL_TEXT.type) -> labelTextLayout {
+                                    id(d.controlID)
+                                    data(d)
+                                    callback(this@NewFormController.callbacks)
+                                }
                                 else -> labelLayout {
                                     id(d.controlID)
                                     data(d)

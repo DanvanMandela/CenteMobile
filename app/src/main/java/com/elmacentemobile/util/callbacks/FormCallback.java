@@ -60,12 +60,18 @@ public interface FormCallback {
 
     }
 
+
     default void clearInputData() {
 
     }
 
     default void onServerValue(FormControl formControl,
                                TextInputEditText view) {
+
+    }
+
+    default void onServerValue(FormControl formControl,
+                               TextView view) {
 
     }
 

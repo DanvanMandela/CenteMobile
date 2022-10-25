@@ -22,6 +22,16 @@ interface Confirm {
         throw Exception("Not implemented")
     }
 
+    fun validateModule(
+        jsonObject: JSONObject,
+        encrypted: JSONObject,
+        modules: Modules?,
+        formControl: FormControl?,
+        action: ActionControls?
+    ) {
+        throw Exception("Not implemented")
+    }
+
     fun onCancel() {
         throw Exception("Not implemented")
     }
@@ -29,8 +39,6 @@ interface Confirm {
     fun onConfirm() {
         throw Exception("Not implemented")
     }
-
-
 
 
 }

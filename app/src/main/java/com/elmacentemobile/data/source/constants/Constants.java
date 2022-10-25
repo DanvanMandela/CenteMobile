@@ -96,7 +96,7 @@ public class Constants {
         public final static String CUSTOMER_ID = TEST ? "25600116" : "25600016";
 
         @NotNull
-        public final static String VERSION = "125";
+        public final static String VERSION = "126";
 
         @NotNull
         public final static String GO = "cente";

@@ -393,7 +393,6 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
 
-    @SuppressLint("NewApi")
     private void setDynamicModules(List<Modules> m, Modules modules) {
 //        List<Modules> filterModules = new ArrayList<>();
 //        List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
@@ -593,7 +592,11 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
         AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
                 new Gson().toJson(modules));
-        EventBus.getDefault().postSticky(new BusData(new GroupForm(modules, forms, false),
+        EventBus.getDefault().postSticky(new BusData(new GroupForm(
+                modules,
+                null,
+                forms,
+                false),
                 null,
                 null));
         Intent i = new Intent(getActivity(), FalconHeavyActivity.class);

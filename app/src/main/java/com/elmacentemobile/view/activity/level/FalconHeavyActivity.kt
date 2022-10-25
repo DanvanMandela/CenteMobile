@@ -23,6 +23,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -79,11 +80,11 @@ import com.elmacentemobile.view.ep.adapter.InsuranceAdapterItem
 import com.elmacentemobile.view.ep.adapter.LoanAdapterItem
 import com.elmacentemobile.view.ep.controller.*
 import com.elmacentemobile.view.ep.data.*
-import com.elmacentemobile.view.ep.data.Nothing
 import com.elmacentemobile.view.fragment.auth.bio.BioInterface
 import com.elmacentemobile.view.fragment.auth.bio.BiometricFragment
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricUtil
+import com.elmacentemobile.view.fragment.dynamic.DynamicDialogFragment
 import com.elmacentemobile.view.fragment.dynamic.RecentFragment
 import com.elmacentemobile.view.fragment.global.GlobalOTPFragment
 import com.elmacentemobile.view.fragment.transaction.StandingOrderDetailsFragment
@@ -292,6 +293,39 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             }
 
 
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onServerValue(formControl: FormControl?, view: TextView?) {
+        AppLogger.instance.appLog(
+            "${FalconHeavyActivity::class.java.simpleName} ServerForm",
+            Gson().toJson(formControl)
+        )
+        AppLogger.instance.appLog(
+            "${FalconHeavyActivity::class.java.simpleName} Form",
+            Gson().toJson(busData.res)
+        )
+        try {
+            if (busData.res != null) {
+                if (!busData.res?.formField.isNullOrEmpty())
+                    busData.res?.formField!!.forEach {
+                        if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
+                            view?.text = it.controlValue
+                            userInput(
+                                InputData(
+                                    name = formControl?.controlText,
+                                    key = formControl?.serviceParamID,
+                                    value = it.controlValue,
+                                    encrypted = formControl?.isEncrypted!!,
+                                    mandatory = formControl.isMandatory
+                                )
+                            )
+                        }
+
+                    }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -643,7 +677,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         )
     }
 
-    private fun validateModule(
+    override fun validateModule(
         jsonObject: JSONObject,
         encrypted: JSONObject,
         modules: Modules?,
@@ -782,6 +816,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     == StatusEnum.TOKEN.type
                                 ) {
                                     InfoFragment.showDialog(supportFragmentManager, this)
+                                } else if (BaseClass.nonCaps(resData?.status)
+                                    == StatusEnum.DYNAMIC_FORM_DIALOG.type
+                                ) {
+                                    setDynamicForm(action, resData, modules)
                                 } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OTP.type) {
                                     GlobalOTPFragment.show(
                                         json = jsonObject,
@@ -834,6 +872,48 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
 
     }
+
+    private fun setDynamicForm(
+        action: ActionControls?,
+        resData: DynamicAPIResponse?,
+        modules: Modules?
+    ) {
+        AppLogger.instance.appLog(
+            "${FalconHeavyActivity::class.java.simpleName}:NEXT:FORM:ID",
+            resData?.formID!!
+        )
+        AppLogger.instance.appLog(
+            "${FalconHeavyActivity::class.java.simpleName}:NEXT:SEQUENCE",
+            "${resData.next}"
+        )
+        subscribe.add(widgetViewModel.getFormControl(resData.formID, resData.next)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ children: List<FormControl> ->
+                setDynamicChildren(action, resData, modules, children)
+            }) { obj: Throwable -> obj.printStackTrace() })
+    }
+
+    private fun setDynamicChildren(
+        action: ActionControls?,
+        resData: DynamicAPIResponse,
+        modules: Modules?,
+        children: List<FormControl>
+    ) {
+        EventBus.getDefault().postSticky(
+            BusData(
+                data = GroupForm(
+                    action = action,
+                    module = modules!!,
+                    form = children.toMutableList()
+                ),
+                inputs = inputList,
+                res = resData
+            )
+        )
+        DynamicDialogFragment.callback(this, supportFragmentManager)
+    }
+
 
     private fun setOnNextModule(
         formControl: FormControl?,
@@ -1393,6 +1473,18 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 } else setSuccess(resData?.message)
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(supportFragmentManager, this)
+                            } else if (BaseClass.nonCaps(resData?.status)
+                                == StatusEnum.DYNAMIC_FORM_DIALOG.type
+                            ) {
+                                val mRes = DynamicAPIResponseConverter().to(
+                                    BaseClass.decryptLatest(
+                                        it.response,
+                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                        true,
+                                        baseViewModel.dataSource.deviceData.value!!.run
+                                    )
+                                )
+                                setDynamicForm(action, mRes, module)
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OTP.type) {
                                 startSMSListener()
                                 GlobalOTPFragment.show(

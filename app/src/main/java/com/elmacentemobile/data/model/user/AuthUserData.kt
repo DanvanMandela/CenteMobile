@@ -12,6 +12,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+import javax.annotation.Nullable
 
 @Entity(tableName = "login_user_data_tbl")
 @Parcelize
@@ -25,6 +26,15 @@ data class LoginUserData(
     @field:ColumnInfo(name = "LastLoginDateTime")
     @field:Expose
     var loginDate: String?,
+
+    @field:SerializedName("NextFormSequence")
+    @field:Expose
+    @field:Nullable
+    var next: String?,
+
+    @field:SerializedName("FormID")
+    @field:Expose
+    var formID: String?,
 
     @field:SerializedName("Message")
     @field:ColumnInfo(name = "message")

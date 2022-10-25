@@ -1,10 +1,12 @@
 package com.elmacentemobile.view.fragment.auth;
 
+import static com.elmacentemobile.util.BaseClass.nonCaps;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,7 +24,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 
 import com.elmacentemobile.R;
+import com.elmacentemobile.data.model.control.FormControl;
 import com.elmacentemobile.data.model.converter.LoginDataTypeConverter;
+import com.elmacentemobile.data.model.module.ModuleCategory;
+import com.elmacentemobile.data.model.module.Modules;
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.model.user.DisplayHash;
 import com.elmacentemobile.data.model.user.LoginUserData;
@@ -38,16 +43,23 @@ import com.elmacentemobile.util.BaseClass;
 import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.activity.MainActivity;
+import com.elmacentemobile.view.activity.level.FalconHeavyActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
+import com.elmacentemobile.view.ep.data.BusData;
+import com.elmacentemobile.view.ep.data.GroupForm;
+import com.elmacentemobile.view.ep.data.GroupModule;
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener;
 import com.elmacentemobile.view.fragment.go.steps.OCRData;
+import com.elmacentemobile.view.fragment.home.HomeFragment;
 import com.elmacentemobile.view.model.AuthViewModel;
 import com.elmacentemobile.view.model.WidgetViewModel;
 import com.elmacentemobile.view.model.WorkStatus;
 import com.elmacentemobile.view.model.WorkerViewModel;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -295,6 +307,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                                         }
                                     });
                         } else if (Objects.equals(responseDetails.getStatus(),
+                                StatusEnum.DYNAMIC_FORM.getType())) {
+                            setLoading(false);
+                            getModule(responseDetails.getFormID(),
+                                    responseDetails.getNext());
+                        } else if (Objects.equals(responseDetails.getStatus(),
                                 StatusEnum.SUCCESS.getType())) {
                             new ShowToast(requireContext(), getString(R.string.welcome_back));
                             AppLogger.Companion.getInstance().appLog("AUTH",
@@ -342,6 +359,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         updateActivationData(res);
         if (res.getVersion() != null)
             updateWidgets(res.getVersion());
+        else updateWidgets("R");
+
         if (res.getAccounts() != null)
             authViewModel.storage.setAccounts(res.getAccounts());
         if (res.getBeneficiary() != null)
@@ -350,9 +369,11 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
             authViewModel.saveFrequentModule(res.getModules());
         if (res.getServiceAlerts() != null)
             authViewModel.storage.setAlerts(res.getServiceAlerts());
+
         if (res.getHideModule() != null)
             authViewModel.storage.setHiddenModule(res.getHideModule());
         else authViewModel.storage.removeHiddenModule();
+
         if (res.getDisableModule() != null)
             authViewModel.storage.setDisableModule(res.getDisableModule());
         else authViewModel.storage.removeDisableModule();
@@ -395,6 +416,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void updateWidgets(String version) {
         LiveData<SyncData> liveData = BindingAdapterKt.syncLive(authViewModel.storage.getSync());
+
         liveData.observe(getViewLifecycleOwner(), live -> {
             if (!authViewModel.storage.getVersion().getValue().equals(version)) {
                 if (live != null) {
@@ -403,8 +425,9 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                 }
                 if (live == null) {
-                    if (!authViewModel.storage.getVersion().getValue().equals("1"))
+                    if (!authViewModel.storage.getVersion().getValue().equals("R"))
                         workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
+                    else navigate();
                 } else {
                     if (live.getWork() >= 8) {
                         navigate();
@@ -460,5 +483,63 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     }
 
+    private void navigateTo(Modules modules) {
+        if (Objects.equals(modules.getModuleCategory(), ModuleCategory.BLOCK.getType())) {
+            subscribe.add(widgetViewModel.getModules(modules.getModuleID())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(m -> setDynamicModules(m, modules), Throwable::printStackTrace));
+        } else getFormControl(modules);
+    }
+
+    private void getFormControl(Modules modules) {
+        subscribe.add(widgetViewModel.getFormControl(modules.getModuleID(), "1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(f -> setFormNavigation(f, modules), Throwable::printStackTrace));
+    }
+
+    @Override
+    public void setFormNavigation(List<FormControl> forms, Modules modules) {
+        AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
+                new Gson().toJson(modules));
+        EventBus.getDefault().postSticky(new BusData(new GroupForm(modules,
+                null,
+                forms,
+                false),
+                null,
+                null));
+        Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
+        startActivity(i);
+    }
+
+
+    private void setDynamicModules(List<Modules> m, Modules modules) {
+        EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
+                null,
+                null));
+        Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
+        startActivity(i);
+    }
+
+    private void getModule(String module, String next) {
+        AppLogger.Companion.getInstance().appLog("FORM", module);
+        AppLogger.Companion.getInstance().appLog("NEXT", next);
+        subscribe.add(widgetViewModel.getModule(module)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(v -> {
+                    if (v != null) setNextForm(v, next);
+                    else new AppLogger().appLog(AuthFragment.class.getSimpleName(), "No Module");
+                }, Throwable::printStackTrace));
+    }
+
+    private void setNextForm(Modules v, String next) {
+        AppLogger.Companion.getInstance().appLog("MODULE", new Gson().toJson(v));
+        subscribe.add(widgetViewModel.getFormControl(v.getModuleID(), next)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> setFormNavigation(list, v), Throwable::printStackTrace));
+    }
 
 }

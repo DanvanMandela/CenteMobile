@@ -86,7 +86,7 @@ data class PayloadData(
 data class DynamicResponse(
     @field:SerializedName("Response")
     @field:Expose
-    var response: String?,
+    var response: String?
 )
 
 data class WidgetRequest(

@@ -100,6 +100,11 @@ class FormController(
                             module(data.forms.module)
                             callback(this@FormController.callbacks)
                         }
+                        BaseClass.nonCaps(ControlFormatEnum.LABEL_TEXT.type) -> labelTextLayout {
+                            id(d.controlID)
+                            data(d)
+                            callback(this@FormController.callbacks)
+                        }
                         else -> labelLayout {
                             id(d.controlID)
                             data(d)
@@ -135,7 +140,6 @@ class FormController(
                 data(data)
                 callbacks(this@FormController.callbacks)
             }
-
 
 
         }
