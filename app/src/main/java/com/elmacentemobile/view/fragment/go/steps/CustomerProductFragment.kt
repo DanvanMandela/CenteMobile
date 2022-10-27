@@ -1,5 +1,6 @@
 package com.elmacentemobile.view.fragment.go.steps
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -147,6 +148,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     }
 
+    @SuppressLint("NewApi")
     private fun setStep() {
         binding.progressIndicator.setProgress(10, true)
     }

@@ -141,9 +141,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         setBinding();
         setViewModel();
         setHomeData();
-        setController();
         return binding.getRoot().getRootView();
     }
+
+
 
 
     @SuppressLint("NewApi")

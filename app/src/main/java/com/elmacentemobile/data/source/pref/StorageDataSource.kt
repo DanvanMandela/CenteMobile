@@ -167,4 +167,7 @@ interface StorageDataSource {
     fun activity(value: String?)
     val activity: StateFlow<String?>
 
+    fun passwordType(value: String?)
+    val passwordType: StateFlow<String?>
+
 }

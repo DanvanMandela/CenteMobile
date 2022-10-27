@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import com.elmacentemobile.data.model.LabelDataTypeConverter
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.model.control.FormNavigation
 import com.elmacentemobile.data.model.converter.InsuranceTypeConverter
@@ -271,12 +272,13 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                 if (!busData.res?.formField.isNullOrEmpty())
                     busData.res?.formField!!.forEach {
                         if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
-                            view?.text = it.controlValue
+                            val labelData = LabelDataTypeConverter().to(it.controlValue)
+                            view?.text = labelData?.question
                             userInput(
                                 InputData(
                                     name = formControl?.controlText,
                                     key = formControl?.serviceParamID,
-                                    value = it.controlValue,
+                                    value = labelData?.id,
                                     encrypted = formControl?.isEncrypted!!,
                                     mandatory = formControl.isMandatory
                                 )
@@ -333,8 +335,7 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                                     }.map { it.setText(s.value.toString()) }
                                 }
                         }
-                }
-                else if (BaseClass.nonCaps(data?.controlID) == BaseClass.nonCaps("LOANS")) {
+                } else if (BaseClass.nonCaps(data?.controlID) == BaseClass.nonCaps("LOANS")) {
                     val packages = LoanTypeConverter().from(data?.controlValue)
                     val adapter =
                         LoanAdapterItem(

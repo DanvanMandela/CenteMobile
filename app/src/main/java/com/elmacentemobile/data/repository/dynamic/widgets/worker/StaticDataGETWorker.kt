@@ -101,6 +101,8 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.setTimeout(
                                 data.appIdleTimeout!!.toLong()
                             )
+                        if (!data.passwordType.isNullOrBlank())
+                            storageDataSource.passwordType(data.passwordType)
                         if (!data.rateMax.isNullOrBlank())
                             storageDataSource.setFeedbackTimerMax(
                                 data.rateMax!!.toInt()

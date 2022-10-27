@@ -37,6 +37,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.elmacentemobile.R
+import com.elmacentemobile.data.model.LabelDataTypeConverter
 import com.elmacentemobile.data.model.StandingOrder
 import com.elmacentemobile.data.model.StandingOrderList
 import com.elmacentemobile.data.model.StandingResponseTypeConverter
@@ -312,12 +313,13 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 if (!busData.res?.formField.isNullOrEmpty())
                     busData.res?.formField!!.forEach {
                         if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
-                            view?.text = it.controlValue
+                            val labelData = LabelDataTypeConverter().to(it.controlValue)
+                            view?.text = labelData?.question
                             userInput(
                                 InputData(
                                     name = formControl?.controlText,
                                     key = formControl?.serviceParamID,
-                                    value = it.controlValue,
+                                    value = labelData?.id,
                                     encrypted = formControl?.isEncrypted!!,
                                     mandatory = formControl.isMandatory
                                 )

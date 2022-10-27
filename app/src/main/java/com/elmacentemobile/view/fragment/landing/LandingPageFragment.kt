@@ -22,6 +22,7 @@ import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.databinding.FragmentLandingPageBinding
 import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.util.ScreenHelper
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.activity.MainActivity
@@ -163,8 +164,8 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     }
 
     private fun setDynamicImage(message: Int, image: Int) {
-        setColorPalette(image)
-        //binding.banner.setImageRes(image)
+        //setColorPalette(image)
+        //if (Constants.Data.TEST) binding.banner.setImageRes(image)
         binding.textView15.text = getString(message)
     }
 
@@ -180,9 +181,8 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         val vibrant: Swatch? = p.darkVibrantSwatch
 
 
-
-//        if (vibrant != null) {
-//            ScreenHelper.fullScreen(requireActivity(), false, false, vibrant.rgb)
+        if (vibrant != null) {
+            ScreenHelper.fullScreen(requireActivity(), false, false, vibrant.rgb)
 //            when (val background: Drawable = binding.textView15.background) {
 //                is ShapeDrawable -> {
 //                    background.paint.color = vibrant.rgb
@@ -192,11 +192,10 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 //
 //                }
 //                is ColorDrawable -> {
-//
 //                    background.color = vibrant.rgb
 //                }
 //            }
-//        }
+        }
 
     }
 

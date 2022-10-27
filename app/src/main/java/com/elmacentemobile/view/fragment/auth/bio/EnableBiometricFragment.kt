@@ -3,6 +3,7 @@ package com.elmacentemobile.view.fragment.auth.bio
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.elmacentemobile.R
+import com.elmacentemobile.data.model.control.PasswordEnum
 import com.elmacentemobile.databinding.FragmentEnableBiometricBinding
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
@@ -53,7 +55,28 @@ class EnableBiometricFragment : DialogFragment(), AppCallbacks, View.OnClickList
         binding = FragmentEnableBiometricBinding.inflate(inflater, container, false)
         setBinding()
         setOnClick()
+        setPinType()
         return binding.root.rootView
+    }
+
+    private fun setPinType() {
+        val pinType = widgetViewModel.storageDataSource.passwordType.value
+        if (!pinType.isNullOrBlank()) {
+            when (pinType) {
+                PasswordEnum.TEXT_PASSWORD.type -> {
+                    binding.editPin.inputType =
+                        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                }
+                PasswordEnum.NUMERIC_PASSWORD.type -> {
+                    binding.editPin.inputType =
+                        InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                }
+                PasswordEnum.WEB_PASSWORD.type -> {
+                    binding.editPin.inputType =
+                        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+                }
+            }
+        }
     }
 
     override fun setBinding() {

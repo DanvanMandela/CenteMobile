@@ -1024,6 +1024,23 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _passwordType =
+        MutableStateFlow(sharedPreferences.getString(TAG_PASSWORD_TYPE, ""))
+
+    override val passwordType: StateFlow<String?>
+        get() = _passwordType
+
+    override fun passwordType(value: String?) {
+        _passwordType.value = value!!
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_PASSWORD_TYPE,
+                value
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1092,5 +1109,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_CUSTOMER_PHONE = "PHONE"
 
         private const val TAG_CURRENT_ACTIVITY = "currentActivity"
+
+        private const val TAG_PASSWORD_TYPE = "passwordType"
     }
 }

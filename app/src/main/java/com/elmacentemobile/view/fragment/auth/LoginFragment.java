@@ -6,6 +6,7 @@ import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.elmacentemobile.R;
+import com.elmacentemobile.data.model.control.PasswordEnum;
 import com.elmacentemobile.data.model.converter.ResponseTypeConverter;
 import com.elmacentemobile.data.source.constants.Constants;
 import com.elmacentemobile.data.source.constants.StatusEnum;
@@ -88,9 +90,22 @@ public class LoginFragment extends Fragment implements AppCallbacks {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         setBinding();
         setViewModel();
-
+        setPinType();
         setOnClick();
         return binding.getRoot().getRootView();
+    }
+
+    private void setPinType() {
+        String passType = authViewModel.storage.getPasswordType().getValue();
+        if (passType != null && !TextUtils.isEmpty(passType)) {
+            if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+            } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            }
+        }
     }
 
     @Override

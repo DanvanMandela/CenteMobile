@@ -1,7 +1,6 @@
 package com.elmacentemobile.data.model.control
 
 import android.os.Parcelable
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -24,7 +23,6 @@ data class FormControl(
     @field:SerializedName("RowID")
     @field:ColumnInfo(name = "RowID")
     @field:PrimaryKey
-    @NonNull
     @field:Expose
     var rowID: String = "0",
 
@@ -32,6 +30,11 @@ data class FormControl(
     @field:ColumnInfo(name = "formID")
     @field:Expose
     var formID: String? = null,
+
+    @field:SerializedName("InputType")
+    @field:ColumnInfo(name = "InputType")
+    @field:Expose
+    var inputType: String? = null,
 
     @field:SerializedName("ControlID")
     @field:ColumnInfo(name = "controlID")

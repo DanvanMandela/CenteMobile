@@ -21,6 +21,10 @@ data class StaticData(
     @field:Expose
     var version: String,
 
+    @field:SerializedName("PinFormat")
+    @field:Expose
+    var passwordType: String?,
+
     @field:SerializedName("UserCode")
     @field:Expose
     var userCode: List<StaticDataDetails>,

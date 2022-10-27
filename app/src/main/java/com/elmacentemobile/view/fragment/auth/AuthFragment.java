@@ -1,6 +1,5 @@
 package com.elmacentemobile.view.fragment.auth;
 
-import static com.elmacentemobile.util.BaseClass.nonCaps;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
 
@@ -10,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-
 import com.elmacentemobile.R;
 import com.elmacentemobile.data.model.control.FormControl;
+import com.elmacentemobile.data.model.control.PasswordEnum;
 import com.elmacentemobile.data.model.converter.LoginDataTypeConverter;
 import com.elmacentemobile.data.model.module.ModuleCategory;
 import com.elmacentemobile.data.model.module.Modules;
@@ -121,7 +121,22 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         autoBio();
         bioLogin();
         setFeedbackTimer();
+        setPinType();
         return binding.getRoot().getRootView();
+    }
+
+    private void setPinType() {
+        String passType = authViewModel.storage.getPasswordType().getValue();
+        if (passType != null && !TextUtils.isEmpty(passType)) {
+            new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
+            if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+            } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
+                binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            }
+        }
     }
 
     private void setFeedbackTimer() {
