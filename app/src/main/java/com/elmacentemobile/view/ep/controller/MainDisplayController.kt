@@ -9,6 +9,7 @@ import com.airbnb.epoxy.TypedEpoxyController
 import com.elmacentemobile.*
 import com.elmacentemobile.data.model.StandingOrderList
 import com.elmacentemobile.data.model.control.FormControl
+import com.elmacentemobile.data.model.dynamic.TransactionDynamicList
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.Beneficiary
 import com.elmacentemobile.data.model.user.DisplayHash
@@ -44,8 +45,18 @@ class MainDisplayController(val callbacks: AppCallbacks) :
                 is BeneficiaryList -> setBeneficiary(data)
                 is PendingTransactionList -> setPendingTransactions(data)
                 is DisplayHash -> setDisplayHash(data)
+                is TransactionDynamicList -> setTransactions(data)
 
             }
+    }
+
+    private fun setTransactions(data: TransactionDynamicList) {
+        data.data.forEach {
+            transactionTextItemLayout {
+                id(BaseClass.generateAlphaNumericString(6))
+                data(it)
+            }
+        }
     }
 
     private fun setDisplayHash(data: DisplayHash) {

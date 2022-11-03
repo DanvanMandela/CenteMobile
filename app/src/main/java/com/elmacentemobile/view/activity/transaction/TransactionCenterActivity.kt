@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.dynamic.TransactionData
+import com.elmacentemobile.data.model.dynamic.TransactionDynamicData
+import com.elmacentemobile.data.model.dynamic.TransactionDynamicList
 import com.elmacentemobile.data.model.dynamic.TransactionResponseResponseConverter
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.source.constants.StatusEnum
@@ -22,6 +24,7 @@ import com.elmacentemobile.util.callbacks.Confirm
 import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.dialog.InfoFragment
 import com.elmacentemobile.view.ep.adapter.TransactionAdapterItem
+import com.elmacentemobile.view.ep.adapter.TransactionDynamicAdapterItem
 import com.elmacentemobile.view.ep.data.BusData
 import com.elmacentemobile.view.fragment.transaction.TransactionCenterFragment
 import com.elmacentemobile.view.fragment.transaction.TransactionDetailsFragment
@@ -47,6 +50,7 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val subscribe = CompositeDisposable()
     private lateinit var adapter: TransactionAdapterItem
+    private lateinit var dynamicAdapter: TransactionDynamicAdapterItem
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +87,9 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
         data = EventBus.getDefault().getStickyEvent(Modules::class.java)
         binding.lifecycleOwner = this
         binding.toolbar.title = data.moduleName
-        adapter = TransactionAdapterItem(mutableListOf(), this)
-        binding.container.adapter = adapter
+        // adapter = TransactionAdapterItem(mutableListOf(), this)
+        dynamicAdapter = TransactionDynamicAdapterItem(mutableListOf(), this)
+        binding.container.adapter = dynamicAdapter
 
         fetchTransaction()
 
@@ -140,8 +145,10 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
                 if (BaseClass.nonCaps(response?.status)
                     == BaseClass.nonCaps(StatusEnum.SUCCESS.type)
                 ) {
-                    setNoData(response?.data.isNullOrEmpty())
-                    adapter.replaceData(response?.data!!)
+                    setNoData(response?.transactions.isNullOrEmpty())
+
+                    setNewData(response?.transactions)
+                    //adapter.replaceData(response?.data!!)
                 } else if (BaseClass.nonCaps(response?.status)
                     == StatusEnum.TOKEN.type
                 ) {
@@ -156,6 +163,26 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
 
     }
 
+    private fun setNewData(transactions: MutableList<LinkedHashMap<String, String>>?) {
+        val alphaData = mutableListOf<TransactionDynamicList>()
+        transactions?.forEach { it ->
+            val childData = mutableListOf<TransactionDynamicData>()
+            for (e in it.entries) {
+                if (e.value.isNotBlank())
+                    childData.add(
+                        TransactionDynamicData(
+                            key = e.key,
+                            value = e.value,
+                            success = if (it.containsKey("Status")) it["Status"] else null
+                        )
+                    )
+            }
+            alphaData.add(TransactionDynamicList(childData))
+        }
+
+        dynamicAdapter.replaceData(alphaData)
+    }
+
     override fun timeOut() {
         onCancel()
     }
@@ -168,6 +195,10 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
 
 
     override fun onTransactionDetails(data: TransactionData?) {
+        // TransactionDetailsFragment.show(data, supportFragmentManager)
+    }
+
+    override fun onTransactionDetails(data: TransactionDynamicList?) {
         TransactionDetailsFragment.show(data, supportFragmentManager)
     }
 

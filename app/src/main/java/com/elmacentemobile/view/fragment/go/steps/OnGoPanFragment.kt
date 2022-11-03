@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
+import android.view.View.VISIBLE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -14,6 +15,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.elmacentemobile.data.model.user.ActivationData
+import com.elmacentemobile.data.source.constants.Constants.removeLeadingZero
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
 import com.elmacentemobile.databinding.FragmentOnGoPanBinding
@@ -65,6 +68,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     private val workerViewModel: WorkerViewModel by viewModels()
     private val composite = CompositeDisposable()
 
+    private var active: ActivationData? = null
 
     private val startTime = (120 * 1000).toLong()
     private val interval = (1 * 1000).toLong()
@@ -176,11 +180,23 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
                 getString(R.string.enter_atm_pin), true
             )
             false
+        } else if (active == null && TextUtils.isEmpty(binding.editMobile.text.toString())) {
+            ShowToast(
+                requireContext(),
+                getString(R.string.please_enter_your_mobile), true
+            )
+            false
         } else {
             if (binding.editAccountNumber.length() < 8) {
                 ShowToast(
                     requireContext(),
                     getString(R.string.account_number_invalid), true
+                )
+                false
+            } else if (active == null && binding.editMobile.text.toString().length < 8) {
+                ShowToast(
+                    requireContext(),
+                    getString(R.string.enter_valid_mobile), true
                 )
                 false
             } else if (binding.editATM.length() < 12) {
@@ -200,8 +216,19 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     }
 
     private fun setTextWatchers() {
+        active = baseViewModel.dataSource.activationData.value
+        if (active == null) {
+            binding.frameLayout.visibility = VISIBLE
+        }
         binding.editATM.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+            }
+
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun afterTextChanged(editable: Editable) {
                 if (!TextHelper.isInputCorrect(
@@ -218,7 +245,8 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
                                 editable,
                                 TextHelper.CARD_NUMBER_TOTAL_DIGITS
                             ),
-                            TextHelper.CARD_NUMBER_DIVIDER_POSITION, TextHelper.CARD_NUMBER_DIVIDER
+                            TextHelper.CARD_NUMBER_DIVIDER_POSITION,
+                            TextHelper.CARD_NUMBER_DIVIDER
                         )
                     )
                 }
@@ -337,7 +365,11 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
         val jsonObject = JSONObject()
         val encrypted = JSONObject()
         try {
-            val mobile = baseViewModel.dataSource.activationData.value?.mobile
+            val mobile =
+                if (active == null) binding.countryCodeHolder.selectedCountryCode +
+                        removeLeadingZero(binding.editMobile.text.toString())
+                else baseViewModel.dataSource.activationData.value?.mobile
+
             jsonObject.put(
                 "BANKACCOUNTID", Objects
                     .requireNonNull(binding.editAccountNumber.text).toString()
@@ -399,14 +431,15 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
                     if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
                         setLoading(false)
                         baseViewModel.dataSource.setNKData(
-                            NextKinData(
-                                account = binding.editAccountNumber.text.toString(),
-                                firstName = null,
-                                middleName = null,
-                                lastName = null,
-                                phoneTwo = null,
-                                phone = null,
-                                address = null,
+                            NextKinData(account = binding.editAccountNumber.text.toString())
+                        )
+
+                        baseViewModel.dataSource.setAddressState(
+                            AddressState(
+                                phone = if (active == null) TwoDMap(
+                                    key = binding.countryCodeHolder.selectedCountryCode.toInt(),
+                                    value = removeLeadingZero(binding.editMobile.text.toString())
+                                ) else null
                             )
                         )
                         SuccessDialogFragment.showDialog(
@@ -458,7 +491,10 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
             binding.loadingFrame.verificationCodeEditText.setText("")
             (requireActivity() as MainActivity).initSMSBroadCast()
             setLoading(true)
-            val mobile = baseViewModel.dataSource.activationData.value?.mobile
+            val mobile =
+                if (active == null) binding.countryCodeHolder.selectedCountryCode +
+                        removeLeadingZero(binding.editMobile.text.toString())
+                else baseViewModel.dataSource.activationData.value?.mobile
             val json = JSONObject()
             json.put("MOBILENUMBER", mobile)
             json.put("BANKACCOUNTID", binding.editAccountNumber.text.toString())

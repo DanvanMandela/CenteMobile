@@ -16,10 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider.getUriForFile
 import com.elmacentemobile.R
-
+import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.util.MyActivityResult
-
-
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -269,11 +267,12 @@ class ImagePicker : AppCompatActivity() {
 
             val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(context)
 
-            val animals = arrayOf(
-                context.getString(R.string.camera_from),
-//                context.getString(R.string.select_storage)
-            )
-            builder.setItems(animals) { _, which ->
+            val options = mutableListOf<String>()
+            options.add(context.getString(R.string.camera_from))
+            if (Constants.Data.TEST)
+                options.add(context.getString(R.string.select_storage))
+
+            builder.setItems(options.toTypedArray()) { _, which ->
                 when (which) {
                     0 -> listener.onTakeCameraSelected()
                     1 -> listener.onChooseGallerySelected()

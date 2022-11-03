@@ -42,7 +42,10 @@ class AppLogger {
         }
     }
 
-    fun logTXT(s: String, context: Activity) {
+    fun logTXT(
+        s: String,
+        context: Activity
+    ) {
         if (Constants.Data.TEST) {
             val permission =
                 ContextCompat.checkSelfPermission(
@@ -109,7 +112,7 @@ class AppLogger {
                             val uri = Uri.parse(file.path)
 
                             val fileUri = FileProvider.getUriForFile(
-                               context,
+                                context,
                                 context.packageName.toString() + ".provider",
                                 file
                             )

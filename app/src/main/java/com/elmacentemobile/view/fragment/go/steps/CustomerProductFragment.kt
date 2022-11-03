@@ -69,6 +69,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
 
     private val hashMap = HashMap<String, TwoDMap>()
+    private var existing: Boolean = true
     private lateinit var stateData: CustomerProduct
     private lateinit var branchAdapter: BranchAdapterItem
     private lateinit var currencyAdapter: NameBaseAdapter
@@ -411,10 +412,12 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
         if (active != null) {
             if (user.size != 1)
                 user.removeAt(0)
-        } else {
-            if (user.size != 1)
-                user.removeAt(1)
         }
+
+//        else {
+//            if (user.size != 1)
+//                user.removeAt(1)
+//        }
 
         user.forEachIndexed { index, type ->
             val item = tab.newTab().setText(type.type)
@@ -441,9 +444,11 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
                 if (tab?.tag == index) {
                     hashMap["Type"] = TwoDMap(
-                        key = index,
+                        key = type.id,
                         value = getString(type.type)
                     )
+
+                    existing = type.id == 1
                     custom.parent.setCardBackgroundColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -540,7 +545,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
     }
 
     override fun onConfirm() {
-        if (hashMap["Type"]?.value == getString(R.string.existing_customer)) {
+        if (existing) {
             OnGoPanFragment.showDialog(childFragmentManager, this)
         } else {
             saveState()
@@ -597,18 +602,21 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 data class CustomerType(
     @DrawableRes val avatar: Int,
     @StringRes val type: Int,
-    @StringRes val title: Int
+    @StringRes val title: Int,
+    val id: Int?
 ) {
     val active: Boolean = true
 }
 
 val customerType = mutableListOf(
     CustomerType(
+        id = 0,
         avatar = R.drawable.add_user,
         type = R.string.new_customer,
         title = R.string.i_am
     ),
     CustomerType(
+        id = 1,
         avatar = R.drawable.existing_user,
         type = R.string.existing_customer,
         title = R.string.i_an_

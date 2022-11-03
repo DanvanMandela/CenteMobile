@@ -254,25 +254,25 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 data class NextKinData(
     @field:SerializedName("account")
     @field:Expose
-    val account: String?,
+    val account: String? = null,
     @field:SerializedName("firstName")
     @field:Expose
-    val firstName: String?,
+    val firstName: String? = null,
     @field:SerializedName("middleName")
     @field:Expose
-    val middleName: String?,
+    val middleName: String? = null,
     @field:SerializedName("lastName")
     @field:Expose
-    val lastName: String?,
+    val lastName: String? = null,
     @field:SerializedName("phone")
     @field:Expose
-    val phone: TwoDMap?,
+    val phone: TwoDMap? = null,
     @field:SerializedName("phoneTwo")
     @field:Expose
-    val phoneTwo: TwoDMap?,
+    val phoneTwo: TwoDMap? = null,
     @field:SerializedName("address")
     @field:Expose
-    val address: String?
+    val address: String? = null
 ) : Parcelable
 
 class NextKinDataConverter {

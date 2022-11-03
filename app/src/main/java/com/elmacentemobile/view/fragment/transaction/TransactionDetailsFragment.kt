@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.dynamic.TransactionData
+import com.elmacentemobile.data.model.dynamic.TransactionDynamicList
 import com.elmacentemobile.databinding.FragmentTransactionDetailsBinding
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
@@ -29,7 +30,7 @@ private const val ARG_DATA = "transaction"
 @AndroidEntryPoint
 class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
     // TODO: Rename and change types of parameters
-    private var data: TransactionData? = null
+    private var data: TransactionDynamicList? = null
     private lateinit var binding: FragmentTransactionDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +54,7 @@ class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
     private fun setToolbar() {
         binding.toolbar.apply {
             setNavigationOnClickListener {
-                requireActivity().onBackPressed()
+                dialog?.dismiss()
             }
             setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
@@ -78,7 +79,7 @@ class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     override fun setBinding() {
         binding.data = data
-
+        binding.callback = this
     }
 
 
@@ -99,8 +100,17 @@ class TransactionDetailsFragment : BottomSheetDialogFragment(), AppCallbacks {
                 }
             }
 
+//        @JvmStatic
+//        fun show(transactionData: TransactionData?, manager: FragmentManager) =
+//            TransactionDetailsFragment().apply {
+//                arguments = Bundle().apply {
+//                    putParcelable(ARG_DATA, transactionData)
+//                }
+//                show(manager, this.tag)
+//            }
+
         @JvmStatic
-        fun show(transactionData: TransactionData?, manager: FragmentManager) =
+        fun show(transactionData: TransactionDynamicList?, manager: FragmentManager) =
             TransactionDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_DATA, transactionData)

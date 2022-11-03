@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 )
             )
         }
-        baseViewModel.dataSource.setActivated(true)
+//        baseViewModel.dataSource.setActivated(true)
 //        baseViewModel.dataSource.setActivationData(
 //            ActivationData(
 //                id = "1479373461",

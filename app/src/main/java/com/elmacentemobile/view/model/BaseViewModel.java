@@ -310,15 +310,14 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("ModuleID", modules.getModuleID());
                 data.put("HEADER", action.getActionID());
                 jsonObject.put("DynamicForm", data);
-
+                jsonObject.put("EncryptedFields", encrypted);
                 String dbRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("DBCall", dbRequest);
-
+                AppLogger.Companion.getInstance().logTXT(new Gson().toJson(jsonObject), context);
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(dbRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), (context));
 
                 return dbCall(payloadData);
 
@@ -331,13 +330,15 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                         action.getMerchantID() : modules.getMerchantID());
                 jsonObject.put("ModuleID", modules.getModuleID());
                 jsonObject.put("Validate", data);
+                jsonObject.put("EncryptedFields", encrypted);
                 String validateRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("Validation", validateRequest);
+                AppLogger.Companion.getInstance().logTXT(new Gson().toJson(validateRequest), context);
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(validateRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
+                new AppLogger().logTXT(new Gson().toJson(validateRequest), context);
 
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("auth")) {
@@ -357,13 +358,11 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("EncryptedFields", encrypted);
                 String payBillRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("PayBill", payBillRequest);
-
+                AppLogger.Companion.getInstance().logTXT(new Gson().toJson(jsonObject), context);
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(payBillRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
-
                 if (action.getWebHeader() != null) {
                     if (action.getWebHeader().equalsIgnoreCase("account")) {
                         AppLogger.Companion.getInstance().appLog("PayBill:account",
@@ -395,12 +394,11 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 jsonObject.put("EncryptedFields", encrypted);
                 String changePinRequest = jsonObject.toString();
                 AppLogger.Companion.getInstance().appLog("CHANGE:PIN", changePinRequest);
-
+                AppLogger.Companion.getInstance().logTXT(new Gson().toJson(jsonObject), context);
                 PayloadData payloadData = new PayloadData(
                         dataSource.getUniqueID().getValue(),
                         BaseClass.encryptString(changePinRequest, device, iv)
                 );
-                new AppLogger().logTXT(new Gson().toJson(payloadData), context);
                 return authCall(payloadData);
             }
             return null;

@@ -21,10 +21,7 @@ import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
-import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
@@ -133,6 +130,15 @@ fun setIndicator(
 fun TextView.textSet(text: String?) {
     if (text != null) {
         this.text = text
+    }
+}
+
+@BindingAdapter("text", "color")
+fun TextView.textSetColor(text: String?, @ColorRes color: Int?) {
+    if (text != null) {
+        this.text = text
+        if (color != null)
+            this.setTextColor(ContextCompat.getColor(context, color))
     }
 }
 
@@ -255,6 +261,17 @@ fun EpoxyRecyclerView.setFrequent(callbacks: AppCallbacks, frequent: BodyData?) 
     controller.setData(frequent?.frequentList)
     this.setController(controller)
 }
+
+@BindingAdapter("callback", "dynamic")
+fun EpoxyRecyclerView.setDynamic(callbacks: AppCallbacks, appData: AppData?) {
+    if (appData != null) {
+        val controller = MainDisplayController(callbacks)
+        controller.setData(appData)
+        this.setController(controller)
+        this.visibility = View.VISIBLE
+    }
+}
+
 
 @BindingAdapter("imageRes")
 fun ImageView.setImageRes(@DrawableRes res: Int?) {

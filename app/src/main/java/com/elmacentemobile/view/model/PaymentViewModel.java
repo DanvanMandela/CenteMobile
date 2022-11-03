@@ -59,7 +59,8 @@ public class PaymentViewModel extends ViewModel implements PaymentDataSource {
     @Override
     public Single<DynamicResponse> pay(JSONObject data,
                                        JSONObject encrypted,
-                                       Context context, String moduleID) {
+                                       Context context, String
+                                                   moduleID) {
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();

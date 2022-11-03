@@ -21,7 +21,10 @@ public interface PaymentDataSource extends AppDataSource {
         return null;
     }
 
-    default Single<DynamicResponse> pay(JSONObject data, JSONObject encrypted, Context context, String moduleID) {
+    default Single<DynamicResponse> pay(JSONObject data,
+                                        JSONObject encrypted,
+                                        Context context,
+                                        String moduleID) {
         return null;
     }
 

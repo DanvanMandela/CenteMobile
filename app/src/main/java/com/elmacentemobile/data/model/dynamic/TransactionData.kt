@@ -1,12 +1,17 @@
 package com.elmacentemobile.data.model.dynamic
 
 import android.os.Parcelable
+import androidx.annotation.ColorRes
 import androidx.room.ColumnInfo
 import androidx.room.TypeConverter
+import com.elmacentemobile.R
+import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.view.ep.data.AppData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 
@@ -63,6 +68,7 @@ data class TransactionData(
     var ServiceAccountID: String?
 ) : Parcelable
 
+
 @Parcelize
 data class TransactionResponse(
     @field:SerializedName("Status")
@@ -72,9 +78,13 @@ data class TransactionResponse(
     @field:Expose
     var message: String?,
 
+    @field:SerializedName("Tata")
+    @field:Expose
+    var data: MutableList<TransactionData>?,
+
     @field:SerializedName("Data")
     @field:Expose
-    var data: MutableList<TransactionData>?
+    var transactions: MutableList<LinkedHashMap<String, String>>?
 
 ) : Parcelable
 
@@ -98,3 +108,36 @@ class TransactionResponseResponseConverter {
             GsonBuilder().create()
     }
 }
+
+
+@Parcelize
+data class TransactionDynamicData(
+    @field:SerializedName("key")
+    @field:Expose
+    var key: String?,
+    @field:SerializedName("value")
+    @field:Expose
+    var value: String?,
+    @field:SerializedName("success")
+    @field:Expose
+    var success: String?
+) : Parcelable {
+    @IgnoredOnParcel
+    @field:SerializedName("color")
+    @field:Expose
+    @ColorRes
+    val color: Int = if (key == "Amount") {
+        if (!success.isNullOrBlank()
+            && BaseClass.nonCaps(success) == BaseClass.nonCaps("SUCCESS")
+        ) {
+            R.color.green_indicator
+        } else R.color.red_app
+    } else R.color.dar_color_one
+}
+
+@Parcelize
+data class TransactionDynamicList(
+    @field:SerializedName("value")
+    @field:Expose
+    val data: MutableList<TransactionDynamicData>
+) : AppData(), Parcelable

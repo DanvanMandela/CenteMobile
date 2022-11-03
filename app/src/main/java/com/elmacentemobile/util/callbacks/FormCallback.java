@@ -10,6 +10,7 @@ import com.chaos.view.PinView;
 import com.elmacentemobile.data.model.StandingOrder;
 import com.elmacentemobile.data.model.control.FormControl;
 import com.elmacentemobile.data.model.dynamic.TransactionData;
+import com.elmacentemobile.data.model.dynamic.TransactionDynamicList;
 import com.elmacentemobile.data.model.input.InputData;
 import com.elmacentemobile.data.model.module.Modules;
 import com.elmacentemobile.data.model.user.Accounts;
@@ -114,6 +115,10 @@ public interface FormCallback {
     }
 
     default void onTransactionDetails(TransactionData data) {
+
+    }
+
+    default void onTransactionDetails(TransactionDynamicList data) {
 
     }
 

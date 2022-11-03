@@ -1,5 +1,6 @@
 package com.elmacentemobile.view.fragment.go.steps
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +19,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.address.AddressHelperModel
 import com.elmacentemobile.data.model.address.AddressStaticData
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
+import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.databinding.FragmentAddressBinding
 import com.elmacentemobile.util.*
@@ -64,7 +66,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private lateinit var stateData: AddressState
 
     private val subscribe = CompositeDisposable()
-
+    private var active: ActivationData? = null
     private val hashMap = HashMap<String, TwoDMap>()
     private lateinit var regionAdapter: AddressArrayAdapter
     private lateinit var districtAdapter: AddressArrayAdapter
@@ -143,6 +145,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             .navigate(widgetViewModel.navigation().navigateLanding())
     }
 
+    @SuppressLint("NewApi")
     private fun setStep() {
         binding.progressIndicator.setProgress(70, true)
     }
@@ -177,6 +180,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     override fun setBinding() {
+        active = widgetViewModel.storageDataSource.activationData.value
         val animationDuration = requireContext()
             .resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
@@ -191,10 +195,13 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private fun setMobile() {
         val customerType = baseViewModel.dataSource.customerProduct
         if (customerType.value!!.type!!.value == getString(R.string.existing_customer)) {
-            binding.editMobile.setText(
-                baseViewModel
-                    .dataSource.activationData.value?.mobile?.substring(3)
-            )
+
+            if (active != null) {
+                binding.editMobile.setText(
+                    baseViewModel
+                        .dataSource.activationData.value?.mobile?.substring(3)
+                )
+            }
             binding.editMobile.isEnabled = false
             binding.countryCodeHolder.isEnabled = false
         }
@@ -276,6 +283,8 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         }
     }
 
+
+    @SuppressLint("NewApi")
     private fun setRegion() {
         val address = mutableListOf<AddressHelperModel>()
         for (s in addressData.value!!) {
@@ -296,6 +305,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 
     }
 
+    @SuppressLint("NewApi")
     private fun setDistrict(code: String?) {
         binding.autoDistrict.editableText.clear()
         val address = mutableListOf<AddressHelperModel>()
@@ -325,6 +335,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
 
+    @SuppressLint("NewApi")
     private fun setCounty(code: String?) {
         binding.autoCounty.editableText.clear()
         val address = mutableListOf<AddressHelperModel>()
@@ -346,6 +357,8 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             }
     }
 
+
+    @SuppressLint("NewApi")
     private fun setSubCounty(code: String?) {
 
         binding.autoSubCounty.editableText.clear()
@@ -368,6 +381,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             }
     }
 
+    @SuppressLint("NewApi")
     private fun setParish(code: String?) {
         binding.autoParish.editableText.clear()
         val address = mutableListOf<AddressHelperModel>()
@@ -389,6 +403,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             }
     }
 
+    @SuppressLint("NewApi")
     private fun setVillage(code: String?) {
         binding.autoVillage.editableText.clear()
         val address = mutableListOf<AddressHelperModel>()
@@ -411,6 +426,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 
     }
 
+    @SuppressLint("NewApi")
     private fun setEA(code: String?) {
         binding.autoEA.editableText.clear()
         val address = mutableListOf<AddressHelperModel>()
@@ -659,43 +675,43 @@ data class AddressData(
 data class AddressState(
     @field:SerializedName("region")
     @field:Expose
-    var region: TwoDMap?,
+    var region: TwoDMap? = null,
     @field:SerializedName("district")
     @field:Expose
-    var district: TwoDMap?,
+    var district: TwoDMap? = null,
     @field:SerializedName("county")
     @field:Expose
-    var county: TwoDMap?,
+    var county: TwoDMap? = null,
     @field:SerializedName("subCounty")
     @field:Expose
-    var subCounty: TwoDMap?,
+    var subCounty: TwoDMap? = null,
     @field:SerializedName("village")
     @field:Expose
-    var village: TwoDMap?,
+    var village: TwoDMap? = null,
     @field:SerializedName("parish")
     @field:Expose
-    var parish: TwoDMap?,
+    var parish: TwoDMap? = null,
     @field:SerializedName("ea")
     @field:Expose
-    var ea: TwoDMap?,
+    var ea: TwoDMap? = null,
     @field:SerializedName("email")
     @field:Expose
-    var email: String?,
+    var email: String? = null,
     @field:SerializedName("phone")
     @field:Expose
-    var phone: TwoDMap?,
+    var phone: TwoDMap? = null,
     @field:SerializedName("phoneTwo")
     @field:Expose
-    var phoneTwo: TwoDMap?,
+    var phoneTwo: TwoDMap? = null,
     @field:SerializedName("address")
     @field:Expose
-    var address: String?,
+    var address: String? = null,
     @field:SerializedName("countryCode")
     @field:Expose
-    var countryCode: String?,
+    var countryCode: String? = null,
     @field:SerializedName("city")
     @field:Expose
-    var city: String?
+    var city: String? = null
 
 ) : Parcelable
 
