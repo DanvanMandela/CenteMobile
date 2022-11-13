@@ -76,6 +76,8 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     private lateinit var villageAdapter: AddressArrayAdapter
     private lateinit var eaAdapter: AddressArrayAdapter
 
+    private var customer: CustomerProduct? = null
+
 
     override fun onResume() {
         super.onResume()
@@ -181,6 +183,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
 
     override fun setBinding() {
         active = widgetViewModel.storageDataSource.activationData.value
+        customer = widgetViewModel.storageDataSource.customerProduct.value
         val animationDuration = requireContext()
             .resources.getInteger(R.integer.animation_duration)
         Handler(Looper.getMainLooper()).postDelayed({
@@ -463,6 +466,9 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         } else if (TextUtils.isEmpty(binding.autoSubCounty.editableText.toString())) {
             ShowToast(requireContext(), getString(R.string.select_sub_county), true)
             false
+        } else if (TextUtils.isEmpty(binding.editMobile.text)) {
+            ShowToast(requireContext(), getString(R.string.enter_phone_number))
+            false
         } else if (TextUtils.isEmpty(binding.autoParish.editableText.toString())) {
             ShowToast(requireContext(), getString(R.string.select_parish), true)
             false
@@ -471,9 +477,6 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             false
         } else if (TextUtils.isEmpty(binding.autoEA.editableText.toString())) {
             ShowToast(requireContext(), getString(R.string.select_ea), true)
-            false
-        } else if (TextUtils.isEmpty(binding.editMobile.text.toString())) {
-            ShowToast(requireContext(), getString(R.string.enter_phone_number), true)
             false
         } else if (TextUtils.isEmpty(binding.addressInput.text.toString())) {
             ShowToast(requireContext(), getString(R.string.enter_address), true)
@@ -485,19 +488,24 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             ShowToast(requireContext(), getString(R.string.enter_country_code), true)
             false
         } else {
-            if (!TextUtils.isEmpty(binding.emailInput.text.toString())) {
-                if (verifyEmail(binding.emailInput.text.toString())) true else {
-                    ShowToast(requireContext(), getString(R.string.enter_valid_email), true)
-                    false
-                }
-            } else if (binding.editMobile.text.toString().length < 8) {
+            if (binding.editMobile.text.toString().length < 8) {
                 ShowToast(requireContext(), getString(R.string.enter_valid_mobile), true)
                 false
-            } else if (!TextUtils.isEmpty(binding.editMobileTwo.text.toString())) {
-                if (binding.editMobileTwo.text.toString().length < 8) {
-                    ShowToast(requireContext(), getString(R.string.enter_valid_mobile), true)
-                    false
-                } else true
+            } else if (binding.countryCodeHolder.selectedCountryCode != "256") {
+                validateEmailAddress()
+            } else true
+        }
+    }
+
+
+    private fun validateEmailAddress(): Boolean {
+        return if (TextUtils.isEmpty(binding.emailInput.text.toString())) {
+            ShowToast(requireContext(), getString(R.string.email_address_req), true)
+            false
+        } else {
+            if (!verifyEmail(binding.emailInput.text.toString())) {
+                ShowToast(requireContext(), getString(R.string.enter_valid_email), true)
+                false
             } else true
         }
     }
@@ -633,7 +641,8 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     override fun onClick(p: View?) {
         if (p == binding.buttonNext) {
             val customerType = baseViewModel.dataSource.customerProduct
-            if (customerType.value!!.type!!.value != getString(R.string.existing_customer)) {
+            if (customerType.value!!.type!!.value != getString(R.string.existing_customer)
+            ) {
                 if (validateFields()) {
                     checkUserExist(
                         binding.countryCodeHolder.selectedCountryCode +

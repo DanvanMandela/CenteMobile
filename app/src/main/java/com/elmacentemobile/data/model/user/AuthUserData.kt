@@ -316,37 +316,36 @@ data class ModuleDisable(
 data class ActivationData(
     @field:SerializedName("customerID")
     @field:Expose
-    var id: String?,
+    var id: String? = null,
 
     @field:SerializedName("mobile")
     @field:Expose
-    var mobile: String?
-) {
+    var mobile: String? = null,
     @field:SerializedName("IDNumber")
     @field:Expose
-    var iDNumber: String? = null
+    var iDNumber: String? = null,
 
     @field:SerializedName("email")
     @field:Expose
-    var email: String? = null
+    var email: String? = null,
 
     @field:SerializedName("LastLoginDateTime")
     @field:Expose
-    var loginDate: String? = null
+    var loginDate: String? = null,
 
     @field:SerializedName("lastName")
     @field:Expose
-    var lastName: String? = null
+    var lastName: String? = null,
 
     @field:SerializedName("firstName")
     @field:Expose
-    var firstName: String? = null
+    var firstName: String? = null,
 
     @field:SerializedName("imageURL")
     @field:Expose
-    var imageURL: String? = null
+    var imageURL: String? = null,
 
     @field:SerializedName("message")
     @field:Expose
     var message: String? = null
-}
+)

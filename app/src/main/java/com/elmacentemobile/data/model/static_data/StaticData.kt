@@ -15,7 +15,7 @@ data class StaticData(
     var status: String,
     @field:SerializedName("Message")
     @field:Expose
-    var message: String,
+    var message: String?,
 
     @field:SerializedName("Version")
     @field:Expose

@@ -15,7 +15,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
-import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.source.constants.Constants.removeLeadingZero
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
@@ -68,7 +67,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     private val workerViewModel: WorkerViewModel by viewModels()
     private val composite = CompositeDisposable()
 
-    private var active: ActivationData? = null
+    private var active: Boolean? = null
 
     private val startTime = (120 * 1000).toLong()
     private val interval = (1 * 1000).toLong()
@@ -216,8 +215,8 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     }
 
     private fun setTextWatchers() {
-        active = baseViewModel.dataSource.activationData.value
-        if (active == null) {
+        active = baseViewModel.dataSource.isActivated.value
+        if (active == false) {
             binding.frameLayout.visibility = VISIBLE
         }
         binding.editATM.addTextChangedListener(object : TextWatcher {
@@ -366,7 +365,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
         val encrypted = JSONObject()
         try {
             val mobile =
-                if (active == null) binding.countryCodeHolder.selectedCountryCode +
+                if (active == false) binding.countryCodeHolder.selectedCountryCode +
                         removeLeadingZero(binding.editMobile.text.toString())
                 else baseViewModel.dataSource.activationData.value?.mobile
 
@@ -436,7 +435,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
 
                         baseViewModel.dataSource.setAddressState(
                             AddressState(
-                                phone = if (active == null) TwoDMap(
+                                phone = if (active == false) TwoDMap(
                                     key = binding.countryCodeHolder.selectedCountryCode.toInt(),
                                     value = removeLeadingZero(binding.editMobile.text.toString())
                                 ) else null
@@ -492,7 +491,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
             (requireActivity() as MainActivity).initSMSBroadCast()
             setLoading(true)
             val mobile =
-                if (active == null) binding.countryCodeHolder.selectedCountryCode +
+                if (active == false) binding.countryCodeHolder.selectedCountryCode +
                         removeLeadingZero(binding.editMobile.text.toString())
                 else baseViewModel.dataSource.activationData.value?.mobile
             val json = JSONObject()

@@ -66,7 +66,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 ), path
             )
                 .doOnError {
-                    constructResponse(Result.failure())
+                    constructResponse(Result.retry())
                 }
                 .map {
                     setSyncData(
@@ -108,7 +108,7 @@ class FormControlGETWorker @AssistedInject constructor(
             )
             e.printStackTrace()
             e.localizedMessage?.let { Log.e("TAG", it) }
-            Single.just(Result.failure())
+            Single.just(Result.retry())
 
         }
     }

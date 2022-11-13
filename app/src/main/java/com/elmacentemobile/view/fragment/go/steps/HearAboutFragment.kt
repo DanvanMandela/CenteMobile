@@ -68,7 +68,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
     private lateinit var tvRadioLayoutBinding: BlockTvRadioLayoutBinding
 
 
-    private lateinit var stateData: HearAboutState
+    private var stateData: HearAboutState? = null
 
 
     override fun onResume() {
@@ -134,7 +134,8 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
 
     override fun saveState() {
         statePersist()
-        widgetViewModel.storageDataSource.setRecommendState(stateData)
+        if (stateData != null)
+            widgetViewModel.storageDataSource.setRecommendState(stateData)
     }
 
     override fun onNegative() {

@@ -66,7 +66,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 ), path
             )
                 .doOnError {
-                    constructResponse(Result.failure())
+                    constructResponse(Result.retry())
                 }
                 .map {
                     setSyncData(
@@ -83,14 +83,9 @@ class ModuleGETWorker @AssistedInject constructor(
                     AppLogger.instance.appLog("MODULES", Gson().toJson(data))
                     val status = data?.map { s -> s!!.status }?.single()
                     if (status == StatusEnum.SUCCESS.type) {
-                        val message = data.map { s -> s!!.message }.single()
-                        activeData?.message = message
-                        activeData?.let { it1 -> storageDataSource.setActivationData(it1) }
                         val modules = data.map { s -> s?.modules }.single()
-                        // modules?.forEach { s -> s.generateID() }
                         widgetRepository.saveModule(modules)
                         constructResponse(Result.success())
-
                     } else constructResponse(Result.retry())
                 }
                 .onErrorReturn {
@@ -112,7 +107,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 )
             )
             e.printStackTrace()
-            Single.just(Result.failure())
+            Single.just(Result.retry())
         }
     }
 

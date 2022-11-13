@@ -170,4 +170,8 @@ interface StorageDataSource {
     fun passwordType(value: String?)
     val passwordType: StateFlow<String?>
 
+
+    fun forceData(value: Boolean?)
+    val forceData: StateFlow<Boolean?>
+
 }

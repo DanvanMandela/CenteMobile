@@ -284,6 +284,20 @@ data class BusData(
 ) : Parcelable
 
 
+@Parcelize
+data class ContactData(
+    @field:SerializedName("name")
+    @field:Expose
+    val name: String?,
+    @field:SerializedName("uri")
+    @field:Expose
+    val avatar: String?,
+    @field:SerializedName("numbers")
+    @field:Expose
+    val numbers: MutableList<String>?
+) : Parcelable
+
+
 
 
 

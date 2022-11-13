@@ -416,7 +416,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                             requireActivity().supportFragmentManager
                         )
                     } else {
-                        if (it.response == StatusEnum.ERROR.type) {
+                        if (BaseClass.nonCaps(it.response) == StatusEnum.ERROR.type) {
                             setLoading(false)
                             AlertDialogFragment.newInstance(
                                 DialogData(

@@ -1041,6 +1041,23 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _forceData =
+        MutableStateFlow(sharedPreferences.getBoolean(TAG_FORCE_DATA, true))
+
+    override val forceData: StateFlow<Boolean?>
+        get() = _forceData
+
+    override fun forceData(value: Boolean?) {
+        _forceData.value = value!!
+        with(sharedPreferences.edit()) {
+            putBoolean(
+                TAG_FORCE_DATA,
+                value
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1111,5 +1128,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_CURRENT_ACTIVITY = "currentActivity"
 
         private const val TAG_PASSWORD_TYPE = "passwordType"
+
+        private const val TAG_FORCE_DATA = "forceData"
     }
 }

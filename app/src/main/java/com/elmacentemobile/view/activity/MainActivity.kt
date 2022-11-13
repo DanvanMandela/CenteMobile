@@ -130,7 +130,19 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         securityCheck()
         onUserInteraction()
         listenToInActivity()
+        checkNewVersion()
+    }
 
+    private fun checkNewVersion() {
+//        val appUpdateManager = AppUpdateManagerFactory.create(this)
+//        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+//        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+//                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+//            ) {
+//
+//            }
+//        }
     }
 
     private fun securityCheck() {
@@ -279,13 +291,25 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     override fun setViewModel() {
         val version = widgetViewModel.storageDataSource.version.value
+        val forceData = widgetViewModel.storageDataSource.forceData.value
         workViewModel.routeData(this, object : WorkStatus {
             override fun workDone(b: Boolean) {
                 if (b) {
                     AppLogger.instance.appLog("DATA:Version", version!!)
                     if (TextUtils.isEmpty(version)) {
                         widgetViewModel.storageDataSource.setVersion("R")
+                        widgetViewModel.storageDataSource.forceData(false)
                         workViewModel.onWidgetData(this@MainActivity, null)
+                    } else {
+                        AppLogger.instance.appLog("DATA:Force", "$forceData")
+                        if (forceData == true) {
+                            workViewModel.onWidgetData(this@MainActivity, object : WorkStatus {
+                                override fun progress(p: Int) {
+                                    if (p == 100)
+                                        widgetViewModel.storageDataSource.forceData(false)
+                                }
+                            })
+                        }
                     }
                 }
             }
@@ -530,6 +554,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 priority = Priority.PRIORITY_HIGH_ACCURACY
                 maxWaitTime = Constants.MapsConstants.maxWaitTime
             }
+
+
+
             val locationCallback: LocationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     val locationList = locationResult.locations

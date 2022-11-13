@@ -73,6 +73,7 @@ import com.elmacentemobile.view.activity.beneficiary.BeneficiaryManageActivity
 import com.elmacentemobile.view.activity.transaction.PendingTransactionActivity
 import com.elmacentemobile.view.activity.transaction.TransactionCenterActivity
 import com.elmacentemobile.view.binding.*
+import com.elmacentemobile.view.composable.ContactDialogCompose
 import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.dialog.confirm.ConfirmFragment
 import com.elmacentemobile.view.dialog.display.DisplayDialogFragment
@@ -313,19 +314,26 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 if (!busData.res?.formField.isNullOrEmpty())
                     busData.res?.formField!!.forEach {
                         if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
-                            val labelData = LabelDataTypeConverter().to(it.controlValue)
-                            view?.text = labelData?.question
-                            userInput(
-                                InputData(
-                                    name = formControl?.controlText,
-                                    key = formControl?.serviceParamID,
-                                    value = labelData?.id,
-                                    encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
-                                )
-                            )
-                        }
 
+                            //TODO REVIEW IN FUTURE
+
+                            val value: String? = try {
+                                val labelData = LabelDataTypeConverter().to(it.controlValue)
+                                userInput(
+                                    InputData(
+                                        name = formControl?.controlText,
+                                        key = formControl?.serviceParamID,
+                                        value = labelData?.id,
+                                        encrypted = formControl?.isEncrypted!!,
+                                        mandatory = formControl.isMandatory
+                                    )
+                                )
+                                labelData?.question
+                            } catch (e: Exception) {
+                                it.controlValue
+                            }
+                            view?.text = value
+                        }
                     }
             }
         } catch (e: Exception) {
@@ -551,7 +559,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
     private fun onContactPicker(callbacks: AppCallbacks) {
-
         val pickContact = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
         activityLauncher.launch(pickContact) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -567,6 +574,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                         null
                     )
                 try {
+                    val numberList = mutableListOf<String>()
                     cursor.use { s ->
                         s?.moveToFirst()
                         val id = s?.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
@@ -575,6 +583,16 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                         val hasPhone =
                             s?.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER)
                                 ?.let { s.getString(it) }
+
+                        val name =
+                            s?.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
+                                ?.let { s.getString(it) }
+
+                        val thumbnail =
+                            s?.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
+                                ?.let { s.getString(it) }
+
+
                         if (BaseClass.nonCaps(hasPhone) == "1") {
                             val phones = contentResolver.query(
                                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -584,12 +602,41 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 null,
                                 null
                             )
+//                            phones.use { p ->
+//                                p?.moveToFirst()
+//                                val number = p?.getColumnIndex("data1")?.let { p.getString(it) }
+//                                callbacks.setContact(number)
+//                            }
+
                             phones.use { p ->
-                                p?.moveToFirst()
-                                val number = p?.getColumnIndex("data1")?.let { p.getString(it) }
-                                callbacks.setContact(number)
+                                while (p!!.moveToNext()) {
+                                    val contactNumber =
+                                        p.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                                            .let { p.getString(it) }
+                                    contactNumber?.let {
+                                        val num=it.replace(" ","")
+                                        numberList.removeIf { a -> a == num }
+                                        numberList.add(num)
+                                    }
+                                }
+                                // p?.moveToNext()
                             }
 
+                            val contactData = ContactData(
+                                name = name,
+                                avatar = thumbnail,
+                                numbers = numberList
+                            )
+
+                            ContactDialogCompose.newInstance(
+                                contactData,
+                                supportFragmentManager,
+                                callbacks
+                            )
+
+                        } else {
+                            callbacks.setContact("")
+                            ShowToast(this, "${getString(R.string.no_contacts)} $name")
                         }
                     }
                 } catch (e: Exception) {

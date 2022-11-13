@@ -10,6 +10,7 @@ import com.elmacentemobile.data.model.AtmData
 import com.elmacentemobile.data.model.SpiltURL
 import com.elmacentemobile.data.model.action.ActionTypeEnum
 import com.elmacentemobile.data.model.converter.StaticDataTypeConverter
+import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.repository.dynamic.widgets.WidgetRepository
 import com.elmacentemobile.data.repository.forms.FormsRepository
 import com.elmacentemobile.data.source.constants.Constants
@@ -67,7 +68,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                 ), path
             )
                 .doOnError {
-                    constructResponse(Result.failure())
+                    constructResponse(Result.retry())
                 }
                 .map {
                     setSyncData(
@@ -87,6 +88,18 @@ class StaticDataGETWorker @AssistedInject constructor(
                     AppLogger.instance.appLog("STATIC:Carousel", Gson().toJson(data?.carousel))
 
                     if (data?.status == StatusEnum.SUCCESS.type) {
+                        if (!data.message.isNullOrBlank()) {
+                            var userData = storageDataSource.activationData.value
+                            if (userData != null) {
+                                userData.message = data.message
+                            } else {
+                                userData = ActivationData(
+                                    message = data.message
+                                )
+                            }
+                            storageDataSource.setActivationData(userData)
+                        }
+
                         if (data.userCode.isNotEmpty())
                             storageDataSource.setStaticData(data.userCode.toMutableList())
                         if (data.accountProduct.isNotEmpty())
@@ -170,7 +183,7 @@ class StaticDataGETWorker @AssistedInject constructor(
             )
             e.printStackTrace()
             e.localizedMessage?.let { Log.e("StaticDataGET", it) }
-            Single.just(Result.failure())
+            Single.just(Result.retry())
         }
     }
 

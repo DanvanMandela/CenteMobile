@@ -63,7 +63,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                 ), path
             )
                 .doOnError {
-                    constructResponse(Result.failure())
+                    constructResponse(Result.retry())
                 }
                 .map {
                     setSyncData(
@@ -104,7 +104,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                 )
             )
             e.printStackTrace()
-            Single.just(Result.failure())
+            Single.just(Result.retry())
         }
     }
 
@@ -115,5 +115,9 @@ class ActionControlGETWorker @AssistedInject constructor(
     private fun setSyncData(data: SyncData) {
         if (!storageDataSource.version.value.isNullOrEmpty())
             storageDataSource.setSync(data)
+    }
+
+    override fun onStopped() {
+
     }
 }

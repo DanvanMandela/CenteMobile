@@ -1,7 +1,9 @@
 package com.elmacentemobile.view.fragment.auth;
 
+import static com.elmacentemobile.view.binding.BindingAdapterKt.activationData;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
+import static com.elmacentemobile.view.binding.BindingAdapterKt.pinLive;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.elmacentemobile.R;
@@ -90,22 +93,35 @@ public class LoginFragment extends Fragment implements AppCallbacks {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         setBinding();
         setViewModel();
+        setData();
         setPinType();
         setOnClick();
         return binding.getRoot().getRootView();
     }
 
+    private void setData() {
+        activationData(authViewModel.storage.getActivationData()).observe(getViewLifecycleOwner(),
+                activationData -> binding.setData(activationData));
+    }
+
+
     private void setPinType() {
-        String passType = authViewModel.storage.getPasswordType().getValue();
-        if (passType != null && !TextUtils.isEmpty(passType)) {
-            if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
-            } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        pinLive(authViewModel.storage.getPasswordType()).observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String passType) {
+                if (passType != null && !TextUtils.isEmpty(passType)) {
+                    AppLogger.Companion.getInstance().appLog("PIN:TYPE", passType);
+                    new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
+                    if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+                    } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -215,7 +231,8 @@ public class LoginFragment extends Fragment implements AppCallbacks {
 
                             }
                         });
-                    } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
+                    }
+                    else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
                         new ShowToast(requireContext(), responseDetails.getMessage());
                         String mobile = Constants

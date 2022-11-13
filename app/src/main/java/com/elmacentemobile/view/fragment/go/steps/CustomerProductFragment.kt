@@ -18,6 +18,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.room.TypeConverter
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.ToolbarEnum
@@ -397,7 +398,6 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     private fun setCustomerType() {
         val user = customerType
-        val active = widgetViewModel.storageDataSource.activationData.value
         val tab = binding.customerLay.parentCustomer
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -409,10 +409,15 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
             binding.root.context.resources.getDimensionPixelSize(R.dimen.dimens_5dp),
             binding.root.context.resources.getDimensionPixelSize(R.dimen.dimens_5dp)
         )
-        if (active != null) {
-            if (user.size != 1)
-                user.removeAt(0)
+
+        val active = widgetViewModel.storageDataSource.isActivated.asLiveData()
+        active.observe(viewLifecycleOwner) {
+            if (it == true) {
+                if (user.size != 1)
+                    user.removeAt(0)
+            }
         }
+
 
 //        else {
 //            if (user.size != 1)

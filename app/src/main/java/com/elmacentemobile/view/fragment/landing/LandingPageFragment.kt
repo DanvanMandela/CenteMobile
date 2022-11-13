@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -234,11 +233,15 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     override fun setBinding() {
         binding.callback = this
         binding.lifecycleOwner = viewLifecycleOwner
-        val active = widgetViewModel.storageDataSource.activationData.value
-
-        if (active != null) {
-            binding.registration.visibility = GONE
+        val active = widgetViewModel.storageDataSource.isActivated.asLiveData()
+        active.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.registration.visibility = View.GONE
+            }
         }
+
+
+
 
 //        binding.callback = this
 //        binding.landingButtons.callback = this

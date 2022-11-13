@@ -427,6 +427,8 @@
     <string name="welcome_to">Welcome To</string>
     <string name="welcome_cente_mobile">Centenary Bank Mobile Banking</string>
     <string name="good_afternoon_">Good\nAfternoon</string>
+    <string name="email_address_req">Enter your email address</string>
+    <string name="no_contacts">No number found for</string>
 
 
 </resources>

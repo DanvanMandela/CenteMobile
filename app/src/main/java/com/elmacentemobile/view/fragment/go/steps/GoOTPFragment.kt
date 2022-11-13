@@ -90,6 +90,13 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
             if (it != null) setTimer()
             binding.verificationCodeEditText.setText(it)
         }
+
+        val address = baseViewModel.dataSource.addressState.asLiveData()
+        address.observe(viewLifecycleOwner) {
+            if (it?.countryCode == "256") {
+                binding.verificationCodeEditText.isEnabled = false
+            }
+        }
     }
 
 

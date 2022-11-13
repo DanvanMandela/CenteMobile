@@ -3,6 +3,7 @@
 buildscript {
     ext.hilt_version = '2.42'
     ext.butterKnife = '10.2.3'
+    ext.compose_ui_version = '1.3.1'
     dependencies {
         classpath "com.jakewharton:butterknife-gradle-plugin:$butterKnife"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"

@@ -315,8 +315,18 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                             });
                         } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                             setLoading(false);
+                            ActivationData activationData = authViewModel.storage.getActivationData().getValue();
+                            String message = "";
+                            if (activationData != null) message = activationData.getMessage();
                             authViewModel.saveActivationData(new ActivationData(responseDetails
-                                    .getCustomerID(), OtpFragment.this.data.getMobile()));
+                                    .getCustomerID(), OtpFragment.this.data.getMobile(),
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    message));//TODO CHECK IT
                             new ShowToast(requireContext(), responseDetails.getMessage());
                             new Handler(Looper.getMainLooper()).postDelayed(() ->
                                     ((MainActivity) requireActivity())

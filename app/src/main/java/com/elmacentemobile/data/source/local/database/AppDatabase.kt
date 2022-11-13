@@ -32,8 +32,9 @@ import com.elmacentemobile.view.ep.data.LayoutData
         NotificationData::class,
         PendingTransaction::class
     ],
-    version = 1, exportSchema = false
+    version = 2, exportSchema = false
 )
+
 
 @TypeConverters(
     GroupFormTypeConverter::class,

@@ -1,7 +1,10 @@
 package com.elmacentemobile.view.fragment.auth;
 
+import static com.elmacentemobile.view.binding.BindingAdapterKt.activationData;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
+import static com.elmacentemobile.view.binding.BindingAdapterKt.pinLive;
+import static com.elmacentemobile.view.binding.BindingAdapterKt.syncLive;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,12 +23,16 @@ import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.elmacentemobile.R;
 import com.elmacentemobile.data.model.control.FormControl;
 import com.elmacentemobile.data.model.control.PasswordEnum;
+import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter;
 import com.elmacentemobile.data.model.converter.LoginDataTypeConverter;
+import com.elmacentemobile.data.model.dynamic.DynamicAPIResponse;
 import com.elmacentemobile.data.model.module.ModuleCategory;
 import com.elmacentemobile.data.model.module.Modules;
 import com.elmacentemobile.data.model.user.ActivationData;
@@ -88,6 +95,9 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
 
+    private MutableLiveData<DynamicAPIResponse> serverResponse = new MutableLiveData<>();
+
+
     public AuthFragment() {
         // Required empty public constructor
     }
@@ -126,17 +136,22 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void setPinType() {
-        String passType = authViewModel.storage.getPasswordType().getValue();
-        if (passType != null && !TextUtils.isEmpty(passType)) {
-            new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
-            if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
-            } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
-                binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        pinLive(authViewModel.storage.getPasswordType()).observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String passType) {
+                if (passType != null && !TextUtils.isEmpty(passType)) {
+                    AppLogger.Companion.getInstance().appLog("PIN:TYPE", passType);
+                    new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
+                    if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+                    } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
+                        binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                    }
+                }
             }
-        }
+        });
     }
 
     private void setFeedbackTimer() {
@@ -163,7 +178,9 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void setData() {
         widgetViewModel.deletePendingTransactions();
-        binding.setData(authViewModel.storage.getActivationData().getValue());
+        activationData(authViewModel.storage.getActivationData()).observe(getViewLifecycleOwner(),
+                activationData -> binding.setData(activationData));
+
     }
 
     private void bioLogin() {
@@ -294,8 +311,23 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                             setLoading(false);
                         } else if (Objects.equals(responseDetails.getStatus(),
                                 StatusEnum.PIN_CHANGE.getType())) {
-                            BindingAdapterKt.navigate(this, authViewModel
-                                    .navigationDataSource.navigateToChangePin());
+
+//                            BindingAdapterKt.navigate(this, authViewModel
+//                                    .navigationDataSource.navigateToChangePin());
+                            DynamicAPIResponse dynamicAPIResponse = new DynamicAPIResponseConverter().to(
+                                    BaseClass.decryptLatest(data.getResponse(),
+                                            authViewModel.storage.getDeviceData()
+                                                    .getValue().getDevice(),
+                                            true,
+                                            authViewModel.storage.getDeviceData()
+                                                    .getValue().getRun()));
+                            serverResponse.setValue(dynamicAPIResponse);
+
+                            new AppLogger().appLog("RESPONSE", new Gson().toJson(dynamicAPIResponse.getFormField()));
+                            binding.editPin.setText("");
+                            setLoading(false);
+                            getModule(responseDetails.getFormID(),
+                                    responseDetails.getNext());
                         }
                         if (Objects.equals(responseDetails.getStatus(),
                                 StatusEnum.TOKEN.getType())) {
@@ -448,6 +480,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                         navigate();
                         authViewModel.storage.setVersion(version);
                         authViewModel.storage.setSync(null);
+
                     }
                 }
             } else navigate();
@@ -463,9 +496,12 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         userData.setImageURL(data.getImageURL());
         userData.setIDNumber(data.getIDNumber());
         userData.setLoginDate(data.getLoginDate());
-        if (userData.getMessage() != null)
-            if (!TextUtils.isEmpty(userData.getMessage()))
-                userData.setMessage(data.getMessage());
+        if (data.getMessage() != null && !TextUtils.isEmpty(data.getMessage())) {
+            new AppLogger().appLog("MESSAGE:LOCAL", "" +
+                    authViewModel.storage.getActivationData().getValue().getMessage());
+            new AppLogger().appLog("MESSAGE:REMOTE", data.getMessage());
+            userData.setMessage(data.getMessage());
+        }
         authViewModel.storage.setActivationData(userData);
     }
 
@@ -522,7 +558,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                 null,
                 forms,
                 false),
-                null,
+                serverResponse.getValue(),
                 null));
         Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
         startActivity(i);
@@ -539,7 +575,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void getModule(String module, String next) {
         AppLogger.Companion.getInstance().appLog("FORM", module);
-        AppLogger.Companion.getInstance().appLog("NEXT", next);
+        AppLogger.Companion.getInstance().appLog("NEXT:", next);
         subscribe.add(widgetViewModel.getModule(module)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

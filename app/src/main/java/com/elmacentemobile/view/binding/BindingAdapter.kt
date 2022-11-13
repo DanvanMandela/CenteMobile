@@ -417,9 +417,9 @@ fun TextView.setMessageFromUs(data: ActivationData?) {
     if (data != null) {
         if (!data.message.isNullOrEmpty()) {
             this.text = data.message
-        } else this.text = this.context.getString(R.string.welcome_back)
+        } else this.text = this.context.getString(R.string.welcome_back_to)
     } else {
-        this.text = this.context.getString(R.string.welcome_back)
+        this.text = this.context.getString(R.string.welcome_back_to)
     }
 }
 
@@ -987,12 +987,20 @@ fun otpLive(optState: StateFlow<String>): LiveData<String> {
     return optState.asLiveData()
 }
 
+fun pinLive(pin: StateFlow<String>): LiveData<String> {
+    return pin.asLiveData()
+}
+
 fun syncLive(sync: StateFlow<SyncData>): LiveData<SyncData> {
     return sync.asLiveData()
 }
 
-fun deviceLive(optState: StateFlow<DeviceData>): LiveData<DeviceData> {
-    return optState.asLiveData()
+fun deviceLive(device: StateFlow<DeviceData>): LiveData<DeviceData> {
+    return device.asLiveData()
+}
+
+fun activationData(data: StateFlow<ActivationData>): LiveData<ActivationData> {
+    return data.asLiveData()
 }
 
 
