@@ -136,19 +136,16 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
     private void setPinType() {
-        pinLive(authViewModel.storage.getPasswordType()).observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String passType) {
-                if (passType != null && !TextUtils.isEmpty(passType)) {
-                    AppLogger.Companion.getInstance().appLog("PIN:TYPE", passType);
-                    new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
-                    if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
-                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
-                        binding.editPin.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
-                    } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
-                        binding.editPin.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-                    }
+        pinLive(authViewModel.storage.getPasswordType()).observe(getViewLifecycleOwner(), passType -> {
+            if (passType != null && !TextUtils.isEmpty(passType)) {
+                AppLogger.Companion.getInstance().appLog("PIN:TYPE", passType);
+                new AppLogger().appLog(AuthFragment.class.getSimpleName(), passType);
+                if (passType.equals(PasswordEnum.TEXT_PASSWORD.getType())) {
+                    binding.editPin.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                } else if (passType.equals(PasswordEnum.WEB_PASSWORD.getType())) {
+                    binding.editPin.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+                } else if (passType.equals(PasswordEnum.NUMERIC_PASSWORD.getType())) {
+                    binding.editPin.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
                 }
             }
         });

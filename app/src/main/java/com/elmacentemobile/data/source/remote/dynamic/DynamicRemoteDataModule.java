@@ -42,7 +42,8 @@ public class DynamicRemoteDataModule {
                             return chain.proceed(chain.request()
                                     .newBuilder().url(url)
                                     .build());
-                        }).addInterceptor(httpLoggingInterceptor).addInterceptor(new AuthorizationInterceptor("APIKey", "8CC9432C-B5AD-471C-A77D-28088C695916")).build()
+                        }).addInterceptor(httpLoggingInterceptor)
+                        .addInterceptor(new AuthorizationInterceptor("APIKey", "8CC9432C-B5AD-471C-A77D-28088C695916")).build()
                 ).build();
 
         return retrofit.create(DynamicApiService.class);

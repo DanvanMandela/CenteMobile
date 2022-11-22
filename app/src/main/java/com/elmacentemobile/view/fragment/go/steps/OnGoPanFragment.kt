@@ -432,15 +432,19 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
                         baseViewModel.dataSource.setNKData(
                             NextKinData(account = binding.editAccountNumber.text.toString())
                         )
+                        val mobile = baseViewModel.dataSource.activationData.value
+                        val code = mobile?.mobile?.substring(0, 3)
+                        val phone = mobile?.mobile?.substring(3)
 
                         baseViewModel.dataSource.setAddressState(
                             AddressState(
                                 phone = if (active == false) TwoDMap(
                                     key = binding.countryCodeHolder.selectedCountryCode.toInt(),
                                     value = removeLeadingZero(binding.editMobile.text.toString())
-                                ) else null
+                                ) else TwoDMap(key = code?.toInt(), value = phone)
                             )
                         )
+
                         SuccessDialogFragment.showDialog(
                             DialogData(
                                 title = R.string.success,

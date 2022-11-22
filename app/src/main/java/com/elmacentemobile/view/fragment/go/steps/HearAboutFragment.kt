@@ -534,7 +534,8 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                                 val types = rec1.getJSONArray("types")
                                 val comp = types.getString(0)
                             }
-                            binding.currentInput.setText(formattedAddress)
+
+                            binding.currentInput.setText(formattedAddress.substring(0,40))
                         } catch (e: JSONException) {
                             e.printStackTrace();
                         }

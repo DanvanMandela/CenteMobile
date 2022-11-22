@@ -151,6 +151,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                         if (!data.carousel.isNullOrEmpty()) {
                             val carousels = data.carousel!!.filter { c -> c.category == "ADDS" }
                             widgetRepository.saveCarousel(carousels)
+                            storageDataSource.carouselData(carousels)
                             setSyncData(
                                 SyncData(
                                     work = 5,

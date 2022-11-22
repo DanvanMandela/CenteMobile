@@ -127,26 +127,40 @@ fun NumberList(
 ) {
     LazyColumn {
         items(numbers) { number ->
-            Box(
-                modifier = Modifier
-                    .height(54.dp)
-                    .fillMaxWidth()
-                    .clickable(onClick = {
-                        callbacks?.setContact(number)
-                        callbacks?.onDialog()
-                    })
-            ) {
-                Text(
-                    text = number,
-                    fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    style = Typography().body2,
+            Column(modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()) {
+                Box(
                     modifier = Modifier
+                        .height(54.dp)
                         .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = 16.dp)
-                        .align(Alignment.CenterStart)
-                )
+                        .clickable(onClick = {
+                            callbacks?.setContact(number)
+                            callbacks?.onDialog()
+                        })
+                ) {
+                    Text(
+                        text = number,
+                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                        style = Typography().body2,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 16.dp)
+                            .align(Alignment.CenterStart)
+                    )
+
+                }
+                if (number != numbers.last()) {
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .width(1.dp)
+                            .background(color = colorResource(id = R.color.ghost_white))
+                    )
+                }
             }
+
         }
     }
 }

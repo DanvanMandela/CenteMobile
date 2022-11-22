@@ -94,6 +94,7 @@
                                 android:fontFamily="@font/poppins_medium"
                                 android:imeOptions="actionDone"
                                 android:inputType="text"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                 tools:ignore="LabelFor" />
 
@@ -442,6 +443,7 @@
                                 android:layout_height="match_parent"
                                 android:fontFamily="@font/poppins_medium"
                                 android:inputType="text"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -472,6 +474,7 @@
                                 android:layout_height="match_parent"
                                 android:fontFamily="@font/poppins_medium"
                                 android:inputType="text"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -503,6 +506,7 @@
                                 android:focusable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:inputType="text"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                 tools:ignore="SpeakableTextPresentCheck" />
 

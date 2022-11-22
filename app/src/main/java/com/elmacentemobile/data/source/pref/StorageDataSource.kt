@@ -1,6 +1,7 @@
 package com.elmacentemobile.data.source.pref
 
 import android.content.SharedPreferences
+import com.elmacentemobile.data.model.CarouselData
 import com.elmacentemobile.data.model.DeviceData
 import com.elmacentemobile.data.model.converter.IVData
 import com.elmacentemobile.data.model.static_data.OnlineAccountProduct
@@ -173,5 +174,8 @@ interface StorageDataSource {
 
     fun forceData(value: Boolean?)
     val forceData: StateFlow<Boolean?>
+
+    fun carouselData(value: List<CarouselData>?)
+    val carouselData: StateFlow<List<CarouselData>?>
 
 }

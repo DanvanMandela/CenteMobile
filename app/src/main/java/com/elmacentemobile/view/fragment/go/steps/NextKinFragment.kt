@@ -115,7 +115,6 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         setOnClick()
         setToolbar()
         setBinding()
-
         setAccountField()
         return binding.root.rootView
     }

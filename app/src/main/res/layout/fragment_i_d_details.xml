@@ -83,6 +83,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="text"
                             android:focusable="false"
+                            android:maxLength="40"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -114,6 +115,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="text"
                             android:focusable="false"
+                            android:maxLength="40"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -145,6 +147,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="text"
                             android:focusable="false"
+                            android:maxLength="40"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -176,6 +179,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="text"
                             android:focusable="false"
+                            android:maxLength="40"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -207,6 +211,7 @@
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="date"
                             android:focusable="false"
+                            android:maxLength="40"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:ignore="SpeakableTextPresentCheck" />
 

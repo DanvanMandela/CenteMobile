@@ -2,6 +2,8 @@ package com.elmacentemobile.data.source.pref
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.elmacentemobile.data.model.CarouselData
+import com.elmacentemobile.data.model.CarouselDataConverter
 import com.elmacentemobile.data.model.DeviceData
 import com.elmacentemobile.data.model.DeviceDataTypeConverter
 import com.elmacentemobile.data.model.converter.*
@@ -1058,6 +1060,30 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _carouselData =
+        MutableStateFlow(
+            CarouselDataConverter().from(
+                sharedPreferences.getString(
+                    TAG_CAROUSEL_DATA,
+                    ""
+                )
+            )
+        )
+
+    override val carouselData: StateFlow<List<CarouselData>?>
+        get() = _carouselData
+
+    override fun carouselData(value: List<CarouselData>?) {
+        _carouselData.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_CAROUSEL_DATA,
+                CarouselDataConverter().to(value)
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1130,5 +1156,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_PASSWORD_TYPE = "passwordType"
 
         private const val TAG_FORCE_DATA = "forceData"
+
+        private const val TAG_CAROUSEL_DATA = "carouselData"
     }
 }
