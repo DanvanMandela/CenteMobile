@@ -100,15 +100,15 @@ class StaticDataGETWorker @AssistedInject constructor(
                             storageDataSource.setActivationData(userData)
                         }
 
-                        if (data.userCode.isNotEmpty())
-                            storageDataSource.setStaticData(data.userCode.toMutableList())
-                        if (data.accountProduct.isNotEmpty())
+                        if (!data.userCode.isNullOrEmpty())
+                            storageDataSource.setStaticData(data.userCode!!.toMutableList())
+                        if (!data.accountProduct.isNullOrEmpty())
                             storageDataSource.setProductAccountData(
-                                data.accountProduct.toMutableList()
+                                data.accountProduct!!.toMutableList()
                             )
-                        if (data.bankBranch.isNotEmpty())
+                        if (!data.bankBranch.isNullOrEmpty())
                             storageDataSource.setBranchData(
-                                data.bankBranch.toMutableList()
+                                data.bankBranch!!.toMutableList()
                             )
                         if (!data.appIdleTimeout.isNullOrBlank())
                             storageDataSource.setTimeout(

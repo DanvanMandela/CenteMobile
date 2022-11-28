@@ -29,6 +29,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -201,9 +203,9 @@ public class BaseClass {
 
     public static String base64Decrypt(String str) {
         // Receiving side
-        byte[] data = Base64.decode(str, Base64.DEFAULT);
         String text = "";
         try {
+            byte[] data = Base64.decode(str, Base64.DEFAULT);
             text = new String(data, StandardCharsets.UTF_8);
         } catch (Exception e) {
             text = "";
@@ -414,7 +416,7 @@ public class BaseClass {
     }
 
     public static void shareBitmap(Activity activity, Bitmap bmpMain) {
-        String title = "it works";
+        String title = "Share";
 
 
         String bitmapPath = MediaStore.Images.Media.insertImage(activity.getContentResolver(), bmpMain, "title", null);
@@ -424,6 +426,42 @@ public class BaseClass {
         intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
         intent.putExtra(Intent.EXTRA_TEXT, title);
         activity.startActivity(Intent.createChooser(intent, "Share"));
+    }
+
+    public static void shareTip(Activity activity,
+                                Bitmap bmpMain,
+                                String title) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        Uri bitmapUri = getImageUri(activity, bmpMain);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+        intent.putExtra(Intent.EXTRA_TEXT, title);
+        activity.startActivity(Intent.createChooser(intent, "Share"));
+    }
+
+    public static Intent shareTips(Activity activity,
+                                   Bitmap bmpMain,
+                                   String title) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        Uri bitmapUri = getImageUri(activity, bmpMain);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+        intent.putExtra(Intent.EXTRA_TEXT, title);
+        return Intent.createChooser(intent, "Share");
+    }
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),
+                inImage, "title" + Calendar.getInstance().getTime(), null);
+        return Uri.parse(path);
+    }
+
+    public static String html2text(String html) {
+        return Jsoup.parse(html).text();
     }
 
 

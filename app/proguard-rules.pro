@@ -30,3 +30,4 @@
 -keep interface com.dexprotector.annotations.ClassEncryption
 -keep interface com.dexprotector.annotations.HideAccess
 -keep interface com.dexprotector.annotations.StringEncryption
+

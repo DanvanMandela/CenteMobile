@@ -3,6 +3,8 @@ package com.elmacentemobile.view.binding
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import android.graphics.MaskFilter
 import android.graphics.drawable.ColorDrawable
@@ -30,6 +32,7 @@ import androidx.lifecycle.*
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
+import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +66,8 @@ import com.elmacentemobile.databinding.RectangleILayoutBinding
 import com.elmacentemobile.util.*
 import com.elmacentemobile.util.BaseClass.nonCaps
 import com.elmacentemobile.util.callbacks.AppCallbacks
+import com.elmacentemobile.util.image.drawableToBitmap
+import com.elmacentemobile.util.image.getBitmap
 import com.elmacentemobile.view.ep.adapter.AccountAdapterItem
 import com.elmacentemobile.view.ep.controller.*
 import com.elmacentemobile.view.ep.data.*
@@ -1063,6 +1068,29 @@ fun parameters(obj: Any): Map<String, Any> {
         }
     }
     return map
+}
+
+fun Fragment.colors(drawable: Int): Palette.Swatch? {
+    val bitmap = ContextCompat.getDrawable(requireContext(), drawable)
+        ?.let { drawableToBitmap(it) }
+    val p = bitmap?.let { Palette.from(it).generate() }!!
+    return if (p.darkVibrantSwatch == null) p.lightVibrantSwatch
+    else p.darkVibrantSwatch
+}
+
+fun colorsUrl(bitmap: Bitmap?): Palette.Swatch? {
+    val p = bitmap?.let { Palette.from(it).generate() }!!
+    return if (p.darkVibrantSwatch == null) p.lightVibrantSwatch
+    else p.darkVibrantSwatch
+}
+
+fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("no activity")
 }
 
 

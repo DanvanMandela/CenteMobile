@@ -5,6 +5,7 @@ import androidx.navigation.NavDirections;
 import com.elmacentemobile.data.model.StandingOrder;
 import com.elmacentemobile.data.model.dynamic.TransactionData;
 import com.elmacentemobile.data.model.module.Modules;
+import com.elmacentemobile.view.dialog.DayTipData;
 import com.elmacentemobile.view.dialog.MainDialogData;
 import com.elmacentemobile.view.ep.controller.DisplayData;
 import com.elmacentemobile.view.ep.data.ActivateData;
@@ -31,11 +32,14 @@ public interface NavigationDataSource {
         return null;
     }
 
+    default NavDirections navigateLandingCompose() {
+        return null;
+    }
     default NavDirections navigateToOTP(ActivateData data) {
         return null;
     }
 
- 
+
     default NavDirections navigateResetPinATM() {
         return null;
     }
@@ -138,6 +142,10 @@ public interface NavigationDataSource {
     }
 
     default NavDirections navigateToRejectTransaction() {
+        return null;
+    }
+
+    default NavDirections navigateToTips(DayTipData data) {
         return null;
     }
 }

@@ -8,6 +8,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.StandingOrder
 import com.elmacentemobile.data.model.dynamic.TransactionData
 import com.elmacentemobile.data.model.module.Modules
+import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.dialog.MainDialogData
 import com.elmacentemobile.view.ep.controller.DisplayData
 import com.elmacentemobile.view.ep.data.ActivateData
@@ -300,6 +301,28 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateToRejectTransaction(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_reject)
+    }
+
+    override fun navigateToTips(data: DayTipData?): NavDirections {
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_tips
+            override val arguments: Bundle
+                get() = mArguments()
+
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            fun mArguments(): Bundle {
+                val result = Bundle()
+                if (Parcelable::class.java.isAssignableFrom(StandingOrder::class.java)) {
+                    result.putParcelable("data", data as Parcelable)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun navigateLandingCompose(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_land_compose)
     }
 
 

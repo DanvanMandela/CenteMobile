@@ -181,22 +181,24 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private fun setMigration() {
         val mobile = baseViewModel.dataSource.phoneCustomer.value
         val customerID = baseViewModel.dataSource.customerID.value
-        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
-            baseViewModel.dataSource.setActivated(true)
-            baseViewModel.dataSource.setActivationData(
-                ActivationData(
-                    id = BaseClass.decryptCustomer(customerID),
-                    mobile = BaseClass.decryptCustomer(mobile)
-                )
-            )
-        }
-//        baseViewModel.dataSource.setActivated(true)
-//        baseViewModel.dataSource.setActivationData(
-//            ActivationData(
-//                id = "1479373461",
-//                mobile = "254708835301"//1234 pass
+//        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
+//            baseViewModel.dataSource.setActivated(true)
+//            baseViewModel.dataSource.setActivationData(
+//                ActivationData(
+//                    id = BaseClass.decryptCustomer(customerID),
+//                    mobile = BaseClass.decryptCustomer(mobile)
+//                )
 //            )
-//        )
+//        }
+
+
+        baseViewModel.dataSource.setActivated(true)
+        baseViewModel.dataSource.setActivationData(
+            ActivationData(
+                id = "1479373461",
+                mobile = "254708835301"//1234 pass
+            )
+        )
     }
 
 
@@ -288,6 +290,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         return navController!!
     }
 
+    override fun share(intent: Intent?) {
+        try {
+            startActivity(intent)
+        }catch (e:Exception){e.printStackTrace()}
+    }
+
 
     override fun setViewModel() {
         val version = widgetViewModel.storageDataSource.version.value
@@ -295,6 +303,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         workViewModel.routeData(this, object : WorkStatus {
             override fun workDone(b: Boolean) {
                 if (b) {
+                    workViewModel.tipOfDayData()
                     AppLogger.instance.appLog("DATA:Version", version!!)
                     if (TextUtils.isEmpty(version)) {
                         widgetViewModel.storageDataSource.setVersion("R")

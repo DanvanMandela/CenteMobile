@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 
 
+import com.elmacentemobile.data.source.constants.Constants;
 import com.elmacentemobile.databinding.FragmentSplashBinding;
+import com.elmacentemobile.util.BaseClass;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
 import com.elmacentemobile.view.model.WidgetViewModel;
@@ -97,7 +100,12 @@ public class SplashFragment extends Fragment implements AppCallbacks {
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
         new Handler(Looper.getMainLooper()).postDelayed(() ->
                 BindingAdapterKt.navigate(this, rootBeer.isRooted() ? widgetViewModel
-                        .navigation().navigateToDeviceRooted() : widgetViewModel
-                        .navigation().navigateLanding()), 1000);
+                        .navigation().navigateToDeviceRooted() : landing()), 1000);
+    }
+
+    private NavDirections landing() {
+        return Constants.Data.TEST ? widgetViewModel
+                .navigation().navigateLandingCompose() : widgetViewModel
+                .navigation().navigateLanding();
     }
 }

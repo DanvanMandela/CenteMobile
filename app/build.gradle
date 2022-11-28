@@ -18,8 +18,8 @@ android {
         applicationId "com.elmacentemobile"
         minSdk 21
         targetSdk 33
-        versionCode 128
-        versionName "128"
+        versionCode 129
+        versionName "129"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

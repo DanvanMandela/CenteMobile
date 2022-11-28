@@ -40,6 +40,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import coil.compose.rememberAsyncImagePainter
 import com.elmacentemobile.R
@@ -52,15 +53,14 @@ import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.binding.navigate
 import com.elmacentemobile.view.composable.disabledVerticalPointerInputScroll
+import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.ep.data.LandingData
 import com.elmacentemobile.view.ep.data.LandingPageEnum
 import com.elmacentemobile.view.ep.data.LandingPageItem
-import com.elmacentemobile.view.model.AuthViewModel
-import com.elmacentemobile.view.model.BaseViewModel
-import com.elmacentemobile.view.model.SplashViewModel
-import com.elmacentemobile.view.model.WidgetViewModel
+import com.elmacentemobile.view.model.*
 import com.google.accompanist.pager.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -75,14 +75,23 @@ class LandingPageCompose : Fragment(), AppCallbacks {
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
     private val baseViewModel: BaseViewModel by viewModels()
+    private val staticModel: StaticDataViewModel by viewModels()
     private val adverts = MutableLiveData<List<CarouselData>>()
     private val compositeDisposable = CompositeDisposable()
+    private val viewMap = HashMap<String, ViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setModels()
         getAdverts()
     }
+
+    private fun setModels() {
+        viewMap["baseModel"] = baseViewModel
+        viewMap["static"] = staticModel
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +104,8 @@ class LandingPageCompose : Fragment(), AppCallbacks {
                     PageData(
                         storage = authViewModel.storage,
                         callbacks = this@LandingPageCompose,
-                        greetings = setTimeOfDay()
+                        greetings = setTimeOfDay(),
+                        viewModel = viewMap
                     )
                 )
             }
@@ -240,12 +250,17 @@ class LandingPageCompose : Fragment(), AppCallbacks {
         openUrl(Constants.Contacts.url_chat)
     }
 
+    override fun openTipDialog(data: DayTipData?) {
+        navigate(baseViewModel.navigationData.navigateToTips(data))
+    }
+
 
 }
 
 
 @Composable
 fun Parent(data: PageData?) {
+
     val scroll = rememberScrollState()
     var palette by remember { mutableStateOf(Color.White) }
     if (data?.greetings?.color != null) {
@@ -347,7 +362,7 @@ fun LoginOption(data: PageData?) {
     var textColor by remember { mutableStateOf(Color(R.color.white)) }
     if (data?.greetings?.color != null) {
         palette = Color(data.greetings.color.rgb)
-        textColor= Color(data.greetings.color.bodyTextColor)
+        textColor = Color(data.greetings.color.bodyTextColor)
     }
 
     val activated = storage?.isActivated?.collectAsState()
@@ -376,7 +391,7 @@ fun LoginOption(data: PageData?) {
                 text = stringResource(id = R.string.welcome_to),
                 fontFamily = FontFamily(Font(R.font.poppins_medium)),
                 style = Typography().body2,
-                color =textColor,
+                color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -424,8 +439,8 @@ fun LoginOption(data: PageData?) {
                 Button(
                     onClick = { callbacks?.toLogin() },
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = colorResource(id = R.color.white),
-                        backgroundColor = palette
+                        contentColor = palette,
+                        backgroundColor = Color.White
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -531,12 +546,46 @@ fun NavigationOptionItem(data: LandingPageItem, callbacks: AppCallbacks?) {
 @ExperimentalPagerApi
 @Composable
 fun BodyCarousel(data: PageData?, modifier: Modifier) {
+
+    val viewModel = data?.viewModel!!["static"] as StaticDataViewModel
+    val tipData = viewModel.carouselData.collectAsState()
     val pagerState = rememberPagerState()
-    val storage = data?.storage
+    val storage = data.storage
     val adverts = storage?.carouselData?.collectAsState()?.value
+    val tips = storage?.dayTipData?.collectAsState()?.value
+
+    tips?.forEach { dayTipData ->
+        viewModel.carouselData.value.add(
+            CarouselTip(
+                banner = dayTipData.bannerImage,
+                data = TipItemConverter().from(
+                    TipItem(
+                        tip = Gson().toJson(dayTipData),
+                        type = TipTypeEnum.Dialog
+                    )
+                )
+            )
+        )
+    }
+
+    adverts?.forEach { carouselData ->
+        viewModel.carouselData.value.add(
+            CarouselTip(
+                banner = carouselData.imageURL,
+                data = TipItemConverter().from(
+                    TipItem(
+                        tip = carouselData.imageInfoURL as String,
+                        type = TipTypeEnum.Url
+                    )
+                )
+            )
+        )
+    }
 
 
-    if (!adverts.isNullOrEmpty()) {
+
+    if (tipData.value.isNotEmpty()) {
+        AppLogger.instance.appLog("DAR", Gson().toJson(tipData))
         LaunchedEffect(Unit) {
             while (true) {
                 yield()
@@ -548,12 +597,12 @@ fun BodyCarousel(data: PageData?, modifier: Modifier) {
             }
         }
         HorizontalPager(
-            count = adverts.size,
+            count = tipData.value.size,
             state = pagerState,
             modifier = modifier
         ) { page ->
             CarouselItem(
-                data = adverts[page],
+                data = tipData.value[page],
                 pagerState = pagerState,
                 callbacks = data.callbacks
             )
@@ -564,16 +613,19 @@ fun BodyCarousel(data: PageData?, modifier: Modifier) {
 data class PageData(
     val storage: StorageDataSource?,
     val callbacks: AppCallbacks?,
-    val greetings: Greetings?
+    val greetings: Greetings?,
+    val viewModel: HashMap<String, ViewModel>? = null
 )
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CarouselItem(
-    data: CarouselData,
+    data: CarouselTip,
     pagerState: PagerState,
     callbacks: AppCallbacks?
 ) {
+
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -593,13 +645,17 @@ fun CarouselItem(
                 .padding(16.dp),
             elevation = 1.dp,
             onClick = {
-                callbacks?.openUrl(data.imageInfoURL)
+                val action = TipItemConverter().to(data.data)
+                AppLogger.instance.appLog("CAROUSEL", Gson().toJson(action?.tip))
+                if (action?.type == TipTypeEnum.Url) {
+                    if (data.data != null) callbacks?.openUrl(action.tip as String)
+                } else callbacks?.openTipDialog(TipConverter().to(action?.tip as String))
             },
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Image(
-                    painter = rememberAsyncImagePainter(data.imageURL),
-                    contentDescription = data.category,
+                    painter = rememberAsyncImagePainter(data.banner),
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -651,7 +707,6 @@ fun Footer(callbacks: AppCallbacks?, modifier: Modifier) {
                                 .fillMaxSize()
                                 .weight(1.2f)
                         ) {
-
                             Text(
                                 text = stringResource(id = R.string.connect_with_us),
                                 fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),

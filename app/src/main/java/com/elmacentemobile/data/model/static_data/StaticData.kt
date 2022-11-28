@@ -3,6 +3,7 @@ package com.elmacentemobile.data.model.static_data
 import android.os.Parcelable
 import com.elmacentemobile.data.model.AtmData
 import com.elmacentemobile.data.model.CarouselData
+import com.elmacentemobile.view.dialog.DayTipData
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -19,7 +20,7 @@ data class StaticData(
 
     @field:SerializedName("Version")
     @field:Expose
-    var version: String,
+    var version: String?,
 
     @field:SerializedName("PinFormat")
     @field:Expose
@@ -27,7 +28,7 @@ data class StaticData(
 
     @field:SerializedName("UserCode")
     @field:Expose
-    var userCode: List<StaticDataDetails>,
+    var userCode: List<StaticDataDetails>?,
 
     @field:SerializedName("AppIdleTimeout")
     @field:Expose
@@ -39,11 +40,11 @@ data class StaticData(
 
     @field:SerializedName("OnlineAccountProduct")
     @field:Expose
-    var accountProduct: List<OnlineAccountProduct>,
+    var accountProduct: List<OnlineAccountProduct>?,
 
     @field:SerializedName("BankBranch")
     @field:Expose
-    var bankBranch: List<OnlineAccountProduct>,
+    var bankBranch: List<OnlineAccountProduct>?,
 
     @field:SerializedName("BranchLocations")
     @field:Expose
@@ -55,7 +56,11 @@ data class StaticData(
 
     @field:SerializedName("Images")
     @field:Expose
-    var carousel: MutableList<CarouselData>?
+    var carousel: MutableList<CarouselData>?,
+
+    @field:SerializedName("DataItem")
+    @field:Expose
+    var tips: MutableList<DayTipData>?
 ) : Parcelable
 
 

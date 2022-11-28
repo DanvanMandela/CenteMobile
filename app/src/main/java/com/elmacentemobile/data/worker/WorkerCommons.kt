@@ -3,6 +3,7 @@ package com.elmacentemobile.data.worker
 object WorkerCommons {
     const val TAG_OUTPUT = "outPut"
     const val TAG_DATA_WORKER = "dataWorker"
+    const val TAG_TIP_WORKER = "tipWorker"
     const val TAG_APP_DATA = "appData"
 
     const val TAG_ROUTE_WORKER = "routeWorker"

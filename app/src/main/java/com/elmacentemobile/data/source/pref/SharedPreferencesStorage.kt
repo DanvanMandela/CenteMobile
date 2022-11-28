@@ -13,6 +13,8 @@ import com.elmacentemobile.data.model.user.*
 import com.elmacentemobile.data.source.sync.SyncData
 import com.elmacentemobile.data.source.sync.SyncDataTypeConverter
 import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.view.dialog.DayTipData
+import com.elmacentemobile.view.dialog.DayTipDataConverter
 import com.elmacentemobile.view.fragment.go.steps.*
 import com.elmacentemobile.view.fragment.map.MapData
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -1084,6 +1086,29 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _dayTipData =
+        MutableStateFlow(
+            DayTipDataConverter().from(
+                sharedPreferences.getString(
+                    TAG_DAY_TIP_DATA,
+                    ""
+                )
+            )
+        )
+    override val dayTipData: StateFlow<List<DayTipData>?>
+        get() = _dayTipData
+
+    override fun dayTipData(value: List<DayTipData>?) {
+        _dayTipData.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_DAY_TIP_DATA,
+                DayTipDataConverter().to(value)
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1158,5 +1183,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_FORCE_DATA = "forceData"
 
         private const val TAG_CAROUSEL_DATA = "carouselData"
+
+        private const val TAG_DAY_TIP_DATA = "dayTipData"
     }
 }

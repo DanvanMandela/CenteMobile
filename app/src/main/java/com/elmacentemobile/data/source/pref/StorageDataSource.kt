@@ -8,6 +8,7 @@ import com.elmacentemobile.data.model.static_data.OnlineAccountProduct
 import com.elmacentemobile.data.model.static_data.StaticDataDetails
 import com.elmacentemobile.data.model.user.*
 import com.elmacentemobile.data.source.sync.SyncData
+import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.fragment.go.steps.*
 import com.elmacentemobile.view.fragment.map.MapData
 import kotlinx.coroutines.flow.StateFlow
@@ -177,5 +178,8 @@ interface StorageDataSource {
 
     fun carouselData(value: List<CarouselData>?)
     val carouselData: StateFlow<List<CarouselData>?>
+
+    fun dayTipData(value: List<DayTipData>?)
+    val dayTipData: StateFlow<List<DayTipData>?>
 
 }

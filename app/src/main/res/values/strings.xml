@@ -429,6 +429,7 @@
     <string name="good_afternoon_">Good\nAfternoon</string>
     <string name="email_address_req">Enter your email address</string>
     <string name="no_contacts">No number found for</string>
+    <string name="nothing_show">Nothing to show</string>
 
 
 </resources>

@@ -22,10 +22,15 @@ import com.elmacentemobile.databinding.FragmentLandingPageBinding
 import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.ScreenHelper
+import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.binding.navigate
+import com.elmacentemobile.view.dialog.TipConverter
+import com.elmacentemobile.view.dialog.TipItem
+import com.elmacentemobile.view.dialog.TipItemConverter
+import com.elmacentemobile.view.dialog.TipTypeEnum
 import com.elmacentemobile.view.ep.data.LandingPageEnum
 import com.elmacentemobile.view.ep.data.LandingPageItem
 import com.elmacentemobile.view.model.AuthViewModel
@@ -37,6 +42,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import java.util.*
@@ -198,9 +205,56 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
     }
 
+    private suspend fun doWorld() {
+        delay(1000L)
+        println("World!")
+    }
+
     private fun setAdvert() {
-        adverts.observe(viewLifecycleOwner) {
-            binding.carousel.setData(it)
+        val carouselList = MutableLiveData(mutableListOf<CarouselItem>())
+        val carousel = authViewModel.storage.carouselData.asLiveData()
+        val tips = authViewModel.storage.dayTipData.asLiveData()
+        runBlocking {
+            tips.observe(viewLifecycleOwner) { tip ->
+                if (!tip.isNullOrEmpty()) {
+                    tip.forEach { dayTipData ->
+                        carouselList.value?.add(
+                            CarouselItem(
+                                imageUrl = dayTipData.bannerImage,
+                                caption = TipItemConverter().from(
+                                    TipItem(
+                                        tip = Gson().toJson(dayTipData),
+                                        type = TipTypeEnum.Dialog
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+            delay(200)
+            carousel.observe(viewLifecycleOwner) { cal ->
+                if (!cal.isNullOrEmpty()) {
+                    cal.forEach { carouselData ->
+                        carouselList.value?.add(
+                            CarouselItem(
+                                imageUrl = carouselData.imageURL,
+                                caption = TipItemConverter().from(
+                                    TipItem(
+                                        tip = carouselData.imageInfoURL as String,
+                                        type = TipTypeEnum.Url
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+            delay(200)
+            carouselList.observe(viewLifecycleOwner) {
+                binding.carousel.setData(it)
+            }
+
         }
 
         binding.carousel.carouselListener = object : CarouselListener {
@@ -218,7 +272,14 @@ class LandingPageFragment : Fragment(), AppCallbacks {
             }
 
             override fun onClick(position: Int, carouselItem: CarouselItem) {
-                if (carouselItem.caption != null) openUrl(carouselItem.caption)
+                val action = TipItemConverter().to(carouselItem.caption)
+                AppLogger.instance.appLog("CAROUSEL", Gson().toJson(action?.tip))
+                if (action?.type == TipTypeEnum.Url) {
+                    if (carouselItem.caption != null) openUrl(action.tip as String)
+                } else navigate(
+                    widgetViewModel.navigation()
+                        .navigateToTips(TipConverter().to(action?.tip as String))
+                )
             }
 
             override fun onLongClick(position: Int, carouselItem: CarouselItem) {}
@@ -227,7 +288,11 @@ class LandingPageFragment : Fragment(), AppCallbacks {
 
 
     override fun openUrl(url: String?) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: Exception) {
+            ShowToast(requireContext(), getString(R.string.nothing_show))
+        }
     }
 
     override fun setBinding() {
@@ -239,13 +304,6 @@ class LandingPageFragment : Fragment(), AppCallbacks {
                 binding.registration.visibility = View.GONE
             }
         }
-
-
-
-
-//        binding.callback = this
-//        binding.landingButtons.callback = this
-
     }
 
 

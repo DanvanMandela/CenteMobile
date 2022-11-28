@@ -66,7 +66,7 @@ class ImagePicker : AppCompatActivity() {
 
     private fun takeCameraImage() {
         Dexter.withContext(this)
-            .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .withPermissions(Manifest.permission.CAMERA)
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     if (report.areAllPermissionsGranted()) {
@@ -106,7 +106,7 @@ class ImagePicker : AppCompatActivity() {
 
     private fun chooseImageFromGallery() {
         Dexter.withContext(this)
-            .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .withPermissions(Manifest.permission.CAMERA)
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     if (report.areAllPermissionsGranted()) {
@@ -114,9 +114,6 @@ class ImagePicker : AppCompatActivity() {
                             Intent.ACTION_PICK,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
-
-                        // activityLauncher.launch(pickPhoto)
-
                         startActivityForResult(
                             pickPhoto,
                             REQUEST_GALLERY_IMAGE

@@ -12,8 +12,10 @@ import com.elmacentemobile.data.source.remote.callback.DynamicResponse
 import com.elmacentemobile.data.source.remote.callback.PayloadData
 import com.elmacentemobile.data.source.remote.dynamic.widgets.WidgetApiService
 import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.view.dialog.CarouselTip
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Single
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,6 +29,8 @@ class StaticDataViewModel @Inject constructor(
     private val storageDataSource: StorageDataSource
 ) : ViewModel(), WidgetDataSource {
 
+
+    val carouselData = MutableStateFlow<MutableList<CarouselTip>>(mutableListOf())
 
     fun fetchStaticData(context: Context): Single<DynamicResponse> {
         val iv = storageDataSource.deviceData.value!!.run

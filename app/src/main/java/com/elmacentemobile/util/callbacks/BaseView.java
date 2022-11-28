@@ -1,9 +1,11 @@
 package com.elmacentemobile.util.callbacks;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.elmacentemobile.view.dialog.DayTipData;
 import com.elmacentemobile.view.ep.data.BusData;
 import com.elmacentemobile.view.fragment.go.steps.ImageSelector;
 
@@ -11,11 +13,21 @@ public interface BaseView {
     default void setBinding() {
     }
 
+    default void openTipDialog(DayTipData data) {
+    }
+
     default void setViewModel() {
     }
 
     default void setOnClick() {
     }
+
+    default void share() {
+    }
+
+    default void share(Intent intent) {
+    }
+
 
     default boolean validateFields() {
         return false;

@@ -14,6 +14,7 @@ enum class ActionTypeEnum(val type: String) {
     GET_ACTION_CONTROL("ACTIONS"),
     GET_FORM_CONTROL("FORMS"),
     STATIC_DATA("STATICDATA"),
+    DAY_TIP("TIPOFTHEDAY"),
     CARD("CARD"),
 
 

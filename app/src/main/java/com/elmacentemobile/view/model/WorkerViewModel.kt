@@ -12,10 +12,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import com.elmacentemobile.data.model.ocr.ImageRequestData
 import com.elmacentemobile.data.model.ocr.ImageRequestDataTypeConverter
-import com.elmacentemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
-import com.elmacentemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
-import com.elmacentemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
-import com.elmacentemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.*
 import com.elmacentemobile.data.repository.dynamic.work.DynamicGETWorker
 import com.elmacentemobile.data.repository.ocr.worker.IDProcessingWorker
 import com.elmacentemobile.data.repository.ocr.worker.ImageProcessingWorker
@@ -107,6 +104,17 @@ class WorkerViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun tipOfDayData() {
+        val tipWorker = OneTimeWorkRequestBuilder<TipOfDayGetWorker>()
+        val continuation = worker.getWorkManger()
+            .beginUniqueWork(
+                WorkerCommons.TAG_TIP_WORKER,
+                ExistingWorkPolicy.REPLACE,
+                tipWorker.build()
+            )
+        continuation.enqueue()
     }
 
     fun routeData(owner: LifecycleOwner, status: WorkStatus) {
