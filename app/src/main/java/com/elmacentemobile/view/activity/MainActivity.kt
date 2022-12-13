@@ -57,6 +57,15 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -87,6 +96,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private val envChecks = BitSet()
 
 
+    private var appUpdateManager: AppUpdateManager? = null
+    private var updateListener: InstallStateUpdatedListener? = null
+
     private var jsonChecker: String? = null
 
     fun initSMSBroadCast() {
@@ -103,6 +115,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     override fun onStop() {
         super.onStop()
         widgetViewModel.storageDataSource.deleteOtp()
+        if (appUpdateManager != null) appUpdateManager?.unregisterListener(updateListener!!)
     }
 
     private fun listenToInActivity() {
@@ -133,17 +146,95 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         checkNewVersion()
     }
 
+
     private fun checkNewVersion() {
-//        val appUpdateManager = AppUpdateManagerFactory.create(this)
-//        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-//        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-//                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-//            ) {
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        setUpdateListener()
+        val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
+        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                startUpdate(AppUpdateType.IMMEDIATE, appUpdateInfo)
+            } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                startUpdate(AppUpdateType.FLEXIBLE, appUpdateInfo)
+            }
+        }
+    }
+
+    private fun startUpdate(type: Int, appUpdateInfo: AppUpdateInfo) {
+        appUpdateManager?.startUpdateFlowForResult(
+            appUpdateInfo,
+            this,
+            AppUpdateOptions.newBuilder(type)
+                .setAllowAssetPackDeletion(true)
+                .build(),
+            AUTO_UPDATE
+        )
+    }
+
+    @SuppressLint("SwitchIntDef")
+    private fun setUpdateListener() {
+        updateListener = InstallStateUpdatedListener { state ->
+            when (state.installStatus()) {
+                InstallStatus.DOWNLOADING -> {
+                    val bytesDownloaded = state.bytesDownloaded()
+                    val totalBytesToDownload = state.totalBytesToDownload()
+                }
+                InstallStatus.DOWNLOADED -> {
+                    appUpdateManager?.completeUpdate()
+                }
+                InstallStatus.INSTALLED -> {
+                    if (appUpdateManager != null && updateListener != null)
+                        appUpdateManager?.unregisterListener(updateListener!!)
+                }
+
+
+            }
+        }
+        appUpdateManager?.registerListener(updateListener!!)
+
+    }
+
+
+//    override fun onResume() {
+//        super.onResume()
+//        try {
+//            appUpdateManager
+//                ?.appUpdateInfo
+//                ?.addOnSuccessListener { appUpdateInfo ->
+//                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+//                        appUpdateManager?.completeUpdate()
+//                    }
+//                }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == AUTO_UPDATE) {
+//            if (resultCode != RESULT_OK) {
 //
 //            }
 //        }
+//    }
+
+    private fun update() {
+        Snackbar.make(
+            binding.root.rootView,
+            "An update has just been downloaded.",
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("RESTART") { appUpdateManager?.completeUpdate() }
+            setActionTextColor(ContextCompat.getColor(this@MainActivity, R.color.app_blue_light))
+            show()
+        }
     }
+
 
     private fun securityCheck() {
         if (envChecks.get(EnvEnum.DEBUG.value)) {
@@ -179,26 +270,28 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
     private fun setMigration() {
-        val mobile = baseViewModel.dataSource.phoneCustomer.value
-        val customerID = baseViewModel.dataSource.customerID.value
-//        if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
-//            baseViewModel.dataSource.setActivated(true)
-//            baseViewModel.dataSource.setActivationData(
-//                ActivationData(
-//                    id = BaseClass.decryptCustomer(customerID),
-//                    mobile = BaseClass.decryptCustomer(mobile)
-//                )
-//            )
-//        }
-
-
-        baseViewModel.dataSource.setActivated(true)
-        baseViewModel.dataSource.setActivationData(
-            ActivationData(
-                id = "1479373461",
-                mobile = "254708835301"//1234 pass
+        if (Constants.Data.ACTIVATED) {
+            baseViewModel.dataSource.setActivated(true)
+            baseViewModel.dataSource.setActivationData(
+                ActivationData(
+                    id = "1479373461",
+                    mobile = "254708835301"//1234 pass
+                )
             )
-        )
+        } else {
+            val mobile = baseViewModel.dataSource.phoneCustomer.value
+            val customerID = baseViewModel.dataSource.customerID.value
+            if (!mobile.isNullOrBlank() && !customerID.isNullOrBlank()) {
+                baseViewModel.dataSource.setActivated(true)
+                baseViewModel.dataSource.setActivationData(
+                    ActivationData(
+                        id = BaseClass.decryptCustomer(customerID),
+                        mobile = BaseClass.decryptCustomer(mobile)
+                    )
+                )
+            }
+        }
+
     }
 
 
@@ -231,8 +324,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     token
                 )
             })
-
-
     }
 
 
@@ -273,7 +364,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                                     )
                             }
                         }
-
                     }
             }
 
@@ -293,7 +383,9 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     override fun share(intent: Intent?) {
         try {
             startActivity(intent)
-        }catch (e:Exception){e.printStackTrace()}
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -391,45 +483,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         }
     }
 
-    private fun showSettingsDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Location Permission Needed")
-        builder.setMessage(
-            "This app needs  Location permission, " +
-                    "please accept to use location functionality"
-        )
-        builder.setPositiveButton(
-            "Ok"
-        ) { dialog, _ ->
-            requestLocationPermission()
-            dialog.cancel()
-        }
-        builder.setNegativeButton(
-            "Cancel"
-        ) { dialog, _ ->
-            dialog.cancel()
-        }
-        builder.show()
-    }
-
-    private fun showCameraSettingsDialog() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
-        builder.setTitle(getString(R.string.dialog_permission_title))
-        builder.setMessage(getString(R.string.dialog_permission_message))
-        builder.setPositiveButton(getString(R.string.go_to_settings)) { dialog, _ ->
-            dialog.cancel()
-            openCameraSettings()
-        }
-        builder.setNegativeButton(getString(android.R.string.cancel)) { dialog, _ -> dialog.cancel() }
-        builder.show()
-    }
-
-    private fun openCameraSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", packageName, null)
-        intent.data = uri
-        activityLauncher.launch(intent)
-    }
 
     fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
@@ -565,7 +618,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             }
 
 
-
             val locationCallback: LocationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     val locationList = locationResult.locations
@@ -637,6 +689,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         private const val REQUEST_LOCATION = 100
         private const val REQUEST_LOCATION_BACKGROUND = 101
         private const val REQUEST_CAMERA_PERMISSION = 405
+        private const val DAYS_FOR_FLEXIBLE_UPDATE = 3
+        private const val AUTO_UPDATE = 404
 
     }
 

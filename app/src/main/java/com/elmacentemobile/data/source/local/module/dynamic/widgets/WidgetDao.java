@@ -51,6 +51,10 @@ public interface WidgetDao extends WidgetDataSource {
     Observable<List<Modules>> getModules(String moduleID);
 
     @Override
+    @Query("SELECT * FROM modules_tbl WHERE moduleID=:moduleID")
+    Observable<Modules> getFrequentModule(String moduleID);
+
+    @Override
     @Query("SELECT * FROM modules_tbl WHERE parentModule=:moduleID")
     Observable<Modules> getModule(String moduleID);
 

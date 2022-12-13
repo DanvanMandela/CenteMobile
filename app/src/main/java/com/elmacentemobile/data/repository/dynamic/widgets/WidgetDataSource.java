@@ -65,6 +65,10 @@ public interface WidgetDataSource extends NavigationCallback {
         return null;
     }
 
+    default Observable<Modules> getFrequentModule(String moduleID) {
+        return null;
+    }
+
 
     default void deleteFormModule() {
 

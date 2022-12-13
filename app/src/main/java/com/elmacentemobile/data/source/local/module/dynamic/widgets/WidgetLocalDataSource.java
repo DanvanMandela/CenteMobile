@@ -69,6 +69,11 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     }
 
     @Override
+    public Observable<Modules> getFrequentModule(String moduleID) {
+        return widgetDao.getFrequentModule(moduleID);
+    }
+
+    @Override
     public void deleteFormModule() {
         Completable.fromRunnable(widgetDao::deleteFormModule)
                 .subscribeOn(schedulerProvider.io())

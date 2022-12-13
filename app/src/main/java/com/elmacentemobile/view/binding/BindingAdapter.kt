@@ -49,6 +49,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.elmacentemobile.R
+import com.elmacentemobile.data.model.CarouselData
 import com.elmacentemobile.data.model.DeviceData
 import com.elmacentemobile.data.model.control.ControlTypeEnum
 import com.elmacentemobile.data.model.control.FormControl
@@ -67,7 +68,7 @@ import com.elmacentemobile.util.*
 import com.elmacentemobile.util.BaseClass.nonCaps
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
-import com.elmacentemobile.util.image.getBitmap
+import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.ep.adapter.AccountAdapterItem
 import com.elmacentemobile.view.ep.controller.*
 import com.elmacentemobile.view.ep.data.*
@@ -1005,6 +1006,14 @@ fun deviceLive(device: StateFlow<DeviceData>): LiveData<DeviceData> {
 }
 
 fun activationData(data: StateFlow<ActivationData>): LiveData<ActivationData> {
+    return data.asLiveData()
+}
+
+fun carouselData(data: StateFlow<MutableList<CarouselData>>): LiveData<MutableList<CarouselData>> {
+    return data.asLiveData()
+}
+
+fun tipData(data: StateFlow<MutableList<DayTipData>>): LiveData<MutableList<DayTipData>> {
     return data.asLiveData()
 }
 

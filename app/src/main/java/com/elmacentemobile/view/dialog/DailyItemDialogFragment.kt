@@ -25,7 +25,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.getBitmap
 import com.elmacentemobile.view.binding.colorsUrl
-import com.elmacentemobile.view.dialog.tip.DisplayMain
+import com.elmacentemobile.view.dialog.tip.TipDialogMain
 import com.elmacentemobile.view.model.StaticDataViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -95,7 +95,7 @@ class DailyItemDialogFragment : DialogFragment(), AppCallbacks {
             }
             setContent {
                 if (data != null) {
-                    DisplayMain(
+                    TipDialogMain(
                         data = data!!,
                         appCallbacks = this@DailyItemDialogFragment,
                         color = color,

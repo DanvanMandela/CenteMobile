@@ -271,7 +271,7 @@ class SmartLifeFragment : BottomSheetDialogFragment(), AppCallbacks, OTP {
                                             OCRData(
                                                 names = sRes?.name,
                                                 surname = sRes?.surname,
-                                                idNo = binding.userFrame.nInput.text.toString(),
+                                                idNo = sRes?.number,
                                                 dob = sRes?.dob,
                                                 otherName = sRes?.othername,
                                                 gender = sRes?.gender

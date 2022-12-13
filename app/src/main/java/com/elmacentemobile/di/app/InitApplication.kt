@@ -22,7 +22,7 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        setupActivityListener()
+       setupActivityListener()
     }
 
      open fun setupActivityListener() {

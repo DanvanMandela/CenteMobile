@@ -8,6 +8,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.StandingOrder
 import com.elmacentemobile.data.model.dynamic.TransactionData
 import com.elmacentemobile.data.model.module.Modules
+import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.dialog.MainDialogData
 import com.elmacentemobile.view.ep.controller.DisplayData
@@ -37,9 +38,11 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
     }
 
     override fun navigateLanding(): NavDirections {
-        return ActionOnlyNavDirections(R.id.action_nav_land)
+        return ActionOnlyNavDirections(
+            if (Constants.Data.TEST) R.id.action_nav_land
+            else R.id.action_nav_land
+        )
     }
-
 
 
     override fun navigateToDisclaimer(): NavDirections {
@@ -65,10 +68,6 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
             }
         }
     }
-
-
-
-
 
 
     override fun navigateResetPinATM(): NavDirections {
@@ -148,7 +147,6 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
     override fun navigateToNotification(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_notification)
     }
-
 
 
     override fun navigateToTransactionCenter(modules: Modules?): NavDirections {
@@ -290,7 +288,6 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
     }
 
 
-
     override fun navigateToLogoutFeedBack(): NavDirections {
         return ActionOnlyNavDirections(R.id.action_nav_login_out_feedback)
     }
@@ -322,7 +319,10 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
     }
 
     override fun navigateLandingCompose(): NavDirections {
-        return ActionOnlyNavDirections(R.id.action_nav_land_compose)
+        return ActionOnlyNavDirections(
+            if (Constants.Data.TEST) R.id.action_nav_land
+            else R.id.action_nav_land
+        )
     }
 
 

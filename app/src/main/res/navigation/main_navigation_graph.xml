@@ -488,7 +488,7 @@
         tools:layout="@layout/fragment_daily_item_dialog" />
     <fragment
         android:id="@+id/landingPageCompose"
-        android:name="com.elmacentemobile.view.composable.landing.LandingPageCompose"
+        android:name="com.elmacentemobile.view.composable.landing.LandingPage"
         android:label="LandingPageCompose">
         <action
             android:id="@+id/action_nav_auth"

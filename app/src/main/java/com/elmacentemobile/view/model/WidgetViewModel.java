@@ -32,6 +32,7 @@ import com.elmacentemobile.util.BaseClass;
 import com.elmacentemobile.view.ep.data.LayoutData;
 import com.elmacentemobile.view.navigation.NavigationDataSource;
 
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,6 +55,7 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     private final NavigationDataSource navigationDataSource;
     public final ConnectionObserver connectionObserver;
 
+    public MutableLiveData<List<CarouselItem>> carouselList = new MutableLiveData<>();
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
@@ -111,6 +113,11 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     @Override
     public Observable<Modules> getModule(String moduleID) {
         return widgetRepository.getModule(moduleID);
+    }
+
+    @Override
+    public Observable<Modules> getFrequentModule(String moduleID) {
+        return widgetRepository.getFrequentModule(moduleID);
     }
 
     @Override

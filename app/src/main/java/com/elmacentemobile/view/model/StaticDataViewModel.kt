@@ -31,12 +31,14 @@ class StaticDataViewModel @Inject constructor(
 
 
     val carouselData = MutableStateFlow<MutableList<CarouselTip>>(mutableListOf())
+    val synchronizing = MutableStateFlow<MutableList<CarouselTip>>(mutableListOf())
 
     fun fetchStaticData(context: Context): Single<DynamicResponse> {
         val iv = storageDataSource.deviceData.value!!.run
         val device = storageDataSource.deviceData.value!!.device
         val uniqueID = Constants.getUniqueID()
         val jsonObject = JSONObject()
+
         Constants.commonJSON(
             jsonObject,
             context,

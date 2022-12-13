@@ -250,11 +250,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onServerValue(formControl: FormControl?, view: TextInputEditText?) {
         AppLogger.instance.appLog(
-            "${FalconHeavyActivity::class.java.simpleName} ServerForm",
+            "${FalconHeavyActivity::class.java.simpleName} ServerForm:Field",
             Gson().toJson(formControl)
         )
         AppLogger.instance.appLog(
-            "${FalconHeavyActivity::class.java.simpleName} Form",
+            "${FalconHeavyActivity::class.java.simpleName} Form|Field",
             Gson().toJson(busData.res)
         )
         try {
@@ -272,6 +272,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     mandatory = formControl.isMandatory
                                 )
                             )
+                            AppLogger.instance.appLog(
+                                "${FalconHeavyActivity::class.java.simpleName}Field",
+                                "Field${it.controlID} value:${it.controlValue}"
+                            )
                         }
 
                     }
@@ -287,6 +291,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     encrypted = formControl?.isEncrypted!!,
                                     mandatory = formControl.isMandatory
                                 )
+                            )
+                            AppLogger.instance.appLog(
+                                "${FalconHeavyActivity::class.java.simpleName}Field",
+                                "Field${formControl.controlID} value:${it.controlValue}"
                             )
                         }
 
@@ -314,9 +322,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 if (!busData.res?.formField.isNullOrEmpty())
                     busData.res?.formField!!.forEach {
                         if (BaseClass.nonCaps(it.controlID) == BaseClass.nonCaps(formControl?.controlID)) {
-
                             //TODO REVIEW IN FUTURE
-
                             val value: String? = try {
                                 val labelData = LabelDataTypeConverter().to(it.controlValue)
                                 userInput(

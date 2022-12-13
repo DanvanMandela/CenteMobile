@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -20,7 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
@@ -28,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,59 +36,49 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import coil.compose.rememberAsyncImagePainter
 import com.elmacentemobile.R
-import com.elmacentemobile.data.model.CarouselData
 import com.elmacentemobile.data.source.constants.Constants
-import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.binding.navigate
-import com.elmacentemobile.view.composable.disabledVerticalPointerInputScroll
 import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.ep.data.LandingData
 import com.elmacentemobile.view.ep.data.LandingPageEnum
 import com.elmacentemobile.view.ep.data.LandingPageItem
 import com.elmacentemobile.view.model.*
-import com.google.accompanist.pager.*
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import java.util.*
 
 @AndroidEntryPoint
-class LandingPageCompose : Fragment(), AppCallbacks {
+class LandingPage : Fragment(), AppCallbacks {
     private val authViewModel: AuthViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
     private val baseViewModel: BaseViewModel by viewModels()
     private val staticModel: StaticDataViewModel by viewModels()
-    private val adverts = MutableLiveData<List<CarouselData>>()
-    private val compositeDisposable = CompositeDisposable()
     private val viewMap = HashMap<String, ViewModel>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModels()
-        getAdverts()
     }
 
     private fun setModels() {
         viewMap["baseModel"] = baseViewModel
         viewMap["static"] = staticModel
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,29 +87,17 @@ class LandingPageCompose : Fragment(), AppCallbacks {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Parent(
-                    PageData(
+                Main(
+                    pageData = PageData(
                         storage = authViewModel.storage,
-                        callbacks = this@LandingPageCompose,
+                        callbacks = this@LandingPage,
                         greetings = setTimeOfDay(),
                         viewModel = viewMap
                     )
                 )
+
             }
         }
-    }
-
-    private fun getAdverts() {
-        compositeDisposable.add(
-            widgetViewModel.carousel
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (it.isNotEmpty()) {
-                        adverts.value = it
-                    }
-                }, { it.printStackTrace() })
-        )
     }
 
     private fun setColorPalette(drawable: Int): Palette.Swatch? {
@@ -171,7 +149,11 @@ class LandingPageCompose : Fragment(), AppCallbacks {
     }
 
     override fun openUrl(url: String?) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -251,110 +233,41 @@ class LandingPageCompose : Fragment(), AppCallbacks {
         navigate(baseViewModel.navigationData.navigateToTips(data))
     }
 
-
 }
 
 
-@Composable
-fun Parent(data: PageData?) {
 
-    val scroll = rememberScrollState()
-    var palette by remember { mutableStateOf(Color.White) }
-    if (data?.greetings?.color != null) {
-        palette = Color(data.greetings.color.rgb)
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        palette
-                    )
-                )
-            )
-    ) {
-        Header(data = data)
-        Body(data = data)
-    }
 
-}
 
 
 @Composable
-fun Greeting(greetings: Greetings?) {
+private fun GreetingMessage(
+    greetings: Greetings?,
+    modifier: Modifier = Modifier
+) {
     var palette by remember { mutableStateOf(Color.White) }
     if (greetings?.color != null) {
         palette = Color(greetings.color.bodyTextColor)
     }
-
     Text(
         text = greetings?.message!!,
         fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-        style = Typography().h5,
+        style = Typography().h6,
         color = palette,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+        modifier = modifier
             .padding(16.dp)
     )
 }
 
-@Composable
-fun Header(data: PageData?) {
-
-    val systemUiController = rememberSystemUiController()
-    var palette by remember { mutableStateOf(0) }
-    if (data?.greetings?.color != null) {
-        palette = data.greetings.color.rgb
-    }
-    systemUiController.setSystemBarsColor(
-        color = Color(palette)
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .paint(
-                    painterResource(id = data?.greetings?.image!!),
-                    contentScale = ContentScale.Crop
-                )
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(palette),
-                            Color.Transparent
-                        )
-                    )
-                )
-        ) {
-            Greeting(greetings = data.greetings)
-            LoginOption(data = data)
-            NavigationOption(
-                listData = LandingData.landingData,
-                callbacks = data.callbacks
-            )
-
-        }
-    }
-}
 
 @Composable
-fun LoginOption(data: PageData?) {
-
+private fun LoginOptions(
+    data: PageData?,
+    modifier: Modifier = Modifier
+) {
     val callbacks = data?.callbacks
     val storage = data?.storage
-
     var palette by remember { mutableStateOf(Color(R.color.app_blue_light)) }
     var textColor by remember { mutableStateOf(Color(R.color.white)) }
     if (data?.greetings?.color != null) {
@@ -367,10 +280,7 @@ fun LoginOption(data: PageData?) {
     if (activated?.value == false) paddingEnd = 8.dp
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
-            .wrapContentHeight(),
+        modifier = modifier,
         border = BorderStroke(
             1.dp,
             color = colorResource(id = R.color.white)
@@ -461,89 +371,32 @@ fun LoginOption(data: PageData?) {
 
 }
 
-
 @Composable
 private fun NavigationOption(
-    listData: MutableList<LandingPageItem>,
-    callbacks: AppCallbacks?
+    pageData: PageData?,
+    modifier: Modifier = Modifier
 ) {
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .disabledVerticalPointerInputScroll()
+        modifier = modifier
     ) {
-        items(listData) { data ->
-            NavigationOptionItem(data = data, callbacks = callbacks)
+        items(LandingData.landingData) { data ->
+            NavigationOptionItem(
+                data = data,
+                callbacks = pageData?.callbacks
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun NavigationOptionItem(data: LandingPageItem, callbacks: AppCallbacks?) {
-    Card(
-        modifier = Modifier
-            .width(100.dp)
-            .height(150.dp),
-        border = BorderStroke(
-            1.dp,
-            color = colorResource(id = R.color.white)
-        ),
-        backgroundColor = colorResource(id = R.color.transparent).compositeOver(colorResource(id = R.color.transparent_white)),
-        onClick = {
-            callbacks?.onLanding(data)
-        }, elevation = 0.dp
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(2f)
-            ) {
-
-                Image(
-                    painter = painterResource(id = data.avatar),
-                    contentDescription = stringResource(id = data.title),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center)
-                )
-
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-                    .background(colorResource(id = R.color.white))
-            ) {
-                Text(
-                    text = stringResource(id = data.title),
-                    fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-                    style = Typography().caption,
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.dar_color_one),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .align(Alignment.Center)
-                        .padding(4.dp)
-                )
-            }
-        }
-
     }
 }
 
 
 @ExperimentalPagerApi
 @Composable
-private fun BodyCarousel(data: PageData?, modifier: Modifier) {
-
+private fun BodyCarousel(
+    data: PageData?,
+    modifier: Modifier
+) {
     val viewModel = data?.viewModel!!["static"] as StaticDataViewModel
     val tipData = viewModel.carouselData.collectAsState()
     val pagerState = rememberPagerState()
@@ -579,8 +432,6 @@ private fun BodyCarousel(data: PageData?, modifier: Modifier) {
         )
     }
 
-
-
     if (tipData.value.isNotEmpty()) {
         AppLogger.instance.appLog("DAR", Gson().toJson(tipData))
         LaunchedEffect(Unit) {
@@ -600,46 +451,33 @@ private fun BodyCarousel(data: PageData?, modifier: Modifier) {
         ) { page ->
             CarouselItem(
                 data = tipData.value[page],
-                pagerState = pagerState,
                 callbacks = data.callbacks
             )
         }
     }
 }
 
-data class PageData(
-    val storage: StorageDataSource?,
-    val callbacks: AppCallbacks?,
-    val greetings: Greetings?,
-    val viewModel: HashMap<String, ViewModel>? = null
-)
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CarouselItem(
     data: CarouselTip,
-    pagerState: PagerState,
     callbacks: AppCallbacks?
 ) {
-
-
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
         val (box) = createRefs()
-        val guidelineBottom = createGuidelineFromBottom(0.1f)
-        Card(
-            modifier = Modifier
+        Card(modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .constrainAs(box) {
                     linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
                     linkTo(parent.top, parent.bottom, topMargin = 0.dp, bottomMargin = 0.dp)
-                    width = Dimension.ratio("16:7")
+                    width = Dimension.ratio("16:6")
                     height = Dimension.fillToConstraints
-                }
-                .padding(16.dp),
+                },
             elevation = 1.dp,
             onClick = {
                 val action = TipItemConverter().to(data.data)
@@ -674,7 +512,10 @@ private fun CarouselItem(
 
 
 @Composable
-private fun Footer(callbacks: AppCallbacks?, modifier: Modifier) {
+private fun Footer(
+    callbacks: AppCallbacks?,
+    modifier: Modifier
+) {
     ConstraintLayout(
         modifier = modifier
     ) {
@@ -684,14 +525,13 @@ private fun Footer(callbacks: AppCallbacks?, modifier: Modifier) {
             .constrainAs(box) {
                 linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
                 linkTo(parent.top, parent.bottom, topMargin = 0.dp, bottomMargin = 0.dp)
-                width = Dimension.ratio("16:7")
+                width = Dimension.ratio("16:6")
                 height = Dimension.fillToConstraints
             }) {
 
             Card(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .padding(16.dp),
+                    .clip(RoundedCornerShape(8.dp)),
                 elevation = 1.dp
             ) {
                 Row(
@@ -795,57 +635,147 @@ private fun Footer(callbacks: AppCallbacks?, modifier: Modifier) {
     }
 }
 
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun Body(data: PageData?) {
-    Column(
+private fun Main(pageData: PageData?) {
+    val systemUiController = rememberSystemUiController()
+    var palette by remember { mutableStateOf(0) }
+    if (pageData?.greetings?.color != null) {
+        palette = pageData.greetings.color.rgb
+    }
+    systemUiController.setSystemBarsColor(color = Color(palette))
+    ConstraintLayout(
         modifier = Modifier
-            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color(palette)
+                    )
+                )
+            )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
-
-            ) {
-            BodyCarousel(
-                data = data, modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
+        val (header, body) = createRefs()
+        ConstraintLayout(modifier = Modifier
+            .clip(
+                RoundedCornerShape(
+                    bottomStart = 16.dp,
+                    bottomEnd = 16.dp
+                )
             )
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-        ) {
-            Footer(
-                callbacks = data?.callbacks, modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
+            .paint(
+                painterResource(id = pageData?.greetings?.image!!),
+                contentScale = ContentScale.Crop
             )
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(palette),
+                        Color.Transparent
+                    )
+                )
+            )
+            .constrainAs(header) {
+                linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
+                top.linkTo(parent.top)
+                width = Dimension.fillToConstraints
+                height = Dimension.ratio("1:1")
+            }) {
+            val (title, login, navigation) = createRefs()
+            GreetingMessage(
+                greetings =
+                pageData.greetings,
+                modifier =
+                Modifier.constrainAs(title) {
+                    linkTo(
+                        parent.start,
+                        parent.end,
+                        startMargin = 0.dp,
+                        endMargin = 0.dp
+                    )
+                    top.linkTo(parent.top, 8.dp)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                }
+            )
+            LoginOptions(data = pageData,
+                modifier = Modifier.constrainAs(login) {
+                    linkTo(
+                        parent.start,
+                        parent.end,
+                        startMargin = 16.dp,
+                        endMargin = 16.dp
+                    )
+                    top.linkTo(title.bottom)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                })
+
+            NavigationOption(pageData = pageData,
+                modifier = Modifier.constrainAs(navigation) {
+                    linkTo(
+                        parent.start,
+                        parent.end,
+                        startMargin = 16.dp,
+                        endMargin = 16.dp
+                    )
+                    top.linkTo(login.bottom, 16.dp)
+                    bottom.linkTo(parent.bottom, 16.dp)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                })
 
         }
-
+        ConstraintLayout(modifier = Modifier
+            .constrainAs(body) {
+                linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
+                top.linkTo(header.bottom)
+                width = Dimension.fillToConstraints
+                height = Dimension.ratio("1:1")
+            }) {
+            val (carousel, contact) = createRefs()
+            BodyCarousel(pageData,
+                modifier = Modifier.constrainAs(carousel) {
+                    top.linkTo(parent.top, 16.dp)
+                    linkTo(
+                        parent.start,
+                        parent.end,
+                        startMargin = 16.dp,
+                        endMargin = 16.dp
+                    )
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                })
+            Footer(callbacks = pageData.callbacks,
+                modifier = Modifier.constrainAs(contact) {
+                    top.linkTo(carousel.bottom, 16.dp)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                    linkTo(
+                        parent.start,
+                        parent.end,
+                        startMargin = 16.dp,
+                        endMargin = 16.dp
+                    )
+                })
+        }
     }
 }
 
 
-data class Greetings(
-    val message: String?,
-    val color: Palette.Swatch?,
-    @DrawableRes val image: Int?
-)
-
-
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    Parent(
+fun DefaultLandingPreview() {
+    Main(
         PageData(
-            storage = null, callbacks = null, greetings = Greetings(
-                message = "Good\nMorning", color = null, image = R.drawable.noon
+            storage = null,
+            callbacks = null,
+            greetings = Greetings(
+                message = "Good\nNight",
+                color = null,
+                image = R.drawable.night
             )
         )
     )

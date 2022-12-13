@@ -72,6 +72,11 @@ public class WidgetRepository implements WidgetDataSource {
     }
 
     @Override
+    public Observable<Modules> getFrequentModule(String moduleID) {
+        return localData.getFrequentModule(moduleID);
+    }
+
+    @Override
     public void deleteFormModule() {
         localData.deleteFormModule();
     }

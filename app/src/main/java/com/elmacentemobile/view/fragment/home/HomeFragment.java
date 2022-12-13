@@ -20,11 +20,13 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.elmacentemobile.R;
+import com.elmacentemobile.data.model.CarouselData;
 import com.elmacentemobile.data.model.control.FormControl;
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter;
 import com.elmacentemobile.data.model.dynamic.DynamicAPIResponse;
@@ -53,9 +55,14 @@ import com.elmacentemobile.view.activity.transaction.PendingTransactionActivity;
 import com.elmacentemobile.view.activity.transaction.TransactionCenterActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
+import com.elmacentemobile.view.dialog.DayTipData;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.dialog.InfoFragment;
 import com.elmacentemobile.view.dialog.LoadingFragment;
+import com.elmacentemobile.view.dialog.TipConverter;
+import com.elmacentemobile.view.dialog.TipItem;
+import com.elmacentemobile.view.dialog.TipItemConverter;
+import com.elmacentemobile.view.dialog.TipTypeEnum;
 import com.elmacentemobile.view.ep.controller.AlertList;
 import com.elmacentemobile.view.ep.data.AccountData;
 import com.elmacentemobile.view.ep.data.BodyData;
@@ -145,24 +152,64 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     }
 
 
-
-
     @SuppressLint("NewApi")
     private void getAdverts() {
-        subscribe.add(widgetViewModel.getCarousel()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(v -> {
-                    if (!v.isEmpty()) {
-                        ArrayList<CarouselItem> carouselItems = new ArrayList<>();
-                        v.forEach(data -> carouselItems.add(new CarouselItem(
-                                data.getImageURL(),
-                                data.getImageInfoURL()
+        ArrayList<CarouselItem> carouselItems = new ArrayList<>();
+//        subscribe.add(widgetViewModel.getCarousel()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()).subscribe(v -> {
+//                    if (!v.isEmpty()) {
+//                        ArrayList<CarouselItem> carouselItems = new ArrayList<>();
+//                        v.forEach(data -> carouselItems.add(new CarouselItem(
+//                                data.getImageURL(),
+//                                data.getImageInfoURL()
+//
+//                        )));
+//                        adverts.setValue(carouselItems);
+//
+//                    }
+//                }, Throwable::printStackTrace));
 
-                        )));
-                        adverts.setValue(carouselItems);
 
-                    }
-                }, Throwable::printStackTrace));
+        BindingAdapterKt.tipData(widgetViewModel.storageDataSource.getDayTipData())
+                .observe(getViewLifecycleOwner(),
+                        tipData -> {
+                            if (!tipData.isEmpty()) {
+                                for (DayTipData t : tipData) {
+                                    carouselItems.add(new CarouselItem(
+                                            t.getBannerImage(),
+                                            new TipItemConverter().from(
+                                                    new TipItem(
+                                                            new Gson().toJson(t),
+                                                            TipTypeEnum.Dialog
+                                                    )
+                                            )
+                                    ));
+                                }
+                            }
+                        });
+
+
+        BindingAdapterKt.carouselData(widgetViewModel.storageDataSource.getCarouselData())
+                .observe(getViewLifecycleOwner(),
+                        carouselData -> {
+                            if (!carouselData.isEmpty()) {
+                                for (CarouselData c : carouselData) {
+                                    carouselItems.add(new CarouselItem(
+                                            c.getImageURL(),
+                                            new TipItemConverter().from(
+                                                    new TipItem(
+                                                            c.getImageInfoURL(),
+                                                            TipTypeEnum.Url
+                                                    )
+                                            )
+                                    ));
+                                }
+                            }
+                        });
+
+        widgetViewModel.carouselList.setValue(carouselItems);
+
     }
 
     @Override
@@ -214,7 +261,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     private void setAdvert() {
         binding.carousel.registerLifecycle(getViewLifecycleOwner());
-        adverts.observe(getViewLifecycleOwner(), v -> binding.carousel.setData(v));
+        widgetViewModel.carouselList.observe(getViewLifecycleOwner(), v -> binding.carousel.setData(v));
 
         binding.carousel.setCarouselListener(new CarouselListener() {
             @Nullable
@@ -232,7 +279,13 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                if (carouselItem.getCaption() != null) openUrl(carouselItem.getCaption());
+
+                TipItem action = new TipItemConverter().to(carouselItem.getCaption());
+                assert action != null;
+                if (action.getType() == TipTypeEnum.Url) {
+                    if (carouselItem.getCaption() != null) openUrl((String) action.getTip());
+                } else BindingAdapterKt.navigate(HomeFragment.this, widgetViewModel.navigation()
+                        .navigateToTips(new TipConverter().to((String) action.getTip())));
             }
 
             @Override
@@ -357,7 +410,13 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
     @Override
     public void openUrl(String url) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (Exception e) {
+         new    ShowToast(requireContext(), getString(R.string.nothing_show));
+            e.printStackTrace();
+        }
+
     }
 
     private void navigateTo(Modules modules) {
@@ -395,35 +454,17 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
 
     private void setDynamicModules(List<Modules> m, Modules modules) {
-//        List<Modules> filterModules = new ArrayList<>();
-//        List<ModuleDisable> moduleDisables = authViewModel.storage.getDisableModule().getValue();
-//        m.forEach(module -> {
-//            if (moduleDisables != null)
-//                if (!moduleDisables.isEmpty()) {
-//                    boolean hide = moduleDisables.stream()
-//                            .map(ModuleDisable::getId)
-//                            .filter(Objects::nonNull)
-//                            .anyMatch(type -> (Objects.equals(module.getModuleID(), type)));
-//                    if (!hide) filterModules.add(module);
-//                } else {
-//                    filterModules.add(module);
-//                }
-//            else filterModules.add(module);
-//        });
-
         EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
                 null,
                 null));
         Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
         startActivity(i);
-
-
     }
 
 
     @Override
     public void onFrequent(FrequentModules modules) {
-        subscribe.add(widgetViewModel.getModule(modules.getParentModule())
+        subscribe.add(widgetViewModel.getFrequentModule(modules.getModuleId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::getFormControl, Throwable::printStackTrace));
