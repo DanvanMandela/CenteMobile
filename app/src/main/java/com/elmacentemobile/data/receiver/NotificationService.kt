@@ -16,7 +16,6 @@ import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import com.elmacentemobile.R
-
 import com.elmacentemobile.data.model.converter.DateConverter
 import com.elmacentemobile.data.model.converter.NotificationConverter
 import com.elmacentemobile.data.model.converter.NotificationDataConverter
@@ -70,10 +69,8 @@ class NotificationService : FirebaseMessagingService() {
 
             AppLogger.instance.appLog(
                 TAG,
-                "Message Notification Body: " + Gson().toJson(p.data)
+                "Message Notification: " + Gson().toJson(p.data)
             )
-
-
             storageDataSource.setOtp(extractOTP(data?.message))
             notData(
                 NotificationData(
@@ -90,6 +87,7 @@ class NotificationService : FirebaseMessagingService() {
 
 
     }
+
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)

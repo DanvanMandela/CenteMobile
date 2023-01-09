@@ -78,6 +78,7 @@ class StaticDataGETWorker @AssistedInject constructor(
                         )
                     )
                     val dec = BaseClass.decompressStaticData(it.response)
+                    AppLogger.instance.appLog("STATIC:response", "${it.response}")
                     AppLogger.instance.appLog("STATIC:Decode", dec)
 
 

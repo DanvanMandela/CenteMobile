@@ -45,9 +45,6 @@ class DynamicGETWorker @AssistedInject constructor(
                 true,
                 storageDataSource
             )
-
-
-
             dynamicRepository.requestBase(
                 RequestData(
                     uniqueID,
@@ -79,10 +76,13 @@ class DynamicGETWorker @AssistedInject constructor(
                                 it.payload?.ran
                             )
                         )
+                        //  it.payload?.device?.let { s -> storageDataSource.setUniqueID(s) }TODO CHECK SESSION ID
+                        AppLogger.instance.appLog("Session", "${it.payload?.device}")
                         data?.token = it.token!!
                         data?.run = it.payload!!.ran
                         data?.device = keys
                         storageDataSource.setDeviceData(data!!)
+                        AppLogger.instance.appLog("Routes:Response:", Gson().toJson(it))
                         AppLogger.instance.appLog("Routes", Gson().toJson(data))
                         constructResponse(
                             Result.success(

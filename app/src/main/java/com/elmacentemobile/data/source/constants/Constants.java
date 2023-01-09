@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.source.pref.StorageDataSource;
+import com.elmacentemobile.util.AppLogger;
 import com.elmacentemobile.util.BaseClass;
 import com.elmacentemobile.view.fragment.map.MapData;
 import com.google.android.gms.maps.model.LatLng;
@@ -72,7 +73,7 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = false;
+        public static final boolean TEST = true;
         public static final boolean ACTIVATED = false;
 
         @NotNull
@@ -97,7 +98,7 @@ public class Constants {
         public final static String CUSTOMER_ID = TEST ? "25600116" : "25600016";
 
         @NotNull
-        public final static String VERSION = "126";
+        public final static String VERSION = "130";
 
         @NotNull
         public final static String GO = "cente";
@@ -115,7 +116,9 @@ public class Constants {
                                   String customerID,
                                   boolean customer,
                                   StorageDataSource dataSource) {
+
         try {
+            new AppLogger().appLog("SESSION", dataSource.getUniqueID().getValue());
             jsonObject.put("FormID", formID);
             jsonObject.put("UNIQUEID", uniqueID);
             jsonObject.put("SessionID", dataSource.getUniqueID().getValue());
@@ -197,7 +200,9 @@ public class Constants {
                 Build.USER.length() % 10 +
                 BaseClass.generateAlphaNumericString(4);
         String serial = Build.getRadioVersion();
-        return new UUID(uniquePseudoID.hashCode(), serial.hashCode()).toString();
+//        return new UUID(uniquePseudoID.hashCode(), serial.hashCode()).toString();
+
+        return UUID.randomUUID().toString();
     }
 
     public static String setMobile(String country, String mobile) {

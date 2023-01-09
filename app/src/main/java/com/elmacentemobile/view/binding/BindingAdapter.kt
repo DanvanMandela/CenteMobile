@@ -653,18 +653,30 @@ fun EpoxyRecyclerView.setDisplayController(callbacks: AppCallbacks?, data: Displ
 @BindingAdapter("callback", "data", "modules")
 fun CheckBox.setCheckBox(callbacks: AppCallbacks, data: FormControl?, modules: Modules?) {
     this.isChecked = false
+    setCheckBoxDefault(callbacks, data, this.isChecked)
     this.setOnCheckedChangeListener { _, p1 ->
-        if (p1)
-            callbacks.userInput(
-                InputData(
-                    name = data?.controlText,
-                    key = data?.serviceParamID,
-                    value = "TRUE",
-                    encrypted = data?.isEncrypted!!,
-                    mandatory = data.isMandatory
-                )
+        callbacks.userInput(
+            InputData(
+                name = data!!.controlText,
+                key = data.serviceParamID,
+                value = if (p1) "TRUE" else if (data.isMandatory) "" else "FALSE",
+                encrypted = data.isEncrypted,
+                mandatory = data.isMandatory
             )
+        )
     }
+}
+
+fun setCheckBoxDefault(callbacks: AppCallbacks, data: FormControl?, checked: Boolean) {
+    callbacks.userInput(
+        InputData(
+            name = data!!.controlText,
+            key = data.serviceParamID,
+            value = if (checked) "TRUE" else if (data.isMandatory) "" else "FALSE",
+            encrypted = data.isEncrypted,
+            mandatory = data.isMandatory
+        )
+    )
 }
 
 

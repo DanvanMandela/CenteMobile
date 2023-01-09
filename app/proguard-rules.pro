@@ -26,7 +26,7 @@
 
 #dexguard
 -keepattributes SourceFile, LineNumberTable, *Annotation*
--keep @interface com.dexprotector.annotations.** { *; }
+-keep interface com.dexprotector.annotations.** { *; }
 -keep interface com.dexprotector.annotations.ClassEncryption
 -keep interface com.dexprotector.annotations.HideAccess
 -keep interface com.dexprotector.annotations.StringEncryption

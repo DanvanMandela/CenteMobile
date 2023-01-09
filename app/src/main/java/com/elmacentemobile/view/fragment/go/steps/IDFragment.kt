@@ -388,7 +388,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
 
-    //OUT OF ORDER
+
     private fun uploadOCR() {
         val json = JSONObject()
         json.put("INFOFIELD3", id?.image)

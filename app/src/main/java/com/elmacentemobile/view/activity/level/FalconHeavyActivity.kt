@@ -801,72 +801,70 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
                                     serverResponse.value = resData
                                     if (!resData?.formID.isNullOrBlank()) {
-                                        if (!resData?.formID.isNullOrBlank()) {
-                                            if (BaseClass.nonCaps(resData!!.formID)
-                                                == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
-                                            ) {
-                                                ReceiptFragment.show(
-                                                    this, ReceiptList(
-                                                        receipt = resData.receipt!!
-                                                            .toMutableList(),
-                                                        notification = resData.notifications
+                                        if (BaseClass.nonCaps(resData!!.formID)
+                                            == BaseClass.nonCaps("PAYMENTCONFIRMATIONFORM")
+                                        ) {
+                                            ReceiptFragment.show(
+                                                this, ReceiptList(
+                                                    receipt = resData.receipt!!
+                                                        .toMutableList(),
+                                                    notification = resData.notifications
 
-                                                    ), supportFragmentManager
-                                                )
-                                            } else if (BaseClass.nonCaps(resData.formID)
-                                                == BaseClass.nonCaps("STATEMENT")
-                                            ) {
+                                                ), supportFragmentManager
+                                            )
+                                        } else if (BaseClass.nonCaps(resData.formID)
+                                            == BaseClass.nonCaps("STATEMENT")
+                                        ) {
 
-                                                DisplayDialogFragment.show(
-                                                    data = resData.accountStatement,
-                                                    supportFragmentManager
-                                                )
+                                            DisplayDialogFragment.show(
+                                                data = resData.accountStatement,
+                                                supportFragmentManager
+                                            )
 
-                                            } else if (BaseClass.nonCaps(resData.formID)
-                                                == BaseClass.nonCaps("RELIGION") || BaseClass.nonCaps(
-                                                    resData.formID
-                                                )
-                                                == BaseClass.nonCaps("FUNEXTRAS")
-                                            ) {
-                                                val mData = GlobalResponseTypeConverter().to(
-                                                    BaseClass.decryptLatest(
-                                                        it.response,
-                                                        baseViewModel.dataSource
-                                                            .deviceData.value!!.device,
-                                                        true,
-                                                        baseViewModel.dataSource
-                                                            .deviceData.value!!.run
-                                                    )
-                                                )
-
-                                                DisplayDialogFragment.show(
-                                                    data = mData?.data,
-                                                    supportFragmentManager
-                                                )
-
-
-                                            } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
-                                                    "ADDBENEFICIARY"
-                                                ) ||
-                                                BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
-                                                    "ADDBENEFICIARYOTHER"
-                                                )
-                                            ) {
-                                                val beneficiaries = resData.beneficiary
-                                                if (!beneficiaries.isNullOrEmpty())
-                                                    baseViewModel.dataSource.setBeneficiary(
-                                                        beneficiaries
-                                                    )
-                                                setSuccess(resData.message)
-
-                                            } else setOnNextModule(
-                                                formControl,
-                                                if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
-                                                modules,
+                                        } else if (BaseClass.nonCaps(resData.formID)
+                                            == BaseClass.nonCaps("RELIGION") || BaseClass.nonCaps(
                                                 resData.formID
                                             )
-                                        } else setSuccess(resData?.message)
-                                    } else setSuccess(resData!!.message)
+                                            == BaseClass.nonCaps("FUNEXTRAS")
+                                        ) {
+                                            val mData = GlobalResponseTypeConverter().to(
+                                                BaseClass.decryptLatest(
+                                                    it.response,
+                                                    baseViewModel.dataSource
+                                                        .deviceData.value!!.device,
+                                                    true,
+                                                    baseViewModel.dataSource
+                                                        .deviceData.value!!.run
+                                                )
+                                            )
+
+                                            DisplayDialogFragment.show(
+                                                data = mData?.data,
+                                                supportFragmentManager
+                                            )
+
+
+                                        } else if (BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                                "ADDBENEFICIARY"
+                                            ) ||
+                                            BaseClass.nonCaps(resData.formID) == BaseClass.nonCaps(
+                                                "ADDBENEFICIARYOTHER"
+                                            )
+                                        ) {
+                                            val beneficiaries = resData.beneficiary
+                                            if (!beneficiaries.isNullOrEmpty())
+                                                baseViewModel.dataSource.setBeneficiary(
+                                                    beneficiaries
+                                                )
+                                            setSuccess(resData.message)
+
+                                        } else setOnNextModule(
+                                            formControl,
+                                            if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
+                                            modules,
+                                            resData.formID
+                                        )
+                                    } else setSuccess(resData?.message)
                                 } else if (BaseClass.nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {

@@ -516,7 +516,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                 { response ->
                     if (!TextUtils.isEmpty(response)) {
                         //c5.setText(result);
-                        var formattedAddress: String? = null
+                        val formattedAddress: String?
                         try {
                             val json = JSONObject(response)
                             val jArray = json.getJSONArray("results")
@@ -535,7 +535,8 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                                 val comp = types.getString(0)
                             }
 
-                            binding.currentInput.setText(formattedAddress.substring(0,40))
+                            if (formattedAddress.length >= 40)
+                                binding.currentInput.setText(formattedAddress.substring(0, 40))
                         } catch (e: JSONException) {
                             e.printStackTrace();
                         }

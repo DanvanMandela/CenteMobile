@@ -47,7 +47,7 @@ class TipOfDayGetWorker @AssistedInject constructor(
                 storageDataSource
             )
             val newRequest = jsonObject.toString()
-            AppLogger.instance.appLog("TIPS","$newRequest")
+            AppLogger.instance.appLog("TIPS", newRequest)
             val path = storageDataSource.deviceData.value!!.staticData?.let {
                 SpiltURL(
                     it
