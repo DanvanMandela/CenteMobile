@@ -392,8 +392,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     private fun uploadOCR() {
         val json = JSONObject()
         json.put("INFOFIELD3", id?.image)
-        json.put("INFOFIELD4", signature?.image)
-        json.put("INFOFIELD5", selfie?.image)
+        json.put("INFOFIELD4", "signature?.image")
+        json.put("INFOFIELD5", "selfie?.image")
 
         setLoading(true)
         ShowToast(requireContext(), getString(R.string.take_few_secs))

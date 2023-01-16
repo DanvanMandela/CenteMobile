@@ -43,6 +43,7 @@ import com.elmacentemobile.data.source.remote.helper.ConnectionObserver
 import com.elmacentemobile.databinding.ActivityMainBinding
 import com.elmacentemobile.util.*
 import com.elmacentemobile.util.callbacks.AppCallbacks
+import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.getImageFromStorage
 import com.elmacentemobile.view.fragment.auth.bio.BioInterface
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             val uriContent = result.uriContent
             val uriFilePath = result.getUriFilePath(this)
             val image = getImageFromStorage(uriFilePath!!)
-            callbacks?.onImage(image)
+            callbacks?.onImage(compressImage(image!!))
         } else {
             val exception = result.error
             AppLogger.instance.appLog("COPPER:ERROR", "${exception?.printStackTrace()}")

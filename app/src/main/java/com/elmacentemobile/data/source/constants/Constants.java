@@ -73,7 +73,7 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = true;
+        public static final boolean TEST = false;
         public static final boolean ACTIVATED = false;
 
         @NotNull

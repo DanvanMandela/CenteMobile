@@ -65,6 +65,7 @@ import com.elmacentemobile.util.MyActivityResult
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.callbacks.Confirm
+import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.convert
 import com.elmacentemobile.util.image.getImageFromStorage
 import com.elmacentemobile.view.activity.ImagePicker
@@ -152,7 +153,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         if (result.isSuccessful) {
             val uriFilePath = result.getUriFilePath(this)
             val image = getImageFromStorage(uriFilePath!!)
-            callback?.onImage(image)
+            callback?.onImage(compressImage(image!!))
         } else {
             val exception = result.error
             AppLogger.instance.appLog("COPPER:ERROR", "${exception?.printStackTrace()}")
