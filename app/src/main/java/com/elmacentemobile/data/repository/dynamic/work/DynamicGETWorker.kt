@@ -76,7 +76,7 @@ class DynamicGETWorker @AssistedInject constructor(
                                 it.payload?.ran
                             )
                         )
-                        //  it.payload?.device?.let { s -> storageDataSource.setUniqueID(s) }TODO CHECK SESSION ID
+                        it.payload?.device?.let { s -> storageDataSource.sessionID(s) }
                         AppLogger.instance.appLog("Session", "${it.payload?.device}")
                         data?.token = it.token!!
                         data?.run = it.payload!!.ran

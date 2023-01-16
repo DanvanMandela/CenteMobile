@@ -430,6 +430,10 @@
     <string name="email_address_req">Enter your email address</string>
     <string name="no_contacts">No number found for</string>
     <string name="nothing_show">Nothing to show</string>
+    <string name="crop_failed">Image crop failed</string>
+    <string name="unable_load_image">Unable to load image</string>
+    <string name="crop">Crop</string>
+    <string name="crop_image">Crop Image</string>
 
 
 </resources>

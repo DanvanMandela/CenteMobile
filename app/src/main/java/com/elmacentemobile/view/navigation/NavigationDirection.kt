@@ -39,7 +39,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateLanding(): NavDirections {
         return ActionOnlyNavDirections(
-            if (Constants.Data.TEST) R.id.action_nav_land
+            if (Constants.Data.TEST) R.id.action_nav_land_compose
             else R.id.action_nav_land
         )
     }
@@ -49,7 +49,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         return ActionOnlyNavDirections(R.id.action_nav_disclaimer)
     }
 
-    override fun navigateToOTP(data: ActivateData?): NavDirections? {
+    override fun navigateToOTP(data: ActivateData?): NavDirections {
         return object : NavDirections {
             override val actionId: Int
                 get() = R.id.action_nav_otp
@@ -320,7 +320,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateLandingCompose(): NavDirections {
         return ActionOnlyNavDirections(
-            if (Constants.Data.TEST) R.id.action_nav_land
+            if (Constants.Data.TEST) R.id.action_nav_land_compose
             else R.id.action_nav_land
         )
     }

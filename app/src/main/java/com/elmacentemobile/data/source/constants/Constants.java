@@ -98,7 +98,7 @@ public class Constants {
         public final static String CUSTOMER_ID = TEST ? "25600116" : "25600016";
 
         @NotNull
-        public final static String VERSION = "130";
+        public final static String VERSION = "131";
 
         @NotNull
         public final static String GO = "cente";
@@ -117,11 +117,18 @@ public class Constants {
                                   boolean customer,
                                   StorageDataSource dataSource) {
 
+
+        String sessionID = uniqueID;
+        if (dataSource.getSessionID().getValue() != null)
+            sessionID = dataSource.getSessionID().getValue();
+
+        assert sessionID != null;
+        new AppLogger().appLog("Session", sessionID);
+
         try {
-            new AppLogger().appLog("SESSION", dataSource.getUniqueID().getValue());
             jsonObject.put("FormID", formID);
             jsonObject.put("UNIQUEID", uniqueID);
-            jsonObject.put("SessionID", dataSource.getUniqueID().getValue());
+            jsonObject.put("SessionID", sessionID);
 
             MapData mapData = dataSource.getLatLng().getValue();
             LatLng latLng = new LatLng(0.0, 0.0);

@@ -69,7 +69,8 @@ class ActionControlGETWorker @AssistedInject constructor(
                     setSyncData(
                         SyncData(
                             work = 8,
-                            message = applicationContext.getString(R.string.loading_)
+                            message = applicationContext.getString(R.string.loading_),
+                            complete = true
                         )
                     )
                     val dec = BaseClass.decompressStaticData(it.response)

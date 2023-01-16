@@ -519,6 +519,28 @@
             app:popEnterAnim="@anim/anim_slide_in_right"
             app:popExitAnim="@anim/anim_slide_out_right"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_on_the_go"
+            app:destination="@+id/onTheGoFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_map"
+            app:destination="@+id/mapsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+000
+
     </fragment>
 
     <!--    Dialog-->

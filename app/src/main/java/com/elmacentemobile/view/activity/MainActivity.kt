@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.ImageDecoder
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -17,7 +16,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
@@ -34,6 +32,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.source.constants.Constants
@@ -42,7 +43,7 @@ import com.elmacentemobile.data.source.remote.helper.ConnectionObserver
 import com.elmacentemobile.databinding.ActivityMainBinding
 import com.elmacentemobile.util.*
 import com.elmacentemobile.util.callbacks.AppCallbacks
-import com.elmacentemobile.util.image.compressImage
+import com.elmacentemobile.util.image.getImageFromStorage
 import com.elmacentemobile.view.fragment.auth.bio.BioInterface
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricUtil
@@ -75,7 +76,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 
@@ -100,6 +100,18 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private var updateListener: InstallStateUpdatedListener? = null
 
     private var jsonChecker: String? = null
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val uriContent = result.uriContent
+            val uriFilePath = result.getUriFilePath(this)
+            val image = getImageFromStorage(uriFilePath!!)
+            callbacks?.onImage(image)
+        } else {
+            val exception = result.error
+            AppLogger.instance.appLog("COPPER:ERROR", "${exception?.printStackTrace()}")
+        }
+    }
 
     fun initSMSBroadCast() {
         startSMSListener()
@@ -275,7 +287,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             baseViewModel.dataSource.setActivationData(
                 ActivationData(
                     id = "1479373461",
-                    mobile = "254708835301"//1234 pass
+                    mobile = "254708835301"//8800 pass256782993168
                 )
             )
         } else {
@@ -421,16 +433,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         })
     }
 
-    private fun setLoading(b: Boolean) {
-        if (b) runOnUiThread {
-            if (provideNavigationGraph().currentDestination?.id != R.id.loadingFragment)
-                provideNavigationGraph().navigate(
-                    widgetViewModel.navigation().navigateToLoading()
-                )
-        } else if (provideNavigationGraph().currentDestination?.id == R.id.loadingFragment)
-            provideNavigationGraph().navigateUp()
-    }
-
 
     private fun setNavigation() {
         val navHostFragment =
@@ -448,17 +450,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     ) {
 
         when (destination.id) {
-            R.id.landingPageFragment -> {
-                //fullScreen(this, true, true)
-            }
-            else -> {
-                // fullScreen(this, false, false)
-                if (destination.id == R.id.landingPageFragment) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        requestPermissions()
-                    }, 600)
-                }
-            }
+            R.id.landingPageFragment -> {}
+            else -> {}
         }
 
     }
@@ -610,18 +603,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            val locationRequest: LocationRequest = LocationRequest.create().apply {
-                interval = Constants.MapsConstants.interval
-                fastestInterval = Constants.MapsConstants.fastestInterval
-                priority = Priority.PRIORITY_HIGH_ACCURACY
-                maxWaitTime = Constants.MapsConstants.maxWaitTime
-            }
-
-
-            val locationCallback: LocationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    val locationList = locationResult.locations
-                    if (locationList.isNotEmpty()) {
+            LocationHelper(context = this,
+                Constants.MapsConstants.interval,
+                2f,
+                object : MyLocation {
+                    override fun result(result: LocationResult) {
+                        val locationList = result.locations
                         val location = locationList.last()
                         AppLogger.instance.appLog(
                             "USER:LOCATION",
@@ -631,12 +618,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                             MapData(LatLng(location.latitude, location.longitude))
                         )
                     }
-                }
-            }
-            fusedLocationProvider?.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
+                }).startLocationTracking()
+        } else {
+            widgetViewModel.storageDataSource.setLatLng(
+                MapData(LatLng(0.0, 0.0))
             )
         }
 
@@ -663,8 +648,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 )
             ) {
 
-            } else {
-
             }
         } else {
             getCurrentLocation()
@@ -687,9 +670,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     companion object {
         private const val REQUEST_READ_CONTACTS_PERMISSION = 0
         private const val REQUEST_LOCATION = 100
-        private const val REQUEST_LOCATION_BACKGROUND = 101
         private const val REQUEST_CAMERA_PERMISSION = 405
-        private const val DAYS_FOR_FLEXIBLE_UPDATE = 3
         private const val AUTO_UPDATE = 404
 
     }
@@ -753,95 +734,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun launchCameraIntent(x: Int, y: Int) {
-        val intent = Intent(this@MainActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
-
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-    }
-
-
-    private fun launchGalleryIntent(x: Int, y: Int) {
-        val intent = Intent(this@MainActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            // val bitmap = ImageDecoder.decodeBitmap(source)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
     private fun showImagePickerOptions(x: Int, y: Int) {
-        ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
-            override fun onTakeCameraSelected() {
-                launchCameraIntent(x, y)
+        cropImage.launch(
+            options {
+                setGuidelines(CropImageView.Guidelines.ON)
+                setImageSource(includeGallery = Constants.Data.TEST,includeCamera = true)
             }
-
-            override fun onChooseGallerySelected() {
-                launchGalleryIntent(x, y)
-            }
-        })
+        )
     }
 
     @SuppressLint("ObsoleteSdkInt")

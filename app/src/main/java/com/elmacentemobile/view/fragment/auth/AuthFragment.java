@@ -476,7 +476,9 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                     if (live.getWork() >= 8) {
                         navigate();
                         authViewModel.storage.setVersion(version);
-                        authViewModel.storage.setSync(null);
+                        authViewModel.storage.setSync(new SyncData(
+                                null, 0, true
+                        ));
 
                     }
                 }

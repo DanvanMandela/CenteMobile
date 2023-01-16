@@ -9,14 +9,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
@@ -36,6 +34,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.canhub.cropper.*
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.LabelDataTypeConverter
 import com.elmacentemobile.data.model.StandingOrder
@@ -54,6 +53,7 @@ import com.elmacentemobile.data.model.input.InputData
 import com.elmacentemobile.data.model.module.ModuleCategory
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.Beneficiary
+import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
@@ -65,8 +65,8 @@ import com.elmacentemobile.util.MyActivityResult
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.callbacks.Confirm
-import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.convert
+import com.elmacentemobile.util.image.getImageFromStorage
 import com.elmacentemobile.view.activity.ImagePicker
 import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.activity.beneficiary.BeneficiaryManageActivity
@@ -116,7 +116,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 
 @AndroidEntryPoint
@@ -148,6 +147,17 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     private var bioInterface: BioInterface? = null
 
     private var callback: AppCallbacks? = null
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val uriFilePath = result.getUriFilePath(this)
+            val image = getImageFromStorage(uriFilePath!!)
+            callback?.onImage(image)
+        } else {
+            val exception = result.error
+            AppLogger.instance.appLog("COPPER:ERROR", "${exception?.printStackTrace()}")
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -449,98 +459,18 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         }
     }
 
-    private fun launchCameraIntent(x: Int, y: Int, callbacks: AppCallbacks) {
-        val intent = Intent(this, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
-
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-
-
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-
-                            callbacks.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-    }
-
-
-    private fun launchGalleryIntent(x: Int, y: Int, callbacks: AppCallbacks) {
-        val intent = Intent(this, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            // val bitmap = ImageDecoder.decodeBitmap(source)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-                            callbacks.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
 
     private fun showImagePickerOptions(x: Int, y: Int, callbacks: AppCallbacks) {
-        ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
-            override fun onTakeCameraSelected() {
-                launchCameraIntent(x, y, callbacks)
-            }
+        this.callback = callbacks
 
-            override fun onChooseGallerySelected() {
-                launchGalleryIntent(x, y, callbacks)
+        cropImage.launch(
+            options {
+                setGuidelines(CropImageView.Guidelines.ON)
+                setImageSource(includeGallery = Constants.Data.TEST, includeCamera = true)
             }
-        })
+        )
     }
+
 
     override fun clearInputData() {
         if (inputList.isNotEmpty()) inputList.clear()
@@ -620,7 +550,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                         p.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
                                             .let { p.getString(it) }
                                     contactNumber?.let {
-                                        val num=it.replace(" ","")
+                                        val num = it.replace(" ", "")
                                         numberList.removeIf { a -> a == num }
                                         numberList.add(num)
                                     }
@@ -2427,7 +2357,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     token.continuePermissionRequest()
                 }
             }).check()
+
+
     }
+
 
     private fun showSettingsCameraDialog() {
         val builder = AlertDialog.Builder(this)

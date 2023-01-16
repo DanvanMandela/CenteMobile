@@ -5,13 +5,9 @@
     tools:context=".view.activity.MainActivity">
 
 
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-
 
 
         <androidx.fragment.app.FragmentContainerView
@@ -21,6 +17,7 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/main_navigation_graph" />
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -1,10 +1,7 @@
 package com.elmacentemobile.util.image
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.ImageDecoder
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -12,6 +9,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Base64
+import com.yalantis.ucrop.util.BitmapLoadUtils.calculateInSampleSize
 import java.io.*
 import java.net.URL
 import java.util.*
@@ -66,6 +64,14 @@ fun getBitmap(image: String?): Bitmap? {
     return BitmapFactory.decodeStream(url.openConnection().getInputStream())
 }
 
+fun getImageFromStorage(path: String): Bitmap? {
+    val f = File(path)
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = false
+    options.inSampleSize = calculateInSampleSize(options, 512, 512)
+    return BitmapFactory.decodeStream(FileInputStream(f), null, options)
+}
+
 fun checkForEncode(string: String?): Boolean {
     val pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$"
     val r: Pattern = Pattern.compile(pattern)
@@ -118,7 +124,7 @@ fun compressImage(image: Bitmap): Bitmap? {
     return BitmapFactory.decodeStream(isBm, null, null)
 }
 
- fun bitmapFromUri(selectedPhotoUri: Uri, context: Context): Bitmap {
+fun bitmapFromUri(selectedPhotoUri: Uri, context: Context): Bitmap {
     val bitmap = when {
         Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
             context.contentResolver,
@@ -131,3 +137,4 @@ fun compressImage(image: Bitmap): Bitmap? {
     }
     return bitmap
 }
+

@@ -299,8 +299,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             MapDataTypeConverter().to(
                 BaseClass.decrypt(
                     sharedPreferences.getString(
-                        LAT_LNG_DATA,
-                        "latitude:0.0," + "longitude:0.0"
+                        LAT_LNG_DATA, "0.0,0.0"
                     )
                 )
             )
@@ -900,7 +899,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         SyncDataTypeConverter().to(
             sharedPreferences.getString(
                 TAG_SYNC,
-                ""
+                SyncDataTypeConverter().from(SyncData(complete = false, work = 0))
             )
         )
     )
@@ -1109,6 +1108,27 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         }
     }
 
+    private val _sessionID =
+        MutableStateFlow(
+            sharedPreferences.getString(
+                TAG_SESSION_ID,
+                ""
+            )
+        )
+
+    override val sessionID: StateFlow<String?>
+        get() = _sessionID
+
+    override fun sessionID(value: String) {
+        _sessionID.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_SESSION_ID,
+                value
+            )
+            apply()
+        }
+    }
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1181,6 +1201,8 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_PASSWORD_TYPE = "passwordType"
 
         private const val TAG_FORCE_DATA = "forceData"
+
+        private const val TAG_SESSION_ID = "sessionID"
 
         private const val TAG_CAROUSEL_DATA = "carouselData"
 

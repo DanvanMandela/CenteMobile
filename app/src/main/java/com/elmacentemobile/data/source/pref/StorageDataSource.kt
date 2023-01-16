@@ -75,6 +75,10 @@ interface StorageDataSource {
     fun setUniqueID(value: String)
     val uniqueID: StateFlow<String?>
 
+    fun sessionID(value: String)
+    val sessionID: StateFlow<String?>
+
+
     fun setProductAccountData(value: MutableList<OnlineAccountProduct>)
     val productAccountData: StateFlow<List<OnlineAccountProduct?>?>
 

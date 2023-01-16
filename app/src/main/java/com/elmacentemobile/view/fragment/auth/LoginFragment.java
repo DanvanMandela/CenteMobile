@@ -169,12 +169,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     private void setOnSuccess(DynamicResponse data) {
         ((MainActivity) requireActivity()).initSMSBroadCast();
         try {
-            new AppLogger().appLog("ACTIVATION:Response",
-                    BaseClass.decryptLatest(data.getResponse(),
-                            authViewModel.storage.getDeviceData().getValue().getDevice(),
-                            true,
-                            authViewModel.storage.getDeviceData().getValue().getRun()
-                    ));
+
 
             if (data.getResponse() == null) {
                 setLoading(false);
@@ -192,6 +187,12 @@ public class LoginFragment extends Fragment implements AppCallbacks {
                             R.drawable.warning_app
                     ), getChildFragmentManager());
                 } else {
+                    new AppLogger().appLog("ACTIVATION:Response",
+                            BaseClass.decryptLatest(data.getResponse(),
+                                    authViewModel.storage.getDeviceData().getValue().getDevice(),
+                                    true,
+                                    authViewModel.storage.getDeviceData().getValue().getRun()
+                            ));
                     ResponseDetails responseDetails = new ResponseTypeConverter()
                             .to(BaseClass.decryptLatest(data.getResponse(),
                                     authViewModel.storage

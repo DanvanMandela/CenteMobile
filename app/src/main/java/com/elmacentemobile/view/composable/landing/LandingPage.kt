@@ -7,19 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
@@ -37,6 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.palette.graphics.Palette
 import coil.compose.rememberAsyncImagePainter
 import com.elmacentemobile.R
@@ -46,6 +46,11 @@ import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.binding.navigate
+import com.elmacentemobile.view.composable.landing.utils.Greeting
+import com.elmacentemobile.view.composable.landing.utils.NavigationOptionItem
+import com.elmacentemobile.view.composable.loading.LoadingPage
+import com.elmacentemobile.view.composable.theme.AppBlueColorLight
+import com.elmacentemobile.view.composable.theme.BlueColor
 import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.ep.data.LandingData
 import com.elmacentemobile.view.ep.data.LandingPageEnum
@@ -53,11 +58,13 @@ import com.elmacentemobile.view.ep.data.LandingPageItem
 import com.elmacentemobile.view.model.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.yield
 import java.util.*
 
@@ -73,6 +80,47 @@ class LandingPage : Fragment(), AppCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setModels()
+
+    }
+
+    private fun setCarouselData() {
+        baseViewModel.dataSource.dayTipData.asLiveData()
+            .observe(viewLifecycleOwner) {
+                if (!it.isNullOrEmpty()) {
+                    it.forEach { dayTipData ->
+                        staticModel.carouselData.value.add(
+                            CarouselTip(
+                                banner = dayTipData.bannerImage,
+                                data = TipItemConverter().from(
+                                    TipItem(
+                                        tip = Gson().toJson(dayTipData),
+                                        type = TipTypeEnum.Dialog
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
+
+            }
+
+        baseViewModel.dataSource.carouselData.asLiveData().observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty()) {
+                it.forEach { carouselData ->
+                    staticModel.carouselData.value.add(
+                        CarouselTip(
+                            banner = carouselData.imageURL,
+                            data = TipItemConverter().from(
+                                TipItem(
+                                    tip = carouselData.imageInfoURL as String,
+                                    type = TipTypeEnum.Url
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun setModels() {
@@ -86,17 +134,26 @@ class LandingPage : Fragment(), AppCallbacks {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
-            setContent {
-                Main(
-                    pageData = PageData(
-                        storage = authViewModel.storage,
-                        callbacks = this@LandingPage,
-                        greetings = setTimeOfDay(),
-                        viewModel = viewMap
-                    )
-                )
+            setCarouselData()
+            val sync = baseViewModel.dataSource.sync.asLiveData()
+            sync.observe(viewLifecycleOwner) {
+                if (it != null && it.work >= 8 || it!!.complete) {
+                    setContent {
+                        Main(
+                            pageData = PageData(
+                                storage = authViewModel.storage,
+                                callbacks = this@LandingPage,
+                                greetings = setTimeOfDay(),
+                                viewModel = viewMap
+                            )
+                        )
 
+                    }
+                } else setContent {
+                    LoadingPage(progress = MutableStateFlow("${it.percentage}%"))
+                }
             }
+
         }
     }
 
@@ -235,205 +292,232 @@ class LandingPage : Fragment(), AppCallbacks {
 
 }
 
-
-
-
-
-
-
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun GreetingMessage(
-    greetings: Greetings?,
-    modifier: Modifier = Modifier
-) {
-    var palette by remember { mutableStateOf(Color.White) }
-    if (greetings?.color != null) {
-        palette = Color(greetings.color.bodyTextColor)
+private fun Main(pageData: PageData) {
+
+    val systemUiController = rememberSystemUiController()
+    var palette by remember { mutableStateOf(0) }
+    if (pageData.greetings?.color != null) {
+        palette = pageData.greetings.color.rgb
     }
-    Text(
-        text = greetings?.message!!,
-        fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-        style = Typography().h6,
-        color = palette,
-        modifier = modifier
-            .padding(16.dp)
+    systemUiController.setStatusBarColor(
+        color = Color(palette)
     )
-}
 
+    val scroll = rememberScrollState(0)
+    val activated = pageData.storage?.isActivated?.collectAsState()
 
-@Composable
-private fun LoginOptions(
-    data: PageData?,
-    modifier: Modifier = Modifier
-) {
-    val callbacks = data?.callbacks
-    val storage = data?.storage
-    var palette by remember { mutableStateOf(Color(R.color.app_blue_light)) }
-    var textColor by remember { mutableStateOf(Color(R.color.white)) }
-    if (data?.greetings?.color != null) {
-        palette = Color(data.greetings.color.rgb)
-        textColor = Color(data.greetings.color.bodyTextColor)
-    }
-
-    val activated = storage?.isActivated?.collectAsState()
     var paddingEnd by remember { mutableStateOf(16.dp) }
     if (activated?.value == false) paddingEnd = 8.dp
 
-    Card(
-        modifier = modifier,
-        border = BorderStroke(
-            1.dp,
-            color = colorResource(id = R.color.white)
-        ),
-        backgroundColor = colorResource(id = R.color.transparent)
-            .compositeOver(colorResource(id = R.color.transparent_white)),
-        elevation = 0.dp
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scroll)
+            .background(color = colorResource(id = R.color.ghost_white))
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+                .fillMaxSize()
+                .clip(
+                    shape = RoundedCornerShape(
+                        bottomEnd = 16.dp,
+                        bottomStart = 16.dp
+                    )
+                )
         ) {
-            Text(
-                text = stringResource(id = R.string.welcome_to),
-                fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                style = Typography().body2,
-                color = textColor,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-
-            )
-            Text(
-                text = stringResource(id = R.string.welcome_cente_mobile),
-                fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                style = Typography().body1,
-                color = textColor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 16.dp, end = 16.dp)
-
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp, top = 4.dp)
-                    .wrapContentHeight()
+                    .paint(
+                        painterResource(id = pageData.greetings?.image!!),
+                        contentScale = ContentScale.Crop
+                    )
+                    .background(
+                        color = colorResource(id = R.color.transparent)
+                            .compositeOver(colorResource(id = R.color.translucent))
+                    )
             ) {
-                if (activated?.value == false) {
-                    Button(
-                        onClick = { callbacks?.toSelf() },
-                        border = BorderStroke(
-                            1.dp,
-                            color = palette
-                        ),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = palette),
+                Greeting(greetings = pageData.greetings)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp, end = 16.dp,
+                            top = 8.dp,
+                            bottom = 8.dp
+                        )
+                        .wrapContentHeight(),
+                    backgroundColor = colorResource(id = R.color.white),
+                    elevation = 0.dp
+                ) {
+                    Column(
                         modifier = Modifier
-                            .weight(1f)
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .padding(start = 16.dp, end = paddingEnd)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.register),
+                            text = stringResource(id = R.string.welcome_to),
                             fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-                            style = Typography().button
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+
                         )
+                        Text(
+                            text = stringResource(id = R.string.welcome_cente_mobile),
+                            fontFamily = FontFamily(Font(R.font.poppins_bold)),
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(start = 16.dp, end = 16.dp)
+
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp, top = 8.dp)
+                                .wrapContentHeight()
+                        ) {
+
+                            if (activated?.value == false) {
+                                Button(
+                                    onClick = { pageData.callbacks?.toSelf() },
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = Color.White,
+                                        backgroundColor = BlueColor
+                                    ),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth()
+                                        .wrapContentHeight()
+                                        .padding(start = 16.dp, end = paddingEnd)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.register),
+                                        fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
+                                        style = Typography().button
+                                    )
+                                }
+                            }
+                            Button(
+                                onClick = { pageData.callbacks?.toLogin() },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    backgroundColor = AppBlueColorLight
+                                ),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .padding(start = paddingEnd, end = 16.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.login),
+                                    fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
+                                    style = Typography().button
+                                )
+                            }
+
+                        }
+
+
                     }
                 }
-                Button(
-                    onClick = { callbacks?.toLogin() },
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = palette,
-                        backgroundColor = Color.White
-                    ),
+
+                ConstraintLayout(
                     modifier = Modifier
-                        .weight(1f)
+                        .padding(top = 8.dp, bottom = 8.dp)
                         .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = paddingEnd, end = 16.dp)
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.login),
-                        fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-                        style = Typography().button
+
+                    val (branch, go, internet) = createRefs()
+                    NavigationOptionItem(
+                        data = LandingData.landingData[0],
+                        callbacks = pageData.callbacks,
+                        modifier = Modifier.constrainAs(branch) {
+                            start.linkTo(parent.start, 16.dp)
+                            end.linkTo(go.start, 8.dp)
+                            top.linkTo(parent.top, 16.dp)
+                            bottom.linkTo(parent.bottom, 16.dp)
+                            width = Dimension.fillToConstraints
+                        }
                     )
+
+                    NavigationOptionItem(
+                        data = LandingData.landingData[1],
+                        callbacks = pageData.callbacks,
+                        modifier = Modifier.constrainAs(go) {
+                            start.linkTo(branch.end, 8.dp)
+                            end.linkTo(internet.start, 8.dp)
+                            top.linkTo(parent.top, 16.dp)
+                            bottom.linkTo(parent.bottom, 16.dp)
+                            width = Dimension.fillToConstraints
+                        }
+                    )
+
+                    NavigationOptionItem(
+                        data = LandingData.landingData[2],
+                        callbacks = pageData.callbacks,
+                        modifier = Modifier.constrainAs(internet) {
+                            start.linkTo(go.end, 8.dp)
+                            end.linkTo(parent.end, 16.dp)
+                            top.linkTo(parent.top, 16.dp)
+                            bottom.linkTo(parent.bottom, 16.dp)
+                            width = Dimension.fillToConstraints
+                        }
+                    )
+
                 }
 
+
+            }
+        }
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                BodyCarousel(
+                    data = pageData, modifier = Modifier
+                        .fillMaxWidth()
+                )
+
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Footer(
+                    callbacks = pageData.callbacks,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                )
             }
 
-
         }
-    }
 
-
-}
-
-@Composable
-private fun NavigationOption(
-    pageData: PageData?,
-    modifier: Modifier = Modifier
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier
-    ) {
-        items(LandingData.landingData) { data ->
-            NavigationOptionItem(
-                data = data,
-                callbacks = pageData?.callbacks
-            )
-        }
     }
 }
-
 
 @ExperimentalPagerApi
 @Composable
-private fun BodyCarousel(
-    data: PageData?,
-    modifier: Modifier
-) {
+private fun BodyCarousel(data: PageData?, modifier: Modifier) {
     val viewModel = data?.viewModel!!["static"] as StaticDataViewModel
     val tipData = viewModel.carouselData.collectAsState()
     val pagerState = rememberPagerState()
-    val storage = data.storage
-    val adverts = storage?.carouselData?.collectAsState()?.value
-    val tips = storage?.dayTipData?.collectAsState()?.value
-
-    tips?.forEach { dayTipData ->
-        viewModel.carouselData.value.add(
-            CarouselTip(
-                banner = dayTipData.bannerImage,
-                data = TipItemConverter().from(
-                    TipItem(
-                        tip = Gson().toJson(dayTipData),
-                        type = TipTypeEnum.Dialog
-                    )
-                )
-            )
-        )
-    }
-
-    adverts?.forEach { carouselData ->
-        viewModel.carouselData.value.add(
-            CarouselTip(
-                banner = carouselData.imageURL,
-                data = TipItemConverter().from(
-                    TipItem(
-                        tip = carouselData.imageInfoURL as String,
-                        type = TipTypeEnum.Url
-                    )
-                )
-            )
-        )
-    }
-
     if (tipData.value.isNotEmpty()) {
-        AppLogger.instance.appLog("DAR", Gson().toJson(tipData))
         LaunchedEffect(Unit) {
             while (true) {
                 yield()
@@ -451,33 +535,39 @@ private fun BodyCarousel(
         ) { page ->
             CarouselItem(
                 data = tipData.value[page],
+                pagerState = pagerState,
                 callbacks = data.callbacks
             )
         }
     }
 }
 
-
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun CarouselItem(
     data: CarouselTip,
+    pagerState: PagerState,
     callbacks: AppCallbacks?
 ) {
+
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
         val (box) = createRefs()
-        Card(modifier = Modifier
+        val guidelineBottom = createGuidelineFromBottom(0.1f)
+        Card(
+            modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .constrainAs(box) {
                     linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
                     linkTo(parent.top, parent.bottom, topMargin = 0.dp, bottomMargin = 0.dp)
                     width = Dimension.ratio("16:6")
                     height = Dimension.fillToConstraints
-                },
+                }
+                .padding(12.dp),
             elevation = 1.dp,
             onClick = {
                 val action = TipItemConverter().to(data.data)
@@ -511,263 +601,9 @@ private fun CarouselItem(
 }
 
 
-@Composable
-private fun Footer(
-    callbacks: AppCallbacks?,
-    modifier: Modifier
-) {
-    ConstraintLayout(
-        modifier = modifier
-    ) {
-        val (box) = createRefs()
-        Box(modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .constrainAs(box) {
-                linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
-                linkTo(parent.top, parent.bottom, topMargin = 0.dp, bottomMargin = 0.dp)
-                width = Dimension.ratio("16:6")
-                height = Dimension.fillToConstraints
-            }) {
-
-            Card(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp)),
-                elevation = 1.dp
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1.3f)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .weight(1.2f)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.connect_with_us),
-                                fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
-                                style = Typography().h6,
-                                color = colorResource(id = R.color.app_blue_light),
-                                modifier = Modifier.align(Alignment.BottomCenter)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            IconButton(onClick = {
-                                callbacks?.twitter()
-                            }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.twitter),
-                                    contentDescription = stringResource(id = R.string.twitter),
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(8.dp)
-                                )
-                            }
-
-                            IconButton(onClick = {
-                                callbacks?.facebook()
-                            }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.facebook),
-                                    contentDescription = stringResource(id = R.string.face_book),
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(8.dp)
-                                )
-                            }
-
-                            IconButton(onClick = { callbacks?.telephone() }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.telephone),
-                                    contentDescription = stringResource(id = R.string.mobile),
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(8.dp)
-                                )
-                            }
-
-                            IconButton(onClick = { callbacks?.email() }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.email),
-                                    contentDescription = stringResource(id = R.string.email_address),
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(8.dp)
-                                )
-                            }
-
-                            IconButton(onClick = { callbacks?.chat() }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.conversation),
-                                    contentDescription = stringResource(id = R.string.message_),
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .padding(8.dp)
-                                )
-                            }
-                        }
-
-                    }
-
-                    Image(
-                        painter = painterResource(id = R.drawable.contactus_bg),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .fillMaxHeight()
-                            .weight(0.5f)
-                    )
-
-                }
-
-            }
-        }
-
-    }
-}
-
-
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-private fun Main(pageData: PageData?) {
-    val systemUiController = rememberSystemUiController()
-    var palette by remember { mutableStateOf(0) }
-    if (pageData?.greetings?.color != null) {
-        palette = pageData.greetings.color.rgb
-    }
-    systemUiController.setSystemBarsColor(color = Color(palette))
-    ConstraintLayout(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        Color(palette)
-                    )
-                )
-            )
-    ) {
-        val (header, body) = createRefs()
-        ConstraintLayout(modifier = Modifier
-            .clip(
-                RoundedCornerShape(
-                    bottomStart = 16.dp,
-                    bottomEnd = 16.dp
-                )
-            )
-            .paint(
-                painterResource(id = pageData?.greetings?.image!!),
-                contentScale = ContentScale.Crop
-            )
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(palette),
-                        Color.Transparent
-                    )
-                )
-            )
-            .constrainAs(header) {
-                linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
-                top.linkTo(parent.top)
-                width = Dimension.fillToConstraints
-                height = Dimension.ratio("1:1")
-            }) {
-            val (title, login, navigation) = createRefs()
-            GreetingMessage(
-                greetings =
-                pageData.greetings,
-                modifier =
-                Modifier.constrainAs(title) {
-                    linkTo(
-                        parent.start,
-                        parent.end,
-                        startMargin = 0.dp,
-                        endMargin = 0.dp
-                    )
-                    top.linkTo(parent.top, 8.dp)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                }
-            )
-            LoginOptions(data = pageData,
-                modifier = Modifier.constrainAs(login) {
-                    linkTo(
-                        parent.start,
-                        parent.end,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp
-                    )
-                    top.linkTo(title.bottom)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                })
-
-            NavigationOption(pageData = pageData,
-                modifier = Modifier.constrainAs(navigation) {
-                    linkTo(
-                        parent.start,
-                        parent.end,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp
-                    )
-                    top.linkTo(login.bottom, 16.dp)
-                    bottom.linkTo(parent.bottom, 16.dp)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                })
-
-        }
-        ConstraintLayout(modifier = Modifier
-            .constrainAs(body) {
-                linkTo(parent.start, parent.end, startMargin = 0.dp, endMargin = 0.dp)
-                top.linkTo(header.bottom)
-                width = Dimension.fillToConstraints
-                height = Dimension.ratio("1:1")
-            }) {
-            val (carousel, contact) = createRefs()
-            BodyCarousel(pageData,
-                modifier = Modifier.constrainAs(carousel) {
-                    top.linkTo(parent.top, 16.dp)
-                    linkTo(
-                        parent.start,
-                        parent.end,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp
-                    )
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                })
-            Footer(callbacks = pageData.callbacks,
-                modifier = Modifier.constrainAs(contact) {
-                    top.linkTo(carousel.bottom, 16.dp)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                    linkTo(
-                        parent.start,
-                        parent.end,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp
-                    )
-                })
-        }
-    }
-}
-
-
 @Preview(showBackground = true)
 @Composable
-fun DefaultLandingPreview() {
+private fun DefaultLandingPreview() {
     Main(
         PageData(
             storage = null,
@@ -780,5 +616,4 @@ fun DefaultLandingPreview() {
         )
     )
 }
-
 
