@@ -17,10 +17,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
@@ -50,7 +53,6 @@ import com.elmacentemobile.view.composable.landing.utils.Greeting
 import com.elmacentemobile.view.composable.landing.utils.NavigationOptionItem
 import com.elmacentemobile.view.composable.loading.LoadingPage
 import com.elmacentemobile.view.composable.theme.AppBlueColorLight
-import com.elmacentemobile.view.composable.theme.BlueColor
 import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.ep.data.LandingData
 import com.elmacentemobile.view.ep.data.LandingPageEnum
@@ -137,7 +139,7 @@ class LandingPage : Fragment(), AppCallbacks {
             setCarouselData()
             val sync = baseViewModel.dataSource.sync.asLiveData()
             sync.observe(viewLifecycleOwner) {
-                if (it != null && it.work >= 8 || it!!.complete) {
+                if (it != null && it.work >= 8 || it?.complete == true) {
                     setContent {
                         Main(
                             pageData = PageData(
@@ -150,7 +152,7 @@ class LandingPage : Fragment(), AppCallbacks {
 
                     }
                 } else setContent {
-                    LoadingPage(progress = MutableStateFlow("${it.percentage}%"))
+                    LoadingPage(progress = MutableStateFlow("${it?.percentage}%"))
                 }
             }
 
@@ -173,35 +175,42 @@ class LandingPage : Fragment(), AppCallbacks {
             in 5..11 -> {
                 setDynamicImage(
                     message = R.string.good_morining,
-                    image = R.drawable.noon_one
+                    image = R.drawable.noon_one,
+                    emoji = "\uD83E\uDD2D"
                 )
             }
             in 12..15 -> {
                 setDynamicImage(
                     message = R.string.good_afternoon,
-                    image = R.drawable.morning
+                    image = R.drawable.morning,
+                    emoji = "\uD83D\uDE0A"
                 )
             }
             in 16..20 -> {
                 setDynamicImage(
                     message = R.string.good_evening,
-                    image = R.drawable.noon
+                    image = R.drawable.noon,
+                    emoji = "\uD83D\uDE0A"
                 )
             }
             else -> {
                 setDynamicImage(
                     message = R.string.good_night,
-                    image = R.drawable.night
+                    image = R.drawable.night,
+                    emoji = "\uD83D\uDE34"
                 )
             }
         }
     }
 
-    private fun setDynamicImage(message: Int, image: Int): Greetings {
+    private fun setDynamicImage(
+        message: Int,
+        image: Int, emoji: String
+    ): Greetings {
         return Greetings(
             message = getString(message),
             color = setColorPalette(image),
-            image = image
+            image = image, emoji = emoji
         )
     }
 
@@ -311,11 +320,25 @@ private fun Main(pageData: PageData) {
     var paddingEnd by remember { mutableStateOf(16.dp) }
     if (activated?.value == false) paddingEnd = 8.dp
 
+    val linearGradientBrush = Brush.linearGradient(
+        colors = listOf(
+            Color(palette),
+            Color.Transparent,
+            Color(palette)
+        ),
+        start = Offset(Float.POSITIVE_INFINITY, 0f),
+        end = Offset(0f, Float.POSITIVE_INFINITY),
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scroll)
-            .background(color = colorResource(id = R.color.ghost_white))
+            .paint(
+                painter = painterResource(id = pageData.greetings?.image!!),
+                contentScale = ContentScale.Crop
+            )
+
     ) {
         Box(
             modifier = Modifier
@@ -327,17 +350,34 @@ private fun Main(pageData: PageData) {
                     )
                 )
         ) {
+            Image(
+                painterResource(id = R.drawable.mapeera_house),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                modifier = Modifier
+                    .matchParentSize()
+                    .blur(
+                        15.dp,
+                        edgeTreatment = BlurredEdgeTreatment.Rectangle
+                    )
+            )
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .paint(
-                        painterResource(id = pageData.greetings?.image!!),
-                        contentScale = ContentScale.Crop
-                    )
                     .background(
-                        color = colorResource(id = R.color.transparent)
-                            .compositeOver(colorResource(id = R.color.translucent))
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(palette),
+                                Color(palette).copy(alpha = 0.2f),
+                                colorResource(id = R.color.translucent),
+                                Color.Transparent
+
+                            )
+
+                        )
+
                     )
             ) {
                 Greeting(greetings = pageData.greetings)
@@ -390,13 +430,14 @@ private fun Main(pageData: PageData) {
                                     onClick = { pageData.callbacks?.toSelf() },
                                     colors = ButtonDefaults.outlinedButtonColors(
                                         contentColor = Color.White,
-                                        backgroundColor = BlueColor
+                                        backgroundColor = AppBlueColorLight
                                     ),
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxWidth()
-                                        .wrapContentHeight()
-                                        .padding(start = 16.dp, end = paddingEnd)
+                                        .height(48.dp)
+                                        .padding(start = 16.dp, end = paddingEnd),
+                                    elevation = ButtonDefaults.elevation(defaultElevation = 0.dp)
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.register),
@@ -409,13 +450,14 @@ private fun Main(pageData: PageData) {
                                 onClick = { pageData.callbacks?.toLogin() },
                                 colors = ButtonDefaults.buttonColors(
                                     contentColor = Color.White,
-                                    backgroundColor = AppBlueColorLight
+                                    backgroundColor = Color(palette)
                                 ),
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .padding(start = paddingEnd, end = 16.dp)
+                                    .height(48.dp)
+                                    .padding(start = paddingEnd, end = 16.dp),
+                                elevation = ButtonDefaults.elevation(defaultElevation = 0.dp)
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.login),
@@ -479,34 +521,42 @@ private fun Main(pageData: PageData) {
             }
         }
 
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = 12.dp)
             ) {
-                BodyCarousel(
-                    data = pageData, modifier = Modifier
-                        .fillMaxWidth()
-                )
-
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Footer(
-                    callbacks = pageData.callbacks,
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter)
-                )
-            }
+                        .fillMaxSize()
+                ) {
+                    BodyCarousel(
+                        data = pageData, modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                    )
 
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Footer(
+                        callbacks = pageData.callbacks,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter)
+                    )
+                }
+
+            }
         }
+
 
     }
 }
@@ -567,8 +617,8 @@ private fun CarouselItem(
                     width = Dimension.ratio("16:6")
                     height = Dimension.fillToConstraints
                 }
-                .padding(12.dp),
-            elevation = 1.dp,
+                .padding(start = 14.dp, end = 14.dp, bottom = 7.dp, top = 7.dp),
+            elevation = 2.dp,
             onClick = {
                 val action = TipItemConverter().to(data.data)
                 AppLogger.instance.appLog("CAROUSEL", Gson().toJson(action?.tip))

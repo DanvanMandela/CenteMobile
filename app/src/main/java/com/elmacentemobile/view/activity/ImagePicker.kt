@@ -258,7 +258,9 @@ class ImagePicker : AppCompatActivity() {
                     child.delete()
                 }
             }
+
         }
+
 
         fun showImagePickerOptions(context: Context, listener: PickerOptionListener) {
 

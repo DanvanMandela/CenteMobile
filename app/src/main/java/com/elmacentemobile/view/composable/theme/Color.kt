@@ -15,5 +15,7 @@ val AppBlueColorDark = Color(0xFF337AD8)
 val OrangeColor = Color(0xFFE09145)
 val LightOrangeColor = Color(0xFFFCD9B8)
 
-val TranslucentColor=Color(0x60222831)
+val TranslucentColor = Color(0x60222831)
+val TranslucentAliceBlue = Color(0x0DF0F8FF)
+val SmokeWhite = Color(0xffe8e8e8)
 

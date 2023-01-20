@@ -460,7 +460,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     private void updateWidgets(String version) {
         LiveData<SyncData> liveData = BindingAdapterKt.syncLive(authViewModel.storage.getSync());
-
         liveData.observe(getViewLifecycleOwner(), live -> {
             if (!authViewModel.storage.getVersion().getValue().equals(version)) {
                 if (live != null) {
@@ -479,7 +478,6 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
                         authViewModel.storage.setSync(new SyncData(
                                 null, 0, true
                         ));
-
                     }
                 }
             } else navigate();

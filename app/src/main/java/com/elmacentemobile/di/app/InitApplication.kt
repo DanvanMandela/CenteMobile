@@ -22,10 +22,10 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-       setupActivityListener()
+        setupActivityListener()
     }
 
-     open fun setupActivityListener() {
+    open fun setupActivityListener() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activity.window.setFlags(
@@ -33,6 +33,7 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
                     WindowManager.LayoutParams.FLAG_SECURE
                 )
             }
+
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}

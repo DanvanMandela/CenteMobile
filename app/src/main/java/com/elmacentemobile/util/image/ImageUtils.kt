@@ -111,8 +111,8 @@ fun drawableToBitmap(drawable: Drawable): Bitmap? {
 
 fun compressImage(image: Bitmap): Bitmap? {
     val stream = ByteArrayOutputStream()
-    image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-    var options = 100
+    image.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+    var options = 20
     while (stream.toByteArray().size / 1024 > 100) { // 100kb,
         stream.reset()
         image.compress(Bitmap.CompressFormat.JPEG, options, stream)

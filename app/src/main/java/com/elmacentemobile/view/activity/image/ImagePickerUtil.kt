@@ -176,7 +176,6 @@ class ImagePickerUtil : AppCompatActivity(), AppCallbacks {
             "Select an app"
         )
         intentChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-
         return intentChooser
     }
 
@@ -208,6 +207,7 @@ class ImagePickerUtil : AppCompatActivity(), AppCallbacks {
             this@ImagePickerUtil,
             "$packageName.provider", image
         )
+
     }
 
 

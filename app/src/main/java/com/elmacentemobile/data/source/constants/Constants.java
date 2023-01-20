@@ -73,8 +73,8 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = false;
-        public static final boolean ACTIVATED = false;
+        public static final boolean TEST = true;
+        public static final boolean ACTIVATED = true;
 
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";

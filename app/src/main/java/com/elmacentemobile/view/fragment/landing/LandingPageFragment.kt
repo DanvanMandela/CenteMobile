@@ -97,13 +97,13 @@ class LandingPageFragment : Fragment(), AppCallbacks {
     private fun setLoading() {
         val sync = baseViewModel.dataSource.sync.asLiveData()
         sync.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (it != null && it.work >= 8 || it?.complete == true) {
+                setLoading(false)
+            } else {
+                AppLogger().appLog("PROGRESS", Gson().toJson(it))
                 binding.loadingFrame.loading.root.visibility = View.VISIBLE
                 binding.loadingFrame.loading.data = it
-                AppLogger().appLog("PROGRESS", Gson().toJson(it))
-                if (it.work >= 8) {
-                    setLoading(false)
-                } else setLoading(true)
+                setLoading(true)
             }
         }
     }

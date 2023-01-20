@@ -103,7 +103,7 @@ fun Greeting(greetings: Greetings?) {
     }
 
     Text(
-        text = greetings?.message!!,
+        text = "${greetings?.message} ${greetings?.emoji}",
         fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
         style = Typography().h5,
         color = palette,

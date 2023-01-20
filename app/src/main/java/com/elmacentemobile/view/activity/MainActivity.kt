@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.ImageDecoder
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -16,6 +17,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
@@ -45,6 +47,7 @@ import com.elmacentemobile.util.*
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.getImageFromStorage
+import com.elmacentemobile.view.activity.test.users
 import com.elmacentemobile.view.fragment.auth.bio.BioInterface
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricUtil
@@ -77,6 +80,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.IOException
 import java.util.*
 
 
@@ -284,11 +288,12 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     private fun setMigration() {
         if (Constants.Data.ACTIVATED) {
+            val user = users[1]
             baseViewModel.dataSource.setActivated(true)
             baseViewModel.dataSource.setActivationData(
                 ActivationData(
-                    id = "1479373461",
-                    mobile = "254708835301"//8800 pass256782993168
+                    id = user.customerID,
+                    mobile = user.mobile
                 )
             )
         } else {
@@ -739,7 +744,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         cropImage.launch(
             options {
                 setGuidelines(CropImageView.Guidelines.ON)
-                setImageSource(includeGallery = Constants.Data.TEST,includeCamera = true)
+                setImageSource(includeGallery = Constants.Data.TEST, includeCamera = true)
+                setOutputCompressQuality(50)
             }
         )
     }
@@ -937,6 +943,98 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         ) || !jsonpath.contains("CheckForMagiskFiles=0") || !jsonpath.contains("CheckForMagiskManagerApp=0")
     }
 
+
+    private fun launchCameraIntent(x: Int, y: Int) {
+        val intent = Intent(this@MainActivity, ImagePicker::class.java)
+        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
+
+        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
+        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
+        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
+        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
+        activityLauncher.launch(intent) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val uri = result.data!!.getParcelableExtra<Uri>("path")
+                try {
+                    uri?.let {
+                        if (Build.VERSION.SDK_INT < 28) {
+                            val bitmap =
+                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                            callbacks!!.onImage(compressImage(bitmap))
+
+                        } else {
+                            val source = ImageDecoder.createSource(this.contentResolver, uri)
+                            val mutableBitmap = ImageDecoder.decodeBitmap(
+                                source
+                            ) { decoder, _, _ ->
+                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                                decoder.isMutableRequired = true
+                            }
+
+                            callbacks!!.onImage(compressImage(mutableBitmap))
+                        }
+                    }
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+    }
+
+    private fun launchGalleryIntent(x: Int, y: Int) {
+        val intent = Intent(this@MainActivity, ImagePicker::class.java)
+        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
+        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
+
+        activityLauncher.launch(intent) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val uri = result.data!!.getParcelableExtra<Uri>("path")
+                try {
+                    uri?.let {
+                        if (Build.VERSION.SDK_INT < 28) {
+                            val bitmap =
+                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                            callbacks!!.onImage(compressImage(bitmap))
+
+                        } else {
+                            val source = ImageDecoder.createSource(this.contentResolver, uri)
+                            // val bitmap = ImageDecoder.decodeBitmap(source)
+                            val mutableBitmap = ImageDecoder.decodeBitmap(
+                                source
+                            ) { decoder, _, _ ->
+                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                                decoder.isMutableRequired = true
+                            }
+                            callbacks!!.onImage(compressImage(mutableBitmap))
+                        }
+                    }
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+//    private fun showImagePickerOptions(x: Int, y: Int) {
+//        ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
+//            override fun onTakeCameraSelected() {
+//                launchCameraIntent(x, y)
+//            }
+//
+//            override fun onChooseGallerySelected() {
+//                launchGalleryIntent(x, y)
+//            }
+//        })
+//    }
+
+
 }
 
 internal enum class EnvEnum(val value: Int) {
@@ -944,4 +1042,6 @@ internal enum class EnvEnum(val value: Int) {
     XPOSED(3), CUSTOM_FIRMWARE(4),
     INTEGRITY(5), WIRELESS_SECURITY(6);
 }
+
+
 

@@ -27,16 +27,6 @@ class UserInteractionWatcher @Inject constructor(
 
     override fun setTimer() {
         AppLogger.instance.appLog("Interaction", "YES")
-
-
-//        dataSource.setInactivity(false)
-//        timerDisposable?.dispose()
-//        timerDisposable = Observable.timer(timeout ?: startTime, MAX_USER_INACTIVITY_TIME_UNIT)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                dataSource.setInactivity(true)
-//            }, { it.printStackTrace() })
         updateTimeout()
     }
 
