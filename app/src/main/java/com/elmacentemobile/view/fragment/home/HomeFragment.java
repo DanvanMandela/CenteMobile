@@ -155,26 +155,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     @SuppressLint("NewApi")
     private void getAdverts() {
         ArrayList<CarouselItem> carouselItems = new ArrayList<>();
-//        subscribe.add(widgetViewModel.getCarousel()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread()).subscribe(v -> {
-//                    if (!v.isEmpty()) {
-//                        ArrayList<CarouselItem> carouselItems = new ArrayList<>();
-//                        v.forEach(data -> carouselItems.add(new CarouselItem(
-//                                data.getImageURL(),
-//                                data.getImageInfoURL()
-//
-//                        )));
-//                        adverts.setValue(carouselItems);
-//
-//                    }
-//                }, Throwable::printStackTrace));
-
-
-        BindingAdapterKt.tipData(widgetViewModel.storageDataSource.getDayTipData())
+        widgetViewModel.tipList
                 .observe(getViewLifecycleOwner(),
                         tipData -> {
-                            if (!tipData.isEmpty()) {
+                            if (tipData != null && !tipData.isEmpty()) {
                                 for (DayTipData t : tipData) {
                                     carouselItems.add(new CarouselItem(
                                             t.getBannerImage(),
@@ -188,12 +172,10 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                                 }
                             }
                         });
-
-
-        BindingAdapterKt.carouselData(widgetViewModel.storageDataSource.getCarouselData())
+        widgetViewModel.carouselData
                 .observe(getViewLifecycleOwner(),
                         carouselData -> {
-                            if (!carouselData.isEmpty()) {
+                            if (carouselData != null && !carouselData.isEmpty()) {
                                 for (CarouselData c : carouselData) {
                                     carouselItems.add(new CarouselItem(
                                             c.getImageURL(),
@@ -413,7 +395,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         } catch (Exception e) {
-         new    ShowToast(requireContext(), getString(R.string.nothing_show));
+            new ShowToast(requireContext(), getString(R.string.nothing_show));
             e.printStackTrace();
         }
 

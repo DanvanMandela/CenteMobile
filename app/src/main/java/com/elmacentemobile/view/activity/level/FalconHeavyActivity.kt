@@ -793,6 +793,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                                 )
                                             setSuccess(resData.message)
 
+                                        } else if (BaseClass.nonCaps(resData.formID) ==
+                                            BaseClass.nonCaps("CHANGEPIN")
+                                        ) {
+                                            baseViewModel.dataSource.setBio(false)
+                                            setSuccess(resData.message)
                                         } else setOnNextModule(
                                             formControl,
                                             if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
@@ -1451,6 +1456,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                             }
                                             baseViewModel.dataSource.setBeneficiary(b)
                                         }
+                                        setSuccess(resData.message)
+                                    } else if (BaseClass.nonCaps(resData.formID) ==
+                                        BaseClass.nonCaps("CHANGEPIN")
+                                    ) {
+                                        baseViewModel.dataSource.setBio(false)
                                         setSuccess(resData.message)
                                     } else setOnNextModule(
                                         formControl,

@@ -29,6 +29,8 @@ import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
 import com.elmacentemobile.data.source.remote.callback.PayloadData;
 import com.elmacentemobile.data.source.remote.helper.ConnectionObserver;
 import com.elmacentemobile.util.BaseClass;
+import com.elmacentemobile.view.binding.BindingAdapterKt;
+import com.elmacentemobile.view.dialog.DayTipData;
 import com.elmacentemobile.view.ep.data.LayoutData;
 import com.elmacentemobile.view.navigation.NavigationDataSource;
 
@@ -57,6 +59,10 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
 
     public MutableLiveData<List<CarouselItem>> carouselList = new MutableLiveData<>();
 
+    public MutableLiveData<List<DayTipData>> tipList = new MutableLiveData<>();
+
+    public MutableLiveData<List<CarouselData>> carouselData = new MutableLiveData<>();
+
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
 
@@ -70,6 +76,11 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         this.storageDataSource = storageDataSource;
         this.navigationDataSource = navigationDataSource;
         this.connectionObserver = connectionObserver;
+
+
+        tipList.setValue(BindingAdapterKt.tipData(storageDataSource.getDayTipData()).getValue());
+        carouselData.setValue(BindingAdapterKt.carouselData(storageDataSource.getCarouselData())
+                .getValue());
     }
 
     @Override
