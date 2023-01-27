@@ -229,7 +229,7 @@
         tools:layout="@layout/fragment_splash" />
     <fragment
         android:id="@+id/authFragment"
-        android:name="com.elmacentemobile.view.fragment.auth.AuthFragment"
+        android:name="com.elmacentemobile.view.composable.login.LoginPage"
         android:label="fragment_auth"
         tools:layout="@layout/fragment_auth">
         <action
@@ -539,7 +539,7 @@
             app:popEnterAnim="@anim/anim_slide_in_right"
             app:popExitAnim="@anim/anim_slide_out_right"
             app:popUpToInclusive="true" />
-000
+
 
     </fragment>
 

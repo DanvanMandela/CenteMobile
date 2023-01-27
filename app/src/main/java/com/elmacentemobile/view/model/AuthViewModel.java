@@ -44,6 +44,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
     private final AuthRepository authRepository;
     public final StorageDataSource storage;
     public final NavigationDataSource navigationDataSource;
+    public final MutableLiveData<String> password = new MutableLiveData<>("");
 
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);

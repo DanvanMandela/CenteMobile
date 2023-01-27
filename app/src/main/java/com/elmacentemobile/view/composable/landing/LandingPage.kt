@@ -155,7 +155,6 @@ class LandingPage : Fragment(), AppCallbacks {
                     LoadingPage(progress = MutableStateFlow("${it?.percentage}%"))
                 }
             }
-
         }
     }
 

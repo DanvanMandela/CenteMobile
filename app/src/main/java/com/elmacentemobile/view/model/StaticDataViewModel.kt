@@ -12,6 +12,7 @@ import com.elmacentemobile.data.source.remote.callback.DynamicResponse
 import com.elmacentemobile.data.source.remote.callback.PayloadData
 import com.elmacentemobile.data.source.remote.dynamic.widgets.WidgetApiService
 import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.view.composable.PageState
 import com.elmacentemobile.view.dialog.CarouselTip
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Single
@@ -31,7 +32,9 @@ class StaticDataViewModel @Inject constructor(
 
 
     val carouselData = MutableStateFlow<MutableList<CarouselTip>>(mutableListOf())
-    val synchronizing = MutableStateFlow<MutableList<CarouselTip>>(mutableListOf())
+    val state = MutableStateFlow(PageState.Ui)
+
+    val synchronizing = MutableStateFlow("Warming up...")
 
     fun fetchStaticData(context: Context): Single<DynamicResponse> {
         val iv = storageDataSource.deviceData.value!!.run

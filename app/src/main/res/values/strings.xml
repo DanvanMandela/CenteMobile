@@ -8,6 +8,7 @@
     <string name="forgot_pin">Forgot Pin?</string>
     <string name="login_securely">Login Securely</string>
     <string name="hello_there">Hello There!</string>
+    <string name="there">There!</string>
     <string name="we_have_missed_you">We have missed You</string>
     <string name="mobile">Mobile</string>
     <string name="pin">Pin</string>
@@ -47,6 +48,7 @@
     <string name="welcome_cente">Welcome To Centenary Bank Mobile Banking</string>
     <string name="branch_atm"><![CDATA[Branches\n& ATM]]></string>
     <string name="cente_login">CenteMobile\nLogin</string>
+    <string name="cent_login">CenteMobile Login</string>
     <string name="online_banking">Internet\nBanking</string>
     <string name="good_night">Good\nNight!</string>
     <string name="good_afternoon">Good\nAfternoon!</string>

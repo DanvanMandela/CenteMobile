@@ -105,4 +105,7 @@ public interface BaseView {
 
     default void onEvent(BusData busData) {
     }
+
+    default void auth(String pin) {
+    }
 }

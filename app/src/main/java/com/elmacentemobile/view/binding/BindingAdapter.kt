@@ -964,6 +964,13 @@ fun Fragment.navigate(directions: NavDirections) {
     }
 }
 
+fun Fragment.navigateBack() {
+    lifecycleScope.launchWhenResumed {
+        NavHostFragment.findNavController(this@navigateBack).navigateUp()
+    }
+}
+
+
 @SuppressLint("WeekBasedYear", "NewApi")
 fun calendarToDate(calendar: Calendar?): String? {
     val datePattern = "dd MMM YYYY"

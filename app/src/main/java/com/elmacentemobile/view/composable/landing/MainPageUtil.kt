@@ -29,9 +29,9 @@ import com.elmacentemobile.util.callbacks.AppCallbacks
 
 
 data class PageData(
-    val storage: StorageDataSource?,
-    val callbacks: AppCallbacks?,
-    val greetings: Greetings?,
+    val storage: StorageDataSource? = null,
+    val callbacks: AppCallbacks? = null,
+    val greetings: Greetings? = null,
     val viewModel: HashMap<String, ViewModel>? = null
 )
 

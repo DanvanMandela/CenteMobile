@@ -499,6 +499,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         }
     }
 
+    @SuppressLint("NewApi")
     private fun onContactPicker(callbacks: AppCallbacks) {
         val pickContact = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
         activityLauncher.launch(pickContact) { result ->
