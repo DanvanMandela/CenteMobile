@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.ImageDecoder
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -17,7 +16,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
@@ -80,7 +78,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 
@@ -469,20 +466,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    fun requestContactsPermission(callbacks: AppCallbacks) {
-        this.callbacks = callbacks
-        if (!hasContactsPermission()) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                REQUEST_READ_CONTACTS_PERMISSION
-            )
-        } else {
-            onContactPicker()
-        }
-    }
-
-
     fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
             this,
@@ -799,15 +782,24 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
 
     private fun requestPermissions() {
-        Dexter.withContext(this)
-            .withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_CONTACTS,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            permissions.addAll(
+                mutableListOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_CONTACTS,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                )
             )
+        }
+
+        Dexter.withContext(this)
+            .withPermissions(permissions)
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(multiplePermissionsReport: MultiplePermissionsReport) {
                     if (multiplePermissionsReport.areAllPermissionsGranted()) {
@@ -868,10 +860,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-    private fun doProbe(ctx: Context) {
-        println("doProbe$ctx")
-    }
-
     private fun rooted(): Boolean {
         val paths = arrayOf(
             "/system/su",
@@ -893,146 +881,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         }
         return false
     }
-
-    fun positiveRootCheck(data: Any) {
-        jsonChecker = "" + data
-        envChecks.set(EnvEnum.ROOT.value)
-    }
-
-    fun negativeRootCheck(data: Any) {
-        jsonChecker = "" + data
-        envChecks.clear(EnvEnum.ROOT.value)
-    }
-
-    fun positiveDebugCheck(data: Any?) {
-        envChecks.set(EnvEnum.DEBUG.value)
-    }
-
-    fun negativeDebugCheck(data: Any?) {
-        envChecks.clear(EnvEnum.DEBUG.value)
-    }
-
-    fun positiveEmulatorCheck(data: Any?) {
-        envChecks.set(EnvEnum.EMULATOR.value)
-    }
-
-    fun negativeEmulatorCheck(data: Any?) {
-        envChecks.clear(EnvEnum.EMULATOR.value)
-    }
-
-    fun validateRootCheck(jsonpath: String): Boolean? {
-        return if (jsonpath.contains("CheckForBusyBoxBinary=1") && jsonpath.contains("CheckForRWPaths=0") && jsonpath.contains(
-                "DetectRootManagmentApps=0"
-            )
-            && jsonpath.contains("CheckForDangerousProps=0") && jsonpath.contains("DetectTestKeys=0") && jsonpath.contains(
-                "DetectPotentiallyDangerousApps=0"
-            )
-            && jsonpath.contains("DetectRootCloakingApps=0") && jsonpath.contains("CheckForSuBinary=0") && jsonpath.contains(
-                "CheckSuExists=0"
-            ) && jsonpath.contains("CheckForMagiskFiles=0") && jsonpath.contains("CheckForMagiskManagerApp=0")
-        ) {
-            false
-        } else !jsonpath.contains("CheckForBusyBoxBinary=0") || !jsonpath.contains("CheckForRWPaths=0") || !jsonpath.contains(
-            "DetectRootManagmentApps=0"
-        )
-                || !jsonpath.contains("CheckForDangerousProps=0") || !jsonpath.contains("DetectTestKeys=1") || !jsonpath.contains(
-            "DetectPotentiallyDangerousApps=0"
-        )
-                || !jsonpath.contains("DetectRootCloakingApps=0") || !jsonpath.contains("CheckForSuBinary=0") || !jsonpath.contains(
-            "CheckSuExists=0"
-        ) || !jsonpath.contains("CheckForMagiskFiles=0") || !jsonpath.contains("CheckForMagiskManagerApp=0")
-    }
-
-
-    private fun launchCameraIntent(x: Int, y: Int) {
-        val intent = Intent(this@MainActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
-
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-    }
-
-    private fun launchGalleryIntent(x: Int, y: Int) {
-        val intent = Intent(this@MainActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            // val bitmap = ImageDecoder.decodeBitmap(source)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-//    private fun showImagePickerOptions(x: Int, y: Int) {
-//        ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
-//            override fun onTakeCameraSelected() {
-//                launchCameraIntent(x, y)
-//            }
-//
-//            override fun onChooseGallerySelected() {
-//                launchGalleryIntent(x, y)
-//            }
-//        })
-//    }
 
 
 }

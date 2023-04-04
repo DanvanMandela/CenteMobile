@@ -43,6 +43,7 @@ open class TextInputModel : DataBindingEpoxyModel() {
                 BaseClass.setMaxLength(binding.child, form.maxValue!!.toInt())
             }
         }
+
     }
 }
 

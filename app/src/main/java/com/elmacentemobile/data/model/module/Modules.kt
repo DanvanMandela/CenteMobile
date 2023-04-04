@@ -38,10 +38,20 @@ class Modules(
     @field:Expose
     var ModuleCategory: String?,
 
+    @field:SerializedName("CustomerType")
+    @field:ColumnInfo(name = "customerType")
+    @field:Expose
+    var customerType: String?,
+
     @field:SerializedName("ModuleURL")
     @field:ColumnInfo(name = "moduleURL")
     @field:Expose
     var moduleURL: String?,
+
+    @field:SerializedName("Language")
+    @field:ColumnInfo(name = "language")
+    @field:Expose
+    var language: String?,
 
     @field:SerializedName("ModuleURL2")
     @field:ColumnInfo(name = "moduleURTwo")

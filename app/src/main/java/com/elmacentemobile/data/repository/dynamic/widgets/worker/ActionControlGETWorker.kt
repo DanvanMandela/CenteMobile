@@ -79,9 +79,10 @@ class ActionControlGETWorker @AssistedInject constructor(
                     val data = WidgetDataTypeConverter().from(dec)
                     AppLogger.instance.appLog("ACTION", Gson().toJson(data))
                     val status = data?.map { s -> s?.status }?.single()
+                    val language = storageDataSource.language.value
                     if (status == StatusEnum.SUCCESS.type) {
                         val actions = data.map { s -> s?.actionControls }.single()
-                        widgetRepository.saveAction(actions)
+                        widgetRepository.saveAction(actions)//TODO LANGUAGE ADDED ?.filter { a -> a.language == language }
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
 

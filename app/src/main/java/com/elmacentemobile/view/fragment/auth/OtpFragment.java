@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.elmacentemobile.R;
 import com.elmacentemobile.data.model.converter.ResponseTypeConverter;
 import com.elmacentemobile.data.model.user.ActivationData;
+import com.elmacentemobile.data.source.constants.Constants;
 import com.elmacentemobile.data.source.constants.StatusEnum;
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
 import com.elmacentemobile.data.source.remote.callback.ResponseDetails;
@@ -118,7 +119,7 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                     && Objects.requireNonNull(data.getMobile()).length() > 8) {
                 String mobile = data.getMobile();
                 String code = mobile.substring(0, 3);
-                if (code.contains("256")) {
+                if (code.contains("256") && Constants.Data.AUTO_OTP) {
                     binding.verificationCodeEditText.setEnabled(false);
                 }
             }

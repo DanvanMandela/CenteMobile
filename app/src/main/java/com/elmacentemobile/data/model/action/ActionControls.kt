@@ -43,6 +43,10 @@ data class ActionControls(
     @field:Expose
     var rowID: String,
 
+    @field:SerializedName("Language")
+    @field:ColumnInfo(name = "language")
+    @field:Expose
+    var language: String?,
 
     @field:SerializedName("ActionType")
     @field:ColumnInfo(name = "actionType")

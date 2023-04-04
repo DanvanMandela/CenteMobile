@@ -82,9 +82,11 @@ class ModuleGETWorker @AssistedInject constructor(
                     val data = WidgetDataTypeConverter().from(dec)
                     AppLogger.instance.appLog("MODULES", Gson().toJson(data))
                     val status = data?.map { s -> s!!.status }?.single()
+                    val language = storageDataSource.language.value
+                    val accountType = storageDataSource.accountType.value
                     if (status == StatusEnum.SUCCESS.type) {
                         val modules = data.map { s -> s?.modules }.single()
-                        widgetRepository.saveModule(modules)
+                        widgetRepository.saveModule(modules?.filter { m -> m.customerType == accountType })//TODO LANGUAGE ADDED ?.filter { m -> m.language == language }
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
                 }

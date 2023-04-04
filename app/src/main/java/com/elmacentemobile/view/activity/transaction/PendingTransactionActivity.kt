@@ -66,7 +66,6 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
     private lateinit var pendingTransaction: PendingTransaction
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
@@ -164,7 +163,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                 displayControl = data.form.last().displayControl,
                 isEncrypted = false,
                 isMandatory = false,
-                formID = ActionTypeEnum.PAY_BILL.type
+                formID = ActionTypeEnum.PAY_BILL.type,
+                language = baseViewModel.dataSource.language.value
             )
         )
         for (s in data.payload.list.entries) {
@@ -378,7 +378,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                 serviceParamID = data.form.last().serviceParamID,
                 displayControl = data.form.last().displayControl,
                 isEncrypted = data.form.last().isEncrypted,
-                isMandatory = data.form.last().isMandatory
+                isMandatory = data.form.last().isMandatory,
+                language = baseViewModel.dataSource.language.value
             )
         )
         for (s in data.form) {
@@ -394,7 +395,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                     serviceParamID = s.serviceParamID,
                     displayControl = s.displayControl,
                     isEncrypted = s.isEncrypted,
-                    isMandatory = true
+                    isMandatory = true,
+                    language = baseViewModel.dataSource.language.value
                 )
             )
         }
@@ -412,7 +414,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                 displayControl = data.form.last().displayControl,
                 isEncrypted = false,
                 isMandatory = false,
-                formID = "PAYMENT"
+                formID = "PAYMENT",
+                language = baseViewModel.dataSource.language.value
             )
         )
         for (s in data.payload.list.entries) {

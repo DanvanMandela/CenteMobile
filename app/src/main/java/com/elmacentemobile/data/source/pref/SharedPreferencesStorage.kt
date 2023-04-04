@@ -1097,6 +1097,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override val dayTipData: StateFlow<List<DayTipData>?>
         get() = _dayTipData
 
+
     override fun dayTipData(value: List<DayTipData>?) {
         _dayTipData.value = value
         with(sharedPreferences.edit()) {
@@ -1107,6 +1108,23 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             apply()
         }
     }
+
+    private val _language =
+        MutableStateFlow(sharedPreferences.getString(TAG_LANGUAGE, "ENG"))
+
+    override fun language(value: String?) {
+        _language.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_LANGUAGE,
+                value
+            )
+            apply()
+        }
+    }
+
+    override val language: StateFlow<String?>
+        get() = _language
 
     private val _sessionID =
         MutableStateFlow(
@@ -1129,6 +1147,29 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             apply()
         }
     }
+
+    private val _accountType =
+        MutableStateFlow(
+            sharedPreferences.getString(
+                TAG_ACCOUNT_TYPE,
+                "Bank"
+            )
+        )
+
+    override val accountType: StateFlow<String?>
+        get() = _accountType
+
+    override fun accountType(value: String?) {
+        _accountType.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_ACCOUNT_TYPE,
+                value
+            )
+            apply()
+        }
+    }
+
 
     companion object {
         private const val SHARED_PREF_NAME = "pref"
@@ -1207,5 +1248,9 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_CAROUSEL_DATA = "carouselData"
 
         private const val TAG_DAY_TIP_DATA = "dayTipData"
+
+        private const val TAG_LANGUAGE = "language"
+
+        private const val TAG_ACCOUNT_TYPE = "accountType"
     }
 }

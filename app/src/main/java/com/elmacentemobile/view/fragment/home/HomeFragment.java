@@ -439,8 +439,13 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
                 null,
                 null));
-        Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
-        startActivity(i);
+        try {
+            Intent i = new Intent(getActivity(), FalconHeavyActivity.class);
+            startActivity(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

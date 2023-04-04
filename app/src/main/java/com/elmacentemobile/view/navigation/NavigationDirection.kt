@@ -39,7 +39,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateLanding(): NavDirections {
         return ActionOnlyNavDirections(
-            if (Constants.Data.TEST) R.id.action_nav_land_compose
+            if (Constants.Data.TEST) R.id.action_nav_land
             else R.id.action_nav_land
         )
     }
@@ -320,7 +320,7 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
 
     override fun navigateLandingCompose(): NavDirections {
         return ActionOnlyNavDirections(
-            if (Constants.Data.TEST) R.id.action_nav_land_compose
+            if (Constants.Data.TEST) R.id.action_nav_land
             else R.id.action_nav_land
         )
     }

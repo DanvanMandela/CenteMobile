@@ -22,6 +22,16 @@ data class LoginUserData(
     @field:Expose
     var status: String?,
 
+    @field:SerializedName("LanguageID")
+    @field:ColumnInfo(name = "languageID")
+    @field:Expose
+    var languageID: String?,
+
+    @field:SerializedName("CustomerType")
+    @field:ColumnInfo(name = "customerType")
+    @field:Expose
+    var customerType: String?,
+
     @field:SerializedName("LastLoginDateTime")
     @field:ColumnInfo(name = "LastLoginDateTime")
     @field:Expose

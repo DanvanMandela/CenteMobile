@@ -6,6 +6,11 @@
     <data>
 
         <variable
+            name="storage"
+            type="com.elmacentemobile.data.source.pref.StorageDataSource" />
+
+
+        <variable
             name="value"
             type="String" />
 
@@ -40,6 +45,7 @@
             min="@{data.minValue}"
             setTag="@{data.controlID}"
             value="@{value}"
+            storage="@{storage}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:autoSizeTextType="uniform"

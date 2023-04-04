@@ -523,20 +523,21 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                             formattedAddress =
                                 jArray.getJSONObject(0).getString("formatted_address")
 
-                            AppLogger.instance.appLog("Location", json.toString())
-
+                            AppLogger.instance.appLog("Location", formattedAddress.toString())
                             //get neighborhood
-                            val results = json.getJSONArray("results")
-                            val rec = results.getJSONObject(0)
-                            val addressComponents = rec.getJSONArray("address_components")
-                            for (i in 0 until addressComponents.length()) {
-                                val rec1 = addressComponents.getJSONObject(i)
-                                val types = rec1.getJSONArray("types")
-                                val comp = types.getString(0)
-                            }
+//                            val results = json.getJSONArray("results")
+//                            val rec = results.getJSONObject(0)
+//                            val addressComponents = rec.getJSONArray("formatted_address")
+//                            for (i in 0 until addressComponents.length()) {
+//                                val rec1 = addressComponents.getJSONObject(i)
+//                                val types = rec1.getJSONArray("types")
+//                                val comp = types.getString(0)
+//                            }
 
-                            if (formattedAddress.length >= 40)
+                            if (formattedAddress.length > 40)
                                 binding.currentInput.setText(formattedAddress.substring(0, 40))
+                            else binding.currentInput.setText(formattedAddress)
+
                         } catch (e: JSONException) {
                             e.printStackTrace();
                         }

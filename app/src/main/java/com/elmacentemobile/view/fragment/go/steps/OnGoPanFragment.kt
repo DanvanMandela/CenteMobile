@@ -432,17 +432,29 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
                         baseViewModel.dataSource.setNKData(
                             NextKinData(account = binding.editAccountNumber.text.toString())
                         )
-                        val mobile = baseViewModel.dataSource.activationData.value
-                        val code = mobile?.mobile?.substring(0, 3)
-                        val phone = mobile?.mobile?.substring(3)
+
+                        val mobile =
+                            if (active == false) {
+                                binding.countryCodeHolder.selectedCountryCode +
+                                        removeLeadingZero(binding.editMobile.text.toString())
+                            } else baseViewModel.dataSource.activationData.value?.mobile
+                        val code = mobile?.substring(0, 3)
+                        val phone = mobile?.substring(3)
+
+                        AppLogger.instance.appLog("MOBILE", "$phone")
+                        AppLogger.instance.appLog("CODE", "$code")
+
+
 
                         baseViewModel.dataSource.setAddressState(
                             AddressState(
-                                phone = if (active == false) TwoDMap(
-                                    key = binding.countryCodeHolder.selectedCountryCode.toInt(),
-                                    value = removeLeadingZero(binding.editMobile.text.toString())
-                                ) else TwoDMap(key = code?.toInt(), value = phone)
+                                phone = TwoDMap(key = code?.toInt(), value = phone)
                             )
+                        )
+
+                        AppLogger.instance.appLog(
+                            "ADDRESS",
+                            Gson().toJson(baseViewModel.dataSource.addressState.value)
                         )
 
                         SuccessDialogFragment.showDialog(
@@ -495,9 +507,12 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
             (requireActivity() as MainActivity).initSMSBroadCast()
             setLoading(true)
             val mobile =
-                if (active == false) binding.countryCodeHolder.selectedCountryCode +
+                if (active == false) {
+                    baseViewModel.mobile.value =
                         removeLeadingZero(binding.editMobile.text.toString())
-                else baseViewModel.dataSource.activationData.value?.mobile
+                    binding.countryCodeHolder.selectedCountryCode +
+                            removeLeadingZero(binding.editMobile.text.toString())
+                } else baseViewModel.dataSource.activationData.value?.mobile
             val json = JSONObject()
             json.put("MOBILENUMBER", mobile)
             json.put("BANKACCOUNTID", binding.editAccountNumber.text.toString())

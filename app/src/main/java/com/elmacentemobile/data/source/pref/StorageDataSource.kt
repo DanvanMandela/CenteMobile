@@ -186,4 +186,11 @@ interface StorageDataSource {
     fun dayTipData(value: List<DayTipData>?)
     val dayTipData: StateFlow<List<DayTipData>?>
 
+    fun language(value: String?)
+    val language: StateFlow<String?>
+
+    fun accountType(value: String?)
+    val accountType: StateFlow<String?>
+
 }
+

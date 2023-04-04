@@ -59,7 +59,49 @@ class AppLogger {
                     val dir =
                         File("${storage.absolutePath}/${context.getString(R.string.app_name)}")
                     dir.mkdir()
-                    val file = File(dir, "logs.json")
+                    val file = File(dir, "log.json")
+                    if (file.exists()) file.delete()
+                    val os: FileOutputStream?
+                    try {
+                        os = FileOutputStream(file)
+                        os.write(s.toByteArray())
+                        os.close()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+            } else {
+                context.runOnUiThread {
+                    ActivityCompat.requestPermissions(
+                        context,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        101
+                    )
+                }
+            }
+        }
+
+    }
+
+    fun logTXTTwo(
+        s: String,
+        context: Activity, fileName: String = "logs.json"
+    ) {
+        if (Constants.Data.TEST) {
+            val permission =
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            if (permission == PackageManager.PERMISSION_GRANTED) {
+                val state = Environment.getExternalStorageState()
+                if (Environment.MEDIA_MOUNTED == state) {
+                    val storage = Environment.getExternalStorageDirectory();
+                    val dir =
+                        File("${storage.absolutePath}/${context.getString(R.string.app_name)}")
+                    dir.mkdir()
+                    val file = File(dir, fileName)
                     if (file.exists()) file.delete()
                     val os: FileOutputStream?
                     try {

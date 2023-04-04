@@ -60,11 +60,12 @@ fun TextInputEditText.setHidden(
 
 }
 
-@BindingAdapter("callback", "form", "value")
+@BindingAdapter("callback", "form", "value", "storage")
 fun TextInputEditText.setInputLayout(
     callbacks: AppCallbacks?,
     formControl: FormControl?,
-    value: String?
+    value: String?,
+    storage: StorageDataSource?
 ) {
     this.setText("")
     setDefaultValue(formControl, callbacks)
@@ -84,6 +85,11 @@ fun TextInputEditText.setInputLayout(
             )
         )
     }
+
+    if (formControl.controlID == "USERNUMBER") {
+        this.setText(storage?.activationData?.value?.mobile)
+    }
+
 
     if (!formControl.controlValue.isNullOrBlank()) {
         this.setText(formControl.controlValue)
@@ -112,13 +118,39 @@ fun setDefaultWatcher(
         }
 
         override fun afterTextChanged(e: Editable?) {
-            callbacks?.userInput(
+            if (!formControl.minValue.isNullOrEmpty()) {
+                val min = formControl.minValue!!.toInt()
+                if (trimCommaOfString(e.toString()).length < min) {
+                    callbacks?.userInput(
+                        InputData(
+                            name = formControl.controlText,
+                            key = formControl.serviceParamID,
+                            value = trimCommaOfString(e.toString()),
+                            encrypted = formControl.isEncrypted,
+                            mandatory = formControl.isMandatory,
+                            validation = "Minimum number of characters is $min"
+                        )
+                    )
+                } else {
+                    callbacks?.userInput(
+                        InputData(
+                            name = formControl.controlText,
+                            key = formControl.serviceParamID,
+                            value = trimCommaOfString(e.toString()),
+                            encrypted = formControl.isEncrypted,
+                            mandatory = formControl.isMandatory,
+                            validation = null
+                        )
+                    )
+                }
+            } else callbacks?.userInput(
                 InputData(
                     name = formControl.controlText,
                     key = formControl.serviceParamID,
                     value = trimCommaOfString(e.toString()),
                     encrypted = formControl.isEncrypted,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    validation = null
                 )
             )
         }

@@ -81,10 +81,12 @@ class FormControlGETWorker @AssistedInject constructor(
                     val data = WidgetDataTypeConverter().from(dec)
                     AppLogger.instance.appLog("FORMS", Gson().toJson(data))
                     val status = data?.map { s -> s?.status }?.single()
+                    val language = storageDataSource.language.value
                     if (status == StatusEnum.SUCCESS.type) {
                         val forms = data.map { s -> s?.formControls }.single()
                         if (forms != null)
-                            widgetRepository.saveFormControl(forms)
+                            widgetRepository
+                                .saveFormControl(forms)//TODO LANGUAGE ADDED .filter { f -> f.language == language }
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
                 }

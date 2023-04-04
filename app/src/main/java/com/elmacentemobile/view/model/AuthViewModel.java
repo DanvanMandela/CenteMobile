@@ -254,7 +254,10 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
             jsonObject.put("EncryptedFields", encryptedFieldsJsonObject);
 
             String newRequest = jsonObject.toString();
-            String path = new SpiltURL(storage.getDeviceData().getValue() == null ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData().getValue().getAuth())).getPath();
+            AppLogger.Companion.getInstance().appLog("VERIFY:OTP", newRequest);
+            String path = new SpiltURL(storage.getDeviceData().getValue() == null
+                    ? Constants.BaseUrl.UAT : Objects.requireNonNull(storage.getDeviceData()
+                    .getValue().getAuth())).getPath();
 
             return authRepository.authRequest(new PayloadData(
                             storage.getUniqueID().getValue(),

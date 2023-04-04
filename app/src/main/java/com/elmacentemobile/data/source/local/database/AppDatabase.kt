@@ -32,7 +32,7 @@ import com.elmacentemobile.view.ep.data.LayoutData
         NotificationData::class,
         PendingTransaction::class
     ],
-    version = 2, exportSchema = false
+    version = 4, exportSchema = false
 )
 
 

@@ -73,7 +73,9 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = true;
+        public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
+
+        public static final boolean AUTO_OTP = false;
         public static final boolean ACTIVATED = true;
 
         @NotNull
@@ -220,8 +222,9 @@ public class Constants {
     }
 
     public static String removeLeadingZero(String value) {
-        while (value.indexOf("0") == 0)
-            value = value.substring(1);
+        if (value.length() > 9)
+            value = value.replaceAll("^0+(?=.)", "");
+
         return value;
     }
 

@@ -77,6 +77,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 import java.text.*
@@ -731,6 +732,7 @@ fun EpoxyRecyclerView.setDisplayJson(
     formControl: FormControl?,
     modules: Modules?
 ) {
+    AppLogger.instance.appLog("DISPLAY:ITEM",Gson().toJson(formControl))
     callbacks.onDisplay(formControl, modules, this)
 }
 

@@ -26,6 +26,11 @@ data class FormControl(
     @field:Expose
     var rowID: String = "0",
 
+    @field:SerializedName("Language")
+    @field:ColumnInfo(name = "language")
+    @field:Expose
+    var language: String?,
+
     @field:SerializedName("FormID")
     @field:ColumnInfo(name = "formID")
     @field:Expose

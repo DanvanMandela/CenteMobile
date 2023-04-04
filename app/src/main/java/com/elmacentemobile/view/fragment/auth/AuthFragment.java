@@ -4,7 +4,6 @@ import static com.elmacentemobile.view.binding.BindingAdapterKt.activationData;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.pinLive;
-import static com.elmacentemobile.view.binding.BindingAdapterKt.syncLive;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,10 +23,10 @@ import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.elmacentemobile.R;
+import com.elmacentemobile.data.model.LanguageVersion;
 import com.elmacentemobile.data.model.control.FormControl;
 import com.elmacentemobile.data.model.control.PasswordEnum;
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter;
@@ -402,8 +401,9 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private void saveUserData(LoginUserData res) {
         updateActivationData(res);
         if (res.getVersion() != null)
-            updateWidgets(res.getVersion());
-        else updateWidgets("R");
+            updateWidgets(new LanguageVersion(res.getCustomerType(), res.getVersion()));
+        else updateWidgets(new LanguageVersion("ENG", "R"));
+
 
         if (res.getAccounts() != null)
             authViewModel.storage.setAccounts(res.getAccounts());
@@ -425,6 +425,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         if (res.getPendingTrxDisplay() != null) {
             setPending(res);
         }
+
 
     }
 
@@ -458,26 +459,38 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     }
 
 
-    private void updateWidgets(String version) {
+    private void updateWidgets(LanguageVersion version) {
+        AppLogger.Companion.getInstance().appLog("CURRENT:VERSION",
+                "" + authViewModel.storage.getVersion().getValue());
+        AppLogger.Companion.getInstance().appLog("VERSION", "" + version.getVersion());
+        AppLogger.Companion.getInstance().appLog("LANGUAGE", "" + version.getLanguage());
+        AppLogger.Companion.getInstance().appLog("CURRENT:LANGUAGE",
+                "" + authViewModel.storage.getAccountType().getValue());
         LiveData<SyncData> liveData = BindingAdapterKt.syncLive(authViewModel.storage.getSync());
         liveData.observe(getViewLifecycleOwner(), live -> {
-            if (!authViewModel.storage.getVersion().getValue().equals(version)) {
+            if (!authViewModel.storage.getVersion().getValue().equals(version.getVersion())) {
                 if (live != null) {
                     binding.loadingFrame.loading.getRoot().setVisibility(View.VISIBLE);
                     binding.loadingFrame.loading.setData(live);
                     new AppLogger().appLog("PROGRESS", new Gson().toJson(live));
                     if (live.getWork() >= 8) {
                         navigate();
-                        authViewModel.storage.setVersion(version);
-                        authViewModel.storage.setSync(new SyncData(
-                                null, 0, true
-                        ));
+                        authViewModel.storage
+                                .setVersion(version.getVersion());
+                        authViewModel.storage
+                                .setSync(new SyncData(null, 0, true));
                     } else if (live.getWork() <= 1) {
                         if (!authViewModel.storage.getVersion().getValue().equals("R"))
                             workerViewModel.onWidgetData(getViewLifecycleOwner(), null);
                         else navigate();
                     }
                 }
+            } else if (version.getLanguage() != null &&
+                    !Objects.equals(version.getLanguage(),
+                            authViewModel.storage.getAccountType().getValue())) {
+                authViewModel.storage.setVersion("L");
+                authViewModel.storage.accountType(version.getLanguage());
+                updateWidgets(version);
             } else navigate();
         });
     }

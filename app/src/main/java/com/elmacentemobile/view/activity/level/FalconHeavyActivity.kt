@@ -9,14 +9,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
@@ -119,7 +117,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 
 @AndroidEntryPoint
@@ -156,6 +153,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         if (result.isSuccessful) {
             val uriFilePath = result.getUriFilePath(this)
             val image = getImageFromStorage(uriFilePath!!)
+            AppLogger.instance.logTXTTwo(
+                s = convert(compressImage(image!!)!!),
+                context = this,
+                "Image.json"
+            )
             callback?.onImage(compressImage(image!!))
         } else {
             val exception = result.error
@@ -466,7 +468,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     private fun showImagePickerOptions(x: Int, y: Int, callbacks: AppCallbacks) {
         this.callback = callbacks
-
         cropImage.launch(
             options {
                 setGuidelines(CropImageView.Guidelines.ON)
@@ -544,12 +545,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 null,
                                 null
                             )
-//                            phones.use { p ->
-//                                p?.moveToFirst()
-//                                val number = p?.getColumnIndex("data1")?.let { p.getString(it) }
-//                                callbacks.setContact(number)
-//                            }
-
                             phones.use { p ->
                                 while (p!!.moveToNext()) {
                                     val contactNumber =
@@ -561,7 +556,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                         numberList.add(num)
                                     }
                                 }
-                                // p?.moveToNext()
                             }
 
                             val contactData = ContactData(
@@ -1007,8 +1001,9 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onDisplay(formControl: FormControl?, modules: Modules?) {
         AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
+
         if (BaseClass.nonCaps(formControl?.controlID) == BaseClass.nonCaps("DISPLAY")) {
-            AppLogger.instance.appLog("DIS", Gson().toJson(formControl))
+            AppLogger.instance.appLog("DISPLAY:DATA:Response:", Gson().toJson(formControl))
             if (!busData.res?.display.isNullOrEmpty()) {
                 binding.displayContainer.visibility = View.VISIBLE
                 val controller = MainDisplayController(this)
@@ -1161,7 +1156,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     ) {
         try {
             if (BaseClass.nonCaps(formControl?.controlID) == BaseClass.nonCaps("DISPLAY")) {
-                AppLogger.instance.appLog("DISPLAY:form", Gson().toJson(formControl))
+                AppLogger.instance.appLog("DISPLAY:form:Two", Gson().toJson(formControl))
 
                 if (!busData.res?.display.isNullOrEmpty()) {
                     val controller = MainDisplayController(this)
@@ -1170,6 +1165,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 }
                 if (BaseClass.nonCaps(formControl?.controlFormat) == BaseClass.nonCaps("JSON")) {
                     if (!busData.res?.formField.isNullOrEmpty()) {
+                        AppLogger.instance.appLog(
+                            "DISPLAY:DATA",
+                            Gson().toJson(busData.res?.formField)
+                        )
+
                         try {
                             val controller = MainDisplayController(this)
                             val list =
@@ -1463,12 +1463,14 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     ) {
                                         baseViewModel.dataSource.setBio(false)
                                         setSuccess(resData.message)
-                                    } else setOnNextModule(
-                                        formControl,
-                                        if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
-                                        modules,
-                                        resData.formID
-                                    )
+                                    } else {
+                                        setOnNextModule(
+                                            formControl,
+                                            if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
+                                            module,//TODO CHECK MODULE
+                                            resData.formID
+                                        )
+                                    }
                                 } else setSuccess(resData?.message)
                             } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.TOKEN.type) {
                                 InfoFragment.showDialog(supportFragmentManager, this)
@@ -1536,7 +1538,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
     override fun navigateUp() {
-        finish()
+        onCancel()
     }
 
 
@@ -2285,7 +2287,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     serviceParamID = formControl.serviceParamID,
                     displayControl = formControl.displayControl,
                     isEncrypted = formControl.isEncrypted,
-                    isMandatory = formControl.isMandatory
+                    isMandatory = formControl.isMandatory,
+                    language = baseViewModel.dataSource.language.value
                 )
             )
             userInput(
@@ -2436,97 +2439,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             REQUEST_READ_CONTACTS_PERMISSION -> onContactPicker(callback!!)
         }
     }
-
-
-    private fun launchCameraIntent(x: Int, y: Int, callbacks: AppCallbacks) {
-        val intent = Intent(this@FalconHeavyActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_IMAGE_CAPTURE)
-
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-        intent.putExtra(ImagePicker.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_WIDTH, 1000)
-        intent.putExtra(ImagePicker.INTENT_BITMAP_MAX_HEIGHT, 1000)
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-    }
-
-    private fun launchGalleryIntent(x: Int, y: Int, callbacks: AppCallbacks) {
-        val intent = Intent(this@FalconHeavyActivity, ImagePicker::class.java)
-        intent.putExtra(ImagePicker.INTENT_IMAGE_PICKER_OPTION, ImagePicker.REQUEST_GALLERY_IMAGE)
-        intent.putExtra(ImagePicker.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_X, x) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePicker.INTENT_ASPECT_RATIO_Y, y)
-
-        activityLauncher.launch(intent) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val uri = result.data!!.getParcelableExtra<Uri>("path")
-                try {
-                    uri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            val bitmap =
-                                MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                            callbacks!!.onImage(compressImage(bitmap))
-
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, uri)
-                            // val bitmap = ImageDecoder.decodeBitmap(source)
-                            val mutableBitmap = ImageDecoder.decodeBitmap(
-                                source
-                            ) { decoder, _, _ ->
-                                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                decoder.isMutableRequired = true
-                            }
-                            callbacks!!.onImage(compressImage(mutableBitmap))
-                        }
-                    }
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-//    private fun showImagePickerOptions(x: Int, y: Int, callbacks: AppCallbacks) {
-//        ImagePicker.showImagePickerOptions(this, object : ImagePicker.PickerOptionListener {
-//            override fun onTakeCameraSelected() {
-//                launchCameraIntent(x, y, callbacks)
-//            }
-//
-//            override fun onChooseGallerySelected() {
-//                launchGalleryIntent(x, y, callbacks)
-//            }
-//        })
-//    }
 
 
 }

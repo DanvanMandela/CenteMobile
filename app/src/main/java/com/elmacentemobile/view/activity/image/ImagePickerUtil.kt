@@ -172,7 +172,7 @@ class ImagePickerUtil : AppCompatActivity(), AppCallbacks {
         }
 
         val intentChooser = Intent.createChooser(
-            if (Constants.Data.TEST) galleryIntent else cameraIntent,
+            if (!Constants.Data.TEST) galleryIntent else cameraIntent,
             "Select an app"
         )
         intentChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))

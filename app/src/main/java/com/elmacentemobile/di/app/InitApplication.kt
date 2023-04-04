@@ -33,7 +33,6 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
                     WindowManager.LayoutParams.FLAG_SECURE
                 )
             }
-
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}

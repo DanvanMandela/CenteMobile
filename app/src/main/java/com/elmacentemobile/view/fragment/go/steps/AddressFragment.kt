@@ -189,9 +189,9 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
         Handler(Looper.getMainLooper()).postDelayed({
             stopShimmer()
             loadAddressData()
+            setMobile()
             setAddress()
             setState()
-            setMobile()
         }, animationDuration.toLong())
     }
 
@@ -222,19 +222,22 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
             if (sData.village != null) stateVillage(sData.village!!)
             if (sData.ea != null) stateEA(sData.ea!!)
 
+            binding.addressInput.setText(sData.address)
+            binding.cityInput.setText(sData.city)
+            binding.codeInput.setText(sData.countryCode)
+
             binding.emailInput.setText(sData.email)
             if (sData.phone != null) {
+                AppLogger.instance.appLog("PHONE", Gson().toJson(sData.phone?.value))
                 binding.countryCodeHolder.setCountryForPhoneCode(sData.phone?.key!!)
-                binding.editMobile.setText(sData.phone!!.value)
+                binding.editMobile.setText(sData.phone?.value)
+                binding.codeInput.setText(binding.countryCodeHolder.selectedCountryCode)
             }
             if (sData.phoneTwo != null) {
                 binding.countryCodeHolderTwo.setCountryForPhoneCode(sData.phoneTwo?.key!!)
                 binding.editMobileTwo.setText(sData.phoneTwo!!.value)
             }
 
-            binding.addressInput.setText(sData.address)
-            binding.cityInput.setText(sData.city)
-            binding.codeInput.setText(sData.countryCode)
         }
     }
 

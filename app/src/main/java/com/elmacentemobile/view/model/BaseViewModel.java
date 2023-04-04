@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.elmacentemobile.data.model.SpiltURL;
@@ -57,10 +58,10 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     public final StorageDataSource dataSource;
     public final NavigationDataSource navigationData;
 
+    public MutableLiveData<String> mobile = new MutableLiveData<>();
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
-
 
 
     @Inject
