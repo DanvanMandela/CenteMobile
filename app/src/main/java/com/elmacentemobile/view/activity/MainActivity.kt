@@ -20,6 +20,9 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -37,11 +40,14 @@ import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.user.ActivationData
+import com.elmacentemobile.data.service.otp.SMSAutoReadFactory
 import com.elmacentemobile.data.source.constants.Constants
+import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.helper.ConnectionObserver
 import com.elmacentemobile.databinding.ActivityMainBinding
 import com.elmacentemobile.util.*
+import com.elmacentemobile.util.BaseClass.decode64
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.getImageFromStorage
@@ -52,9 +58,12 @@ import com.elmacentemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.elmacentemobile.view.fragment.go.steps.OTP
 import com.elmacentemobile.view.fragment.map.MapData
 import com.elmacentemobile.view.model.BaseViewModel
+import com.elmacentemobile.view.model.IpStackViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
 import com.elmacentemobile.view.model.WorkStatus
 import com.elmacentemobile.view.model.WorkerViewModel
+import com.google.android.gms.auth.api.identity.GetPhoneNumberHintIntentRequest
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -70,15 +79,18 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
+
 
 
 @AndroidEntryPoint
@@ -92,16 +104,16 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private val workViewModel: WorkerViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
     private val baseViewModel: BaseViewModel by viewModels()
+    private val ipsViewModel: IpStackViewModel by viewModels()
     private var callbacks: AppCallbacks? = null
     private var cryptographyManager = CryptoManager()
     private var bioInterface: BioInterface? = null
     private val envChecks = BitSet()
-
+    private val dispose = CompositeDisposable()
 
     private var appUpdateManager: AppUpdateManager? = null
     private var updateListener: InstallStateUpdatedListener? = null
 
-    private var jsonChecker: String? = null
 
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
@@ -120,7 +132,26 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
+    private fun phoneSelection() {
+        val request: GetPhoneNumberHintIntentRequest =
+            GetPhoneNumberHintIntentRequest.builder().build()
+        Identity.getSignInClient(this)
+            .getPhoneNumberHintIntent(request)
+            .addOnSuccessListener {
+                phoneNumberHintIntentResultLauncher.launch(
+                    IntentSenderRequest.Builder(it.intentSender).build()
+                )
+            }
+            .addOnFailureListener {
+                AppLogger.instance.appLog("PHONE:SELECT", it.localizedMessage)
+            }
+    }
+
+
+
+
     override fun onStart() {
+       // phoneSelection()
         super.onStart()
         widgetViewModel.storageDataSource.deleteOtp()
         checkLocationPermission()
@@ -146,8 +177,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         super.onCreate(savedInstanceState)
         // doProbe(this)
         setBinding()
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            ipStack()
+//        }
         appSignature()
-        setViewModel()
         setNavigation()
         fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
         requestPermissions()
@@ -157,9 +190,55 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         securityCheck()
         onUserInteraction()
         listenToInActivity()
-        checkNewVersion()
+
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU) {
+            checkNewVersion()
+        }
+
+        setViewModel()
     }
 
+
+
+    private fun ipStack() {
+        workViewModel.ipBackground()
+    }
+
+    private val phoneNumberHintIntentResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            try {
+                val phoneNumber =
+                    Identity.getSignInClient(this).getPhoneNumberFromIntent(result.data)
+                callbacks?.telephone(phoneNumber)
+            } catch (e: Exception) {
+                AppLogger.instance.appLog(
+                    SMSAutoReadFactory::class.java.simpleName,
+                    "${e.message}"
+                )
+            }
+        }
+
+    fun requestHint(callbacks: AppCallbacks) {
+        this@MainActivity.callbacks = callbacks
+        val request: GetPhoneNumberHintIntentRequest =
+            GetPhoneNumberHintIntentRequest.builder().build()
+        Identity.getSignInClient(this)
+            .getPhoneNumberHintIntent(request)
+            .addOnSuccessListener {
+                phoneNumberHintIntentResultLauncher.launch(
+                    IntentSenderRequest.Builder(it.intentSender).build()
+                )
+            }
+            .addOnFailureListener {
+                AppLogger.instance.appLog(
+                    MainActivity::class.java.simpleName,
+                    "${it.message}"
+                )
+            }
+    }
 
     private fun checkNewVersion() {
         appUpdateManager = AppUpdateManagerFactory.create(this)
@@ -197,9 +276,11 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                     val bytesDownloaded = state.bytesDownloaded()
                     val totalBytesToDownload = state.totalBytesToDownload()
                 }
+
                 InstallStatus.DOWNLOADED -> {
                     appUpdateManager?.completeUpdate()
                 }
+
                 InstallStatus.INSTALLED -> {
                     if (appUpdateManager != null && updateListener != null)
                         appUpdateManager?.unregisterListener(updateListener!!)
@@ -210,7 +291,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         }
         appUpdateManager?.registerListener(updateListener!!)
 
+
+
+
+
     }
+
+
 
 
 //    override fun onResume() {
@@ -368,6 +455,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                             if (provideNavigationGraph().currentDestination?.id == R.id.connectionFragment)
                                 provideNavigationGraph().navigateUp()
                         }
+
                         ConnectionObserver.ConnectionEnum.UnCapable,
                         ConnectionObserver.ConnectionEnum.UnAvailable,
                         ConnectionObserver.ConnectionEnum.Losing,
@@ -417,8 +505,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         widgetViewModel.storageDataSource.forceData(false)
                         workViewModel.onWidgetData(this@MainActivity, null)
                     } else {
-                        AppLogger.instance.appLog("DATA:Force", "$forceData")
                         if (forceData == true) {
+                            AppLogger.instance.appLog("DATA:Force", "$forceData")
                             workViewModel.onWidgetData(this@MainActivity, object : WorkStatus {
                                 override fun progress(p: Int) {
                                     if (p == 100)
@@ -434,6 +522,15 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                 AppLogger.instance.appLog("DATA:Progress", "$p")
             }
         })
+
+        val sync = widgetViewModel.storageDataSource.sync.asLiveData()
+        sync.observe(this) {
+            AppLogger.instance.appLog(
+                "${this::class.java.simpleName}:Data:Progress",
+                Gson().toJson(it)
+            )
+        }
+
     }
 
 
@@ -457,12 +554,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
             else -> {}
         }
 
-    }
-
-
-    private fun hasContactsPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==
-                PackageManager.PERMISSION_GRANTED
     }
 
 
@@ -766,7 +857,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     private fun showBiometricLoginOption() {
         val data = widgetViewModel.storageDataSource.iv.value
         val cipher = cryptographyManager.getInitializedCipherForDecryption(
-            getString(R.string.secret_key_name),
+            decode64(Keys().secretKey()),
             data!!.iv
         )
 
@@ -785,18 +876,17 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         val permissions = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissions.add(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            permissions.addAll(
-                mutableListOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_CONTACTS,
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                )
-            )
         }
+        permissions.addAll(
+            mutableListOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            )
+        )
 
         Dexter.withContext(this)
             .withPermissions(permissions)
@@ -826,12 +916,13 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         val client = SmsRetriever.getClient(this)
         val task: Task<Void> = client.startSmsRetriever()
         task.addOnSuccessListener {
-
             AppLogger.instance.appLog("${MainActivity::class.java.simpleName}: SMS", "SUCCESS")
-
         }
-        task.addOnFailureListener { }
+        task.addOnFailureListener {
+            AppLogger.instance.appLog("${MainActivity::class.java.simpleName}: SMS", "FAIL")
+        }
     }
+
 
     override fun timer(str: String) {
         // AppLogger.instance.appLog("${MainActivity::class.simpleName}:Timeout", str)
@@ -840,7 +931,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     override fun done(boolean: Boolean) {
         if (boolean) {
-
             when (provideNavigationGraph().currentDestination?.id) {
                 R.id.homeFragment,
                 R.id.miniStatementFragment,
@@ -852,6 +942,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
                         )
                     }
                 }
+
                 else -> {
                     AppLogger.instance.appLog("Timeout:", "Not here")
                 }

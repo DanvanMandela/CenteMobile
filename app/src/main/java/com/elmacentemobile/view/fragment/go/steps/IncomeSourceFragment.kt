@@ -305,7 +305,7 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     }
 
     private fun setStep() {
-        binding.progressIndicator.setProgress(50, true)
+        binding.progressIndicator.setProgress(40, true)
     }
 
     override fun setOnClick() {

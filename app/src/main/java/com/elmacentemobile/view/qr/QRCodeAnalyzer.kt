@@ -43,7 +43,7 @@ internal class QRCodeAnalyzer(
         failureOccurred = false
         barcodeScanner.process(imageProxy.toInputImage())
             .addOnSuccessListener { codes ->
-                codes.mapNotNull { it }.firstOrNull()?.let { onSuccess(it) }
+                codes.firstNotNullOfOrNull { it }?.let { onSuccess(it) }
             }
             .addOnFailureListener {
                 failureOccurred = true

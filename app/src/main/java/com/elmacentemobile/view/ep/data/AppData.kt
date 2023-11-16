@@ -48,7 +48,14 @@ data class BodyData(
 open class DynamicData : Parcelable
 
 @Parcelize
-data class GroupModule(val parent: Modules, val module: MutableList<Modules>) : DynamicData()
+data class GroupModule(
+    @field:SerializedName("parent")
+    @field:Expose
+    val parent: Modules,
+    @field:SerializedName("module")
+    @field:Expose
+    val module: MutableList<Modules>
+) : DynamicData()
 
 @Parcelize
 data class GroupForm(
@@ -73,7 +80,7 @@ data class FormData(
     var forms: GroupForm,
     @field:SerializedName("storage")
     @field:Expose
-    var storage: StorageDataSource?,
+    var storage: StorageDataSource?
 ) : DynamicData()
 
 
@@ -275,6 +282,9 @@ data class BusData(
     @field:SerializedName("data")
     @Expose
     var data: DynamicData?,
+
+
+
     @field:SerializedName("response")
     @Expose
     var res: DynamicAPIResponse? = null,
@@ -282,6 +292,27 @@ data class BusData(
     @Expose
     var inputs: MutableList<InputData>? = null
 ) : Parcelable
+
+class BusDataTypeConverter {
+
+
+    fun from(data: BusData?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, BusData::class.java)
+    }
+
+    fun to(data: String?): BusData? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, BusData::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    }
+}
 
 
 @Parcelize

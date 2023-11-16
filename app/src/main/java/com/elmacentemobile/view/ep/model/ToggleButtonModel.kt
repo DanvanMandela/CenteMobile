@@ -50,6 +50,7 @@ open class ToggleButtonModel : DataBindingEpoxyModel() {
             val button = buttonBinding.root as MaterialButton
 
             button.setOnClickListener {
+                callbacks.clearInputData()
                 setLinked(formControl, binding.childContainer)
             }
             if (formControl == data.children.first()) {
@@ -78,7 +79,6 @@ open class ToggleButtonModel : DataBindingEpoxyModel() {
         )
 
     }
-
 
 }
 

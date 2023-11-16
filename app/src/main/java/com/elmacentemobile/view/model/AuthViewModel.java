@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 import javax.inject.Inject;
 
@@ -45,6 +46,7 @@ public class AuthViewModel extends ViewModel implements AuthDataSource {
     public final StorageDataSource storage;
     public final NavigationDataSource navigationDataSource;
     public final MutableLiveData<String> password = new MutableLiveData<>("");
+    public MutableLiveData<Stack<String>> loginPin = new MutableLiveData<>(new Stack<>());
 
 
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);

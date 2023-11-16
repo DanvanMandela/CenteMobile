@@ -21,6 +21,7 @@ import com.elmacentemobile.data.repository.dynamic.widgets.WidgetRepository;
 import com.elmacentemobile.data.repository.payment.PaymentRepository;
 import com.elmacentemobile.data.repository.validation.ValidationRepository;
 import com.elmacentemobile.data.service.InteractionDataSource;
+import com.elmacentemobile.data.service.otp.SMSDatasource;
 import com.elmacentemobile.data.source.constants.Constants;
 import com.elmacentemobile.data.source.pref.StorageDataSource;
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
+import java.util.Stack;
 
 import javax.inject.Inject;
 
@@ -57,6 +59,12 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
 
     public final StorageDataSource dataSource;
     public final NavigationDataSource navigationData;
+
+    public MutableLiveData<Stack<String>> pin = new MutableLiveData<>(new Stack<>());
+
+    @Inject
+    public SMSDatasource smsDatasource;
+
 
     public MutableLiveData<String> mobile = new MutableLiveData<>();
 
@@ -516,6 +524,42 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     }
 
     @Override
+    public Single<DynamicResponse> checkProductExist(JSONObject data, Context context) {
+
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.DB_CALL.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+            data.put("SessionID", uniqueID);
+            data.put("HEADER", ActionTypeEnum.VALIDATE_ACCOUNT_PRODUCT_TYPE.getType());
+            jsonObject.put("DynamicForm", data);
+            String newRequest = jsonObject.toString();
+
+            new AppLogger().appLog("PRODUCT:EXIST:REQ", newRequest);
+
+            return dbCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(newRequest, device, iv)
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AppDataSource.super.checkProductExist(data, context);
+    }
+
+    @Override
     public Single<DynamicResponse> pinForgotATM(JSONObject data, JSONObject encrypted,
                                                 Context context) {
         try {
@@ -739,6 +783,43 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
         }
     }
 
+
+    public Single<DynamicResponse> nira(JSONObject data, Context context) {
+        try {
+            String iv = dataSource.getDeviceData().getValue().getRun();
+            String device = dataSource.getDeviceData().getValue().getDevice();
+            ActivationData customerID = dataSource.getActivationData().getValue();
+            String uniqueID = Constants.getUniqueID();
+            JSONObject jsonObject = new JSONObject();
+
+            Constants.commonJSON(jsonObject,
+                    context,
+                    uniqueID,
+                    ActionTypeEnum.VALIDATE.getType(),
+                    customerID != null ? customerID.getId() : "",
+                    true,
+                    dataSource);
+
+
+            data.put("SessionID", uniqueID);
+            jsonObject.put("MerchantID", "OCR");
+            data.put("MerchantID", "OCR");
+            jsonObject.put("ModuleID", "CENTEXPRESS");
+            jsonObject.put("Validate", data);
+            String validateRequest = jsonObject.toString();
+            AppLogger.Companion.getInstance().appLog("Validation:OCR:", validateRequest);
+
+            return validateCall(new PayloadData(
+                    dataSource.getUniqueID().getValue(),
+                    BaseClass.encryptString(validateRequest, device, iv)
+            ));
+
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public Single<DynamicResponse> customerExist(JSONObject data,
                                                  JSONObject encrypted,
@@ -884,4 +965,6 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                 .doOnSuccess(disposable -> loadingUi.onNext(false))
                 .doOnError(disposable -> loadingUi.onNext(false));
     }
+
+
 }

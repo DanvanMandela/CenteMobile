@@ -87,7 +87,6 @@
                             android:id="@+id/currentInput"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:focusable="false"
                             android:maxLength="40"
                             android:fontFamily="@font/poppins_medium"
                             android:inputType="textCapSentences"

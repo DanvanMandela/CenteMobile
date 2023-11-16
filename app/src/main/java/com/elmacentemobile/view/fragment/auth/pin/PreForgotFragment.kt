@@ -34,6 +34,7 @@ class PreForgotFragment : Fragment(), AppCallbacks, PagerData {
     private lateinit var binding: FragmentPreForgotBinding
     private var adapter: PreLoginPinFragmentAdapter? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

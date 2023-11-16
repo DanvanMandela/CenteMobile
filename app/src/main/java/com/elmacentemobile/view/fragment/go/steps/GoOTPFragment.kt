@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
+import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.databinding.FragmentGoOTPBinding
 import com.elmacentemobile.util.*
@@ -34,6 +35,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -87,14 +91,16 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
     private fun setOtp() {
         val otpL = baseViewModel.dataSource.otp.asLiveData()
         otpL.observe(viewLifecycleOwner) {
-            if (it != null) setTimer()
-            binding.verificationCodeEditText.setText(it)
+            if (it != null) {
+                setTimer()
+                binding.verificationCodeEditText.setText(it)
+            }
         }
-
         val address = baseViewModel.dataSource.addressState.asLiveData()
         address.observe(viewLifecycleOwner) {
-            if (it?.countryCode == "256") {
-                binding.verificationCodeEditText.isEnabled = false
+            if (it?.countryCode == "256" && !Constants.Data.TEST) {
+                if (!Constants.Data.AUTO_OTP)
+                    binding.verificationCodeEditText.isEnabled = false
             }
         }
     }
@@ -179,22 +185,28 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         val income = widgetViewModel.storageDataSource.incomeSource.value
         val nok = widgetViewModel.storageDataSource.nextOfKin.value
         val address = widgetViewModel.storageDataSource.addressState.value
+        val workAddress = widgetViewModel.storageDataSource.workAddressState.value
         val services = widgetViewModel.storageDataSource.otherServices.value
         val recommend = widgetViewModel.storageDataSource.recommendState.value
 
         val json = JSONObject()
+
+        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val date: Date? = idData?.data?.dob?.let { it1 -> inputFormat.parse(it1) }
+        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
 
         json.put("INFOFIELD1", productData?.type?.value)
         json.put("INFOFIELD2", productData?.product?.value)
         json.put("INFOFIELD3", idData?.data?.names)
         json.put("INFOFIELD4", idData?.data?.otherName)
         json.put("INFOFIELD5", idData?.data?.surname)
-        json.put("INFOFIELD6", idData?.data?.dob)
+        json.put("INFOFIELD6", formattedDate)
         json.put("INFOFIELD7", idData?.data?.idNo)
         json.put("INFOFIELD8", "${address?.phone?.key}${address?.phone?.value}")
         json.put("INFOFIELD9", "${address?.phoneTwo?.key}${address?.phoneTwo?.value}")
         json.put("INFOFIELD10", address?.email)
-        json.put("INFOFIELD11", idData?.data?.gender)
+        json.put("INFOFIELD11", if (idData?.data?.gender == "MALE") "M" else "F")
         json.put("INFOFIELD12", idData?.title)
         json.put("INFOFIELD13", productData?.currency?.value)
         json.put("INFOFIELD14", productData?.branch?.value)
@@ -204,11 +216,11 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD18", parentData?.fLName)
         json.put("INFOFIELD19", parentData?.mFName)
         json.put("INFOFIELD20", parentData?.fMName)
-        json.put("INFOFIELD21", parentData?.fLName)
+        json.put("INFOFIELD21", parentData?.mLName)
         json.put("INFOFIELD22", recommend?.location)
         json.put("INFOFIELD23", address?.address)
         json.put("INFOFIELD24", parentData?.homeDistrict)
-        json.put("INFOFIELD25", parentData?.duration?.extra)
+        json.put("INFOFIELD25", parentData?.duration?.value)
         json.put("INFOFIELD26", parentData?.exposed?.value)
         json.put("INFOFIELD27", address?.city)
         json.put("INFOFIELD28", address?.countryCode)
@@ -217,7 +229,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD31", income?.occupation?.value)
         json.put("INFOFIELD32", income?.workPlace)
         json.put("INFOFIELD33", income?.natureBusiness)
-        json.put("INFOFIELD34", income?.duration?.extra)
+        json.put("INFOFIELD34", income?.duration?.value)
         json.put("INFOFIELD35", income?.employer)
         json.put("INFOFIELD36", income?.natureEmployment)
         json.put("INFOFIELD37", nok?.firstName)
@@ -234,6 +246,17 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD46", idData?.selfie?.image)
         json.put("INFOFIELD47", idData?.signature?.image)
         json.put("INFOFIELD48", address?.ea?.extra)
+
+
+        json.put("INFOFIELD49", workAddress?.ea?.extra)
+        json.put("INFOFIELD49", workAddress?.ea?.extra)
+        json.put(
+            "INFOFIELD50",
+            "${workAddress?.street}:${workAddress?.city}:${workAddress?.zipCode}"
+        )
+//
+//        json.put("INFOFIELD51", workAddress?.city)
+//        json.put("INFOFIELD52", workAddress?.zipCode)
         json.put("ACCOUNTID", nok?.account)
 
         subscribe.add(
@@ -449,7 +472,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
 
     override fun onClick(p: View?) {
         if (p == binding.resendButton) resendOTP()
-        else if (p == binding.buttonBack) pagerData?.onBack(10)
+        else if (p == binding.buttonBack) pagerData?.onBack(11)
         else if (p == binding.buttonNext) {
             if (validateFields()) validateOtp()
         }

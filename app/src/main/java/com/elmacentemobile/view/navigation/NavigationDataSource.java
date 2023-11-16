@@ -148,4 +148,6 @@ public interface NavigationDataSource {
     default NavDirections navigateToTips(DayTipData data) {
         return null;
     }
+
+    default NavDirections navigateToPolicy(){return null;}
 }

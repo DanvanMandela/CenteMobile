@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,11 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.craftsilicon.spotit.utils.SpotitSDK;
 import com.elmacentemobile.R;
 import com.elmacentemobile.data.model.CarouselData;
 import com.elmacentemobile.data.model.control.FormControl;
@@ -32,13 +33,14 @@ import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter;
 import com.elmacentemobile.data.model.dynamic.DynamicAPIResponse;
 import com.elmacentemobile.data.model.dynamic.FormField;
 import com.elmacentemobile.data.model.module.ModuleCategory;
+import com.elmacentemobile.data.model.module.ModuleDataTypeConverter;
 import com.elmacentemobile.data.model.module.ModuleIdEnum;
 import com.elmacentemobile.data.model.module.Modules;
 import com.elmacentemobile.data.model.user.Accounts;
+import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.model.user.AlertServices;
 import com.elmacentemobile.data.model.user.FrequentModules;
 import com.elmacentemobile.data.model.user.ModuleDisable;
-import com.elmacentemobile.data.model.user.ModuleHide;
 import com.elmacentemobile.data.source.constants.StatusEnum;
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
 import com.elmacentemobile.databinding.FragmentHomeBinding;
@@ -48,9 +50,9 @@ import com.elmacentemobile.util.OnAlertDialog;
 import com.elmacentemobile.util.ShowAlertDialog;
 import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
-import com.elmacentemobile.view.activity.MainActivity;
 import com.elmacentemobile.view.activity.beneficiary.BeneficiaryManageActivity;
 import com.elmacentemobile.view.activity.level.FalconHeavyActivity;
+import com.elmacentemobile.view.activity.spot.SpotPaymentConfirmation;
 import com.elmacentemobile.view.activity.transaction.PendingTransactionActivity;
 import com.elmacentemobile.view.activity.transaction.TransactionCenterActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
@@ -67,6 +69,7 @@ import com.elmacentemobile.view.ep.controller.AlertList;
 import com.elmacentemobile.view.ep.data.AccountData;
 import com.elmacentemobile.view.ep.data.BodyData;
 import com.elmacentemobile.view.ep.data.BusData;
+import com.elmacentemobile.view.ep.data.BusDataTypeConverter;
 import com.elmacentemobile.view.ep.data.GroupForm;
 import com.elmacentemobile.view.ep.data.GroupModule;
 import com.elmacentemobile.view.ep.data.MiniList;
@@ -82,8 +85,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
+
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,6 +98,7 @@ import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -413,29 +419,53 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(m -> setDynamicModules(m, modules), Throwable::printStackTrace));
-        } else getFormControl(modules);
+        } else if (nonCaps(modules.getModuleID()).equals(nonCaps("SPOTIT")))
+            expressPay();
+        else getFormControl(modules);
     }
 
+    private void expressPay() {
+        ActivationData activationData = accountViewModel.dataSource.getActivationData().getValue();
+        new SpotitSDK.Builder(requireContext())
+                .UserLastName(activationData.getLastName())
+                .UserFirstName(activationData.getFirstName())
+                .CustomerID("1916507095")
+                .inProduction(false)
+                .UserPhone("254723273535")
+                .BaseLimit("150000")
+                .Country("KENYATEST")
+                .UserAccounts(new JSONArray())
+                .BackgroundTheme("#f8f8ff")
+                .BankID("50")
+                .Currency("UGX.")
+                .PaymentAuthorizationClass(SpotPaymentConfirmation.class)
+                .AppName("PARAMOUNT")
+                .showLogs(true)
+                .init();
+    }
+
+
     private void navigateToBeneficiary(Modules modules) {
-        EventBus.getDefault().postSticky(modules);
         Intent i = new Intent(getActivity(), BeneficiaryManageActivity.class);
+        i.putExtra("beneficiary", new ModuleDataTypeConverter().from(modules));
         startActivity(i);
     }
 
     private void navigateToPendingTransaction(Modules modules) {
-        EventBus.getDefault().postSticky(modules);
         Intent i = new Intent(getActivity(), PendingTransactionActivity.class);
+        i.putExtra("pending", new ModuleDataTypeConverter().from(modules));
         startActivity(i);
     }
 
     private void navigateToTransactionCenter(Modules modules) {
-        EventBus.getDefault().postSticky(modules);
         Intent i = new Intent(getActivity(), TransactionCenterActivity.class);
+        i.putExtra("transaction", new ModuleDataTypeConverter().from(modules));
         startActivity(i);
     }
 
 
     private void setDynamicModules(List<Modules> m, Modules modules) {
+        EventBus.getDefault().removeStickyEvent(BusData.class);
         EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
                 null,
                 null));
@@ -457,6 +487,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
                 .subscribe(this::getFormControl, Throwable::printStackTrace));
     }
 
+
     private void getFormControl(Modules modules) {
         subscribe.add(widgetViewModel.getFormControl(modules.getModuleID(), "1")
                 .subscribeOn(Schedulers.io())
@@ -466,8 +497,32 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
 
 
     public void setAccountData(List<Accounts> accountData) {
+        accountsData(accountData);
         binding.headerItem.headerAux.accountPager.setCallback(this);
         binding.headerItem.headerAux.accountPager.setData(new AccountData(accountData));
+    }
+
+    private void accountsData(List<Accounts> accountData) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                String list = new Gson().toJson(accountData.stream()
+                        .map((Function<Accounts, Object>) accounts -> {
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("AccountID", accounts.getId());
+                                jsonObject.put("AccountName", accounts.getAliasName());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                            return jsonObject;
+                        })
+                        .collect(Collectors.toList()));
+                JSONArray accountArray = new JSONArray(list);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint("NewApi")
@@ -621,6 +676,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
         AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
                 new Gson().toJson(modules));
+        EventBus.getDefault().removeStickyEvent(BusData.class);
         EventBus.getDefault().postSticky(new BusData(new GroupForm(
                 modules,
                 null,

@@ -15,6 +15,7 @@ import com.elmacentemobile.databinding.FragmentSelfRegistrationBinding;
 import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.activity.MainActivity;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData;
 import com.elmacentemobile.view.model.AuthViewModel;
 
 import java.util.Objects;
@@ -35,6 +36,7 @@ public class SelfRegistrationFragment extends Fragment implements AppCallbacks, 
     private static final String ARG_PARAM2 = "param2";
     private FragmentSelfRegistrationBinding binding;
     private AuthViewModel authViewModel;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -97,6 +99,9 @@ public class SelfRegistrationFragment extends Fragment implements AppCallbacks, 
         setOnClick();
         return binding.getRoot().getRootView();
     }
+
+
+
 
     @Override
     public void setViewModel() {

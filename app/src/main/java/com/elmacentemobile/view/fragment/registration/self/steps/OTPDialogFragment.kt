@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.elmacentemobile.R
+import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.databinding.FragmentDialogOtpBinding
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
@@ -50,6 +51,8 @@ class OTPDialogFragment : BottomSheetDialogFragment(), AppCallbacks,
 
     private var countDownTimer: CountDownTimer? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -72,11 +75,23 @@ class OTPDialogFragment : BottomSheetDialogFragment(), AppCallbacks,
     }
 
     private fun setOtp() {
+        disableOpt()
         binding.userFrame.resendButton.visibility = View.GONE
         (requireActivity() as MainActivity).initSMSBroadCast()
         val otp = baseViewModel.dataSource.otp.asLiveData()
         otp.observe(viewLifecycleOwner) {
             binding.userFrame.verificationCodeEditText.setText(it)
+        }
+    }
+
+    private fun disableOpt() {
+        if (!mobileNumber.isNullOrBlank()) {
+            val code: String = mobileNumber!!.substring(0, 3)
+            if (code.contains("256") && !Constants.Data.TEST) {
+                if (!Constants.Data.AUTO_OTP)
+                    binding.userFrame
+                        .verificationCodeEditText.isEnabled = false
+            }
         }
     }
 
@@ -136,6 +151,7 @@ class OTPDialogFragment : BottomSheetDialogFragment(), AppCallbacks,
 
     companion object {
         private var callback: OTP? = null
+        private var mobileNumber: String? = null
 
         /**
          * Use this factory method to create a new instance of
@@ -156,8 +172,13 @@ class OTPDialogFragment : BottomSheetDialogFragment(), AppCallbacks,
             }
 
         @JvmStatic
-        fun showDialog(callbacks: OTP, manager: FragmentManager) = OTPDialogFragment().apply {
+        fun showDialog(
+            callbacks: OTP,
+            manager: FragmentManager,
+            mobile: String?
+        ) = OTPDialogFragment().apply {
             this@Companion.callback = callbacks
+            this@Companion.mobileNumber = mobile
             show(manager, FragmentManager::class.java.simpleName)
         }
     }

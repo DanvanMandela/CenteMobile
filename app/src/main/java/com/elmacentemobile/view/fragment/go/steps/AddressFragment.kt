@@ -652,9 +652,9 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
                                 binding.editMobile.text.toString()
                     )
                 }
-            } else pagerData?.onNext(9)
+            } else pagerData?.onNext(10)
 
-        } else if (p == binding.buttonBack) pagerData?.onBack(7)
+        } else if (p == binding.buttonBack) pagerData?.onBack(8)
     }
 }
 

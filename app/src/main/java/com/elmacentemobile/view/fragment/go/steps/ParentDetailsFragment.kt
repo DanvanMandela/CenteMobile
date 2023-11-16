@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.room.TypeConverter
 import com.elmacentemobile.R
 import com.elmacentemobile.databinding.FragmentParentDetailsBinding
+import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.OnAlertDialog
 import com.elmacentemobile.util.ShowAlertDialog
 import com.elmacentemobile.util.ShowToast
@@ -95,14 +96,14 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
             if (radioGroup.checkedRadioButtonId != -1) {
                 hashMap["Duration"] = TwoDMap(
                     key = i,
-                    value = "${binding.homeDisInput.text.toString()}-" +
+                    value = "${binding.durationInput.text.toString()}-" +
                             if (binding.radioMonth.isChecked) "Months"
                             else if (binding.radioYear.isChecked) "Years" else ""
                 )
             }
         }
 
-        binding.homeDisInput.addTextChangedListener(object : TextWatcher {
+        binding.durationInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -174,7 +175,7 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
     }
 
     private fun setStep() {
-        binding.progressIndicator.setProgress(40, true)
+        binding.progressIndicator.setProgress(30, true)
     }
 
 
@@ -248,6 +249,7 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
     }
 
     private fun stateDuration(district: TwoDMap) {
+        AppLogger.instance.appLog("DURATION",Gson().toJson(district))
         val value = district.value?.split("-")
         binding.durationInput.setText(value!![0])
         binding.durationGroup.check(district.key!!)

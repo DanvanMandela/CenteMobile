@@ -118,7 +118,6 @@
                                             android:fontFamily="@font/poppins_medium"
                                             android:hint="@string/mobile"
                                             android:inputType="phone"
-                                            android:maxLength="10"
                                             android:paddingVertical="@dimen/dimens_0dp"
                                             android:paddingStart="@dimen/dimens_140dp"
                                             android:paddingEnd="@dimen/dimens_0dp"
@@ -195,6 +194,7 @@
                                         android:fontFamily="@font/poppins_medium"
                                         android:inputType="phone"
                                         android:maxLength="19"
+                                        android:imeOptions="actionDone"
                                         android:paddingHorizontal="@dimen/dimens_5dp"
                                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                         tools:targetApi="o" />
@@ -225,6 +225,7 @@
                                         android:fontFamily="@font/poppins_medium"
                                         android:inputType="numberPassword"
                                         android:maxLength="4"
+                                        android:focusable="false"
                                         android:paddingHorizontal="@dimen/dimens_5dp"
                                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                         tools:targetApi="o" />

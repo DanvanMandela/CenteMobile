@@ -39,8 +39,11 @@ class AppLogger {
     fun appLog(tag: String, message: String) {
         if (Constants.Data.TEST) {
             Log.e(tag, message)
+        } else {
+            Log.i(tag, message)
         }
     }
+
 
     fun logTXT(
         s: String,
@@ -112,7 +115,6 @@ class AppLogger {
                         e.printStackTrace()
                     }
                 }
-
             } else {
                 context.runOnUiThread {
                     ActivityCompat.requestPermissions(

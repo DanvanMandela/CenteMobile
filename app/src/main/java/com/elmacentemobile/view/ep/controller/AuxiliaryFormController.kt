@@ -2,17 +2,45 @@ package com.elmacentemobile.view.ep.controller
 
 import android.text.TextUtils
 import com.airbnb.epoxy.TypedEpoxyController
-import com.elmacentemobile.*
+import com.elmacentemobile.buttonLayout
+import com.elmacentemobile.checkBoxLayout
 import com.elmacentemobile.data.model.control.ControlFormatEnum
 import com.elmacentemobile.data.model.control.ControlIDEnum
 import com.elmacentemobile.data.model.control.ControlTypeEnum
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.source.pref.StorageDataSource
+import com.elmacentemobile.disabledAmountTextInputLayout
+import com.elmacentemobile.dropDownLayout
+import com.elmacentemobile.hiddenInputLayout
+import com.elmacentemobile.imageButtonLayout
+import com.elmacentemobile.labelLayout
+import com.elmacentemobile.labelListLayout
+import com.elmacentemobile.labelTextLayout
+import com.elmacentemobile.listWithOptionLayout
+import com.elmacentemobile.otpLayout
+import com.elmacentemobile.qRLayout
+import com.elmacentemobile.recentListLayout
+import com.elmacentemobile.standingOrderLayout
+import com.elmacentemobile.textDisplayJsonLayout
+import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass.nonCaps
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.data.FormData
 import com.elmacentemobile.view.ep.data.GroupForm
-import com.elmacentemobile.view.ep.model.*
+import com.elmacentemobile.view.ep.model.amountModel
+import com.elmacentemobile.view.ep.model.dateSelect
+import com.elmacentemobile.view.ep.model.horizontalContainer
+import com.elmacentemobile.view.ep.model.inputDisabledModel
+import com.elmacentemobile.view.ep.model.inputModel
+import com.elmacentemobile.view.ep.model.inputNumericModel
+import com.elmacentemobile.view.ep.model.inputPanModel
+import com.elmacentemobile.view.ep.model.linkedDropDownLayout
+import com.elmacentemobile.view.ep.model.linkedDynamicDropDownLayout
+import com.elmacentemobile.view.ep.model.passwordModel
+import com.elmacentemobile.view.ep.model.phoneContacts
+import com.elmacentemobile.view.ep.model.tabLayoutGroup
+import com.elmacentemobile.view.ep.model.toggleLayout
+import com.google.gson.Gson
 
 class NewFormController(
     val callbacks: AppCallbacks,
@@ -28,6 +56,7 @@ class NewFormController(
             ) {
                 when (nonCaps(d.controlType)) {
                     nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
+                        AppLogger.instance.appLog("Linked:Drop",Gson().toJson(d))
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             val children =
                                 data.forms.form?.filter { it -> it.linkedToControl == d.controlID }
@@ -51,6 +80,7 @@ class NewFormController(
                             }
                         }
                     }
+
                     nonCaps(ControlTypeEnum.DYNAMICDROPDOWN.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             val children =
@@ -75,6 +105,7 @@ class NewFormController(
                             }
                         }
                     }
+
                     nonCaps(ControlTypeEnum.BUTTON.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             buttonLayout {
@@ -84,6 +115,7 @@ class NewFormController(
                                 callback(this@NewFormController.callbacks)
                             }
                     }
+
                     nonCaps(ControlTypeEnum.TEXT.type) -> setTextInputLayout(d, data)
                     nonCaps(ControlTypeEnum.CHECKBOX.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
@@ -94,6 +126,7 @@ class NewFormController(
                                 callback(this@NewFormController.callbacks)
                             }
                     }
+
                     nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             phoneContacts(
@@ -101,6 +134,7 @@ class NewFormController(
                                 appCallbacks = this@NewFormController.callbacks
                             )
                     }
+
                     nonCaps(ControlTypeEnum.HIDDEN.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             hiddenInputLayout {
@@ -109,6 +143,7 @@ class NewFormController(
                                 callback(this@NewFormController.callbacks)
                             }
                     }
+
                     nonCaps(ControlTypeEnum.DATE.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             dateSelect(
@@ -116,6 +151,7 @@ class NewFormController(
                                 appCallbacks = this@NewFormController.callbacks
                             )
                     }
+
                     nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
                         textDisplayJsonLayout {
                             id(d.controlID)
@@ -123,6 +159,7 @@ class NewFormController(
                             callback(this@NewFormController.callbacks)
                         }
                     }
+
                     nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
 
                     nonCaps(ControlTypeEnum.IMAGE.type) -> {
@@ -133,10 +170,12 @@ class NewFormController(
                                     data(d)
                                     callback(this@NewFormController.callbacks)
                                 }
+
                                 else -> {}
                             }
 
                     }
+
                     nonCaps(ControlTypeEnum.QR_SCANNER.type) -> {
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
                             qRLayout {
@@ -156,11 +195,13 @@ class NewFormController(
                                     module(data.forms.module)
                                     callback(this@NewFormController.callbacks)
                                 }
+
                                 nonCaps(ControlFormatEnum.LABEL_TEXT.type) -> labelTextLayout {
                                     id(d.controlID)
                                     data(d)
                                     callback(this@NewFormController.callbacks)
                                 }
+
                                 else -> labelLayout {
                                     id(d.controlID)
                                     data(d)
@@ -188,6 +229,7 @@ class NewFormController(
                                     appCallbacks = this@NewFormController.callbacks
                                 )
                             }
+
                             nonCaps(ControlFormatEnum.RADIO_GROUPS.type) -> {
                                 val children =
                                     data.forms.form?.filter { a -> a.containerID == d.controlID }
@@ -200,6 +242,7 @@ class NewFormController(
                                     appCallbacks = this@NewFormController.callbacks
                                 )
                             }
+
                             nonCaps(ControlFormatEnum.TAB_LAYOUT.type) -> {
                                 val children =
                                     data.forms.form?.filter { a -> a.containerID == d.controlID }
@@ -232,6 +275,7 @@ class NewFormController(
                     module(data.forms.module)
                     storage(this@NewFormController.storageDataSource)
                 }
+
                 nonCaps(ControlFormatEnum.AMOUNT.type) -> {
                     if (!d.displayControl.isNullOrEmpty()) {
                         if (d.displayControl == "true") {
@@ -252,10 +296,12 @@ class NewFormController(
                         form = d, storage = storageDataSource, callbacks = callbacks
                     )
                 }
+
                 nonCaps(ControlFormatEnum.PIN_NUMBER.type),
                 nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
                     form = d, storage = storageDataSource, callbacks = callbacks
                 )
+
                 else -> when (nonCaps(d.controlFormat)) {
                     nonCaps(ControlFormatEnum.NUMERIC.type),
                     nonCaps(ControlFormatEnum.NUMBER.type) -> inputNumericModel(
@@ -263,11 +309,13 @@ class NewFormController(
                         storage = storageDataSource,
                         callbacks = callbacks
                     )
+
                     nonCaps(ControlFormatEnum.PAN.type) -> inputPanModel(
                         form = d,
                         storage = storageDataSource,
                         callbacks = callbacks
                     )
+
                     else -> {
                         if (!d.displayControl.isNullOrEmpty()) {
                             if (d.displayControl == "true")
@@ -303,6 +351,7 @@ class NewFormController(
                     module(data.module)
                     callback(this@NewFormController.callbacks)
                 }
+
                 else -> {
                     when (nonCaps(d.controlFormat)) {
                         nonCaps(ControlFormatEnum.LIST_WITH_OPTIONS.type) -> listWithOptionLayout {
@@ -311,6 +360,7 @@ class NewFormController(
                             module(data.module)
                             callback(this@NewFormController.callbacks)
                         }
+
                         nonCaps(ControlFormatEnum.STANDING_ORDER.type) -> standingOrderLayout {
                             id(d.controlID)
                             data(d)

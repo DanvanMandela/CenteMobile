@@ -171,6 +171,7 @@
                         android:fontFamily="@font/poppins_medium"
                         android:inputType="numberPassword"
                         android:maxLength="4"
+                        android:focusable="false"
                         android:paddingHorizontal="@dimen/dimens_5dp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         tools:targetApi="o" />

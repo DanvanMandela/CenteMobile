@@ -40,7 +40,7 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
 
     private fun addChildren(parent: BlockLinkedDropDownLayoutBinding) {
         AppLogger.instance.appLog(
-            LinkedDropDownModel::class.simpleName!!,
+            "LINKED:TAB",
             Gson().toJson(data.container)
         )
         parent.data = data.container
@@ -140,10 +140,16 @@ open class LinkedDropDownModel : DataBindingEpoxyModel() {
         parent: BlockLinkedDropDownLayoutBinding,
         s: FormControl
     ) {
+        AppLogger().appLog("LINKED:DROP:PARENT", Gson().toJson(s))
+
         binding.data = s
         parent.childContainer.addView(binding.root)
         val children =
-            data.mainData.forms.form?.filter { it -> it.linkedToControl == s.controlID }
+            data.mainData.forms.form?.filter { it.linkedToControl == s.controlID }
+
+        AppLogger().appLog("LINKED:DROP:CHILDREN", Gson().toJson(children))
+
+
         val child: BlockDropDownLayoutBinding
         var childData: DropDownView? = null
 

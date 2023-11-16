@@ -34,6 +34,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.bumptech.glide.Glide
 import com.canhub.cropper.*
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.LabelDataTypeConverter
@@ -51,9 +52,11 @@ import com.elmacentemobile.data.model.dynamic.DynamicDataResponse
 import com.elmacentemobile.data.model.dynamic.FormField
 import com.elmacentemobile.data.model.input.InputData
 import com.elmacentemobile.data.model.module.ModuleCategory
+import com.elmacentemobile.data.model.module.ModuleDataTypeConverter
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.Beneficiary
 import com.elmacentemobile.data.source.constants.Constants
+import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
@@ -65,6 +68,7 @@ import com.elmacentemobile.util.MyActivityResult
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.callbacks.Confirm
+import com.elmacentemobile.util.callbacks.EventCallback
 import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.convert
 import com.elmacentemobile.util.image.getImageFromStorage
@@ -75,6 +79,10 @@ import com.elmacentemobile.view.activity.transaction.PendingTransactionActivity
 import com.elmacentemobile.view.activity.transaction.TransactionCenterActivity
 import com.elmacentemobile.view.binding.*
 import com.elmacentemobile.view.composable.ContactDialogCompose
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard
+import com.elmacentemobile.view.composable.keyboard.KeyFunctionEnum
+import com.elmacentemobile.view.composable.policy.PolicyAndPrivacyFragment
 import com.elmacentemobile.view.dialog.*
 import com.elmacentemobile.view.dialog.confirm.ConfirmFragment
 import com.elmacentemobile.view.dialog.display.DisplayDialogFragment
@@ -90,12 +98,15 @@ import com.elmacentemobile.view.fragment.auth.bio.util.BiometricUtil
 import com.elmacentemobile.view.fragment.dynamic.DynamicDialogFragment
 import com.elmacentemobile.view.fragment.dynamic.RecentFragment
 import com.elmacentemobile.view.fragment.global.GlobalOTPFragment
+import com.elmacentemobile.view.fragment.go.ocr.OCRResultActivity
+import com.elmacentemobile.view.fragment.go.steps.OCRData
 import com.elmacentemobile.view.fragment.transaction.StandingOrderDetailsFragment
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
 import com.elmacentemobile.view.qr.QRContent
 import com.elmacentemobile.view.qr.QRResult
 import com.elmacentemobile.view.qr.ScanQRCode
+import com.example.icebergocr.IcebergSDK
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.Task
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -117,15 +128,17 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, BiometricAuthListener {
+class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, BiometricAuthListener,
+    EventCallback {
     private val activityLauncher: MyActivityResult<Intent, ActivityResult> =
         MyActivityResult.registerActivityForResult(this)
 
     private val listState = mutableListOf<DisplayState>()
-
+    private lateinit var pinStack: Stack<String>
     private lateinit var binding: ActivityFalconHeavyBinding
 
     private val baseViewModel: BaseViewModel by viewModels()
@@ -149,6 +162,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     private var callback: AppCallbacks? = null
 
+    private var imageView: ImageView? = null
+
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val uriFilePath = result.getUriFilePath(this)
@@ -158,7 +173,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 context = this,
                 "Image.json"
             )
-            callback?.onImage(compressImage(image!!))
+            callback?.onImage(compressImage(image))
         } else {
             val exception = result.error
             AppLogger.instance.appLog("COPPER:ERROR", "${exception?.printStackTrace()}")
@@ -168,11 +183,13 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerEvent()
         setBinding()
         setController()
         onUserInteraction()
         listenToInActivity()
     }
+
 
     private fun listenToInActivity() {
         val state = baseViewModel.dataSource.inActivity.asLiveData()
@@ -183,8 +200,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         }
     }
 
+
     override fun setController() {
         busData = EventBus.getDefault().getStickyEvent(BusData::class.java)
+        val storage = baseViewModel.dataSource
+        storage.baseVewModel(widgetViewModel)
         setDynamicInputs(busData.inputs)
         binding.lifecycleOwner = this
         binding.callback = this
@@ -195,22 +215,24 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             binding.container.setDynamic(
                 callbacks = this,
                 dynamic = busData.data,
-                storage = baseViewModel.dataSource
+                storage = storage
             )
         }, 500)
 
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onEvent(bus: BusData) {
+        AppLogger.instance.appLog("EVENT", Gson().toJson(busData))
+    }
+
+
     override fun setBinding() {
-        EventBus.getDefault().register(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_falcon_heavy)
         binding.lifecycleOwner = this
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    override fun onEvent(busData: BusData?) {
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
-    }
 
     private fun setDynamicInputs(inputData: MutableList<InputData>?) {
         AppLogger.instance.appLog(
@@ -237,23 +259,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
 
     private fun filterModules(f: List<Modules>, modules: Modules) {
-//        val filterModule = mutableListOf<Modules>()
-//        val moduleDisable =
-//            baseViewModel.dataSource.disableModule.value
-//        AppLogger.instance.appLog(
-//            "${FalconHeavyActivity::class.simpleName}Disable Module",
-//            Gson().toJson(moduleDisable)
-//        )
-//        f.forEach { m ->
-//            if (!moduleDisable.isNullOrEmpty()) {
-//                val dis = moduleDisable.find { it?.id == m.moduleID }
-//                if (dis == null) filterModule.add(m)
-//                else AppLogger.instance.appLog(
-//                    "${FalconHeavyActivity::class.simpleName}Disable Module",
-//                    Gson().toJson(m)
-//                )
-//            } else filterModule.add(m)
-//        }
+        EventBus.getDefault().removeStickyEvent(BusData::class.java)
         EventBus.getDefault().postSticky(
             BusData(
                 data = GroupModule(modules, f.toMutableList()),
@@ -261,6 +267,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
         val i = Intent(this, FalconHeavyActivity::class.java)
+
         startActivity(i)
     }
 
@@ -487,7 +494,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 PackageManager.PERMISSION_GRANTED
     }
 
-    fun requestContactsPermission(callbacks: AppCallbacks) {
+    private fun requestContactsPermission(callbacks: AppCallbacks) {
         this.callback = callbacks
         if (!hasContactsPermission()) {
             ActivityCompat.requestPermissions(
@@ -704,6 +711,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
+                        AppLogger.instance.appLog(
+                            "${FalconHeavyActivity::class.java.simpleName}:v:Response:E:",
+                            "${it.response}"
+                        )
                         try {
                             AppLogger.instance.appLog(
                                 "${FalconHeavyActivity::class.java.simpleName}:v:Response",
@@ -800,6 +811,14 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                             resData.formID
                                         )
                                     } else setSuccess(resData?.message)
+                                } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OCR_SUCCESS.type) {
+                                    setOnNextModule(
+                                        formControl,
+                                        if (resData!!.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
+                                        modules,
+                                        resData.formID
+                                    )
+
                                 } else if (BaseClass.nonCaps(resData?.status)
                                     == StatusEnum.TOKEN.type
                                 ) {
@@ -888,8 +907,20 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         modules: Modules?,
         children: List<FormControl>
     ) {
-        EventBus.getDefault().postSticky(
-            BusData(
+//        EventBus.getDefault().postSticky(
+//            BusData(
+//                data = GroupForm(
+//                    action = action,
+//                    module = modules!!,
+//                    form = children.toMutableList()
+//                ),
+//                inputs = inputList,
+//                res = resData
+//            )
+//        )
+
+        DynamicDialogFragment.callback(
+            this, supportFragmentManager, BusData(
                 data = GroupForm(
                     action = action,
                     module = modules!!,
@@ -899,7 +930,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 res = resData
             )
         )
-        DynamicDialogFragment.callback(this, supportFragmentManager)
     }
 
 
@@ -960,7 +990,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
         baseViewModel.dataSource.deleteOtp()
     }
 
@@ -1098,6 +1127,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     forms,
                     modules
                 )
+
                 else -> onNavigation(forms, modules)
             }
         } catch (e: Exception) {
@@ -1122,8 +1152,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     "InstallmentAmount" -> editText?.setText(
                                         p?.installmentAmount
                                     )
+
                                     "TOTALINSTALMENTPAYMENT",
                                     "TotalAmount" -> editText?.setText(p?.totalAmount)
+
                                     else -> editText?.setText("")
                                 }
                             }
@@ -1243,6 +1275,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
 
     override fun onForm(formControl: FormControl?, modules: Modules?) {
+
         lifecycleScope.launch {
             hideSoftKeyboard(binding.root)
         }
@@ -1253,6 +1286,10 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             try {
                 subscribe.add(
                     widgetViewModel.getActionControlCID(formControl?.controlID).subscribe({
+                        AppLogger.instance.appLog(
+                            "MERCHANT",
+                            Gson().toJson(it)
+                        )
                         if (it.isNotEmpty()) {
                             val merchantID = it.map { a -> a.merchantID }
                             AppLogger.instance.appLog(
@@ -1310,6 +1347,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                             modules!!.moduleID
                     )
                 }
+
                 else -> {
                     val destination = formControl?.formID
                     when (BaseClass.nonCaps(destination)) {
@@ -1333,6 +1371,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 action = action, formControl = formControl
                             )
                         }
+
                         else -> {
                             validateModule(
                                 jsonObject = json,
@@ -1560,20 +1599,31 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
     private fun navigateTransaction(modules: Modules?) {
-        EventBus.getDefault().postSticky(modules)
         val i = Intent(this, TransactionCenterActivity::class.java)
+        i.putExtra("transaction", ModuleDataTypeConverter().from(modules))
         startActivity(i)
     }
 
     private fun navigateTo(modules: Modules?) {
         AppLogger.instance.appLog("Module", Gson().toJson(modules))
         if (BaseClass.nonCaps(BaseClass.nonCaps(modules?.moduleID))
-            == BaseClass.nonCaps("TRANSACTIONSCENTER")
+            == BaseClass.nonCaps(StaticModuleEnum.TRANSACTIONS_CENTER.type)
         )
             navigateTransaction(modules)
-        else if (BaseClass.nonCaps(modules?.moduleID) == BaseClass.nonCaps("PENDINGTRANSACTIONS"))
+        else if (BaseClass.nonCaps(modules?.moduleID) == BaseClass.nonCaps(
+                StaticModuleEnum.PENDING_TRANSACTIONS.type
+            )
+        )
             navigateToPendingTransaction(modules)
-        else if (BaseClass.nonCaps(BaseClass.nonCaps(modules?.moduleID)) == BaseClass.nonCaps("VIEWBENEFICIARY"))
+        if (BaseClass.nonCaps(modules?.moduleID) == BaseClass.nonCaps(
+                StaticModuleEnum.PRIVACY_POLICY.type
+            )
+        )
+            navigateToPrivacyPolicy(modules)
+        else if (BaseClass.nonCaps(BaseClass.nonCaps(modules?.moduleID)) == BaseClass.nonCaps(
+                StaticModuleEnum.VIEW_BENEFICIARY.type
+            )
+        )
             navigateToBeneficiary(modules)
         else if (modules!!.ModuleCategory == ModuleCategory.BLOCK.type) {
             subscribe.add(widgetViewModel.getModules(modules.moduleID)
@@ -1585,15 +1635,19 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         } else getFormControl(modules)
     }
 
+    private fun navigateToPrivacyPolicy(modules: Modules?) {
+        PolicyAndPrivacyFragment.show(supportFragmentManager, module = modules!!)
+    }
+
     private fun navigateToBeneficiary(modules: Modules?) {
-        EventBus.getDefault().postSticky(modules)
         val i = Intent(this, BeneficiaryManageActivity::class.java)
+        i.putExtra("beneficiary", ModuleDataTypeConverter().from(modules))
         startActivity(i)
     }
 
     private fun navigateToPendingTransaction(modules: Modules?) {
-        EventBus.getDefault().postSticky(modules)
         val i = Intent(this, PendingTransactionActivity::class.java)
+        i.putExtra("pending", ModuleDataTypeConverter().from(modules))
         startActivity(i)
     }
 
@@ -1607,6 +1661,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
     private fun onNavigation(form: List<FormControl>?, modules: Modules?) {
+        EventBus.getDefault().removeStickyEvent(BusData::class.java)
         EventBus.getDefault().postSticky(
             BusData(
                 data = GroupForm(
@@ -1960,7 +2015,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     private fun showBiometricLoginOption() {
         val data = widgetViewModel.storageDataSource.iv.value
         val cipher = cryptographyManager.getInitializedCipherForDecryption(
-            getString(R.string.secret_key_name),
+            BaseClass.decode64(Keys().secretKey()),
             data!!.iv
         )
 
@@ -2321,10 +2376,12 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onCancel() {
         val openMainActivity = Intent(this, MainActivity::class.java)
-        openMainActivity.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        openMainActivity.flags =
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
         startActivityIfNeeded(openMainActivity, 0)
         finish()
     }
+
 
     override fun onContactSelect(view: AutoCompleteTextView?) {
         lifecycleScope.launch {
@@ -2336,25 +2393,167 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         }
     }
 
-    override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
-        onImagePicker(object : AppCallbacks {
-            override fun onImage(bitmap: Bitmap?) {
-                this@FalconHeavyActivity.userInput(
-                    InputData(
-                        name = data?.controlText,
-                        key = data?.serviceParamID,
-                        value = convert(bitmap!!),
-                        encrypted = data?.isEncrypted!!,
-                        mandatory = data.isMandatory
-                    )
-                )
-                imageView?.setImageBitmap(bitmap)
 
-            }
-        }, 1, 1)
+    override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
+        widgetViewModel.storageDataSource.deleteIDDetails()
+        if (data?.controlID == "IDFRONT") {
+            widgetViewModel.storageDataSource.onIDDetails.asLiveData()
+                .observe(this@FalconHeavyActivity) {
+                    if (it != null) {
+                        Glide.with(this@FalconHeavyActivity)
+                            .load(convert(it.id!!.image))
+                            .into(imageView!!)
+                        this@FalconHeavyActivity.userInput(
+                            InputData(
+                                name = data.controlText,
+                                key = data.serviceParamID,
+                                value = it.id.image,
+                                encrypted = data.isEncrypted,
+                                mandatory = data.isMandatory
+                            )
+                        )
+                        this@FalconHeavyActivity.userInput(
+                            InputData(
+                                name = "Android",
+                                key = "INFOFIELD1",
+                                value = "ANDROID-OCR",
+                                encrypted = data.isEncrypted,
+                                mandatory = data.isMandatory
+                            )
+                        )
+
+
+
+                        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                        val date: Date? = it.data?.dob?.let { it1 -> inputFormat.parse(it1) }
+                        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
+
+                        val map = hashMapOf<String, String?>()
+                        map["FirstName"] = it.data?.names
+                        map["LastName"] = it.data?.otherName
+                        map["SurName"] = it.data?.surname
+                        map["GivenName"] = it.data?.names
+                        map["Gender"] = if (it.data?.gender == "MALE") "M" else "F"
+                        map["DateOfBirth"] = formattedDate
+                        map["NIN"] = it.data?.idNo
+
+                        setOCRFields(it.data)
+
+
+                        serverResponse.value = DynamicAPIResponse(
+                            formField = mutableListOf(
+                                FormField(
+                                    controlID = "JSON",
+                                    controlValue = Gson().toJson(mutableListOf(map))
+                                )
+                            )
+                        )
+                    }
+                }
+            IcebergSDK.Builder(this@FalconHeavyActivity)
+                .ActionType("idFront")
+                .Country("UGANDA")
+                .ScanDoneClass(OCRResultActivity::class.java)
+                .AppName(Constants.Data.APP_NAME)
+                .init()
+        } else
+            onImagePicker(object : AppCallbacks {
+                override fun onImage(bitmap: Bitmap?) {
+                    this@FalconHeavyActivity.userInput(
+                        InputData(
+                            name = data?.controlText,
+                            key = data?.serviceParamID,
+                            value = convert(bitmap!!),
+                            encrypted = data?.isEncrypted!!,
+                            mandatory = data.isMandatory
+                        )
+                    )
+                    imageView?.setImageBitmap(bitmap)
+                }
+            }, 1, 1)
     }
 
-    fun onImagePicker(callbacks: AppCallbacks, x: Int, y: Int) {
+    private fun setOCRFields(map: OCRData?) {
+
+        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val date: Date? = map?.dob?.let { it1 -> inputFormat.parse(it1) }
+        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "SurName",
+                key = "INFOFIELD7",
+                value = map?.surname,
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "GivenName",
+                key = "INFOFIELD8",
+                value = "${map?.names} ${map?.otherName}",
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "DateOfBirth",
+                key = "INFOFIELD10",
+                value = formattedDate,
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "Gender",
+                key = "INFOFIELD9",
+                value = if (map?.gender == "MALE") "M" else "F",
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "NIN",
+                key = "INFOFIELD6",
+                value = map?.idNo,
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "DOE",
+                key = "INFOFIELD12",
+                value = map?.expires,
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "CARDNUMBER",
+                key = "INFOFIELD11",
+                value = map?.docId,
+                encrypted = false,
+                mandatory = true
+            )
+        )
+
+    }
+
+    private fun onImagePicker(callbacks: AppCallbacks, x: Int, y: Int) {
         ImagePicker.clearCache(this)
         Dexter.withContext(this)
             .withPermissions(
@@ -2403,7 +2602,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         builder.show()
     }
 
-    fun requestCameraPermission() {
+    private fun requestCameraPermission() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -2438,6 +2637,68 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         when (requestCode) {
             REQUEST_READ_CONTACTS_PERMISSION -> onContactPicker(callback!!)
         }
+    }
+
+    override fun onCustom(pin: TextInputEditText?, max: Int) {
+        baseViewModel.pin.observe(this) {
+            val builder = StringBuilder()
+            pinStack = it
+            for (s in pinStack) {
+                if (builder.length <= max)
+                    builder.append(s)
+            }
+            pin?.setText(builder)
+        }
+        pin?.setOnClickListener {
+            CustomKeyboard.instance(
+                supportFragmentManager,
+                this@FalconHeavyActivity
+            )
+        }
+    }
+
+    override fun onType(data: CustomKeyData?) {
+        when (data?.type) {
+            KeyFunctionEnum.Push -> {
+                pinStack.push(data.str)
+                baseViewModel.pin.value = pinStack
+            }
+
+            KeyFunctionEnum.Pop -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.pop()
+                    baseViewModel.pin.value = pinStack
+                }
+
+            }
+
+            KeyFunctionEnum.Clear -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.clear()
+                    baseViewModel.pin.value = pinStack
+                }
+            }
+
+            else -> {
+                AppLogger.instance.appLog(
+                    FalconHeavyActivity::class.java.simpleName,
+                    "Nothing to do"
+                )
+            }
+        }
+    }
+
+    override fun registerEvent() {
+        EventBus.getDefault().register(this)
+    }
+
+    override fun unregisterEvent() {
+        EventBus.getDefault().unregister(this)
+    }
+
+    override fun onStop() {
+        unregisterEvent()
+        super.onStop()
     }
 
 

@@ -239,11 +239,11 @@ class NextKinFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
     }
 
     override fun onClick(p: View?) {
-        if (p == binding.buttonBack) pagerData?.onBack(6)
+        if (p == binding.buttonBack) pagerData?.onBack(7)
         else if (p == binding.buttonNext) {
             if (validateFields()) {
                 saveState()
-                pagerData?.onNext(8)
+                pagerData?.onNext(9)
             }
         }
     }

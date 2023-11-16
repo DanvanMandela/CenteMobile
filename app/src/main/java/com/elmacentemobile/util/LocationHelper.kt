@@ -40,7 +40,7 @@ class LocationHelper(
         locationClient.requestLocationUpdates(request, this, Looper.getMainLooper())
 
 
-    fun stopLocationTracking() {
+    private fun stopLocationTracking() {
         locationClient.flushLocations()
         locationClient.removeLocationUpdates(this)
     }

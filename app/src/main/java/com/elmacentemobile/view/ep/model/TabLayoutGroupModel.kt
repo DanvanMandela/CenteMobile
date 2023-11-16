@@ -40,6 +40,9 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
         binding.parent.removeAllTabs()
         val tab = binding.parent
         onSelectItem(tab, binding.childContainer)
+        if (data.children.size == 2) tab.tabMode = TabLayout.MODE_FIXED
+        else tab.tabMode = TabLayout.MODE_AUTO
+
         data.children.forEachIndexed { index, formControl ->
             val item = tab.newTab().setText(formControl.controlText)
             item.tag = "${formControl.controlID},${formControl.serviceParamID}"
@@ -68,6 +71,7 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
                 AppLogger.instance.appLog("TAB:Linked", Gson().toJson(linked))
                 AppLogger.instance.appLog("TAB:Tag", Gson().toJson(tag))
                 AppLogger.instance.appLog("TAB:Storage", Gson().toJson(storage))
+
 
 
                 callbacks.userInput(

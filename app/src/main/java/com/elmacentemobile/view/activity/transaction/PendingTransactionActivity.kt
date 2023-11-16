@@ -2,6 +2,7 @@ package com.elmacentemobile.view.activity.transaction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
 import com.elmacentemobile.data.model.dynamic.DynamicAPIResponse
 import com.elmacentemobile.data.model.dynamic.FormField
 import com.elmacentemobile.data.model.input.InputData
+import com.elmacentemobile.data.model.module.ModuleDataTypeConverter
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.PendingTransaction
 import com.elmacentemobile.data.model.user.PendingTransactionList
@@ -32,7 +34,11 @@ import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.activity.level.FalconHeavyActivity
 import com.elmacentemobile.view.binding.FieldValidationHelper
 import com.elmacentemobile.view.binding.isOnline
-import com.elmacentemobile.view.dialog.*
+import com.elmacentemobile.view.dialog.DialogData
+import com.elmacentemobile.view.dialog.InfoFragment
+import com.elmacentemobile.view.dialog.MainDialogData
+import com.elmacentemobile.view.dialog.NewAlertDialogFragment
+import com.elmacentemobile.view.dialog.SuccessDialogFragment
 import com.elmacentemobile.view.ep.controller.MainDisplayController
 import com.elmacentemobile.view.ep.data.BusData
 import com.elmacentemobile.view.ep.data.GroupForm
@@ -40,6 +46,7 @@ import com.elmacentemobile.view.ep.data.Nothing
 import com.elmacentemobile.view.fragment.transaction.RejectPendingFragment
 import com.elmacentemobile.view.fragment.transaction.RejectTransaction
 import com.elmacentemobile.view.model.BaseViewModel
+import com.elmacentemobile.view.model.ModuleViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,18 +55,17 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 
 @AndroidEntryPoint
 class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTransaction,
     Confirm {
     private lateinit var binding: ActivityPendingTransactionBinding
-    private lateinit var data: Modules
+
 
     private val baseViewModel: BaseViewModel by viewModels()
     private val widgetViewModel: WidgetViewModel by viewModels()
+    private val moduleModel: ModuleViewModel by viewModels()
     private val subscribe = CompositeDisposable()
     private val controller = MainDisplayController(this)
 
@@ -76,10 +82,11 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
     }
 
     override fun setController() {
-        data = EventBus.getDefault().getStickyEvent(Modules::class.java)
+        moduleModel.module.value = ModuleDataTypeConverter().to(intent.getStringExtra("pending"))
         binding.lifecycleOwner = this
-        binding.toolbar.title = data.moduleName
+        binding.toolbar.title = "${moduleModel.module.value?.moduleName}"
     }
+
 
     private fun fetchTransaction() {
         subscribe.add(
@@ -88,6 +95,7 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     stopShimmer()
+                    Log.e("PEDINTEST", Gson().toJson(it))
                     setData(it)
                     if (it.isNullOrEmpty()) controller.setData(Nothing())
                 }, { it.printStackTrace() })
@@ -116,21 +124,21 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
     }
 
     override fun setBinding() {
-        EventBus.getDefault().register(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pending_transaction)
         binding.lifecycleOwner = this
         fetchTransaction()
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+
     override fun rejectTransaction(data: PendingTransaction?) {
         pendingTransaction = data!!
         RejectPendingFragment.show(this, supportFragmentManager)
 
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    override fun onEvent(busData: BusData?) {
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
     }
 
 
@@ -181,7 +189,7 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
         }
 
 
-        val module = this.data
+        val module = moduleModel.module.value!!
         module.moduleID = data.form.first().moduleID!!
         module.merchantID = data.payload.list["MerchantID"]
 
@@ -364,6 +372,7 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
     }
 
     override fun approveTransaction(data: PendingTransaction?) {
+
         val inputList = mutableListOf<InputData>()
         val form = mutableListOf<FormControl>()
         form.add(
@@ -439,7 +448,7 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
             )
         )
 
-        val module = this.data
+        val module = moduleModel.module.value!!
         module.moduleID = data.form.first().moduleID!!
         module.merchantID = data.payload.list["MerchantID"]
 
@@ -447,6 +456,7 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
             PendingTransaction::class.java.simpleName,
             Gson().toJson(dynamicDataResponse.formField)
         )
+        EventBus.getDefault().removeStickyEvent(BusData::class.java)
         EventBus.getDefault().postSticky(
             BusData(
                 data = GroupForm(

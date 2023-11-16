@@ -12,6 +12,7 @@ import com.elmacentemobile.data.model.dynamic.TransactionData
 import com.elmacentemobile.data.model.dynamic.TransactionDynamicData
 import com.elmacentemobile.data.model.dynamic.TransactionDynamicList
 import com.elmacentemobile.data.model.dynamic.TransactionResponseResponseConverter
+import com.elmacentemobile.data.model.module.ModuleDataTypeConverter
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
@@ -25,19 +26,14 @@ import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.dialog.InfoFragment
 import com.elmacentemobile.view.ep.adapter.TransactionAdapterItem
 import com.elmacentemobile.view.ep.adapter.TransactionDynamicAdapterItem
-import com.elmacentemobile.view.ep.data.BusData
 import com.elmacentemobile.view.fragment.transaction.TransactionCenterFragment
 import com.elmacentemobile.view.fragment.transaction.TransactionDetailsFragment
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 @AndroidEntryPoint
 class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
@@ -78,13 +74,12 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
 
 
     override fun setBinding() {
-        EventBus.getDefault().register(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_transaction_center)
         binding.lifecycleOwner = this
     }
 
     override fun setController() {
-        data = EventBus.getDefault().getStickyEvent(Modules::class.java)
+        data = ModuleDataTypeConverter().to(intent.getStringExtra("transaction"))!!
         binding.lifecycleOwner = this
         binding.toolbar.title = data.moduleName
         // adapter = TransactionAdapterItem(mutableListOf(), this)
@@ -213,14 +208,9 @@ class TransactionCenterActivity : AppCompatActivity(), AppCallbacks,
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    override fun onEvent(busData: BusData?) {
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
-    }
 
 
     override fun onCancel() {

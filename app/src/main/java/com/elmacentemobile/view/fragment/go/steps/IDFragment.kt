@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.room.TypeConverter
+import com.bumptech.glide.Glide
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
 import com.elmacentemobile.data.model.ocr.ImageRequestData
@@ -34,10 +35,12 @@ import com.elmacentemobile.view.dialog.LoadingFragment
 import com.elmacentemobile.view.ep.adapter.NameBaseAdapter
 import com.elmacentemobile.view.ep.data.NameBaseData
 import com.elmacentemobile.view.fragment.go.PagerData
+import com.elmacentemobile.view.fragment.go.ocr.OCRResultActivity
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
 import com.elmacentemobile.view.model.WorkStatus
 import com.elmacentemobile.view.model.WorkerViewModel
+import com.example.icebergocr.IcebergSDK
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
@@ -56,6 +59,9 @@ import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
@@ -96,6 +102,20 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+    }
+
+    private fun onSDKOCRData() {
+        baseViewModel.dataSource.onIDDetails.asLiveData().observe(viewLifecycleOwner) {
+            if (it != null) {
+                ocrData = it.data
+
+                Glide.with(requireContext()).load(convert(it.id!!.image)).into(binding.idLay.avatar)
+
+                // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
+                id = ImageData(image = it.id.image)
+            }
+        }
     }
 
     override fun onResume() {
@@ -184,6 +204,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         setTitle()
         setToolbar()
         requestPermissions()
+
         return binding.root.rootView
     }
 
@@ -297,16 +318,19 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                     selfie = ImageData(image = convert(bitmap!!))
                     binding.selfieLay.avatar.setImageBitmap(bitmap)
                 }
+
                 ImageSelector.ID -> {
                     id = ImageData(image = convert(bitmap!!))
                     binding.idLay.avatar.setImageBitmap(bitmap)
 //                    if (product.product?.value != "32217")
 //                        uploadIdImage(bitmap)//out of order
                 }
+
                 ImageSelector.SIGNATURE -> {
                     signature = ImageData(image = convert(bitmap!!))
                     binding.signatureLay.avatar.setImageBitmap(bitmap)
                 }
+
                 else -> {}
             }
         }
@@ -331,7 +355,19 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     override fun imageSelector(selector: ImageSelector?, x: Int, y: Int) {
         imageLive = selector
-        (requireActivity() as MainActivity).onImagePicker(this, x, y)
+        if (selector == ImageSelector.ID)
+            IcebergSDK.Builder(requireContext())
+                .ActionType("idFront")
+                .Country("UGANDA")
+                .ScanDoneClass(OCRResultActivity::class.java)
+                .AppName(Constants.Data.APP_NAME)
+                .init()
+        else (requireActivity() as MainActivity).onImagePicker(this, x, y)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        onSDKOCRData()
     }
 
     companion object {
@@ -365,7 +401,10 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         if (p == binding.buttonNext) {
             if (validateFields()) {
                 if (product.product?.value != "32217") {
-                    uploadOCR()
+                    //uploadOCR()
+//                    saveState()
+//                    pagerData?.onNext(4)
+                    nira()//TODO ORC NIRA
                 } else {
                     SmartLifeFragment.showDialog(this.childFragmentManager, this)
                 }
@@ -386,7 +425,6 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         saveState()
         pagerData?.onNext(4)
     }
-
 
 
     private fun uploadOCR() {
@@ -520,6 +558,132 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         )
     }
 
+    private fun nira() {
+        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val date: Date? = ocrData?.dob?.let { it1 -> inputFormat.parse(it1) }
+        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
+        val json = JSONObject()
+        json.put("INFOFIELD1", "ANDROID-OCR")
+        json.put("INFOFIELD7", "${ocrData?.surname}")
+        json.put("INFOFIELD8", "${ocrData?.names} ${ocrData?.otherName}")
+        json.put("INFOFIELD10", "$formattedDate")
+        json.put(
+            "INFOFIELD9", if (ocrData?.gender == "MALE") "M" else "F"
+        )
+        json.put("INFOFIELD6", "${ocrData?.idNo}")
+        json.put("INFOFIELD12", "${ocrData?.expires}")
+        json.put("INFOFIELD11", "${ocrData?.docId}")
+
+        setLoading(true)
+        ShowToast(requireContext(), getString(R.string.take_few_secs))
+        subscribe.add(
+            baseViewModel.nira(json, requireContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    AppLogger.instance.appLog(
+                        "NIRA:", it.response!!
+                    )
+                    if (it.response == null) {
+                        setLoading(false)
+                        AlertDialogFragment.newInstance(
+                            DialogData(
+                                title = R.string.error,
+                                subTitle = getString(R.string.unable_to_process_id),
+                                R.drawable.warning_app
+                            ),
+                            requireActivity().supportFragmentManager
+                        )
+                    } else {
+                        if (BaseClass.nonCaps(it.response) == StatusEnum.ERROR.type) {
+                            setLoading(false)
+                            AlertDialogFragment.newInstance(
+                                DialogData(
+                                    title = R.string.error,
+                                    subTitle = getString(R.string.unable_to_process_id),
+                                    R.drawable.warning_app
+                                ),
+                                requireActivity().supportFragmentManager
+                            )
+                        } else {
+                            try {
+                                AppLogger.instance.appLog(
+                                    "OCR:Response", BaseClass.decryptLatest(
+                                        it.response,
+                                        baseViewModel.dataSource.deviceData.value!!.device,
+                                        true,
+                                        baseViewModel.dataSource.deviceData.value!!.run
+                                    )
+                                )
+                                if (BaseClass.nonCaps(it.response) != StatusEnum.ERROR.type) {
+                                    setLoading(false)
+                                    val resData = DynamicAPIResponseConverter().to(
+                                        BaseClass.decryptLatest(
+                                            it.response,
+                                            baseViewModel.dataSource.deviceData.value!!.device,
+                                            true,
+                                            baseViewModel.dataSource.deviceData.value!!.run
+                                        )
+                                    )
+                                    AppLogger.instance.appLog("OCR:Res", Gson().toJson(resData))
+                                    if (BaseClass.nonCaps(resData?.status) == StatusEnum.SUCCESS.type) {
+                                        setLoading(false)
+                                        saveState()
+                                        pagerData?.onNext(4)
+                                    } else if (BaseClass.nonCaps(resData?.status) == StatusEnum.OCR_SUCCESS.type) {
+                                        setLoading(false)
+                                        saveState()
+                                        pagerData?.onNext(4)
+
+                                    } else if (BaseClass.nonCaps(resData?.status)
+                                        == StatusEnum.TOKEN.type
+                                    ) {
+                                        workViewModel.routeData(
+                                            viewLifecycleOwner,
+                                            object : WorkStatus {
+                                                override fun workDone(b: Boolean) {
+                                                    setLoading(false)
+                                                    if (b) nira()
+                                                }
+                                            })
+
+                                    } else {
+                                        setLoading(false)
+                                        AlertDialogFragment.newInstance(
+                                            DialogData(
+                                                title = R.string.error,
+                                                subTitle = resData?.message!!,
+                                                R.drawable.warning_app
+                                            ),
+                                            requireActivity().supportFragmentManager
+                                        )
+                                    }
+                                }
+
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                setLoading(false)
+                                AlertDialogFragment.newInstance(
+                                    DialogData(
+                                        title = R.string.error,
+                                        subTitle = getString(R.string.something_),
+                                        R.drawable.warning_app
+                                    ),
+                                    requireActivity().supportFragmentManager
+                                )
+                            }
+                        }
+                    }
+                },
+                    {
+                        setLoading(false)
+                        showError(getString(R.string.something_))
+                        it.printStackTrace()
+                    })
+        )
+    }
+
     private fun showError(s: String) {
         AlertDialogFragment.newInstance(
             DialogData(
@@ -615,17 +779,17 @@ enum class ImageSelector {
 @Parcelize
 data class IDDetails(
     @field:SerializedName("title")
-    val title: String?,
+    val title: String? = null,
     @field:SerializedName("id")
-    val id: ImageData?,
+    val id: ImageData? = null,
     @field:SerializedName("signature")
-    val signature: ImageData?,
+    val signature: ImageData? = null,
     @field:SerializedName("selfie")
     @field:Expose
-    val selfie: ImageData?,
+    val selfie: ImageData? = null,
     @field:SerializedName("ocr")
     @field:Expose
-    var data: OCRData?
+    var data: OCRData? = null
 ) : Parcelable
 
 @Parcelize
@@ -648,6 +812,12 @@ data class OCRData(
     @field:SerializedName("F-7")
     @field:Expose
     val gender: String?,
+    @field:SerializedName("F-8")
+    @field:Expose
+    val expires: String? = String(),
+    @field:SerializedName("F-9")
+    @field:Expose
+    val docId: String? = String(),
 ) : Parcelable
 
 @Parcelize

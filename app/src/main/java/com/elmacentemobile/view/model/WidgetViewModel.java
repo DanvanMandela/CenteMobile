@@ -121,6 +121,8 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         });
     }
 
+
+
     @Override
     public Observable<Modules> getModule(String moduleID) {
         return widgetRepository.getModule(moduleID);
@@ -283,5 +285,8 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
         widgetRepository.deletePendingTransactionsByID(id);
     }
 
-
+    @Override
+    public Observable<List<FormControl>> linkedForms(String moduleID) {
+        return widgetRepository.linkedForms(moduleID);
+    }
 }

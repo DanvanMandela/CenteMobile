@@ -144,6 +144,10 @@ public class WidgetRepository implements WidgetDataSource {
         return localData.getFormControlNoSq(moduleID);
     }
 
+    @Override
+    public Observable<List<FormControl>> linkedForms(String moduleID) {
+        return localData.linkedForms(moduleID);
+    }
 
     @Override
     public void saveAtms(List<AtmData> atmData) {

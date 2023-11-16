@@ -2,6 +2,7 @@ package com.elmacentemobile.data.model.action
 
 enum class ActionTypeEnum(val type: String) {
     ACTIVATION_REQ("ACTIVATIONREQ"),
+    VALIDATE_ACCOUNT_PRODUCT_TYPE("VALIDATEACCOUNTPRODUCTTYPE"),
     DB_CALL("DBCALL"),
     PAY_BILL("PAYBILL"),
     VALIDATE("VALIDATE"),

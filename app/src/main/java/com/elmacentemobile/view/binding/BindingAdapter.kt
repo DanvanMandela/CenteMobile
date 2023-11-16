@@ -79,6 +79,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.*
 import java.time.LocalDate
@@ -124,6 +125,7 @@ fun setIndicator(
                     RectangleILayoutBinding.inflate(
                         LayoutInflater.from(parent.context), child, false
                     )
+
                 else -> DotLayoutBinding.inflate(LayoutInflater.from(parent.context), child, false)
             }
             child.addView(dot.root)
@@ -170,10 +172,12 @@ fun MaterialToolbar.setToolbar(callbacks: AppCallbacks) {
                 callbacks.logOut()
                 true
             }
+
             R.id.actionNotification -> {
                 callbacks.navigateToNotification()
                 true
             }
+
             else -> false
         }
     }
@@ -469,6 +473,7 @@ fun MaterialToolbar.setDynamicToolbar(dynamic: DynamicData?, callbacks: AppCallb
                 callbacks.onMenuItem()
                 true
             }
+
             else -> false
         }
     }
@@ -492,6 +497,7 @@ fun EpoxyRecyclerView.setDynamic(
                 controller = ModuleController(callbacks)
                 controller.setData(ModuleData(dynamic.module, false))
             }
+
             is GroupForm -> {
                 layout = LinearLayoutManager(this.context)
                 controller = NewFormController(callbacks, storage!!)
@@ -732,7 +738,7 @@ fun EpoxyRecyclerView.setDisplayJson(
     formControl: FormControl?,
     modules: Modules?
 ) {
-    AppLogger.instance.appLog("DISPLAY:ITEM",Gson().toJson(formControl))
+    AppLogger.instance.appLog("DISPLAY:ITEM", Gson().toJson(formControl))
     callbacks.onDisplay(formControl, modules, this)
 }
 
@@ -961,14 +967,18 @@ fun TextView.setLabelText(
 
 
 fun Fragment.navigate(directions: NavDirections) {
-    lifecycleScope.launchWhenResumed {
-        NavHostFragment.findNavController(this@navigate).navigate(directions)
+    lifecycleScope.launch {
+        lifecycle.withResumed {
+            NavHostFragment.findNavController(this@navigate).navigate(directions)
+        }
     }
 }
 
 fun Fragment.navigateBack() {
-    lifecycleScope.launchWhenResumed {
-        NavHostFragment.findNavController(this@navigateBack).navigateUp()
+    lifecycleScope.launch {
+        lifecycle.withResumed {
+            NavHostFragment.findNavController(this@navigateBack).navigateUp()
+        }
     }
 }
 
@@ -986,7 +996,7 @@ fun calendarToDate(calendar: Calendar?): String? {
     return df.format(d)
 }
 
-fun View.findViewTreeLifecycleOwner(): LifecycleOwner? = ViewTreeLifecycleOwner.get(this)
+fun View.findViewTreeLifecycleOwner(): LifecycleOwner? = this.findViewTreeLifecycleOwner()
 
 
 fun Activity.hideSoftKeyboard(view: View) {

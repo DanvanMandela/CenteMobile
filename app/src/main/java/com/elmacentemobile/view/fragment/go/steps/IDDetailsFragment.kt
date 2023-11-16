@@ -21,6 +21,9 @@ import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.fragment.go.PagerData
 import com.elmacentemobile.view.model.WidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -115,7 +118,7 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
     }
 
     private fun setStep() {
-        binding.progressIndicator.setProgress(30, true)
+        binding.progressIndicator.setProgress(25, true)
     }
 
     private fun checkNSSF() {
@@ -128,14 +131,19 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
 
 
     override fun setState() {
+        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
         val sData = widgetViewModel.storageDataSource.onIDDetails.asLiveData()
         sData.observe(viewLifecycleOwner) {
             if (it != null) {
                 stateData = it
                 val data = it.data
                 if (data != null) {
+                    val date: Date? = data.dob?.let { it1 -> inputFormat.parse(it1) }
+                    val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
                     binding.idInput.setText(data.idNo)
-                    binding.dobInput.setText(data.dob)
+                    binding.dobInput.setText(formattedDate)
                     binding.surInput.setText(data.surname)
                     binding.otherInput.setText(data.otherName)
                     binding.givenInput.setText(data.names)

@@ -6,6 +6,8 @@ import com.elmacentemobile.data.service.CurrentActivity
 import com.elmacentemobile.data.service.CurrentActivityDataSource
 import com.elmacentemobile.data.service.InteractionDataSource
 import com.elmacentemobile.data.service.UserInteractionWatcher
+import com.elmacentemobile.data.service.otp.SMSAutoReadFactory
+import com.elmacentemobile.data.service.otp.SMSDatasource
 import com.elmacentemobile.data.source.pref.SharedPreferencesStorage
 import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.data.source.remote.helper.ConnectionMonitor
@@ -60,6 +62,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun provideInteraction(userInteractionWatcher: UserInteractionWatcher): InteractionDataSource
+
+    @Binds
+    abstract fun provideSMSFactory(autoRead: SMSAutoReadFactory): SMSDatasource
 
 
 }

@@ -6,17 +6,50 @@ import com.elmacentemobile.data.model.CarouselData
 import com.elmacentemobile.data.model.CarouselDataConverter
 import com.elmacentemobile.data.model.DeviceData
 import com.elmacentemobile.data.model.DeviceDataTypeConverter
-import com.elmacentemobile.data.model.converter.*
+import com.elmacentemobile.data.model.converter.AccountProductTypeConverter
+import com.elmacentemobile.data.model.converter.AccountsTypeConverter
+import com.elmacentemobile.data.model.converter.ActivationDataTypeConverter
+import com.elmacentemobile.data.model.converter.AlertsTypeConverter
+import com.elmacentemobile.data.model.converter.BeneficiaryTypeConverter
+import com.elmacentemobile.data.model.converter.DisableModulesConverter
+import com.elmacentemobile.data.model.converter.HiddenModules
+import com.elmacentemobile.data.model.converter.IVData
+import com.elmacentemobile.data.model.converter.IVTypeConverter
+import com.elmacentemobile.data.model.converter.MapDataTypeConverter
+import com.elmacentemobile.data.model.converter.StaticDataDetailTypeConverter
 import com.elmacentemobile.data.model.static_data.OnlineAccountProduct
 import com.elmacentemobile.data.model.static_data.StaticDataDetails
-import com.elmacentemobile.data.model.user.*
+import com.elmacentemobile.data.model.user.Accounts
+import com.elmacentemobile.data.model.user.ActivationData
+import com.elmacentemobile.data.model.user.AlertServices
+import com.elmacentemobile.data.model.user.Beneficiary
+import com.elmacentemobile.data.model.user.ModuleDisable
+import com.elmacentemobile.data.model.user.ModuleHide
 import com.elmacentemobile.data.source.sync.SyncData
 import com.elmacentemobile.data.source.sync.SyncDataTypeConverter
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.dialog.DayTipDataConverter
-import com.elmacentemobile.view.fragment.go.steps.*
+import com.elmacentemobile.view.fragment.go.steps.AddressState
+import com.elmacentemobile.view.fragment.go.steps.AddressStateTypeConverter
+import com.elmacentemobile.view.fragment.go.steps.CustomerProduct
+import com.elmacentemobile.view.fragment.go.steps.CustomerProductConverter
+import com.elmacentemobile.view.fragment.go.steps.HearAboutState
+import com.elmacentemobile.view.fragment.go.steps.HearAboutStateConverter
+import com.elmacentemobile.view.fragment.go.steps.IDDetails
+import com.elmacentemobile.view.fragment.go.steps.IDDetailsConverter
+import com.elmacentemobile.view.fragment.go.steps.IncomeData
+import com.elmacentemobile.view.fragment.go.steps.IncomeDataConverter
+import com.elmacentemobile.view.fragment.go.steps.NextKinData
+import com.elmacentemobile.view.fragment.go.steps.NextKinDataConverter
+import com.elmacentemobile.view.fragment.go.steps.OtherServiceConverter
+import com.elmacentemobile.view.fragment.go.steps.OtherServiceData
+import com.elmacentemobile.view.fragment.go.steps.ParentDetails
+import com.elmacentemobile.view.fragment.go.steps.ParentDetailsConverter
+import com.elmacentemobile.view.fragment.go.steps.WorkAddressState
+import com.elmacentemobile.view.fragment.go.steps.WorkAddressStateTypeConverter
 import com.elmacentemobile.view.fragment.map.MapData
+import com.elmacentemobile.view.model.WidgetViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,6 +73,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         deleteStaticData()
         deleteNOK()
         deleteAddress()
+        workAddressState()
         deleteCustomerProduct()
         deleteIDDetails()
         deleteParentDetails()
@@ -467,6 +501,42 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
             remove(TAG_ADDRESS_STATE)
         }
     }
+
+    override fun workAddressState() {
+        _addressState.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_WORK_ADDRESS_STATE)
+        }
+    }
+
+    private val _workAddressState =
+        MutableStateFlow(
+            WorkAddressStateTypeConverter().to(
+                BaseClass.decrypt(
+                    sharedPreferences.getString(
+                        TAG_WORK_ADDRESS_STATE,
+                        ""
+                    )
+                )
+            )
+        )
+
+
+
+    override val workAddressState: StateFlow<WorkAddressState?>
+        get() = _workAddressState
+
+    override fun workAddressState(value: WorkAddressState?) {
+        _workAddressState.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_WORK_ADDRESS_STATE,
+                BaseClass.encrypt(WorkAddressStateTypeConverter().from(value))
+            )
+            apply()
+        }
+    }
+
 
     private val _idDetails =
         MutableStateFlow(
@@ -1159,6 +1229,17 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     override val accountType: StateFlow<String?>
         get() = _accountType
 
+
+    private var _baseViewModel: MutableStateFlow<WidgetViewModel?> =
+        MutableStateFlow(null)
+
+    override fun baseVewModel(value: WidgetViewModel) {
+        _baseViewModel.value = value
+    }
+
+    override val baseVewModel: StateFlow<WidgetViewModel?>
+        get() = _baseViewModel
+
     override fun accountType(value: String?) {
         _accountType.value = value
         with(sharedPreferences.edit()) {
@@ -1195,6 +1276,8 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_ON_THE_GO = "onTheGo"
         private const val TAG_ON_THE_GO_POSITION = "onTheGoPos"
         private const val TAG_ADDRESS_STATE = "addressState"
+
+        private const val TAG_WORK_ADDRESS_STATE = "workAddressState"
 
         private const val TAG_ID_DETAILS = "idDetails"
 

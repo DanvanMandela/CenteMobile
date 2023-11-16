@@ -31,3 +31,8 @@
 -keep interface com.dexprotector.annotations.HideAccess
 -keep interface com.dexprotector.annotations.StringEncryption
 
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}
+

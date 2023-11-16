@@ -38,6 +38,13 @@ public class Constants {
     public static class BaseUrl {
 
         @NotNull
+        public static final String IP_STACK_URL = "http://api.ipstack.com/";
+
+        @NotNull
+        public static final String IP_PUBLIC_URL = "https://api.ipify.org/";
+
+
+        @NotNull
         public static final String IMAGE_BASE_URL = "https://imageuploadv1.azurewebsites.net/api/ImageUpload_V1/?JSONData=";
         @NotNull
         public static final String IMAGE_PROCESSING_URL = "https://aicraftsilicon.azurewebsites.net/";
@@ -73,9 +80,9 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
+        public static final boolean TEST = false;//TODO CHECK CAMERA AND LOGS
 
-        public static final boolean AUTO_OTP = false;
+        public static final boolean AUTO_OTP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
         public static final boolean ACTIVATED = true;
 
         @NotNull
@@ -105,6 +112,7 @@ public class Constants {
         @NotNull
         public final static String GO = "cente";
     }
+
 
     public enum ImageID {
         NATIONALID, BANKSTATEMENT, BANKCODE
@@ -180,10 +188,8 @@ public class Constants {
             deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         } else {
             final TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    return "";
-                }
+            if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                return "";
             }
 
             if (mTelephony != null)
@@ -233,5 +239,6 @@ public class Constants {
         public static long fastestInterval = 5 * 10000;
         public static long maxWaitTime = 5 * 10000;
     }
+
 
 }

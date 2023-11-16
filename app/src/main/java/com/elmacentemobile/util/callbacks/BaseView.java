@@ -73,6 +73,10 @@ public interface BaseView {
     default void telephone() {
     }
 
+    default void telephone(String mobile) {
+    }
+
+
     default void email() {
     }
 
@@ -103,8 +107,6 @@ public interface BaseView {
     default void setOnIndicator(ViewPager2 viewPager2) {
     }
 
-    default void onEvent(BusData busData) {
-    }
 
     default void auth(String pin) {
     }

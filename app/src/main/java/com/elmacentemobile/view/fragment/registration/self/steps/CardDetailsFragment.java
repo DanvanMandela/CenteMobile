@@ -35,11 +35,14 @@ import com.elmacentemobile.util.BaseClass;
 import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.dialog.LoadingFragment;
 import com.elmacentemobile.view.dialog.SuccessDialogFragment;
 import com.elmacentemobile.view.fragment.go.steps.OCRData;
+import com.elmacentemobile.view.model.AuthViewModel;
 import com.elmacentemobile.view.model.BaseViewModel;
 import com.elmacentemobile.view.model.WidgetViewModel;
 import com.elmacentemobile.view.model.WorkStatus;
@@ -49,6 +52,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
+import java.util.Stack;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -69,8 +73,12 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     private FragmentCardDetailsBinding binding;
     private BaseViewModel baseViewModel;
     private WorkerViewModel workerViewModel;
+
+    private AuthViewModel authViewModel;
     private WidgetViewModel widgetViewModel;
     private static final String ARG_MOBILE = "mobile";
+
+    private Stack<String> pinStack;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
@@ -125,7 +133,41 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         setViewModel();
         setTextWatchers();
         setOTP();
+        showKeyBoard();
         return binding.getRoot().getRootView();
+    }
+
+    private void showKeyBoard() {
+        binding.editATMPin.setOnClickListener((v ->
+                CustomKeyboard.Companion.instanceExtra(getChildFragmentManager(),
+                        this, 4)));
+        authViewModel.loginPin.observe(getViewLifecycleOwner(), strings -> {
+            pinStack = strings;
+            StringBuilder builder = new StringBuilder();
+            for (String s : strings) {
+                if (builder.length() <= 4)
+                    builder.append(s);
+            }
+            binding.editATMPin.setText(builder);
+        });
+    }
+
+    @Override
+    public void onType(CustomKeyData data) {
+        switch (data.getType()) {
+            case Push: {
+                pinStack.push(data.getStr());
+                authViewModel.loginPin.setValue(pinStack);
+                break;
+            }
+            case Pop: {
+                if (!pinStack.isEmpty()) {
+                    pinStack.pop();
+                    authViewModel.loginPin.setValue(pinStack);
+                }
+                break;
+            }
+        }
     }
 
     private void setOTP() {
@@ -166,12 +208,13 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     }
 
 
-    private void checkCustomer() {
+    private void checkCustomer() {//TODO CHECK AND DELETE
         setLoading(true);
         JSONObject jsonObject = new JSONObject();
         JSONObject encrypted = new JSONObject();
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
+            jsonObject.put("INFOFIELD3", mobileNumber.getValue());
             jsonObject.put("BANKACCOUNTID", Objects.requireNonNull(binding.editAccountNumber.getText()).toString());
             disposable.add(baseViewModel.customerExist(jsonObject, encrypted, requireContext())
                     .subscribeOn(Schedulers.io())
@@ -256,9 +299,11 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
     }
 
     private void generateOTP() {
+        setLoading(true);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
+            jsonObject.put("INFOFIELD3", mobileNumber.getValue());
             jsonObject.put("SERVICENAME", "SELFREG");
             disposable.add(baseViewModel.createOTP(jsonObject, requireContext())
                     .subscribeOn(Schedulers.io())
@@ -293,37 +338,44 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                                     baseViewModel.dataSource.getDeviceData().getValue().getRun()
                             )
                     );
-                    assert resData != null;
-                    if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
-                        OTPDialogFragment.showDialog(this, this.getChildFragmentManager());
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
-                        showError(resData.getMessage());
-                        setLoading(false);
-                    } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
-                        workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
-                            @Override
-                            public void workDone(boolean b) {
-                                setLoading(false);
-                                if (b) generateOTP();
-                            }
+
+                    if (resData != null)
+                        if (Objects.equals(resData.getStatus(), StatusEnum.SUCCESS.getType())) {
+                            setLoading(false);
+                            OTPDialogFragment.showDialog(this,
+                                    this.getChildFragmentManager(),
+                                    mobileNumber.getValue());
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.FAILED.getType())) {
+                            showError(resData.getMessage());
+                            setLoading(false);
+                        } else if (Objects.equals(resData.getStatus(), StatusEnum.TOKEN.getType())) {
+                            workerViewModel.routeData(getViewLifecycleOwner(), new WorkStatus() {
+                                @Override
+                                public void workDone(boolean b) {
+                                    setLoading(false);
+                                    if (b) generateOTP();
+                                }
 
 
-                            @Override
-                            public void onOCRData(@NonNull OCRData data, boolean b) {
+                                @Override
+                                public void onOCRData(@NonNull OCRData data, boolean b) {
 
-                            }
+                                }
 
-                            @Override
-                            public void error(@Nullable String p) {
+                                @Override
+                                public void error(@Nullable String p) {
 
-                            }
+                                }
 
-                            @Override
-                            public void progress(int p) {
+                                @Override
+                                public void progress(int p) {
 
-                            }
-                        });
-                    }
+                                }
+                            });
+                        } else {
+                            showError(getString(R.string.something_));
+                            setLoading(false);
+                        }
                 }
 
             } else {
@@ -392,6 +444,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
         baseViewModel = new ViewModelProvider(this).get(BaseViewModel.class);
         workerViewModel = new ViewModelProvider(this).get(WorkerViewModel.class);
         widgetViewModel = new ViewModelProvider(this).get(WidgetViewModel.class);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
     }
 
     @Override
@@ -419,12 +472,14 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
 
 
     private void validateOTP(String string) {
+        setLoading(true);
         JSONObject jsonObject = new JSONObject();
         JSONObject encrypted = new JSONObject();
         try {
             jsonObject.put("BANKACCOUNTID", Objects
                     .requireNonNull(binding.editAccountNumber.getText()).toString());
             jsonObject.put("MOBILENUMBER", mobileNumber.getValue());
+            jsonObject.put("INFOFIELD3", mobileNumber.getValue());
             encrypted.put("CARDNUMBER", BaseClass
                     .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
                             .toString().replace("-", "")));
@@ -516,6 +571,7 @@ public class CardDetailsFragment extends Fragment implements AppCallbacks, View.
                 jsonObject.put("BANKACCOUNTID", Objects
                         .requireNonNull(binding.editAccountNumber.getText()).toString());
                 jsonObject.put("PHONENUMBER", mobileNumber.getValue());
+
                 encrypted.put("CARDNUMBER", BaseClass
                         .newEncrypt(Objects.requireNonNull(binding.editATM.getText())
                                 .toString().replace("-", "")));

@@ -35,6 +35,7 @@
 
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -133,6 +134,7 @@
                                 android:fontFamily="@font/poppins_medium"
                                 android:gravity="center"
                                 android:hint="@string/pin"
+                                android:focusable="false"
                                 android:inputType="textPassword"
                                 android:paddingHorizontal="@dimen/dimens_5dp"
                                 android:paddingVertical="@dimen/dimens_0dp"
@@ -197,12 +199,47 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/materialButton"
                             app:tint="@color/dar_color_one" />
+
+
+                        <LinearLayout
+                            android:id="@+id/privacyPolicy"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="24dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+                            <TextView
+                                android:gravity="end"
+                                android:text="@string/by_accepting"
+                                android:layout_weight="1"
+                                android:lines="1"
+                                android:fontFamily="@font/poppins_medium"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:layout_width="match_parent"
+                                android:paddingEnd="@dimen/dimens_4dp"
+                                android:layout_height="wrap_content"
+                                tools:ignore="RtlSymmetry" />
+                            <TextView
+                                android:textColor="@color/app_blue_light"
+                                android:fontFamily="@font/poppins_medium"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:text="@string/privacy_policy"
+                                android:layout_weight="2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <include
                         android:id="@+id/loadingFrame"
                         layout="@layout/fragment_loading" />
                 </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

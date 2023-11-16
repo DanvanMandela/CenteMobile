@@ -6,6 +6,10 @@ import android.view.WindowManager
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import com.dynatrace.android.agent.Dynatrace
+import com.dynatrace.android.agent.conf.DataCollectionLevel
+import com.dynatrace.android.agent.conf.UserPrivacyOptions
+import com.elmacentemobile.data.source.constants.Constants
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -22,7 +26,19 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        setupActivityListener()
+        traced()
+        if (!Constants.Data.TEST)
+            setupActivityListener()//TODO REACTIVATE
+    }
+
+
+
+    private fun traced() {
+        Dynatrace.applyUserPrivacyOptions(
+            UserPrivacyOptions.builder()
+                .withDataCollectionLevel(DataCollectionLevel.USER_BEHAVIOR)
+                .withCrashReportingOptedIn(true).build()
+        )
     }
 
     open fun setupActivityListener() {
@@ -33,12 +49,18 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
                     WindowManager.LayoutParams.FLAG_SECURE
                 )
             }
+
+
+
+
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}
             override fun onActivityStopped(activity: Activity) {}
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-            override fun onActivityDestroyed(activity: Activity) {}
+            override fun onActivityDestroyed(activity: Activity) {
+
+            }
         })
     }
 

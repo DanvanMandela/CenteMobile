@@ -135,4 +135,12 @@ public interface AppDataSource {
                                                Context context) {
         return null;
     }
+
+    default Single<DynamicResponse> checkProductExist(JSONObject data, Context context) {
+        return null;
+    }
+
+    default Single<DynamicResponse> nira(JSONObject data, Context context){
+        return null;
+    }
 }

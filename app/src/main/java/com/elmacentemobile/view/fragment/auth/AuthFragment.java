@@ -8,6 +8,7 @@ import static com.elmacentemobile.view.binding.BindingAdapterKt.pinLive;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -51,9 +52,12 @@ import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.activity.MainActivity;
 import com.elmacentemobile.view.activity.level.FalconHeavyActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.ep.data.BusData;
+import com.elmacentemobile.view.ep.data.BusDataTypeConverter;
 import com.elmacentemobile.view.ep.data.GroupForm;
 import com.elmacentemobile.view.ep.data.GroupModule;
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener;
@@ -70,6 +74,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -92,6 +97,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     private WorkerViewModel workerViewModel;
     private WidgetViewModel widgetViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
+
+    private Stack<String> pinStack;
 
 
     private MutableLiveData<DynamicAPIResponse> serverResponse = new MutableLiveData<>();
@@ -118,6 +125,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -131,7 +139,41 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         bioLogin();
         setFeedbackTimer();
         setPinType();
+        showKeyBoard();
         return binding.getRoot().getRootView();
+    }
+
+
+    private void showKeyBoard() {
+        binding.editPin.setOnClickListener((v ->
+                CustomKeyboard.Companion.instance(getChildFragmentManager(),
+                        this)));
+        authViewModel.loginPin.observe(getViewLifecycleOwner(), strings -> {
+            pinStack = strings;
+            StringBuilder builder = new StringBuilder();
+            for (String s : strings) {
+                builder.append(s);
+            }
+            binding.editPin.setText(builder);
+        });
+    }
+
+    @Override
+    public void onType(CustomKeyData data) {
+        switch (data.getType()) {
+            case Push: {
+                pinStack.push(data.getStr());
+                authViewModel.loginPin.setValue(pinStack);
+                break;
+            }
+            case Pop: {
+                if (!pinStack.isEmpty()) {
+                    pinStack.pop();
+                    authViewModel.loginPin.setValue(pinStack);
+                }
+                break;
+            }
+        }
     }
 
     private void setPinType() {
@@ -200,6 +242,13 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         binding.materialButton.setOnClickListener(this);
         binding.forgotPin.setOnClickListener(this);
         binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+        binding.privacyPolicy.setOnClickListener(v ->
+                openUrl("https://www.centenarybank.co.ug/privacy-policy"));
+    }
+
+    @Override
+    public void openUrl(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
     @Override
@@ -562,6 +611,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
     public void setFormNavigation(List<FormControl> forms, Modules modules) {
         AppLogger.Companion.getInstance().appLog(HomeFragment.class.getSimpleName(),
                 new Gson().toJson(modules));
+        EventBus.getDefault().removeStickyEvent(BusData.class);
         EventBus.getDefault().postSticky(new BusData(new GroupForm(modules,
                 null,
                 forms,
@@ -574,6 +624,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
 
     private void setDynamicModules(List<Modules> m, Modules modules) {
+        EventBus.getDefault().removeStickyEvent(BusData.class);
         EventBus.getDefault().postSticky(new BusData(new GroupModule(modules, m),
                 null,
                 null));

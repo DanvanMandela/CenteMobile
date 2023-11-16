@@ -14,7 +14,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -43,8 +43,10 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/white">
+
+
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -115,7 +117,6 @@
                             android:fontFamily="@font/poppins_medium"
                             android:hint="@string/mobile"
                             android:inputType="phone"
-                            android:maxLength="10"
                             android:paddingVertical="@dimen/dimens_0dp"
                             android:paddingStart="@dimen/dimens_140dp"
                             android:paddingEnd="@dimen/dimens_0dp"
@@ -159,6 +160,7 @@
                         android:id="@+id/editPin"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_70dp"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins_medium"
                         android:hint="@string/pin"
                         android:inputType="numberPassword"
@@ -205,6 +207,37 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/materialButton" />
 
+                <LinearLayout
+                    android:id="@+id/privacy"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+                    <TextView
+                        android:gravity="end"
+                        android:text="@string/by_accepting"
+                        android:layout_weight="1"
+                        android:lines="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:layout_width="match_parent"
+                        android:paddingEnd="@dimen/dimens_4dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlSymmetry" />
+                    <TextView
+                        android:textColor="@color/app_blue_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:text="@string/privacy_policy"
+                        android:layout_weight="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

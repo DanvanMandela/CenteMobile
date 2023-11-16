@@ -39,9 +39,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+
 import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,7 +61,6 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     private val baseViewModel: BaseViewModel by viewModels()
     private lateinit var binding: FragmentDynamicDialogBinding
     private val inputList = mutableListOf<InputData>()
-    private lateinit var busData: BusData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,13 +70,9 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    override fun onEvent(busData: BusData?) {
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
-    }
+
 
     override fun setController() {
-        busData = EventBus.getDefault().getStickyEvent(BusData::class.java)
         setDynamicInputs(busData.inputs)
         binding.lifecycleOwner = this
         AppLogger.instance.appLog("BUS", Gson().toJson(busData))
@@ -115,7 +108,6 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
     }
 
     override fun setBinding() {
-        EventBus.getDefault().register(this)
         setController()
     }
 
@@ -163,6 +155,7 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                     )
                     onDialog()
                 }
+
                 else -> {
                     confirm.validateModule(
                         jsonObject = json,
@@ -373,6 +366,7 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
 
     companion object {
         private lateinit var confirm: Confirm
+        private lateinit var busData: BusData
 
         /**
          * Use this factory method to create a new instance of
@@ -393,9 +387,10 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
             }
 
         @JvmStatic
-        fun callback(confirm: Confirm, manager: FragmentManager) =
+        fun callback(confirm: Confirm, manager: FragmentManager, busData: BusData) =
             DynamicDialogFragment().apply {
                 this@Companion.confirm = confirm
+                this@Companion.busData = busData
                 show(manager, this.tag)
             }
     }

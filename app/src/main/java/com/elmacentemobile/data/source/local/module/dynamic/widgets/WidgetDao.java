@@ -38,6 +38,10 @@ public interface WidgetDao extends WidgetDataSource {
     Observable<List<FormControl>> getFormControlNoSq(String moduleID);
 
     @Override
+    @Query("SELECT * FROM form_control_tb WHERE linkedToControl=:moduleID")
+    Observable<List<FormControl>> linkedForms(String moduleID);
+
+    @Override
     @Query("DELETE FROM form_control_tb")
     void deleteFormControl();
 

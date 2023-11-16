@@ -16,11 +16,19 @@
 
 
     <ConstraintSet android:id="@+id/userState">
-        <Constraint android:id="@id/userFrame">
+        <Constraint android:id="@id/userFrame"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            motion:layout_constraintEnd_toEndOf="parent">
             <Transform android:translationX="0dp" />
         </Constraint>
 
-        <Constraint android:id="@id/loadingFrame">
+        <Constraint android:id="@id/loadingFrame"
+            motion:layout_constraintStart_toEndOf="@+id/userFrame"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_editor_absoluteX="1411dp">
             <Transform android:translationX="1000dp" />
         </Constraint>
     </ConstraintSet>

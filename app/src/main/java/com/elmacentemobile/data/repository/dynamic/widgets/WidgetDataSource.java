@@ -43,6 +43,10 @@ public interface WidgetDataSource extends NavigationCallback {
         return null;
     }
 
+    default Observable<List<FormControl>> linkedForms(String moduleID) {
+        return null;
+    }
+
     default Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
         return null;
     }

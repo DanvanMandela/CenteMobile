@@ -469,7 +469,7 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
     }
 
     private fun setStep() {
-        binding.progressIndicator.setProgress(90, true)
+        binding.progressIndicator.setProgress(80, true)
     }
 
     override fun setOnClick() {
@@ -509,13 +509,12 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         try {
             val url =
                 ("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + data?.latLng!!.latitude + ","
-                        + data.latLng.longitude + "&key=AIzaSyDhZlL-z0dTCANCHwHSHbNQYnG96phvQ0c")
+                        + data.latLng.longitude + "AIzaSyBbOrLIG7lGvuor6-e4SI3_HXSKROBAU7A")
             val queue: RequestQueue = Volley.newRequestQueue(requireContext())
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 { response ->
                     if (!TextUtils.isEmpty(response)) {
-                        //c5.setText(result);
                         val formattedAddress: String?
                         try {
                             val json = JSONObject(response)
@@ -560,9 +559,9 @@ class HearAboutFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         if (p == binding.buttonNext) {
             if (validateFields()) {
                 saveState()
-                pagerData?.onNext(11)
+                pagerData?.onNext(12)
             }
-        } else if (p == binding.buttonBack) pagerData?.onBack(9)
+        } else if (p == binding.buttonBack) pagerData?.onBack(10)
     }
 
 }

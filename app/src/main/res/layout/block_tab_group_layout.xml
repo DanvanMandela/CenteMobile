@@ -9,13 +9,14 @@
         android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
-            style="@style/Widget.App.TabLayout"
             android:id="@+id/parent"
+            style="@style/Widget.App.TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabIndicatorColor="@color/transparent"
             android:elevation="@dimen/dimens_8dp"
-            app:tabGravity="center"
-            app:tabMode="scrollable" />
+
+            />
 
         <com.airbnb.epoxy.EpoxyRecyclerView
             android:id="@+id/childContainer"

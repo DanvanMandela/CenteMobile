@@ -551,6 +551,7 @@ class CustomerProductFragment : Fragment(), AppCallbacks, View.OnClickListener, 
 
     override fun onConfirm() {
         if (existing) {
+            saveState()
             OnGoPanFragment.showDialog(childFragmentManager, this)
         } else {
             saveState()

@@ -118,7 +118,6 @@
                             android:fontFamily="@font/poppins_medium"
                             android:hint="@string/mobile"
                             android:inputType="phone"
-                            android:maxLength="10"
                             android:paddingVertical="@dimen/dimens_0dp"
                             android:paddingStart="@dimen/dimens_140dp"
                             android:paddingEnd="@dimen/dimens_0dp"

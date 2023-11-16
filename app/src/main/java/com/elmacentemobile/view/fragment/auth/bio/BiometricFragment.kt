@@ -15,9 +15,11 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.model.converter.IVData
 import com.elmacentemobile.data.model.module.Modules
+import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.pref.EncryptedData
 import com.elmacentemobile.databinding.FragmentBiometricBinding
+import com.elmacentemobile.util.BaseClass.decode64
 import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.activity.level.FalconHeavyActivity
@@ -103,7 +105,7 @@ class BiometricFragment : BottomSheetDialogFragment(), AppCallbacks, View.OnClic
 
     private fun setCrypto() {
         cryptographyManager = CryptoManager()
-        secretKeyName = getString(R.string.secret_key_name)
+        secretKeyName = decode64(Keys().secretKey())
     }
 
     override fun setOnClick() {

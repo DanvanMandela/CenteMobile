@@ -5,6 +5,8 @@ import static com.elmacentemobile.view.binding.BindingAdapterKt.hideSoftKeyboard
 import static com.elmacentemobile.view.binding.BindingAdapterKt.isOnline;
 import static com.elmacentemobile.view.binding.BindingAdapterKt.pinLive;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +37,8 @@ import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.activity.MainActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.dialog.LoadingFragment;
@@ -45,6 +49,7 @@ import com.elmacentemobile.view.model.WorkStatus;
 import com.elmacentemobile.view.model.WorkerViewModel;
 
 import java.util.Objects;
+import java.util.Stack;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -64,6 +69,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     private AuthViewModel authViewModel;
     private WorkerViewModel workerViewModel;
 
+    private Stack<String> pinStack;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -96,8 +102,42 @@ public class LoginFragment extends Fragment implements AppCallbacks {
         setData();
         setPinType();
         setOnClick();
+        showKeyBoard();
         return binding.getRoot().getRootView();
     }
+
+    private void showKeyBoard() {
+        binding.editPin.setOnClickListener((v ->
+                CustomKeyboard.Companion.instance(getChildFragmentManager(),
+                        this)));
+        authViewModel.loginPin.observe(getViewLifecycleOwner(), strings -> {
+            pinStack = strings;
+            StringBuilder builder = new StringBuilder();
+            for (String s : strings) {
+                builder.append(s);
+            }
+            binding.editPin.setText(builder);
+        });
+    }
+
+    @Override
+    public void onType(CustomKeyData data) {
+        switch (data.getType()) {
+            case Push: {
+                pinStack.push(data.getStr());
+                authViewModel.loginPin.setValue(pinStack);
+                break;
+            }
+            case Pop: {
+                if (!pinStack.isEmpty()) {
+                    pinStack.pop();
+                    authViewModel.loginPin.setValue(pinStack);
+                }
+                break;
+            }
+        }
+    }
+
 
     private void setData() {
         activationData(authViewModel.storage.getActivationData()).observe(getViewLifecycleOwner(),
@@ -136,6 +176,14 @@ public class LoginFragment extends Fragment implements AppCallbacks {
 
         binding.forgotPin.setOnClickListener(view -> BindingAdapterKt.navigate(this,
                 authViewModel.navigationDataSource.navigateToPreResetPin()));
+
+        binding.privacy.setOnClickListener(v ->
+                openUrl("https://www.centenarybank.co.ug/privacy-policy"));
+    }
+
+    @Override
+    public void openUrl(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
     @Override
@@ -232,8 +280,7 @@ public class LoginFragment extends Fragment implements AppCallbacks {
 
                             }
                         });
-                    }
-                    else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
+                    } else if (responseDetails.getStatus().equals(StatusEnum.SUCCESS.getType())) {
                         setLoading(false);
                         new ShowToast(requireContext(), responseDetails.getMessage());
                         String mobile = Constants
@@ -283,6 +330,13 @@ public class LoginFragment extends Fragment implements AppCallbacks {
     @Override
     public void setBinding() {
         binding.setLifecycleOwner(getViewLifecycleOwner());
+        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                ((MainActivity) requireActivity()).requestHint(new AppCallbacks() {
+                    @Override
+                    public void telephone(String mobile) {
+                        binding.editMobile.setText(mobile);
+                    }
+                }), 200);
     }
 
     @Override

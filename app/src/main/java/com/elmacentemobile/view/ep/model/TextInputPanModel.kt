@@ -1,5 +1,6 @@
 package com.elmacentemobile.view.ep.model
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -18,6 +19,7 @@ import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.binding.setDefaultValue
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
+
 
 open class TextInputPanModel : DataBindingEpoxyModel() {
 
@@ -38,15 +40,22 @@ open class TextInputPanModel : DataBindingEpoxyModel() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun addChildren(binding: BlockTextInputPanLayoutBinding) {
         binding.data = form
         binding.callback = callbacks
         binding.storage = storage
-//        if (form.maxValue != null) {
-//            if (!TextUtils.isEmpty(form.maxValue)) {
-//                BaseClass.setMaxLength(binding.child, form.maxValue!!.toInt())
-//            }
-//        }
+        binding.child.setOnTouchListener { _, _ ->
+            return@setOnTouchListener binding.child.hasFocus()
+
+        }
+        binding.child.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.child.setSelection(
+                    binding.child.text!!.length
+                )
+            }
+        }
 
     }
 }
@@ -111,17 +120,20 @@ fun setPanTextWatcher(
     inputEdit.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
         override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-            if (!formControl.controlValue.isNullOrBlank()) {
-                if (charSequence.toString().length
-                    < formControl.controlValue!!.length
-                ) {
-                    inputEdit.setText(formControl.controlValue)
-                    inputEdit.setSelection(inputEdit.text!!.length)
-                }
-            }
         }
 
         override fun afterTextChanged(editable: Editable) {
+
+            if (!formControl.controlValue.isNullOrBlank()) {
+                val prefix = "${formControl.controlValue} "
+                val count = editable.toString().length
+                if (count < prefix.length) {
+                    inputEdit.setText(prefix)
+                    val selectionIndex = inputEdit.length()
+                    inputEdit.setSelection(selectionIndex)
+                }
+            }
+
             if (!TextHelper.isInputCorrect(
                     editable,
                     TextHelper.CARD_NUMBER_TOTAL_SYMBOLS,
@@ -139,49 +151,6 @@ fun setPanTextWatcher(
                         TextHelper.CARD_NUMBER_DIVIDER_POSITION, TextHelper.CARD_NUMBER_DIVIDER
                     )
                 )
-
-//                callbacks?.userInput(
-//                    InputData(
-//                        name = formControl.controlText,
-//                        key = formControl.serviceParamID,
-//                        value = Objects.requireNonNull(editable.toString())
-//                            .toString().replace("-", ""),
-//                        encrypted = formControl.isEncrypted,
-//                        mandatory = formControl.isMandatory,
-//                        validation = null
-//                    )
-//                )
-
-//                try {
-//                    val min = formControl.minValue!!.length
-//                    if (inputEdit.text!!.length < min) {
-//                        callbacks?.userInput(
-//                            InputData(
-//                                name = formControl.controlText,
-//                                key = formControl.serviceParamID,
-//                                value = Objects.requireNonNull(inputEdit.text.toString())
-//                                    .toString().replace("-", ""),
-//                                encrypted = formControl.isEncrypted,
-//                                mandatory = formControl.isMandatory,
-//                                validation = "minimum required characters $min"
-//                            )
-//                        )
-//                    } else {
-//                        callbacks?.userInput(
-//                            InputData(
-//                                name = formControl.controlText,
-//                                key = formControl.serviceParamID,
-//                                value = Objects.requireNonNull(inputEdit.text.toString())
-//                                    .toString().replace("-", ""),
-//                                encrypted = formControl.isEncrypted,
-//                                mandatory = formControl.isMandatory,
-//                                validation = null
-//                            )
-//                        )
-//                    }
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
 
             }
         }

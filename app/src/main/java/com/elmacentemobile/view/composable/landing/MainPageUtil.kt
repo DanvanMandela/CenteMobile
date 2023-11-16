@@ -2,7 +2,16 @@ package com.elmacentemobile.view.composable.landing
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.IconButton
@@ -32,7 +41,8 @@ data class PageData(
     val storage: StorageDataSource? = null,
     val callbacks: AppCallbacks? = null,
     val greetings: Greetings? = null,
-    val viewModel: HashMap<String, ViewModel>? = null
+    val viewModel: HashMap<String, ViewModel>? = null,
+    val extra: Any? = null
 )
 
 

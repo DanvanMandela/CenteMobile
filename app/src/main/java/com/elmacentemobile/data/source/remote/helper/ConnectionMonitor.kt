@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.annotation.RequiresApi
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +21,7 @@ class ConnectionMonitor @Inject constructor(@ApplicationContext context: Context
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun observe(): Flow<ConnectionObserver.ConnectionEnum> {
         return callbackFlow {
             val callback = object : ConnectivityManager.NetworkCallback() {

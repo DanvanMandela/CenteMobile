@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.util.Objects
 import javax.inject.Inject
 
 
@@ -35,6 +35,7 @@ class StaticDataViewModel @Inject constructor(
     val state = MutableStateFlow(PageState.Ui)
 
     val synchronizing = MutableStateFlow("Warming up...")
+
 
     fun fetchStaticData(context: Context): Single<DynamicResponse> {
         val iv = storageDataSource.deviceData.value!!.run

@@ -43,6 +43,11 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     }
 
     @Override
+    public Observable<List<FormControl>> linkedForms(String moduleID) {
+        return widgetDao.linkedForms(moduleID);
+    }
+
+    @Override
     public Observable<List<FormControl>> getFormControl(String moduleID, String seq) {
         return widgetDao.getFormControl(moduleID, seq);
     }

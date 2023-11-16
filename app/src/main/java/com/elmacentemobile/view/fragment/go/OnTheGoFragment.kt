@@ -283,7 +283,6 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
     override fun onNext(pos: Int) {
         if (pos == 11) {
             createOtp()
-
         }
         moveViewPager(pos)
     }
@@ -355,11 +354,12 @@ class ONTHGFragmentAdapter(
             4 -> IDDetailsFragment.onStep(move)
             5 -> ParentDetailsFragment.onStep(move)
             6 -> IncomeSourceFragment.onStep(move)
-            7 -> NextKinFragment.onStep(move)
-            8 -> AddressFragment.onStep(move)
-            9 -> OtherServiceFragment.onStep(move)
-            10 -> HearAboutFragment.onStep(move)
-            11 -> GoOTPFragment.onStep(move)
+            7 -> PlaceOfWorkAddressFragment.onStep(move)
+            8 -> NextKinFragment.onStep(move)
+            9 -> AddressFragment.onStep(move)
+            10 -> OtherServiceFragment.onStep(move)
+            11 -> HearAboutFragment.onStep(move)
+            12 -> GoOTPFragment.onStep(move)
             else -> {
                 throw Exception("Not implemented")
             }

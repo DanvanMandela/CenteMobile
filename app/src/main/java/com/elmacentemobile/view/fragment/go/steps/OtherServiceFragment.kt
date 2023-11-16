@@ -221,11 +221,11 @@ class OtherServiceFragment : Fragment(), AppCallbacks, PagerData, View.OnClickLi
     }
 
     override fun onClick(p: View?) {
-        if (p == binding.buttonBack) pagerData?.onBack(8)
+        if (p == binding.buttonBack) pagerData?.onBack(9)
         else if (p == binding.buttonNext) {
             if (validateFields()) {
                 saveState()
-                pagerData?.onNext(10)
+                pagerData?.onNext(11)
             }
         }
     }

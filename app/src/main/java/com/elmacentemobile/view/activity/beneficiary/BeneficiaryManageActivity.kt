@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.action.ActionControls
 import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.elmacentemobile.data.model.module.ModuleDataTypeConverter
 import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.Beneficiary
 import com.elmacentemobile.data.source.constants.StatusEnum
@@ -21,10 +22,13 @@ import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.callbacks.Confirm
 import com.elmacentemobile.view.activity.MainActivity
-import com.elmacentemobile.view.dialog.*
+import com.elmacentemobile.view.dialog.DialogData
+import com.elmacentemobile.view.dialog.InfoFragment
+import com.elmacentemobile.view.dialog.MainDialogData
+import com.elmacentemobile.view.dialog.NewAlertDialogFragment
+import com.elmacentemobile.view.dialog.SuccessDialogFragment
 import com.elmacentemobile.view.ep.controller.BeneficiaryList
 import com.elmacentemobile.view.ep.controller.MainDisplayController
-import com.elmacentemobile.view.ep.data.BusData
 import com.elmacentemobile.view.ep.data.Nothing
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
@@ -36,9 +40,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 
 @AndroidEntryPoint
@@ -80,10 +81,7 @@ class BeneficiaryManageActivity : AppCompatActivity(), AppCallbacks, Confirm {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    override fun onEvent(busData: BusData?) {
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
-    }
+
 
 
     private fun setToolbar() {
@@ -93,7 +91,6 @@ class BeneficiaryManageActivity : AppCompatActivity(), AppCallbacks, Confirm {
     }
 
     override fun setBinding() {
-        EventBus.getDefault().register(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_beneficiary_manage)
         binding.lifecycleOwner = this
 
@@ -102,7 +99,7 @@ class BeneficiaryManageActivity : AppCompatActivity(), AppCallbacks, Confirm {
 
     override fun setController() {
         controller = MainDisplayController(this)
-        data = EventBus.getDefault().getStickyEvent(Modules::class.java)
+        data = ModuleDataTypeConverter().to(intent.getStringExtra("beneficiary"))
         binding.toolbar.title = data?.moduleName
         stopShimmer()
         setData()

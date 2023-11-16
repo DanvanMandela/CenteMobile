@@ -82,10 +82,12 @@ open class PasswordLayoutModel : DataBindingEpoxyModel() {
                     binding.child.inputType =
                         InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 }
+
                 PasswordEnum.NUMERIC_PASSWORD.type -> {
                     binding.child.inputType =
                         InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 }
+
                 PasswordEnum.WEB_PASSWORD.type -> {
                     binding.child.inputType =
                         InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
@@ -125,4 +127,9 @@ fun TextInputEditText.setPasswordInputLayout(
     this.setText("")
     setDefaultValue(formControl, callbacks)
     callbacks?.onServerValue(formControl, this)
+//    callbacks?.onCustom(
+//        this,
+//        if (formControl?.maxValue.isNullOrBlank()) 15
+//        else formControl?.maxValue!!.toInt()
+//    )
 }

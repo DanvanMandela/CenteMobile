@@ -115,6 +115,16 @@
         app:popExitAnim="@anim/anim_slide_out_right"
         app:popUpToInclusive="true" />
 
+    <action
+        android:id="@+id/action_nav_privacy_policy_setting"
+        app:destination="@+id/policyAndPrivacyFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
 
     <action
         android:id="@+id/action_nav_notification"
@@ -542,6 +552,10 @@
 
 
     </fragment>
+    <fragment
+        android:id="@+id/policyAndPrivacyFragment"
+        android:name="com.elmacentemobile.view.composable.policy.PolicyAndPrivacyFragment"
+        android:label="PolicyAndPrivacyFragment" />
 
     <!--    Dialog-->
 </navigation>

@@ -22,7 +22,11 @@ import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.TextHelper
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.activity.MainActivity
+import com.elmacentemobile.view.activity.level.FalconHeavyActivity
 import com.elmacentemobile.view.binding.isOnline
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard
+import com.elmacentemobile.view.composable.keyboard.KeyFunctionEnum
 import com.elmacentemobile.view.dialog.AlertDialogFragment
 import com.elmacentemobile.view.dialog.DialogData
 import com.elmacentemobile.view.dialog.LoadingFragment
@@ -40,7 +44,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
+import java.util.Objects
+import java.util.Stack
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,6 +76,8 @@ class PrePinMobileFragment : Fragment(), AppCallbacks, OTP, View.OnClickListener
     private var countDownTimer: CountDownTimer? = null
 
     private var isOTP = false
+
+    private lateinit var pinStack: Stack<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +130,7 @@ class PrePinMobileFragment : Fragment(), AppCallbacks, OTP, View.OnClickListener
         setOnClick()
         setOTP()
         setTextWatchers()
+        setKeyboard()
         return binding.root.rootView
     }
 
@@ -574,6 +582,55 @@ class PrePinMobileFragment : Fragment(), AppCallbacks, OTP, View.OnClickListener
 
     override fun navigateUp() {
         pagerData?.completeStep()
+    }
+
+    override fun onType(data: CustomKeyData?) {
+        when (data?.type) {
+            KeyFunctionEnum.Push -> {
+                pinStack.push(data.str)
+                baseViewModel.pin.value = pinStack
+            }
+
+            KeyFunctionEnum.Pop -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.pop()
+                    baseViewModel.pin.value = pinStack
+                }
+
+            }
+
+            KeyFunctionEnum.Clear -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.clear()
+                    baseViewModel.pin.value = pinStack
+                }
+            }
+
+            else -> {
+                AppLogger.instance.appLog(
+                    FalconHeavyActivity::class.java.simpleName,
+                    "Nothing to do"
+                )
+            }
+        }
+    }
+
+    private fun setKeyboard() {
+        baseViewModel.pin.observe(viewLifecycleOwner) {
+            val builder = StringBuilder()
+            pinStack = it
+            for (s in pinStack) {
+                if (builder.length <= 4)
+                    builder.append(s)
+            }
+            binding.userFrame.editATMPin.setText(builder)
+        }
+        binding.userFrame.editATMPin.setOnClickListener {
+            CustomKeyboard.instanceExtra(
+                childFragmentManager,
+                this, 4
+            )
+        }
     }
 }
 

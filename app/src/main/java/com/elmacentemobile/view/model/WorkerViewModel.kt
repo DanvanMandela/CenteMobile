@@ -12,8 +12,14 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import com.elmacentemobile.data.model.ocr.ImageRequestData
 import com.elmacentemobile.data.model.ocr.ImageRequestDataTypeConverter
-import com.elmacentemobile.data.repository.dynamic.widgets.worker.*
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.ActionControlGETWorker
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.FormControlGETWorker
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.ModuleGETWorker
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.StaticDataGETWorker
+import com.elmacentemobile.data.repository.dynamic.widgets.worker.TipOfDayGetWorker
 import com.elmacentemobile.data.repository.dynamic.work.DynamicGETWorker
+import com.elmacentemobile.data.repository.ip.work.DeviceIpDetailsWorker
+import com.elmacentemobile.data.repository.ip.work.DevicePublicIpWorker
 import com.elmacentemobile.data.repository.ocr.worker.IDProcessingWorker
 import com.elmacentemobile.data.repository.ocr.worker.ImageProcessingWorker
 import com.elmacentemobile.data.source.pref.StorageDataSource
@@ -37,6 +43,21 @@ class WorkerViewModel @Inject constructor(
     private val worker: WorkMangerDataSource,
     private val dataSource: StorageDataSource
 ) : ViewModel() {
+
+    fun ipBackground() {
+        val workWorker = OneTimeWorkRequestBuilder<DevicePublicIpWorker>()
+        var continuation = worker.getWorkManger()
+            .beginUniqueWork(
+                WorkerCommons.TAG_DATA_WORKER,
+                ExistingWorkPolicy.REPLACE,
+                workWorker.build()
+            )
+        val details = OneTimeWorkRequestBuilder<DeviceIpDetailsWorker>()
+            .setConstraints(worker.getConstraint())
+            .addTag(WorkerCommons.TAG_OUTPUT)
+        continuation = continuation.then(details.build())
+        continuation.enqueue()
+    }
 
 
     fun onWidgetData(owner: LifecycleOwner?, status: WorkStatus?) {
@@ -183,6 +204,8 @@ class WorkerViewModel @Inject constructor(
         }
 
     }
+
+
 
 
 }

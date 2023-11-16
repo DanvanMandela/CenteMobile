@@ -325,5 +325,9 @@ class NavigationDirection @Inject constructor() : NavigationDataSource {
         )
     }
 
+    override fun navigateToPolicy(): NavDirections {
+        return ActionOnlyNavDirections(R.id.action_nav_privacy_policy_setting)
+    }
+
 
 }

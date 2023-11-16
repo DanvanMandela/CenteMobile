@@ -6,11 +6,25 @@ import com.elmacentemobile.data.model.DeviceData
 import com.elmacentemobile.data.model.converter.IVData
 import com.elmacentemobile.data.model.static_data.OnlineAccountProduct
 import com.elmacentemobile.data.model.static_data.StaticDataDetails
-import com.elmacentemobile.data.model.user.*
+import com.elmacentemobile.data.model.user.Accounts
+import com.elmacentemobile.data.model.user.ActivationData
+import com.elmacentemobile.data.model.user.AlertServices
+import com.elmacentemobile.data.model.user.Beneficiary
+import com.elmacentemobile.data.model.user.ModuleDisable
+import com.elmacentemobile.data.model.user.ModuleHide
 import com.elmacentemobile.data.source.sync.SyncData
 import com.elmacentemobile.view.dialog.DayTipData
-import com.elmacentemobile.view.fragment.go.steps.*
+import com.elmacentemobile.view.fragment.go.steps.AddressState
+import com.elmacentemobile.view.fragment.go.steps.CustomerProduct
+import com.elmacentemobile.view.fragment.go.steps.HearAboutState
+import com.elmacentemobile.view.fragment.go.steps.IDDetails
+import com.elmacentemobile.view.fragment.go.steps.IncomeData
+import com.elmacentemobile.view.fragment.go.steps.NextKinData
+import com.elmacentemobile.view.fragment.go.steps.OtherServiceData
+import com.elmacentemobile.view.fragment.go.steps.ParentDetails
+import com.elmacentemobile.view.fragment.go.steps.WorkAddressState
 import com.elmacentemobile.view.fragment.map.MapData
+import com.elmacentemobile.view.model.WidgetViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 interface StorageDataSource {
@@ -94,6 +108,10 @@ interface StorageDataSource {
     fun setAddressState(value: AddressState?)
     val addressState: StateFlow<AddressState?>
     fun deleteAddress()
+
+    fun workAddressState(value: WorkAddressState?)
+    val workAddressState: StateFlow<WorkAddressState?>
+    fun workAddressState()
 
 
     fun setCurrentPosition(value: Int?)
@@ -191,6 +209,10 @@ interface StorageDataSource {
 
     fun accountType(value: String?)
     val accountType: StateFlow<String?>
+
+
+    fun baseVewModel(value: WidgetViewModel)
+    val baseVewModel: StateFlow<WidgetViewModel?>
 
 }
 

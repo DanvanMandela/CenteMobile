@@ -37,6 +37,8 @@ import com.elmacentemobile.util.ShowToast;
 import com.elmacentemobile.util.callbacks.AppCallbacks;
 import com.elmacentemobile.view.activity.MainActivity;
 import com.elmacentemobile.view.binding.BindingAdapterKt;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData;
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.dialog.LoadingFragment;
@@ -53,6 +55,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -73,6 +76,7 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
     private WorkerViewModel workerViewModel;
     private final CompositeDisposable subscribe = new CompositeDisposable();
 
+    private Stack<String> pinStack;
 
     public ForgotPinFragment() {
         // Required empty public constructor
@@ -103,7 +107,40 @@ public class ForgotPinFragment extends Fragment implements AppCallbacks, View.On
         setViewModel();
         setOnClick();
         setTextWatchers();
+        showKeyBoard();
         return binding.getRoot().getRootView();
+    }
+
+    private void showKeyBoard() {
+        binding.editATMPin.setOnClickListener((v ->
+                CustomKeyboard.Companion.instance(getChildFragmentManager(),
+                        this)));
+        baseViewModel.pin.observe(getViewLifecycleOwner(), strings -> {
+            pinStack = strings;
+            StringBuilder builder = new StringBuilder();
+            for (String s : strings) {
+                builder.append(s);
+            }
+            binding.editATMPin.setText(builder);
+        });
+    }
+
+    @Override
+    public void onType(CustomKeyData data) {
+        switch (data.getType()) {
+            case Push: {
+                pinStack.push(data.getStr());
+                baseViewModel.pin.setValue(pinStack);
+                break;
+            }
+            case Pop: {
+                if (!pinStack.isEmpty()) {
+                    pinStack.pop();
+                    baseViewModel.pin.setValue(pinStack);
+                }
+                break;
+            }
+        }
     }
 
     private void setTextWatchers() {

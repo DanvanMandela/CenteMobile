@@ -198,6 +198,15 @@ fun extractOTP(str: String?): String {
     } else ""
 }
 
+fun String.otpExtract(): String? {
+    val pattern = Pattern.compile("(|^)\\d{6}")
+    val matcher = pattern.matcher(this)
+    if (matcher.find()) {
+        return matcher.group(0)
+    }
+    return String()
+}
+
 @Entity(tableName = "notifications")
 @Parcelize
 data class NotificationData(

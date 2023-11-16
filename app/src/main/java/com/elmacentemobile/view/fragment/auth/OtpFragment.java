@@ -119,16 +119,21 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                     && Objects.requireNonNull(data.getMobile()).length() > 8) {
                 String mobile = data.getMobile();
                 String code = mobile.substring(0, 3);
-                if (code.contains("256") && Constants.Data.AUTO_OTP) {
-                    binding.verificationCodeEditText.setEnabled(false);
+                if (code.contains("256") && !Constants.Data.TEST) {
+                    if (!Constants.Data.AUTO_OTP)
+                        binding.verificationCodeEditText.setEnabled(false);
                 }
             }
         }
     }
 
     private void setOTP() {
+        ((MainActivity) requireActivity()).initSMSBroadCast();
         LiveData<String> otp = BindingAdapterKt.otpLive(baseViewModel.dataSource.getOtp());
-        otp.observe(getViewLifecycleOwner(), v -> binding.verificationCodeEditText.setText(v));
+        otp.observe(getViewLifecycleOwner(), v -> {
+            if (!v.isEmpty())
+                binding.verificationCodeEditText.setText(v);
+        });
     }
 
 
@@ -178,6 +183,8 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
     private void resendOTP() {
         ((MainActivity) requireActivity()).initSMSBroadCast();
         try {
+            authViewModel.storage.setOtp("");
+            binding.verificationCodeEditText.setText("");
             setLoading(true);
             subscribe.add(authViewModel.activateAccount(data.getMobile(),
                             data.getPin(),

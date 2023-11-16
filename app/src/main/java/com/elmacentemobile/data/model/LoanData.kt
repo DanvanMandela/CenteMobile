@@ -24,7 +24,7 @@ data class LoanData(
 
     @field:SerializedName("Description")
     @field:Expose
-    var description: String,
+    var description: String
 ) {
     override fun toString(): String {
         return description

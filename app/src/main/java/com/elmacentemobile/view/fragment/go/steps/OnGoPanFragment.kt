@@ -6,8 +6,12 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -25,7 +29,11 @@ import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.TextHelper
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.activity.MainActivity
+import com.elmacentemobile.view.activity.level.FalconHeavyActivity
 import com.elmacentemobile.view.binding.isOnline
+import com.elmacentemobile.view.composable.keyboard.CustomKeyData
+import com.elmacentemobile.view.composable.keyboard.CustomKeyboard
+import com.elmacentemobile.view.composable.keyboard.KeyFunctionEnum
 import com.elmacentemobile.view.dialog.AlertDialogFragment
 import com.elmacentemobile.view.dialog.DialogData
 import com.elmacentemobile.view.dialog.LoadingFragment
@@ -43,7 +51,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
+import java.util.Objects
+import java.util.Stack
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,6 +84,8 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     private var countDownTimer: CountDownTimer? = null
 
     private var isOTP = false
+
+    private lateinit var pinStack: Stack<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +154,7 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
         setTextWatchers()
         setOnClick()
         setOTP()
+        setKeyboard()
         return binding.root.rootView
     }
 
@@ -265,8 +277,101 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
     }
 
     override fun navigateUp() {
-        dialog?.dismiss()
-        callbacks.onSuccess()
+        checkCustomerProduct()
+    }
+
+    private fun checkCustomerProduct() {
+        setLoading(true)
+        val data = JSONObject()
+        val prod = baseViewModel.dataSource.customerProduct.value
+        val prods = baseViewModel.dataSource.productAccountData.value
+        val p = prods?.find { it?.id == prod?.product?.value }?.description
+        AppLogger.instance.appLog("PROD: ", "$p")
+        data.put(
+            "BANKACCOUNTID",
+            binding.editAccountNumber.text.toString()
+        )
+        data.put("INFOFIELD1", prod?.product?.value)
+        data.put("INFOFIELD2", p)
+        data.put("INFOFIELD3", prod?.currency?.value)
+        composite.add(
+            baseViewModel.checkProductExist(data, requireContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ res: DynamicResponse? ->
+                    setOnProductSuccess(res)
+                }, { obj: Throwable -> obj.printStackTrace() })
+        )
+    }
+
+    private fun setOnProductSuccess(res: DynamicResponse?) {
+        try {
+            AppLogger().appLog(
+                "RESET:PIN:Response",
+                BaseClass.decryptLatest(
+                    res!!.response,
+                    baseViewModel.dataSource.deviceData.value!!.device,
+                    true,
+                    baseViewModel.dataSource.deviceData.value!!.run
+                )
+            )
+            if (BaseClass.nonCaps(res.response) != StatusEnum.ERROR.type) {
+                try {
+                    val moduleData = DynamicDataResponseTypeConverter().to(
+                        BaseClass.decryptLatest(
+                            res.response,
+                            baseViewModel.dataSource.deviceData.value!!.device,
+                            true,
+                            baseViewModel.dataSource.deviceData.value!!.run
+                        )
+                    )
+                    AppLogger.instance.appLog(
+                        "${OnGoPanFragment::class.java.simpleName}:E:ValidPin",
+                        Gson().toJson(moduleData)
+                    )
+                    if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.SUCCESS.type) {
+                        setLoading(false)
+                        SuccessDialogFragment.showDialog(
+                            DialogData(
+                                title = R.string.success,
+                                subTitle = moduleData?.message!!,
+                                R.drawable.success
+                            ),
+                            childFragmentManager, object : AppCallbacks {
+                                override fun navigateUp() {
+                                    dialog?.dismiss()
+                                    callbacks.onSuccess()
+                                }
+                            }
+                        )
+
+                    } else if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.FAILED.type) {
+                        setLoading(false)
+                        showError(moduleData?.message!!)
+                    } else if (BaseClass.nonCaps(moduleData?.status) == StatusEnum.TOKEN.type) {
+                        workerViewModel.routeData(viewLifecycleOwner,
+                            object : WorkStatus {
+                                override fun workDone(b: Boolean) {
+                                    if (b) {
+                                        setLoading(false)
+                                        checkCustomerProduct()
+                                    }
+                                }
+                            })
+                    } else {
+                        setLoading(false)
+                        showError(moduleData?.message!!)
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            showError(getString(R.string.something_))
+            setLoading(false)
+        }
+
     }
 
     private fun setLoading(b: Boolean) {
@@ -603,5 +708,53 @@ class OnGoPanFragment : BottomSheetDialogFragment(), AppCallbacks, OTP, View.OnC
         }
     }
 
+    override fun onType(data: CustomKeyData?) {
+        when (data?.type) {
+            KeyFunctionEnum.Push -> {
+                pinStack.push(data.str)
+                baseViewModel.pin.value = pinStack
+            }
+
+            KeyFunctionEnum.Pop -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.pop()
+                    baseViewModel.pin.value = pinStack
+                }
+
+            }
+
+            KeyFunctionEnum.Clear -> {
+                if (pinStack.isNotEmpty()) {
+                    pinStack.clear()
+                    baseViewModel.pin.value = pinStack
+                }
+            }
+
+            else -> {
+                AppLogger.instance.appLog(
+                    FalconHeavyActivity::class.java.simpleName,
+                    "Nothing to do"
+                )
+            }
+        }
+    }
+
+    private fun setKeyboard() {
+        baseViewModel.pin.observe(viewLifecycleOwner) {
+            val builder = StringBuilder()
+            pinStack = it
+            for (s in pinStack) {
+                if (builder.length <= 4)
+                    builder.append(s)
+            }
+            binding.editATMPin.setText(builder)
+        }
+        binding.editATMPin.setOnClickListener {
+            CustomKeyboard.instanceExtra(
+                childFragmentManager,
+                this, 4
+            )
+        }
+    }
 
 }

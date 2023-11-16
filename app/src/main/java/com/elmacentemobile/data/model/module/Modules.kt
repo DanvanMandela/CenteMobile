@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.IgnoredOnParcel
@@ -135,4 +137,25 @@ class Modules(
     @field:Expose
     var message: String? = "Module disabled"
 
+}
+
+class ModuleDataTypeConverter {
+
+
+    fun from(data: Modules?): String? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.toJson(data, Modules::class.java)
+    }
+
+    fun to(data: String?): Modules? {
+        return if (data == null) {
+            null
+        } else gsonBuilder.fromJson(data, Modules::class.java)
+    }
+
+    companion object {
+        private val gsonBuilder: Gson =
+            GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    }
 }

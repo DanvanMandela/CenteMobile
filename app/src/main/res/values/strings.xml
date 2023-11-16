@@ -198,7 +198,7 @@
     <string name="occupation">Occupation</string>
     <string name="prof_status">Professional Status</string>
     <string name="income_per_">Income/Annam</string>
-    <string name="work_place">Place Of Work</string>
+    <string name="work_place">Address Of Work</string>
     <string name="nature_business">Nature Of Business/Activity Sector</string>
     <string name="p_employ">Period Of Employment</string>
     <string name="e_name">Employer\'s Name</string>
@@ -315,7 +315,6 @@
     <string name="enable_">Enable</string>
     <string name="pin_required_invalid">"Pin must be more that 3 characters"</string>
     <string name="disable_">Disable</string>
-    <string name="secret_key_name">dooms@day4400</string>
     <string name="auth_">Authentication</string>
     <string name="disable_fingerprint">Disable fingerprint authentication</string>
     <string name="enable_fingerprint">Enable fingerprint authentication</string>
@@ -436,6 +435,22 @@
     <string name="unable_load_image">Unable to load image</string>
     <string name="crop">Crop</string>
     <string name="crop_image">Crop Image</string>
+    <string name="privacy_settings">Privacy Setting</string>
+    <string name="capture_perfomance_data">Capture performance data</string>
+    <string name="allow_performance_capture">Allow CenteMobile to capture performance data related to button click and web request that are triggered along my journey through this app.This enables CenteMobile to analyze application usage,improve performance,and address any trouble that may  arise</string>
+    <string name="anonymize_personal_data">Anonymize personal data(on/of)</string>
+    <string name="don_include_my_personal_data">Don\'t include my personal data(for example,my email address) in report data</string>
+    <string name="crash_report">Crash  reporting</string>
+    <string name="allow_crash_report">Allow CenteMobile to collect crash reports,including stack traces and error messages.CenteMobile uses this information to resolve problems that you may encounter while using this app</string>
+    <string name="save_">Save</string>
+    <string name="by_accepting">By logging in, you are agreeing to the</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="work_place_address_">Work Address</string>
+    <string name="street_">Street</string>
+    <string name="zip_country">Zip Code</string>
+    <string name="enter_street_">Enter name of street</string>
+    <string name="enter_city_work_">Enter name of city</string>
+    <string name="enter_zip_code">Enter zip code</string>
 
 
 </resources>

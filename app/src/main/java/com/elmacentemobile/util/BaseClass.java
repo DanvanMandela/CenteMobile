@@ -70,6 +70,29 @@ public class BaseClass {
         }
     }
 
+    public static String generateAlphaNumericString(int n) {
+
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+
+            int index
+                    = (int) (AlphaNumericString.length()
+                    * Math.random());
+
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
+
     public static String newEncrypt(String text) {
         String data = "";
         try {
@@ -225,28 +248,6 @@ public class BaseClass {
         return Math.abs((value / total) * 100);
     }
 
-    public static String generateAlphaNumericString(int n) {
-
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "0123456789"
-                + "abcdefghijklmnopqrstuvxyz";
-
-
-        StringBuilder sb = new StringBuilder(n);
-
-        for (int i = 0; i < n; i++) {
-
-
-            int index
-                    = (int) (AlphaNumericString.length()
-                    * Math.random());
-
-            sb.append(AlphaNumericString
-                    .charAt(index));
-        }
-
-        return sb.toString();
-    }
 
     public static String wordFormat(String value) {
 
@@ -349,8 +350,7 @@ public class BaseClass {
 
     public static String decode64(String s) {
         byte[] decoded = Base64.decode(s, Base64.DEFAULT);
-        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
-        return decodedStr;
+        return new String(decoded, StandardCharsets.UTF_8);
     }
 
     public static String decodeBase64(String coded) {
