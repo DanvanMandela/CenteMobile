@@ -453,4 +453,23 @@
     <string name="enter_zip_code">Enter zip code</string>
 
 
+    <string name="additional_info_">Additional Info</string>
+    <string name="in_out_ug">Do you work In or Out of Uganda</string>
+    <string name="yes_">Yes</string>
+    <string name="no_">No</string>
+    <string name="source_income_">Source of funds</string>
+    <string name="turn_over_">Account turnover</string>
+    <string name="citizenship_">Citizenship</string>
+    <string name="residence_">Residence</string>
+    <string name="opening_deposit_">Opening Deposit</string>
+    <string name="monthly_income_">Monthly Income</string>
+    <string name="select_work_location_">Select work location</string>
+    <string name="select_source_fund">Select source of funds</string>
+    <string name="select_account_tunover_">Select account turnover\n\n</string>
+    <string name="select_citizenship_">Select citizenship</string>
+    <string name="select_residence_">Select Residence</string>
+    <string name="select_opening_account_">Select opening deposit</string>
+    <string name="select_monthly_income_">Select monthly income</string>
+
+
 </resources>
