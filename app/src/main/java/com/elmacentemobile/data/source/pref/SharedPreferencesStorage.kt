@@ -30,6 +30,8 @@ import com.elmacentemobile.data.source.sync.SyncDataTypeConverter
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.dialog.DayTipDataConverter
+import com.elmacentemobile.view.fragment.go.steps.AdditionalInfoData
+import com.elmacentemobile.view.fragment.go.steps.AdditionalInfoDataConverter
 import com.elmacentemobile.view.fragment.go.steps.AddressState
 import com.elmacentemobile.view.fragment.go.steps.AddressStateTypeConverter
 import com.elmacentemobile.view.fragment.go.steps.CustomerProduct
@@ -84,6 +86,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         deleteBeneficiary()
         deleteAccounts()
         deleteAlerts()
+        additionalData()
     }
 
     private val _login = MutableStateFlow(sharedPreferences.getBoolean(TAG_LOGIN, false))
@@ -520,7 +523,6 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
                 )
             )
         )
-
 
 
     override val workAddressState: StateFlow<WorkAddressState?>
@@ -1252,6 +1254,39 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     }
 
 
+    private var _additionalData: MutableStateFlow<AdditionalInfoData?> =
+        MutableStateFlow(
+            AdditionalInfoDataConverter().convert(
+                sharedPreferences.getString(
+                    TAG_ADDITIONAL_INFO_TYPE,
+                    ""
+                )
+            )
+        )
+
+    override val additionalData: StateFlow<AdditionalInfoData?>
+        get() = _additionalData
+
+    override fun additionalData(value: AdditionalInfoData?) {
+        _additionalData.value = value
+        with(sharedPreferences.edit()) {
+            putString(
+                TAG_ADDITIONAL_INFO_TYPE,
+                AdditionalInfoDataConverter().convert(value)
+            )
+            apply()
+        }
+    }
+
+
+    override fun additionalData() {
+        _additionalData.value = null
+        with(sharedPreferences.edit()) {
+            remove(TAG_ADDITIONAL_INFO_TYPE)
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val MIGRATION_PREF = "JamiiBoraMobilePrefs"
@@ -1335,5 +1370,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_LANGUAGE = "language"
 
         private const val TAG_ACCOUNT_TYPE = "accountType"
+
+        private const val TAG_ADDITIONAL_INFO_TYPE = "addInfo"
     }
 }

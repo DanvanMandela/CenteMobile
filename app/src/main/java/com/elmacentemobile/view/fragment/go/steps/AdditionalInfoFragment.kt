@@ -58,7 +58,8 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
     private lateinit var residence: AutoTextArrayAdapter
     private lateinit var openingDeposit: AutoTextArrayAdapter
     private lateinit var monthlyIncome: AutoTextArrayAdapter
-
+    private lateinit var location: AutoTextArrayAdapter
+    private lateinit var locationWork: AutoTextArrayAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -70,8 +71,62 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
     }
 
     override fun setState() {
+        val sData = widgetViewModel.storageDataSource.additionalData.value
+        if (sData != null) {
+            if (sData.work != null) stateWork(sData.work)
+            if (sData.sourceFund != null) stateSourceFund(sData.sourceFund)
+            if (sData.accountTurnover != null) stateAccountTurnover(sData.accountTurnover)
+            if (sData.citizenship != null) stateCitizenship(sData.citizenship)
+            if (sData.residence != null) stateResidence(sData.residence)
+            if (sData.openingDeposit != null) stateOpeningDeposit(sData.openingDeposit)
+            if (sData.monthlyIncome != null) stateMonthlyIncome(sData.monthlyIncome)
+
+        }
+    }
+
+    private fun stateMonthlyIncome(data: TwoDMap) {
+        val value = monthlyIncome.getItem(data.key!!)
+        binding.autoMonth.setText(value?.description, false)
+        hashMap["monthlyIncome"] = data
+    }
+
+    private fun stateOpeningDeposit(data: TwoDMap) {
+        val value = openingDeposit.getItem(data.key!!)
+        binding.autoOpening.setText(value?.description, false)
+        hashMap["openingDeposit"] = data
+    }
+
+    private fun stateResidence(data: TwoDMap) {
+        val value = residence.getItem(data.key!!)
+        binding.autoResidence.setText(value?.description, false)
+        hashMap["residence"] = data
+    }
+
+    private fun stateCitizenship(citizen: TwoDMap) {
+        val value = citizenship.getItem(citizen.key!!)
+        binding.autoCitizen.setText(value?.description, false)
+        hashMap["citizenship"] = citizen
+    }
+
+    private fun stateAccountTurnover(account: TwoDMap) {
+        val value = accountTurnover.getItem(account.key!!)
+        binding.autoTurnover.setText(value?.description, false)
+        hashMap["accountTurnover"] = account
 
     }
+
+    private fun stateSourceFund(source: TwoDMap) {
+        val value = sourceFund.getItem(source.key!!)
+        binding.autoWork.setText(value?.description, false)
+        hashMap["sourceFund"] = source
+    }
+
+    private fun stateWork(work: TwoDMap) {
+        val value = workAdapter.getItem(work.key!!)
+        binding.autoWork.setText(value?.description, false)
+        hashMap["work"] = work
+    }
+
     override fun onResume() {
         super.onResume()
         requireView().isFocusableInTouchMode = true
@@ -118,7 +173,7 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     private fun setMonthlyIncome(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "OCCUPATION" }
+            val pData = p.filter { a -> a?.id == "MONTHLYI" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             monthlyIncome = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoMonth.setAdapter(monthlyIncome)
@@ -134,7 +189,7 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     private fun setOpeningDeposit(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "OCCUPATION" }
+            val pData = p.filter { a -> a?.id == "OPENINGD" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             openingDeposit = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoOpening.setAdapter(openingDeposit)
@@ -150,7 +205,7 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     private fun setResidence(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "OCCUPATION" }
+            val pData = p.filter { a -> a?.id == "RESIDENCE" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             residence = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoResidence.setAdapter(residence)
@@ -160,13 +215,52 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
                         key = p2,
                         value = residence.getItem(p2)?.subCodeID
                     )
+                    setLocationRes(residence.getItem(p2)?.subCodeID, p)
+                }
+        }
+    }
+
+    private fun setLocationRes(subCodeID: String?, p: List<StaticDataDetails?>) {
+        if (subCodeID == "NRUG") binding.countryLay.hint = "Country of Residence"
+        else binding.countryLay.hint = "District of Residence"
+        binding.autoCountry.setText("", false)
+        val pData = p.filter { a -> a?.relationID == subCodeID }.distinct()
+        val sorted = pData.sortedBy { a -> a?.description }
+        if (sorted.isNotEmpty()) {
+            location = AutoTextArrayAdapter(requireContext(), 0, sorted)
+            binding.autoCountry.setAdapter(location)
+            binding.autoCountry.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, p2, _ ->
+                    hashMap[if (subCodeID == "NRUG") "countryRes" else "districtRes"] = TwoDMap(
+                        key = p2,
+                        value = location.getItem(p2)?.subCodeID
+                    )
+                }
+        }
+    }
+
+    private fun setLocationWork(subCodeID: String?, p: List<StaticDataDetails?>) {
+        if (subCodeID == "OUTUG") binding.countryLay.hint = "Select work District"
+        else binding.countryWorkLay.hint = "Select Work District"
+        binding.autoCountryWork.setText("", false)
+        val pData = p.filter { a -> a?.relationID == subCodeID }.distinct()
+        val sorted = pData.sortedBy { a -> a?.description }
+        if (sorted.isNotEmpty()) {
+            locationWork = AutoTextArrayAdapter(requireContext(), 0, sorted)
+            binding.autoCountryWork.setAdapter(locationWork)
+            binding.autoCountryWork.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, p2, _ ->
+                    hashMap[if (subCodeID == "OUTUG") "countryWork" else "districtWork"] = TwoDMap(
+                        key = p2,
+                        value = locationWork.getItem(p2)?.subCodeID
+                    )
                 }
         }
     }
 
     private fun setCitizenship(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "OCCUPATION" }
+            val pData = p.filter { a -> a?.id == "CITIZEN" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             citizenship = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoCitizen.setAdapter(citizenship)
@@ -182,7 +276,7 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     private fun setAccountTurnover(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "TODO" }
+            val pData = p.filter { a -> a?.id == "CSPEP" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             accountTurnover = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoTurnover.setAdapter(accountTurnover)
@@ -198,7 +292,7 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     private fun setSourceFund(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "TODO" }
+            val pData = p.filter { a -> a?.id == "OCCUPATION" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             sourceFund = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoIncome.setAdapter(sourceFund)
@@ -213,9 +307,10 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
 
     }
 
+
     private fun setWork(p: List<StaticDataDetails?>?) {
         if (p != null) {
-            val pData = p.filter { a -> a?.id == "TODO" }
+            val pData = p.filter { a -> a?.id == "WORKPLACE" }.distinct()
             val sorted = pData.sortedBy { a -> a?.description }
             workAdapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoWork.setAdapter(workAdapter)
@@ -225,13 +320,14 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
                         key = p2,
                         value = workAdapter.getItem(p2)?.subCodeID
                     )
+                    setLocationWork(workAdapter.getItem(p2)!!.subCodeID, p)
                 }
         }
     }
 
     override fun saveState() {
         statePersist()
-        //widgetViewModel.storageDataSource.additionalData(stateData)
+        widgetViewModel.storageDataSource.additionalData(stateData)
     }
 
     override fun statePersist() {
@@ -242,7 +338,11 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
             citizenship = hashMap["citizenship"],
             residence = hashMap["residence"],
             openingDeposit = hashMap["openingDeposit"],
-            monthlyIncome = hashMap["monthlyIncome"]
+            monthlyIncome = hashMap["monthlyIncome"],
+            countryRes = hashMap["countryRes"],
+            districtRes = hashMap["districtRes"],
+            countryWork = hashMap["countryWork"],
+            districtWork = hashMap["districtWork"]
         )
     }
 
@@ -307,7 +407,6 @@ class AdditionalInfoFragment : Fragment(), AppCallbacks, View.OnClickListener, O
     }
 
 
-
     companion object {
         private var pagerData: PagerData? = null
 
@@ -368,6 +467,30 @@ data class AdditionalInfoData(
     @field:SerializedName("monthlyIncome")
     @field:Expose
     val monthlyIncome: TwoDMap?,
+    @field:SerializedName("workLocation")
+    @field:Expose
+    val workLocation: TwoDMap? = null,
+    @field:SerializedName("countryRes")
+    @field:Expose
+    val countryRes: TwoDMap? = null,
+    @field:SerializedName("districtRes")
+    @field:Expose
+    val districtRes: TwoDMap? = null,
+    @field:SerializedName("countryWork")
+    @field:Expose
+    val countryWork: TwoDMap? = null,
+    @field:SerializedName("districtWork")
+    @field:Expose
+    val districtWork: TwoDMap? = null
+) : Parcelable
+
+
+@Parcelize
+data class Location(
+    @field:SerializedName("location")
+    @field:Expose
+    val location: TwoDMap,
+    val where: Boolean
 ) : Parcelable
 
 class AdditionalInfoDataConverter {

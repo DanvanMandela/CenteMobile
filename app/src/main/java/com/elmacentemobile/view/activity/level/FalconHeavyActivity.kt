@@ -191,6 +191,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
 
+
     private fun listenToInActivity() {
         val state = baseViewModel.dataSource.inActivity.asLiveData()
         state.observe(this) {

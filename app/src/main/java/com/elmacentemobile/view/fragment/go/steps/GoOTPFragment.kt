@@ -472,7 +472,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
 
     override fun onClick(p: View?) {
         if (p == binding.resendButton) resendOTP()
-        else if (p == binding.buttonBack) pagerData?.onBack(11)
+        else if (p == binding.buttonBack) pagerData?.onBack(12)
         else if (p == binding.buttonNext) {
             if (validateFields()) validateOtp()
         }

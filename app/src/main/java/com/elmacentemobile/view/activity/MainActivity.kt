@@ -372,7 +372,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     private fun setMigration() {
         if (Constants.Data.ACTIVATED) {
-            val user = users[0]
+            val user = users[1]
             baseViewModel.dataSource.setActivated(true)
             baseViewModel.dataSource.setActivationData(
                 ActivationData(

@@ -14,6 +14,7 @@ import com.elmacentemobile.data.model.user.ModuleDisable
 import com.elmacentemobile.data.model.user.ModuleHide
 import com.elmacentemobile.data.source.sync.SyncData
 import com.elmacentemobile.view.dialog.DayTipData
+import com.elmacentemobile.view.fragment.go.steps.AdditionalInfoData
 import com.elmacentemobile.view.fragment.go.steps.AddressState
 import com.elmacentemobile.view.fragment.go.steps.CustomerProduct
 import com.elmacentemobile.view.fragment.go.steps.HearAboutState
@@ -213,6 +214,12 @@ interface StorageDataSource {
 
     fun baseVewModel(value: WidgetViewModel)
     val baseVewModel: StateFlow<WidgetViewModel?>
+
+
+
+    fun additionalData(value: AdditionalInfoData?)
+    val additionalData: StateFlow<AdditionalInfoData?>
+    fun additionalData()
 
 }
 

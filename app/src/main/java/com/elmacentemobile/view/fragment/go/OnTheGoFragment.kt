@@ -347,7 +347,7 @@ class ONTHGFragmentAdapter(
 
     private fun setFragment(position: Int): Fragment {
         return when (position) {
-            0 -> OnTheLandingFragment.onStep(move)
+            0 -> AdditionalInfoFragment.onStep(move)
             1 -> CustomerProductFragment.onStep(move)
             2 -> TermsAndConditionFragment.newInstance(move)
             3 -> IDFragment.onStep(move)
@@ -359,7 +359,8 @@ class ONTHGFragmentAdapter(
             9 -> AddressFragment.onStep(move)
             10 -> OtherServiceFragment.onStep(move)
             11 -> HearAboutFragment.onStep(move)
-            12 -> GoOTPFragment.onStep(move)
+            12 -> AdditionalInfoFragment.onStep(move)
+            13 -> GoOTPFragment.onStep(move)
             else -> {
                 throw Exception("Not implemented")
             }
@@ -368,7 +369,7 @@ class ONTHGFragmentAdapter(
 
 
     companion object {
-        private const val TABS = 12
+        private const val TABS = 14
     }
 }
 
