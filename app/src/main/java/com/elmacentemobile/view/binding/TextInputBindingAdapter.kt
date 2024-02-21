@@ -37,7 +37,8 @@ fun TextInputEditText.setHidden(
                 key = formControl.serviceParamID,
                 value = trimCommaOfString(value),
                 encrypted = formControl.isEncrypted,
-                mandatory = formControl.isMandatory
+                mandatory = formControl.isMandatory,
+                linked = !formControl.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -52,7 +53,8 @@ fun TextInputEditText.setHidden(
                     key = formControl.serviceParamID,
                     value = formControl.controlValue,
                     encrypted = formControl.isEncrypted,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         } else setDefaultWatcher(this, callbacks, formControl)
@@ -81,7 +83,8 @@ fun TextInputEditText.setInputLayout(
                 key = formControl.serviceParamID,
                 value = trimCommaOfString(value),
                 encrypted = formControl.isEncrypted,
-                mandatory = formControl.isMandatory
+                mandatory = formControl.isMandatory,
+                linked = !formControl.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -99,7 +102,8 @@ fun TextInputEditText.setInputLayout(
                 key = formControl.serviceParamID,
                 value = formControl.controlValue,
                 encrypted = formControl.isEncrypted,
-                mandatory = formControl.isMandatory
+                mandatory = formControl.isMandatory,
+                linked = !formControl.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -128,7 +132,8 @@ fun setDefaultWatcher(
                             value = trimCommaOfString(e.toString()),
                             encrypted = formControl.isEncrypted,
                             mandatory = formControl.isMandatory,
-                            validation = "Minimum number of characters is $min"
+                            validation = "Minimum number of characters is $min",
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 } else {
@@ -139,7 +144,8 @@ fun setDefaultWatcher(
                             value = trimCommaOfString(e.toString()),
                             encrypted = formControl.isEncrypted,
                             mandatory = formControl.isMandatory,
-                            validation = null
+                            validation = null,
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -150,7 +156,8 @@ fun setDefaultWatcher(
                     value = trimCommaOfString(e.toString()),
                     encrypted = formControl.isEncrypted,
                     mandatory = formControl.isMandatory,
-                    validation = null
+                    validation = null,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         }
@@ -178,7 +185,8 @@ fun setPasswordWatcher(
                     key = formControl.serviceParamID,
                     value = trimCommaOfString(e.toString()),
                     encrypted = formControl.isEncrypted,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         }
@@ -351,7 +359,8 @@ fun PinView.setOTP(
                     key = formControl?.serviceParamID,
                     value = e.toString(),
                     encrypted = formControl?.isEncrypted!!,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         }

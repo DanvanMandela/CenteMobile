@@ -18,7 +18,9 @@ data class InputData(
     @SerializedName("mandatory")
     val mandatory: Boolean,
     @SerializedName("validation")
-    val validation: String? = null
+    val validation: String? = null,
+    @SerializedName("linked")
+    val linked: Boolean
 ) : Parcelable
 
 

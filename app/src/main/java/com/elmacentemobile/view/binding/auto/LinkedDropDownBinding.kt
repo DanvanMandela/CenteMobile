@@ -54,7 +54,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(0)!!.id,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
             }
@@ -66,7 +67,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(p2)!!.id,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
             }
@@ -91,7 +93,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(0)!!.accountID,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
             }
@@ -103,7 +106,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(p2)!!.accountID,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
             }
@@ -127,7 +131,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(0)!!.subCodeID,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
                 if (data.child != null)
@@ -145,7 +150,8 @@ fun dropDownLinking(data: DropDownData) {
                         key = data.form.serviceParamID,
                         value = adapter.getItem(p2)!!.subCodeID,
                         encrypted = data.form.isEncrypted,
-                        mandatory = data.form.isMandatory
+                        mandatory = data.form.isMandatory,
+                        linked = !data.form.linkedToControl.isNullOrBlank()
                     )
                 )
                 if (data.child != null)
@@ -190,7 +196,8 @@ fun childDropDownLinking(child: DropDownData, item: StaticDataDetails, context: 
                             key = child.form.serviceParamID,
                             value = adapter.getItem(p2)?.id,
                             encrypted = child.form.isEncrypted,
-                            mandatory = child.form.isMandatory
+                            mandatory = child.form.isMandatory,
+                            linked = !child.form.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -219,7 +226,8 @@ fun childDropDownLinking(child: DropDownData, item: StaticDataDetails, context: 
                             key = child.form.serviceParamID,
                             value = adapter.getItem(p2)?.id,
                             encrypted = child.form.isEncrypted,
-                            mandatory = child.form.isMandatory
+                            mandatory = child.form.isMandatory,
+                            linked = !child.form.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -253,7 +261,8 @@ fun childDropDownLinking(child: DropDownData, item: StaticDataDetails, context: 
                             key = child.form.serviceParamID,
                             value = adapter.getItem(p2)!!.subCodeID,
                             encrypted = child.form.isEncrypted,
-                            mandatory = child.form.isMandatory
+                            mandatory = child.form.isMandatory,
+                            linked = !child.form.linkedToControl.isNullOrBlank()
                         )
                     )
 

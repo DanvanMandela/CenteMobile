@@ -53,7 +53,8 @@ fun AutoCompleteTextView.linkedToInput(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                     }
@@ -87,7 +88,8 @@ fun AutoCompleteTextView.linkedToInput(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                     }
@@ -111,7 +113,8 @@ fun AutoCompleteTextView.linkedToInput(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)!!.subCodeID,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                         if (TextUtils.isEmpty(adapter.getItem(p2)!!.extraField)) {
@@ -153,7 +156,8 @@ fun AutoCompleteTextView.linkedDropDown(
                         key = formControl?.serviceParamID,
                         value = adapter.getItem(p2)!!.subCodeID,
                         encrypted = formControl?.isEncrypted!!,
-                        mandatory = formControl.isMandatory
+                        mandatory = formControl.isMandatory,
+                        linked = !formControl.linkedToControl.isNullOrBlank()
                     )
                 )
                 setLinkedDropDown(
@@ -175,7 +179,8 @@ fun setDefaultValue(formControl: FormControl?, callbacks: AppCallbacks?) {
             key = formControl?.serviceParamID,
             value = "",
             encrypted = formControl?.isEncrypted!!,
-            mandatory = formControl.isMandatory
+            mandatory = formControl.isMandatory,
+            linked = !formControl.linkedToControl.isNullOrBlank()
         )
     )
 }
@@ -199,7 +204,8 @@ fun setLinkedDropDown(
                     key = view.data.serviceParamID,
                     value = adapter.getItem(p2)!!.subCodeID,
                     encrypted = view.data.isEncrypted,
-                    mandatory = view.data.isMandatory
+                    mandatory = view.data.isMandatory,
+                    linked = !view.data.linkedToControl.isNullOrBlank()
                 )
             )
             if (view.child != null)
@@ -248,7 +254,8 @@ fun setChildToChildDropLink(
                                 key = child.data.serviceParamID,
                                 value = adapter.getItem(p2)?.id,
                                 encrypted = child.data.isEncrypted,
-                                mandatory = child.data.isMandatory
+                                mandatory = child.data.isMandatory,
+                                linked = !child.data.linkedToControl.isNullOrBlank()
                             )
                         )
                     }

@@ -250,7 +250,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                             key = filter.key,
                             value = filter.value,
                             encrypted = filter.encrypted,
-                            mandatory = filter.mandatory
+                            mandatory = filter.mandatory,
+                            linked = filter.linked
                         )
                     )
                 }
@@ -292,7 +293,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     key = formControl?.serviceParamID,
                                     value = it.controlValue,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             AppLogger.instance.appLog(
@@ -312,7 +314,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     key = formControl?.serviceParamID,
                                     value = it.controlValue,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             AppLogger.instance.appLog(
@@ -354,7 +357,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                         key = formControl?.serviceParamID,
                                         value = labelData?.id,
                                         encrypted = formControl?.isEncrypted!!,
-                                        mandatory = formControl.isMandatory
+                                        mandatory = formControl.isMandatory,
+                                        linked = !formControl.linkedToControl.isNullOrBlank()
                                     )
                                 )
                                 labelData?.question
@@ -424,7 +428,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     key = formControl?.serviceParamID,
                                     value = adapter.getItem(p2)?.policyTerm,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             val map = parameters(adapter.getItem(p2)!!)
@@ -452,7 +457,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     key = formControl?.serviceParamID,
                                     value = adapter.getItem(p2)?.productId,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             val map = parameters(adapter.getItem(p2)!!)
@@ -486,7 +492,9 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
 
     override fun clearInputData() {
-        if (inputList.isNotEmpty()) inputList.clear()
+        if (inputList.isNotEmpty()) {
+            inputList.removeIf { it.linked }
+        }
     }
 
     private fun hasContactsPermission(): Boolean {
@@ -1014,7 +1022,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     key = scanControl.serviceParamID,
                     value = text,
                     encrypted = scanControl.isEncrypted,
-                    mandatory = scanControl.isMandatory
+                    mandatory = scanControl.isMandatory,
+                    linked = !scanControl.linkedToControl.isNullOrBlank()
                 )
             )
             Handler(Looper.getMainLooper()).postDelayed({
@@ -1739,7 +1748,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                                 key = formControl.serviceParamID,
                                                 value = data!![values!![0]],
                                                 encrypted = formControl.isEncrypted,
-                                                mandatory = formControl.isMandatory
+                                                mandatory = formControl.isMandatory,
+                                                linked = !formControl.linkedToControl.isNullOrBlank()
                                             )
                                         )
 
@@ -2352,7 +2362,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     key = values?.get(1),
                     value = data!![values!![0]],
                     encrypted = false,
-                    mandatory = true
+                    mandatory = true,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
             serverResponse.value = DynamicAPIResponse(
@@ -2409,7 +2420,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 key = data.serviceParamID,
                                 value = it.id.image,
                                 encrypted = data.isEncrypted,
-                                mandatory = data.isMandatory
+                                mandatory = data.isMandatory,
+                                linked = !data.linkedToControl.isNullOrBlank()
                             )
                         )
                         this@FalconHeavyActivity.userInput(
@@ -2418,14 +2430,15 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                 key = "INFOFIELD1",
                                 value = "ANDROID-OCR",
                                 encrypted = data.isEncrypted,
-                                mandatory = data.isMandatory
+                                mandatory = data.isMandatory,
+                                linked = !data.linkedToControl.isNullOrBlank()
                             )
                         )
 
 
-
                         val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-                        val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                        val outputFormat =
+                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
                         val date: Date? = it.data?.dob?.let { it1 -> inputFormat.parse(it1) }
                         val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
 
@@ -2466,7 +2479,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                             key = data?.serviceParamID,
                             value = convert(bitmap!!),
                             encrypted = data?.isEncrypted!!,
-                            mandatory = data.isMandatory
+                            mandatory = data.isMandatory,
+                            linked = !data.linkedToControl.isNullOrBlank()
                         )
                     )
                     imageView?.setImageBitmap(bitmap)
@@ -2487,7 +2501,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD7",
                 value = map?.surname,
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2497,7 +2512,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD8",
                 value = "${map?.names} ${map?.otherName}",
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2507,7 +2523,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD10",
                 value = formattedDate,
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2517,7 +2534,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD9",
                 value = if (map?.gender == "MALE") "M" else "F",
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2527,7 +2545,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD6",
                 value = map?.idNo,
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2537,7 +2556,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD12",
                 value = map?.expires,
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 
@@ -2547,7 +2567,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 key = "INFOFIELD11",
                 value = map?.docId,
                 encrypted = false,
-                mandatory = true
+                mandatory = true,
+                linked = false
             )
         )
 

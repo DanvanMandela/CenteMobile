@@ -43,7 +43,8 @@ fun AutoCompleteTextView.contacts(
                     value = e.toString().replace("[\\D]", "")
                         .replace(" ", ""),
                     encrypted = formControl?.isEncrypted!!,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         }
@@ -89,7 +90,8 @@ fun AutoCompleteTextView.setDropDownData(
                             key = formControl?.serviceParamID,
                             value = adapter.getItem(0)?.id,
                             encrypted = formControl?.isEncrypted!!,
-                            mandatory = formControl.isMandatory
+                            mandatory = formControl.isMandatory,
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -101,7 +103,8 @@ fun AutoCompleteTextView.setDropDownData(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)?.id,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                     }
@@ -127,7 +130,8 @@ fun AutoCompleteTextView.setDropDownData(
                             key = formControl?.serviceParamID,
                             value = adapter.getItem(0)?.accountID,
                             encrypted = formControl?.isEncrypted!!,
-                            mandatory = formControl.isMandatory
+                            mandatory = formControl.isMandatory,
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -140,7 +144,8 @@ fun AutoCompleteTextView.setDropDownData(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)?.accountID,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                     }
@@ -166,7 +171,8 @@ fun AutoCompleteTextView.setDropDownData(
                             key = formControl?.serviceParamID,
                             value = adapter.getItem(0)!!.subCodeID,
                             encrypted = formControl?.isEncrypted!!,
-                            mandatory = formControl.isMandatory
+                            mandatory = formControl.isMandatory,
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
@@ -179,7 +185,8 @@ fun AutoCompleteTextView.setDropDownData(
                                 key = formControl?.serviceParamID,
                                 value = adapter.getItem(p2)!!.subCodeID,
                                 encrypted = formControl?.isEncrypted!!,
-                                mandatory = formControl.isMandatory
+                                mandatory = formControl.isMandatory,
+                                linked = !formControl.linkedToControl.isNullOrBlank()
                             )
                         )
                     }

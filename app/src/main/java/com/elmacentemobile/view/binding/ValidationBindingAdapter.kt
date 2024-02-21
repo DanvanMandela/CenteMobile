@@ -94,7 +94,8 @@ fun MaterialButton.setToggle(callbacks: AppCallbacks?, data: FormControl?) {
                     key = data.serviceParamID,
                     value = data.controlValue,
                     encrypted = data.isEncrypted,
-                    mandatory = data.isMandatory
+                    mandatory = data.isMandatory,
+                    linked = !data.linkedToControl.isNullOrBlank()
                 )
             )
 }

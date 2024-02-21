@@ -99,7 +99,8 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                             key = filter.key,
                             value = filter.value,
                             encrypted = filter.encrypted,
-                            mandatory = filter.mandatory
+                            mandatory = filter.mandatory,
+                            linked = filter.linked
                         )
                     )
                 }
@@ -273,7 +274,8 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                                     key = formControl?.serviceParamID,
                                     value = labelData?.id,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                         }
@@ -316,7 +318,8 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                                     key = formControl?.serviceParamID,
                                     value = adapter.getItem(p2)?.policyTerm,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             val map = parameters(adapter.getItem(p2)!!)
@@ -344,7 +347,8 @@ class DynamicDialogFragment : BottomSheetDialogFragment(), AppCallbacks {
                                     key = formControl?.serviceParamID,
                                     value = adapter.getItem(p2)?.productId,
                                     encrypted = formControl?.isEncrypted!!,
-                                    mandatory = formControl.isMandatory
+                                    mandatory = formControl.isMandatory,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                             val map = parameters(adapter.getItem(p2)!!)

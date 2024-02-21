@@ -569,7 +569,8 @@ fun RadioButton.setButton(callbacks: AppCallbacks, data: FormControl?) {
                         "TRUE"
                     } else "FALSE",
                     encrypted = data?.isEncrypted!!,
-                    mandatory = data.isMandatory
+                    mandatory = data.isMandatory,
+                    linked = !data.linkedToControl.isNullOrBlank()
                 )
             )
         }
@@ -668,7 +669,8 @@ fun CheckBox.setCheckBox(callbacks: AppCallbacks, data: FormControl?, modules: M
                 key = data.serviceParamID,
                 value = if (p1) "TRUE" else if (data.isMandatory) "" else "FALSE",
                 encrypted = data.isEncrypted,
-                mandatory = data.isMandatory
+                mandatory = data.isMandatory,
+                linked = !data.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -681,7 +683,8 @@ fun setCheckBoxDefault(callbacks: AppCallbacks, data: FormControl?, checked: Boo
             key = data.serviceParamID,
             value = if (checked) "TRUE" else if (data.isMandatory) "" else "FALSE",
             encrypted = data.isEncrypted,
-            mandatory = data.isMandatory
+            mandatory = data.isMandatory,
+            linked = !data.linkedToControl.isNullOrBlank()
         )
     )
 }
@@ -930,7 +933,8 @@ fun TextView.setLabel(
                         key = formControl.serviceParamID,
                         value = formControl.controlValue,
                         encrypted = formControl.isEncrypted,
-                        mandatory = formControl.isMandatory
+                        mandatory = formControl.isMandatory,
+                        linked = !formControl.linkedToControl.isNullOrBlank()
                     )
                 )
                 this.text = formControl.controlValue
@@ -958,7 +962,8 @@ fun TextView.setLabelText(
                         key = formControl.serviceParamID,
                         value = formControl.controlValue,
                         encrypted = formControl.isEncrypted,
-                        mandatory = formControl.isMandatory
+                        mandatory = formControl.isMandatory,
+                        linked = !formControl.linkedToControl.isNullOrBlank()
                     )
                 )
             }

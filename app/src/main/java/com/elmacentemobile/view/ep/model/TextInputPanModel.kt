@@ -82,7 +82,8 @@ fun TextInputEditText.setPanInputLayout(
                 value = Objects.requireNonNull(value)
                     .toString().replace("-", ""),
                 encrypted = formControl.isEncrypted,
-                mandatory = formControl.isMandatory
+                mandatory = formControl.isMandatory,
+                linked = !formControl.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -103,7 +104,8 @@ fun TextInputEditText.setPanInputLayout(
                     value = Objects.requireNonNull(this@setPanInputLayout.text.toString())
                         .toString().replace("-", ""),
                     encrypted = formControl.isEncrypted,
-                    mandatory = formControl.isMandatory
+                    mandatory = formControl.isMandatory,
+                    linked = !formControl.linkedToControl.isNullOrBlank()
                 )
             )
         }

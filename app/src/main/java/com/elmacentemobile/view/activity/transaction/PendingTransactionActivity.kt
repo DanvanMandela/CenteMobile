@@ -153,7 +153,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                 value = message,
                 encrypted = false,
                 mandatory = true,
-                validation = null
+                validation = null,
+                linked = false
             )
         )
 
@@ -183,7 +184,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                     value = s.value,
                     encrypted = false,
                     mandatory = true,
-                    validation = null
+                    validation = null,
+                    linked = false
                 )
             )
         }
@@ -435,7 +437,8 @@ class PendingTransactionActivity : AppCompatActivity(), AppCallbacks, RejectTran
                     value = s.value,
                     encrypted = false,
                     mandatory = true,
-                    validation = null
+                    validation = null,
+                    linked = false
                 )
             )
         }

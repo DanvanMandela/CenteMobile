@@ -80,7 +80,8 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
                         key = tag[1],
                         value = tag[0],
                         encrypted = false,
-                        mandatory = true
+                        mandatory = true,
+                        linked = false
                     )
                 )
 

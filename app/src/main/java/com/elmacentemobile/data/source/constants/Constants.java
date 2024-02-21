@@ -83,7 +83,7 @@ public class Constants {
         public static final boolean TEST = false;//TODO CHECK CAMERA AND LOGS
 
         public static final boolean AUTO_OTP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        public static final boolean ACTIVATED = true;
+        public static final boolean ACTIVATED = false;
 
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";

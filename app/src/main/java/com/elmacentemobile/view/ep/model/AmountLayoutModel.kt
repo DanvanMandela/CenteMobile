@@ -93,7 +93,8 @@ fun CurrencyInput.setAmountInputLayout(
                 key = formControl.serviceParamID,
                 value = NumberTextWatcherForThousand.trimCommaOfString(value),
                 encrypted = formControl.isEncrypted,
-                mandatory = formControl.isMandatory
+                mandatory = formControl.isMandatory,
+                linked = !formControl.linkedToControl.isNullOrBlank()
             )
         )
     }
@@ -130,7 +131,8 @@ fun setDefaultAmountWatcher(
                                     value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                                     encrypted = formControl.isEncrypted,
                                     mandatory = formControl.isMandatory,
-                                    validation = "Amount more  than maximum"
+                                    validation = "Amount more  than maximum",
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
 
@@ -142,7 +144,8 @@ fun setDefaultAmountWatcher(
                                     value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                                     encrypted = formControl.isEncrypted,
                                     mandatory = formControl.isMandatory,
-                                    validation = "Amount less than minimum"
+                                    validation = "Amount less than minimum",
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                         } else {
@@ -153,7 +156,8 @@ fun setDefaultAmountWatcher(
                                     value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                                     encrypted = formControl.isEncrypted,
                                     mandatory = formControl.isMandatory,
-                                    validation = null
+                                    validation = null,
+                                    linked = !formControl.linkedToControl.isNullOrBlank()
                                 )
                             )
                         }
@@ -164,7 +168,8 @@ fun setDefaultAmountWatcher(
                             value = NumberTextWatcherForThousand.trimCommaOfString(e.toString()),
                             encrypted = formControl.isEncrypted,
                             mandatory = formControl.isMandatory,
-                            validation = null
+                            validation = null,
+                            linked = !formControl.linkedToControl.isNullOrBlank()
                         )
                     )
                 }
