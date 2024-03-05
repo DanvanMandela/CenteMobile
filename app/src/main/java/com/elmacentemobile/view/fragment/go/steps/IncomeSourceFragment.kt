@@ -269,7 +269,7 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     private fun setProfession(p: List<StaticDataDetails?>?) {
         if (p != null) {
             val pData = p.filter { a -> a?.id == "PROFFESSIONSTATUS" }
-            val sorted = pData.sortedBy { a -> a?.description }
+            val sorted = pData.sortedBy { a -> a?.description }.distinctBy { it?.description }
             professionAdapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoProf.setAdapter(professionAdapter)
             binding.autoProf.onItemClickListener =
@@ -291,7 +291,7 @@ class IncomeSourceFragment : Fragment(), AppCallbacks, View.OnClickListener, OnA
     private fun setOccupation(p: List<StaticDataDetails?>?) {
         if (p != null) {
             val pData = p.filter { a -> a?.id == "OCCUPATION" }
-            val sorted = pData.sortedBy { a -> a?.description }
+            val sorted = pData.sortedBy { a -> a?.description }.distinctBy { it?.description }
             occupationAdapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoOccupation.setAdapter(occupationAdapter)
             binding.autoOccupation.onItemClickListener =

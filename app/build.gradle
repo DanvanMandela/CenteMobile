@@ -375,10 +375,10 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth-api-phone
-    implementation group: 'com.google.android.gms', name: 'play-services-auth-api-phone', version: '18.0.1'
+    implementation group: 'com.google.android.gms', name: 'play-services-auth-api-phone', version: '18.0.2'
 
     // https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth
-    implementation group: 'com.google.android.gms', name: 'play-services-auth', version: '20.7.0'
+    implementation group: 'com.google.android.gms', name: 'play-services-auth', version: '21.0.0'
 
     // https://mvnrepository.com/artifact/com.github.beigirad/ZigzagView
     implementation group: 'com.github.beigirad', name: 'ZigzagView', version: '1.0.6'

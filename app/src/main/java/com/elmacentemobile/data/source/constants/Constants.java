@@ -1,6 +1,7 @@
 package com.elmacentemobile.data.source.constants;
 
 
+import static com.elmacentemobile.data.source.constants.Constants.Data.TEST_PROD;
 import static com.elmacentemobile.data.source.remote.helper.DynamicURLKt.getROUTE_BASE_URL;
 
 import android.Manifest;
@@ -80,10 +81,12 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
+        public static final boolean TEST = false;//TODO CHECK CAMERA AND LOGS
 
         public static final boolean AUTO_OTP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        public static final boolean ACTIVATED = true;
+        public static final boolean ACTIVATED = false;
+
+        public static final boolean TEST_PROD = false;
 
         @NotNull
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";
@@ -195,7 +198,7 @@ public class Constants {
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
-        return deviceId;
+        return TEST_PROD ? "867259033555453" : deviceId;
     }
 
 

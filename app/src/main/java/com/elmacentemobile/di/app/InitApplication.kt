@@ -11,6 +11,8 @@ import com.dynatrace.android.agent.conf.DataCollectionLevel
 import com.dynatrace.android.agent.conf.UserPrivacyOptions
 import com.elmacentemobile.data.source.constants.Constants
 import dagger.hilt.android.HiltAndroidApp
+import java.io.IOException
+import java.util.logging.LogManager
 import javax.inject.Inject
 
 
@@ -29,8 +31,8 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
         traced()
         if (!Constants.Data.TEST)
             setupActivityListener()//TODO REACTIVATE
+        else setupLogging()
     }
-
 
 
     private fun traced() {
@@ -51,8 +53,6 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
             }
 
 
-
-
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}
@@ -62,6 +62,18 @@ open class InitApplication : MultiDexApplication(), Configuration.Provider {
 
             }
         })
+    }
+
+    private fun setupLogging() {
+        try {
+            LogManager.getLogManager().readConfiguration(
+                resources.assets.open("logging.properties")
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
     }
 
 }

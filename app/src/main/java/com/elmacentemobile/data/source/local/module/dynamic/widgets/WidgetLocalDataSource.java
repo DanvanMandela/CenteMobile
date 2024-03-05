@@ -108,10 +108,11 @@ public class WidgetLocalDataSource implements WidgetDataSource {
 
     @Override
     public void saveAction(List<ActionControls> data) {
-        Completable.fromRunnable(() -> widgetDao.saveAction(data))
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .subscribe();
+        if (data != null && !data.isEmpty())
+            Completable.fromRunnable(() -> widgetDao.saveAction(data))
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe();
     }
 
     @Override
@@ -124,10 +125,11 @@ public class WidgetLocalDataSource implements WidgetDataSource {
 
     @Override
     public void saveStaticData(List<StaticDataDetails> data) {
-        Completable.fromRunnable(() -> widgetDao.saveStaticData(data))
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .subscribe();
+        if (data != null && !data.isEmpty())
+            Completable.fromRunnable(() -> widgetDao.saveStaticData(data))
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe();
     }
 
     @Override

@@ -263,7 +263,7 @@
     <string name="bank_staff">Bank Staff</string>
     <string name="customer_current">Cente Customer</string>
     <string name="agent">Agent</string>
-    <string name="current_location">Current Location</string>
+    <string name="current_location">Select Residential Location</string>
     <string name="tv_radio_station">Tv/Radio Station</string>
     <string name="face_book">Facebook</string>
     <string name="insta">Instagram</string>
@@ -464,8 +464,8 @@
     <string name="opening_deposit_">Opening Deposit</string>
     <string name="monthly_income_">Monthly Income</string>
     <string name="select_work_location_">Select work location</string>
-    <string name="select_source_fund">Select source of funds</string>
-    <string name="select_account_tunover_">Select account turnover\n\n</string>
+    <string name="select_source_fund">Enter source of funds</string>
+    <string name="select_account_tunover_">Enter account turnover</string>
     <string name="select_citizenship_">Select citizenship</string>
     <string name="select_residence_">Select Residence</string>
     <string name="select_opening_account_">Select opening deposit</string>

@@ -42,6 +42,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.service.otp.SMSAutoReadFactory
 import com.elmacentemobile.data.source.constants.Constants
+import com.elmacentemobile.data.source.constants.Constants.Data.TEST_PROD
 import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.helper.ConnectionObserver
@@ -90,7 +91,6 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
-
 
 
 @AndroidEntryPoint
@@ -148,10 +148,8 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
     }
 
 
-
-
     override fun onStart() {
-       // phoneSelection()
+        // phoneSelection()
         super.onStart()
         widgetViewModel.storageDataSource.deleteOtp()
         checkLocationPermission()
@@ -198,7 +196,6 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
         setViewModel()
     }
-
 
 
     private fun ipStack() {
@@ -292,12 +289,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         appUpdateManager?.registerListener(updateListener!!)
 
 
-
-
-
     }
-
-
 
 
 //    override fun onResume() {
@@ -372,7 +364,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     private fun setMigration() {
         if (Constants.Data.ACTIVATED) {
-            val user = users[1]
+            val user = if (TEST_PROD) users.last() else users[1]
             baseViewModel.dataSource.setActivated(true)
             baseViewModel.dataSource.setActivationData(
                 ActivationData(

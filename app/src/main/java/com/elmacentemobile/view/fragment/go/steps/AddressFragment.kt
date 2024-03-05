@@ -601,7 +601,7 @@ class AddressFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertD
                             } else {
                                 setLoading(false)
                                 saveState()
-                                pagerData?.onNext(9)
+                                pagerData?.onNext(10)
                             }
                         }
                     } catch (e: Exception) {

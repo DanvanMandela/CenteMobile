@@ -35,6 +35,16 @@ fun convert(bitmap: Bitmap): String {
     )
 }
 
+
+fun convertT(bitmap: Bitmap): String {
+    val outputStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 10, outputStream)
+    return Base64.encodeToString(
+        outputStream.toByteArray(),
+        Base64.DEFAULT
+    )
+}
+
 fun writeBitmapToFile(applicationContext: Context, bitmap: Bitmap, id: String, path: String): Uri {
     val name = String.format("${id}.png", UUID.randomUUID().toString())
     val outputDir = File(applicationContext.filesDir, path)

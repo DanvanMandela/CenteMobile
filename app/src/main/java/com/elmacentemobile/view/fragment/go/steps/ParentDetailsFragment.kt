@@ -262,7 +262,7 @@ class ParentDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, On
 
         if (p != null) {
             val pData = p.filter { a -> a?.id == "CSPEP" }.toMutableList()
-            val sorted = pData.sortedBy { a -> a?.description }
+            val sorted = pData.sortedBy { a -> a?.description }.distinctBy { it?.description }
             adapter = AutoTextArrayAdapter(requireContext(), 0, sorted)
             binding.autoPolitically.setAdapter(adapter)
             binding.autoPolitically.onItemClickListener =

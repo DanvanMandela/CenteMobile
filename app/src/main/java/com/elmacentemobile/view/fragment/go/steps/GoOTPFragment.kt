@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Base64
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
 import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.data.source.constants.StatusEnum
+import com.elmacentemobile.data.source.remote.helper.compress
 import com.elmacentemobile.databinding.FragmentGoOTPBinding
 import com.elmacentemobile.util.*
 import com.elmacentemobile.util.callbacks.AppCallbacks
@@ -186,6 +188,7 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         val nok = widgetViewModel.storageDataSource.nextOfKin.value
         val address = widgetViewModel.storageDataSource.addressState.value
         val workAddress = widgetViewModel.storageDataSource.workAddressState.value
+        val moreInfo = widgetViewModel.storageDataSource.additionalData.value
         val services = widgetViewModel.storageDataSource.otherServices.value
         val recommend = widgetViewModel.storageDataSource.recommendState.value
 
@@ -242,9 +245,24 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
             "INFOFIELD43", "${services!!.services[0].value},${services.services[1].value}"
         )
         json.put("INFOFIELD44", recommend?.data?.extra)
-        json.put("INFOFIELD45", idData?.id?.image)
-        json.put("INFOFIELD46", idData?.selfie?.image)
-        json.put("INFOFIELD47", idData?.signature?.image)
+        json.put(
+            "INFOFIELD45", Base64.encodeToString(
+                compress(idData?.id!!.image),
+                Base64.DEFAULT
+            )
+        )
+        json.put(
+            "INFOFIELD46", Base64.encodeToString(
+                compress(idData.selfie!!.image),
+                Base64.DEFAULT
+            )
+        )
+        json.put(
+            "INFOFIELD47", Base64.encodeToString(
+                compress(idData.signature!!.image),
+                Base64.DEFAULT
+            )
+        )
         json.put("INFOFIELD48", address?.ea?.extra)
 
 
@@ -252,11 +270,18 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         json.put("INFOFIELD49", workAddress?.ea?.extra)
         json.put(
             "INFOFIELD50",
-            "${workAddress?.street}:${workAddress?.city}:${workAddress?.zipCode}"
+            "${workAddress?.street}:${workAddress?.city}:${workAddress?.zipCode}" +
+                    "${moreInfo?.work?.value}:" +
+                    "${moreInfo?.workLocation?.value}" +
+                    ":${moreInfo?.sourceFund}" +
+                    ":${moreInfo?.accountTurnover}" +
+                    ":${moreInfo?.citizenship?.value}" +
+                    ":${moreInfo?.residence?.value}" +
+                    ":${moreInfo?.residenceLocation?.value}" +
+                    ":${moreInfo?.openingDeposit?.value}" +
+                    ":${moreInfo?.monthlyIncome?.value}"
         )
-//
-//        json.put("INFOFIELD51", workAddress?.city)
-//        json.put("INFOFIELD52", workAddress?.zipCode)
+
         json.put("ACCOUNTID", nok?.account)
 
         subscribe.add(

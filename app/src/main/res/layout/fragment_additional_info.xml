@@ -23,7 +23,7 @@
                 android:id="@+id/mainLay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appbar"
@@ -111,7 +111,7 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="@dimen/dimens_16dp"
                             android:layout_marginEnd="24dp"
-                            android:hint="@string/source_income_"
+                            android:hint="@string/select_work_location_"
                             app:boxBackgroundColor="@color/ghost_white"
                             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +134,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/incomeLay"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimens_70dp"
                             android:layout_marginHorizontal="@dimen/dimens_24dp"
@@ -148,23 +148,23 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/countryWorkLay">
 
-                            <AutoCompleteTextView
+
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/autoIncome"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:focusable="false"
                                 android:fontFamily="@font/poppins_medium"
-                                android:imeOptions="actionDone"
-                                android:inputType="text"
+                                android:inputType="numberSigned"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                tools:ignore="LabelFor" />
+                                tools:ignore="SpeakableTextPresentCheck" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/turnoverLay"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimens_70dp"
                             android:layout_marginHorizontal="@dimen/dimens_24dp"
@@ -178,16 +178,15 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/incomeLay">
 
-                            <AutoCompleteTextView
-                                android:id="@+id/autoTurnover"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/turnOver"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:focusable="false"
                                 android:fontFamily="@font/poppins_medium"
-                                android:imeOptions="actionDone"
-                                android:inputType="text"
+                                android:inputType="numberSigned"
+                                android:maxLength="40"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                tools:ignore="LabelFor" />
+                                tools:ignore="SpeakableTextPresentCheck" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 

@@ -42,7 +42,7 @@ class OCRResultActivity : ComponentActivity() {
                         surname = ocrData.surname,
                         expires = ocrData.dateOfExpiry,
                         docId = ocrData?.cardNumber
-                    ), id = ImageData(image = ocrData.encodedImageFront)
+                    ), id = ImageData(image = ocrData?.encodedImageFront!!)
                 )
             )
             finish()

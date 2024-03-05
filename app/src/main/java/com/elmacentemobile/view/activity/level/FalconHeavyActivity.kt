@@ -16,6 +16,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
 import android.text.TextUtils
+import android.util.Base64
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -60,6 +61,7 @@ import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.callback.DynamicResponse
+import com.elmacentemobile.data.source.remote.helper.compress
 import com.elmacentemobile.databinding.ActivityFalconHeavyBinding
 import com.elmacentemobile.databinding.BlockCardReaderLayoutBinding
 import com.elmacentemobile.util.AppLogger
@@ -130,12 +132,16 @@ import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.logging.Logger
 
 @AndroidEntryPoint
 class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, BiometricAuthListener,
     EventCallback {
     private val activityLauncher: MyActivityResult<Intent, ActivityResult> =
         MyActivityResult.registerActivityForResult(this)
+
+    private val LOGGER = Logger.getLogger(FalconHeavyActivity::class.java.simpleName)
+
 
     private val listState = mutableListOf<DisplayState>()
     private lateinit var pinStack: Stack<String>
@@ -191,7 +197,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
 
-
     private fun listenToInActivity() {
         val state = baseViewModel.dataSource.inActivity.asLiveData()
         state.observe(this) {
@@ -203,23 +208,26 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
 
     override fun setController() {
-        busData = EventBus.getDefault().getStickyEvent(BusData::class.java)
-        val storage = baseViewModel.dataSource
-        storage.baseVewModel(widgetViewModel)
-        setDynamicInputs(busData.inputs)
-        binding.lifecycleOwner = this
-        binding.callback = this
-        binding.data = busData.data
-        AppLogger.instance.appLog("BUS", Gson().toJson(busData))
-        Handler(Looper.getMainLooper()).postDelayed({
-            stopShimmer()
-            binding.container.setDynamic(
-                callbacks = this,
-                dynamic = busData.data,
-                storage = storage
-            )
-        }, 500)
-
+        try {
+            busData = EventBus.getDefault().getStickyEvent(BusData::class.java)
+            val storage = baseViewModel.dataSource
+            storage.baseVewModel(widgetViewModel)
+            setDynamicInputs(busData.inputs)
+            binding.lifecycleOwner = this
+            binding.callback = this
+            binding.data = busData.data
+            AppLogger.instance.appLog("BUS", Gson().toJson(busData))
+            Handler(Looper.getMainLooper()).postDelayed({
+                stopShimmer()
+                binding.container.setDynamic(
+                    callbacks = this,
+                    dynamic = busData.data,
+                    storage = storage
+                )
+            }, 500)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -390,6 +398,14 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     @SuppressLint("NewApi")
     override fun userInput(inputData: InputData?) {
+
+//        LoggerUtil(this@FalconHeavyActivity).logInfo(
+//            Base64.encodeToString(
+//                compress("Hello word come to this world"),
+//                Base64.DEFAULT
+//            )
+//        )
+
         AppLogger.instance.appLog(
             "${FalconHeavyActivity::class.java.simpleName}:Aliens",
             Gson().toJson(inputData)
@@ -2409,6 +2425,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     override fun onImageSelect(imageView: ImageView?, data: FormControl?) {
         widgetViewModel.storageDataSource.deleteIDDetails()
         if (data?.controlID == "IDFRONT") {
+
             widgetViewModel.storageDataSource.onIDDetails.asLiveData()
                 .observe(this@FalconHeavyActivity) {
                     if (it != null) {
@@ -2419,12 +2436,16 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                             InputData(
                                 name = data.controlText,
                                 key = data.serviceParamID,
-                                value = it.id.image,
+                                value = Base64.encodeToString(
+                                    compress(it.id.image),
+                                    Base64.DEFAULT
+                                ),
                                 encrypted = data.isEncrypted,
                                 mandatory = data.isMandatory,
                                 linked = !data.linkedToControl.isNullOrBlank()
                             )
                         )
+
                         this@FalconHeavyActivity.userInput(
                             InputData(
                                 name = "Android",
@@ -2471,22 +2492,24 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                 .ScanDoneClass(OCRResultActivity::class.java)
                 .AppName(Constants.Data.APP_NAME)
                 .init()
-        } else
-            onImagePicker(object : AppCallbacks {
-                override fun onImage(bitmap: Bitmap?) {
-                    this@FalconHeavyActivity.userInput(
-                        InputData(
-                            name = data?.controlText,
-                            key = data?.serviceParamID,
-                            value = convert(bitmap!!),
-                            encrypted = data?.isEncrypted!!,
-                            mandatory = data.isMandatory,
-                            linked = !data.linkedToControl.isNullOrBlank()
-                        )
+        } else onImagePicker(object : AppCallbacks {
+            override fun onImage(bitmap: Bitmap?) {
+                this@FalconHeavyActivity.userInput(
+                    InputData(
+                        name = data?.controlText,
+                        key = data?.serviceParamID,
+                        value = Base64.encodeToString(
+                            compress(convert(bitmap!!)),
+                            Base64.DEFAULT
+                        ),
+                        encrypted = data?.isEncrypted!!,
+                        mandatory = data.isMandatory,
+                        linked = !data.linkedToControl.isNullOrBlank()
                     )
-                    imageView?.setImageBitmap(bitmap)
-                }
-            }, 1, 1)
+                )
+                imageView?.setImageBitmap(bitmap)
+            }
+        }, 1, 1)
     }
 
     private fun setOCRFields(map: OCRData?) {

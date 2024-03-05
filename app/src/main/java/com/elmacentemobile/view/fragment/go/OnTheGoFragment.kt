@@ -281,7 +281,7 @@ class OnTheGoFragment : Fragment(), AppCallbacks, PagerData, OnAlertDialog {
 
 
     override fun onNext(pos: Int) {
-        if (pos == 11) {
+        if (pos == 13) {
             createOtp()
         }
         moveViewPager(pos)
@@ -347,7 +347,7 @@ class ONTHGFragmentAdapter(
 
     private fun setFragment(position: Int): Fragment {
         return when (position) {
-            0 -> AdditionalInfoFragment.onStep(move)
+            0 -> OnTheLandingFragment.onStep(move)
             1 -> CustomerProductFragment.onStep(move)
             2 -> TermsAndConditionFragment.newInstance(move)
             3 -> IDFragment.onStep(move)
