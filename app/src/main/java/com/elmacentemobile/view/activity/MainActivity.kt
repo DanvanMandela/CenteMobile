@@ -42,13 +42,20 @@ import com.elmacentemobile.R
 import com.elmacentemobile.data.model.user.ActivationData
 import com.elmacentemobile.data.service.otp.SMSAutoReadFactory
 import com.elmacentemobile.data.source.constants.Constants
+import com.elmacentemobile.data.source.constants.Constants.Data.TEST
 import com.elmacentemobile.data.source.constants.Constants.Data.TEST_PROD
 import com.elmacentemobile.data.source.constants.Keys
 import com.elmacentemobile.data.source.pref.CryptoManager
 import com.elmacentemobile.data.source.remote.helper.ConnectionObserver
 import com.elmacentemobile.databinding.ActivityMainBinding
-import com.elmacentemobile.util.*
+import com.elmacentemobile.util.AppLogger
+import com.elmacentemobile.util.AppSignatureHelper
+import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.BaseClass.decode64
+import com.elmacentemobile.util.LocationHelper
+import com.elmacentemobile.util.MyActivityResult
+import com.elmacentemobile.util.MyLocation
+import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.compressImage
 import com.elmacentemobile.util.image.getImageFromStorage
@@ -66,7 +73,9 @@ import com.elmacentemobile.view.model.WorkerViewModel
 import com.google.android.gms.auth.api.identity.GetPhoneNumberHintIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.phone.SmsRetriever
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -90,7 +99,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
+import java.util.BitSet
 
 
 @AndroidEntryPoint
@@ -364,7 +373,7 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
 
     private fun setMigration() {
         if (Constants.Data.ACTIVATED) {
-            val user = if (TEST_PROD) users.last() else users[1]
+            val user = if (TEST_PROD && !TEST) users.last() else users[1]
             baseViewModel.dataSource.setActivated(true)
             baseViewModel.dataSource.setActivationData(
                 ActivationData(

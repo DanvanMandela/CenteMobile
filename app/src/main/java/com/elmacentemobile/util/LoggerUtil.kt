@@ -13,7 +13,7 @@ class LoggerUtil(context: Context) {
 
     companion object {
         private const val LOG_FILE_NAME = "cente_logs.txt"
-        private const val LOG_FILE_SIZE_LIMIT = 5000000
+        private const val LOG_FILE_SIZE_LIMIT = 500000000
         private const val LOG_FILE_COUNT = 1
     }
 

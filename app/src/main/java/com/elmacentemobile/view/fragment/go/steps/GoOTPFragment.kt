@@ -21,7 +21,12 @@ import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.data.source.constants.StatusEnum
 import com.elmacentemobile.data.source.remote.helper.compress
 import com.elmacentemobile.databinding.FragmentGoOTPBinding
-import com.elmacentemobile.util.*
+import com.elmacentemobile.util.AppLogger
+import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.util.NumberTextWatcherForThousand
+import com.elmacentemobile.util.OnAlertDialog
+import com.elmacentemobile.util.ShowAlertDialog
+import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.dialog.AlertDialogFragment
@@ -283,6 +288,8 @@ class GoOTPFragment : Fragment(), AppCallbacks, PagerData, OTP, OnAlertDialog,
         )
 
         json.put("ACCOUNTID", nok?.account)
+
+
 
         subscribe.add(
             baseViewModel.registrationOnGO(json, requireContext())

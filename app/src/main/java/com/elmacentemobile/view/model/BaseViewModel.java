@@ -71,6 +71,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
     private final BehaviorSubject<Boolean> loadingUi = BehaviorSubject.createDefault(false);
     public Observable<Boolean> loading = loadingUi.hide();
 
+    private  Context context;
 
     @Inject
     public BaseViewModel(ValidationRepository repository,
@@ -291,6 +292,7 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
                                                JSONObject data,
                                                JSONObject encrypted,
                                                Modules modules, Activity context) {
+        this.context=context;
         try {
             String iv = dataSource.getDeviceData().getValue().getRun();
             String device = dataSource.getDeviceData().getValue().getDevice();
@@ -511,6 +513,9 @@ public class BaseViewModel extends ViewModel implements AppDataSource {
             jsonObject.put("Validate", data);
             String validateRequest = jsonObject.toString();
             AppLogger.Companion.getInstance().appLog("RAO:GO:", validateRequest);
+
+
+
 
             return validateCall(new PayloadData(
                     dataSource.getUniqueID().getValue(),

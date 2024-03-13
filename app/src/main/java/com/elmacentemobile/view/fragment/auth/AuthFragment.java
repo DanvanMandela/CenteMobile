@@ -480,6 +480,8 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     @SuppressLint("NewApi")
     private void setPending(LoginUserData res) {
+
+
         try {
             for (HashMap<String, String> map : Objects.requireNonNull(res.getPendingTrxDisplay())) {
                 for (HashMap<String, String> pay : Objects.requireNonNull(res.getPendingTrxPayload())) {

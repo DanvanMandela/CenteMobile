@@ -12,6 +12,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.source.pref.StorageDataSource;
@@ -198,7 +199,7 @@ public class Constants {
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
-        return TEST_PROD ? "867259033555453" : deviceId;
+        return  deviceId;
     }
 
 
