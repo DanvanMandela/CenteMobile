@@ -53,7 +53,7 @@ public class Constants {
 
 
         @NotNull
-        public static final String UAT = "https://uat.craftsilicon.com/CentemobileAuthDynamic/";
+        public static final String UAT = "https://elmaauthserver.azurewebsites.net/";
 
 
         @NotNull

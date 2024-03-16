@@ -7,22 +7,22 @@ import java.io.IOException
 import java.util.zip.GZIPOutputStream
 
 object DynamicURL {
-    const val live = "https://app.craftsilicon.com/CentemobileAuthDynamic/"
+    const val LIVE = "https://app.craftsilicon.com/CentemobileAuthDynamic/"
 }
 
 
 object DynamicTestURL {
-    const val uat = "https://uat.craftsilicon.com/ElmaAuthDynamic/"
+    const val UAT = "https://elmaauthserver.azurewebsites.net/"
 }
 
 
 fun liveTest(): String {
-    return if (Constants.Data.TEST) "https://uat.craftsilicon.com/"
+    return if (Constants.Data.TEST) "https://elmaauthserver.azurewebsites.net/"
     else "https://app.craftsilicon.com/"
 }
 
 
-var ROUTE_BASE_URL = if (!Constants.Data.TEST) DynamicURL.live else DynamicTestURL.uat
+var ROUTE_BASE_URL = if (!Constants.Data.TEST) DynamicURL.LIVE else DynamicTestURL.UAT
 
 fun String.compressString(): String? {
     val compressed: ByteArray = compress(this)!!
