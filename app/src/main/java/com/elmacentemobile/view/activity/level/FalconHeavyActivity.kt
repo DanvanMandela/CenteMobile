@@ -2552,16 +2552,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
 
-        this@FalconHeavyActivity.userInput(
-            InputData(
-                name = "Gender",
-                key = "INFOFIELD9",
-                value = if (map?.gender == "MALE") "M" else "F",
-                encrypted = false,
-                mandatory = true,
-                linked = false
-            )
-        )
+
 
         this@FalconHeavyActivity.userInput(
             InputData(
@@ -2585,11 +2576,24 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
 
+        val gender = if (map?.gender == "MALE") "M" else "F"
         this@FalconHeavyActivity.userInput(
             InputData(
-                name = "CARDNUMBER",
+                name = "Gender",
+                key = "INFOFIELD9",
+                value = gender,
+                encrypted = false,
+                mandatory = true,
+                linked = false
+            )
+        )
+
+        val title = if (gender == "M") "Mr." else "Ms."
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "TITLE",
                 key = "INFOFIELD11",
-                value = map?.docId,
+                value = title,
                 encrypted = false,
                 mandatory = true,
                 linked = false
