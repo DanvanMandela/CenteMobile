@@ -31,15 +31,16 @@ public class CardRemoteDataModule {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                liveTest()
-                : Objects.requireNonNull(storage.getDeviceData().getValue().getCard())).getBase();
-
+        String card = liveTest();
+        if (storage.getDeviceData().getValue() != null && storage.getDeviceData().getValue().getCard() != null) {
+            card = new SpiltURL(Objects.requireNonNull(storage
+                    .getDeviceData().getValue().getCard())).getBase();
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(base)
+                .baseUrl(card)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)

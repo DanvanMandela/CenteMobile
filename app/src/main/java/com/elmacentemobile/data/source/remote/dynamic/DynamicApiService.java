@@ -13,6 +13,6 @@ public interface DynamicApiService extends DynamicDataSource {
 
     @Override
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/Api/Session")
+    @POST("ElmaAuthDynamic/api/auth/apps")
     Single<ResponseData> requestBase(@Body RequestData data);
 }

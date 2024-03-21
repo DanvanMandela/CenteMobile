@@ -39,18 +39,20 @@ public class FormsRemoteDataModule {
 
         LiveData<DeviceData> deviceLive = BindingAdapterKt.deviceLive(storage.getDeviceData());
 
-
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                DynamicURLKt.liveTest() : Objects.requireNonNull(storage
-                .getDeviceData().getValue().getStaticData())).getBase();
+        String base = storage.getDeviceData().getValue().getStaticData();
+        String forms = DynamicURLKt.liveTest();
+        if (base != null && !base.isBlank()) {
+            forms = new SpiltURL(Objects.requireNonNull(storage
+                    .getDeviceData().getValue().getStaticData())).getBase();
+        }
 
         new AppLogger().appLog("Live:URL", new Gson().toJson(deviceLive.getValue()));
-        new AppLogger().appLog("Old:URL", base);
+        new AppLogger().appLog("Old:URL", forms);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(base)
+                .baseUrl(forms)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(Constants.Timeout.connection_ocr, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)

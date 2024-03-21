@@ -7,7 +7,7 @@ import java.io.IOException
 import java.util.zip.GZIPOutputStream
 
 object DynamicURL {
-    const val LIVE = "https://app.craftsilicon.com/CentemobileAuthDynamic/"
+    const val LIVE = "https://elmaauthserver.azurewebsites.net"
 }
 
 
@@ -18,7 +18,7 @@ object DynamicTestURL {
 
 fun liveTest(): String {
     return if (Constants.Data.TEST) "https://elmaauthserver.azurewebsites.net/"
-    else "https://app.craftsilicon.com/"
+    else "https://elmaauthserver.azurewebsites.net/"
 }
 
 

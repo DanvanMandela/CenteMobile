@@ -31,15 +31,18 @@ public class ValidationRemoteDataModule {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                liveTest()
-                : Objects.requireNonNull(storage.getDeviceData().getValue().getValidate())).getBase();
+        String validate = liveTest();
+
+        if (storage.getDeviceData().getValue() != null && storage.getDeviceData().getValue().getValidate() != null) {
+            validate = new SpiltURL(Objects.requireNonNull(storage
+                    .getDeviceData().getValue().getValidate())).getBase();
+        }
 
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(base)
+                .baseUrl(validate)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(Constants.Timeout.connection, TimeUnit.SECONDS)
                         .writeTimeout(Constants.Timeout.write, TimeUnit.SECONDS)

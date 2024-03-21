@@ -36,7 +36,9 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.bumptech.glide.Glide
-import com.canhub.cropper.*
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.LabelDataTypeConverter
 import com.elmacentemobile.data.model.StandingOrder
@@ -47,7 +49,11 @@ import com.elmacentemobile.data.model.control.ControlFormatEnum
 import com.elmacentemobile.data.model.control.ControlTypeEnum
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.data.model.control.FormNavigation
-import com.elmacentemobile.data.model.converter.*
+import com.elmacentemobile.data.model.converter.DynamicAPIResponseConverter
+import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
+import com.elmacentemobile.data.model.converter.GlobalResponseTypeConverter
+import com.elmacentemobile.data.model.converter.InsuranceTypeConverter
+import com.elmacentemobile.data.model.converter.LoanTypeConverter
 import com.elmacentemobile.data.model.dynamic.DynamicAPIResponse
 import com.elmacentemobile.data.model.dynamic.DynamicDataResponse
 import com.elmacentemobile.data.model.dynamic.FormField
@@ -79,20 +85,39 @@ import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.activity.beneficiary.BeneficiaryManageActivity
 import com.elmacentemobile.view.activity.transaction.PendingTransactionActivity
 import com.elmacentemobile.view.activity.transaction.TransactionCenterActivity
-import com.elmacentemobile.view.binding.*
+import com.elmacentemobile.view.binding.FieldValidationHelper
+import com.elmacentemobile.view.binding.calendarToDate
+import com.elmacentemobile.view.binding.hideSoftKeyboard
+import com.elmacentemobile.view.binding.isOnline
+import com.elmacentemobile.view.binding.setDynamic
 import com.elmacentemobile.view.composable.ContactDialogCompose
 import com.elmacentemobile.view.composable.keyboard.CustomKeyData
 import com.elmacentemobile.view.composable.keyboard.CustomKeyboard
 import com.elmacentemobile.view.composable.keyboard.KeyFunctionEnum
 import com.elmacentemobile.view.composable.policy.PolicyAndPrivacyFragment
-import com.elmacentemobile.view.dialog.*
+import com.elmacentemobile.view.dialog.DialogData
+import com.elmacentemobile.view.dialog.InfoFragment
+import com.elmacentemobile.view.dialog.MainDialogData
+import com.elmacentemobile.view.dialog.NewAlertDialogFragment
+import com.elmacentemobile.view.dialog.SuccessDialogFragment
 import com.elmacentemobile.view.dialog.confirm.ConfirmFragment
 import com.elmacentemobile.view.dialog.display.DisplayDialogFragment
 import com.elmacentemobile.view.dialog.receipt.ReceiptFragment
 import com.elmacentemobile.view.ep.adapter.InsuranceAdapterItem
 import com.elmacentemobile.view.ep.adapter.LoanAdapterItem
-import com.elmacentemobile.view.ep.controller.*
-import com.elmacentemobile.view.ep.data.*
+import com.elmacentemobile.view.ep.controller.DisplayData
+import com.elmacentemobile.view.ep.controller.DisplayState
+import com.elmacentemobile.view.ep.controller.HashTypeConverter
+import com.elmacentemobile.view.ep.controller.LabelData
+import com.elmacentemobile.view.ep.controller.LoadingState
+import com.elmacentemobile.view.ep.controller.MainDisplayController
+import com.elmacentemobile.view.ep.data.AppData
+import com.elmacentemobile.view.ep.data.BusData
+import com.elmacentemobile.view.ep.data.ContactData
+import com.elmacentemobile.view.ep.data.GroupForm
+import com.elmacentemobile.view.ep.data.GroupModule
+import com.elmacentemobile.view.ep.data.Nothing
+import com.elmacentemobile.view.ep.data.ReceiptList
 import com.elmacentemobile.view.fragment.auth.bio.BioInterface
 import com.elmacentemobile.view.fragment.auth.bio.BiometricFragment
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener
@@ -131,7 +156,11 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.Stack
+import java.util.TimeZone
 import java.util.logging.Logger
 
 @AndroidEntryPoint
@@ -2552,11 +2581,12 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
 
+        val gender = if (map?.gender == "MALE") "M" else "F"
         this@FalconHeavyActivity.userInput(
             InputData(
                 name = "Gender",
                 key = "INFOFIELD9",
-                value = if (map?.gender == "MALE") "M" else "F",
+                value = gender,
                 encrypted = false,
                 mandatory = true,
                 linked = false
@@ -2585,11 +2615,12 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
 
+        val title = if (gender == "M") "Mr." else "Ms."
         this@FalconHeavyActivity.userInput(
             InputData(
-                name = "CARDNUMBER",
+                name = "TITLE",
                 key = "INFOFIELD11",
-                value = map?.docId,
+                value = title,
                 encrypted = false,
                 mandatory = true,
                 linked = false

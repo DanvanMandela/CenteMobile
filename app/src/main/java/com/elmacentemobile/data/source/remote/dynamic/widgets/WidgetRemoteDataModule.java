@@ -40,10 +40,14 @@ public class WidgetRemoteDataModule {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         LiveData<DeviceData> deviceLive = BindingAdapterKt.deviceLive(storage.getDeviceData());
+        String base = liveTest();
 
+        if (storage.getDeviceData().getValue() != null && storage.getDeviceData()
+                .getValue().getOther() != null) {
+            base = new SpiltURL(Objects.requireNonNull(storage.getDeviceData()
+                    .getValue().getOther())).getBase();
+        }
 
-        String base = new SpiltURL(storage.getDeviceData().getValue() == null ?
-                liveTest() : Objects.requireNonNull(storage.getDeviceData().getValue().getOther())).getBase();
 
         new AppLogger().appLog("Live:URL", new Gson().toJson(deviceLive.getValue()));
         new AppLogger().appLog("Old:URL", base);
