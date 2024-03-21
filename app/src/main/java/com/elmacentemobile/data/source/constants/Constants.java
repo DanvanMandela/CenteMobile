@@ -82,10 +82,10 @@ public class Constants {
 
     public static class Data {
 
-        public static final boolean TEST = false;//TODO CHECK CAMERA AND LOGS
+        public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
 
         public static final boolean AUTO_OTP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        public static final boolean ACTIVATED = false;
+        public static final boolean ACTIVATED = true;
 
         public static final boolean TEST_PROD = false;
 
