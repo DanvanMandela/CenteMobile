@@ -1,7 +1,6 @@
 package com.elmacentemobile.data.source.constants;
 
 
-import static com.elmacentemobile.data.source.constants.Constants.Data.TEST_PROD;
 import static com.elmacentemobile.data.source.remote.helper.DynamicURLKt.getROUTE_BASE_URL;
 
 import android.Manifest;
@@ -12,7 +11,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.source.pref.StorageDataSource;

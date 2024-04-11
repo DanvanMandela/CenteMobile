@@ -20,8 +20,7 @@ public interface AuthApiService extends AuthDataSource {
             @Header("T") String token,
             @Body PayloadData data, @Path(value = "path") String path);
 
-    @Override
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("{path}")
+
+
     Single<DynamicResponse> authRequest(@Body PayloadData data, @Path(value = "path") String path);
 }
