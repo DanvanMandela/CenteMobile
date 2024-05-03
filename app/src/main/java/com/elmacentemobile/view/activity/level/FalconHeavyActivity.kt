@@ -2573,7 +2573,18 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         this@FalconHeavyActivity.userInput(
             InputData(
                 name = "DateOfBirth",
-                key = "INFOFIELD12",
+                key = "INFOFIELD32",
+                value = formattedDate,
+                encrypted = false,
+                mandatory = true,
+                linked = false
+            )
+        )
+
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "DateOfBirth",
+                key = "INFOFIELD10",
                 value = formattedDate,
                 encrypted = false,
                 mandatory = true,
@@ -2594,16 +2605,16 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
             )
         )
 
-//        this@FalconHeavyActivity.userInput(
-//            InputData(
-//                name = "DOE",
-//                key = "INFOFIELD12",
-//                value = map?.expires,
-//                encrypted = false,
-//                mandatory = true,
-//                linked = false
-//            )
-//        )
+        this@FalconHeavyActivity.userInput(
+            InputData(
+                name = "DOE",
+                key = "INFOFIELD12",
+                value = map?.expires,
+                encrypted = false,
+                mandatory = true,
+                linked = false
+            )
+        )
 
         val gender = if (map?.gender == "MALE") "M" else "F"
         this@FalconHeavyActivity.userInput(

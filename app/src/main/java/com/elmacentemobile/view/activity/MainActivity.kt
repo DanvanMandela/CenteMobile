@@ -199,10 +199,10 @@ class MainActivity : AppCompatActivity(), AppCallbacks,
         listenToInActivity()
 
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU) {
-            checkNewVersion()
-        }
-
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU) {
+//            checkNewVersion()
+//        }
+        checkNewVersion()
         setViewModel()
     }
 

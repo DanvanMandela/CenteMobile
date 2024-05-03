@@ -13,7 +13,7 @@
     <string name="mobile">Mobile</string>
     <string name="pin">Pin</string>
     <string name="otp_">OTP</string>
-    <string name="enter_otp">Enter the One-Time Password\nsent to Your Mobile Number or Email</string>
+    <string name="enter_otp">Please have The Registered Number in this device\nThe OTP will be auto-detected</string>
     <string name="resend_otp">Resend</string>
     <string name="verification">Verification</string>
 

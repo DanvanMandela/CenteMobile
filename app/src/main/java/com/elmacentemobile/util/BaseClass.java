@@ -250,7 +250,6 @@ public class BaseClass {
 
 
     public static String wordFormat(String value) {
-
         String[] words = value.split("(?=\\p{Upper})");
         StringBuilder stringBuilder = new StringBuilder();
         int l = words.length - 1;

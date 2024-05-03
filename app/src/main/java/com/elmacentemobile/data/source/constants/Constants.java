@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.elmacentemobile.BuildConfig;
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.source.pref.StorageDataSource;
 import com.elmacentemobile.util.AppLogger;
@@ -109,7 +110,7 @@ public class Constants {
         public final static String CUSTOMER_ID = TEST ? "25600116" : "25600016";
 
         @NotNull
-        public final static String VERSION = "131";
+        public final static String VERSION = BuildConfig.VERSION_NAME;
 
         @NotNull
         public final static String GO = "cente";
@@ -197,7 +198,7 @@ public class Constants {
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
-        return  deviceId;
+        return deviceId;
     }
 
 
