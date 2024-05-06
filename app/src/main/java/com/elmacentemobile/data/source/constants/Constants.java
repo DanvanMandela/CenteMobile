@@ -88,7 +88,7 @@ public class Constants {
 
         public static final boolean TEST_PROD = false;
 
-        @NotNull
+        @NotNullc
         public static final String API_KEY = "8CC9432C-B5AD-471C-A77D-28088C695916";
 
         @NotNull

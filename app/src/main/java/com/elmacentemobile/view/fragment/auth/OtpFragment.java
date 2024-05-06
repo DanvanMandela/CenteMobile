@@ -119,10 +119,12 @@ public class OtpFragment extends Fragment implements AppCallbacks, View.OnClickL
                     && Objects.requireNonNull(data.getMobile()).length() > 8) {
                 String mobile = data.getMobile();
                 String code = mobile.substring(0, 3);
-                if (code.contains("256") && !Constants.Data.TEST) {
-                    if (!Constants.Data.AUTO_OTP)
+                if (code.contains("256")) {
+                    binding.textView2.setText(R.string.enter_otp);
+                    if (!Constants.Data.AUTO_OTP) {
                         binding.verificationCodeEditText.setEnabled(false);
-                }
+                    }
+                } else binding.textView2.setText(R.string.enter_otp_diaspora);
             }
         }
     }
