@@ -127,6 +127,7 @@ import com.elmacentemobile.view.fragment.dynamic.RecentFragment
 import com.elmacentemobile.view.fragment.global.GlobalOTPFragment
 import com.elmacentemobile.view.fragment.go.ocr.OCRResultActivity
 import com.elmacentemobile.view.fragment.go.steps.OCRData
+import com.elmacentemobile.view.fragment.landing.LogoutFeedback
 import com.elmacentemobile.view.fragment.transaction.StandingOrderDetailsFragment
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
@@ -198,6 +199,8 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     private var callback: AppCallbacks? = null
 
     private var imageView: ImageView? = null
+
+    private var currenct: String = ""
 
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
@@ -2432,11 +2435,24 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
     }
 
     override fun onCancel() {
-        val openMainActivity = Intent(this, MainActivity::class.java)
-        openMainActivity.flags =
-            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
-        startActivityIfNeeded(openMainActivity, 0)
-        finish()
+        if (currenct == "PAYMENTCONFIRMATIONFORM")
+            LogoutFeedback.show(object : AppCallbacks {
+                override fun onDialog() {
+                    val openMainActivity =
+                        Intent(this@FalconHeavyActivity, MainActivity::class.java)
+                    openMainActivity.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
+                    startActivityIfNeeded(openMainActivity, 0)
+                    finish()
+                }
+            }, supportFragmentManager)
+        else {
+            val openMainActivity = Intent(this, MainActivity::class.java)
+            openMainActivity.flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY
+            startActivityIfNeeded(openMainActivity, 0)
+            finish()
+        }
     }
 
 

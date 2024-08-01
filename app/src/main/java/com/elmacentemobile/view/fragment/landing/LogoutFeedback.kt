@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.converter.DynamicDataResponseTypeConverter
@@ -34,7 +35,7 @@ import io.reactivex.schedulers.Schedulers
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -161,6 +162,15 @@ class LogoutFeedback : BottomSheetDialogFragment(), AppCallbacks {
             LogoutFeedback().apply {
                 this@Companion.callbacks = appCallbacks
             }
+
+        @JvmStatic
+        fun show(
+            appCallbacks: AppCallbacks,
+            manager: FragmentManager
+        ) = LogoutFeedback().apply {
+            this@Companion.callbacks = appCallbacks
+            show(manager, this.tag)
+        }
     }
 
     override fun rating_dismiss() {

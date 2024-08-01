@@ -230,7 +230,6 @@ class ChangePinFragment : Fragment(), AppCallbacks {
     }
 
     override fun navigateUp() {
-
         (requireActivity().onBackPressed())
     }
 }

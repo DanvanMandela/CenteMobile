@@ -194,7 +194,6 @@ public class Constants {
             if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 return "";
             }
-
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
