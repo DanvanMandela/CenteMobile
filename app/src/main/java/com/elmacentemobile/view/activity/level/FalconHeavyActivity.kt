@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
-import android.text.TextUtils
 import android.util.Base64
 import android.view.MenuItem
 import android.view.View
@@ -1641,17 +1640,33 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
 
     override fun onModule(modules: Modules?) {
         val moduleDisable = baseViewModel.dataSource.disableModule.value
-        if (!moduleDisable.isNullOrEmpty()) {
-            val isDisabled = moduleDisable.find { it?.id == modules?.moduleID }
-            if (isDisabled != null) ShowToast(this, isDisabled.message)
-            else {
-                if (modules!!.moduleURLTwo != null) {
-                    if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
-                        openUrl(modules.moduleURLTwo)
-                    } else navigateTo(modules)
-                } else navigateTo(modules)
+//        if (!moduleDisable.isNullOrEmpty()) {
+//            val isDisabled = moduleDisable.find { it?.id == modules?.moduleID }
+//            if (isDisabled != null) ShowToast(this, isDisabled.message)
+//            else {
+//                if (modules!!.moduleURLTwo != null) {
+//                    if (!TextUtils.isEmpty(modules.moduleURLTwo)) {
+//                        openUrl(modules.moduleURLTwo)
+//                    } else navigateTo(modules)
+//                } else navigateTo(modules)
+//            }
+//        } else navigateTo(modules)
+//
+
+        val moduleId = modules?.moduleID
+        val moduleURL = modules?.moduleURLTwo
+
+        val isDisabled = moduleDisable?.find { it?.id == moduleId }
+
+        if (isDisabled != null) {
+            ShowToast(this, isDisabled.message)
+        } else {
+            if (!moduleURL.isNullOrEmpty()) {
+                openUrl(moduleURL)
+            } else {
+                navigateTo(modules)
             }
-        } else navigateTo(modules)
+        }
 
 
     }

@@ -84,7 +84,7 @@ public class Constants {
         public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
 
         public static final boolean AUTO_OTP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        public static final boolean ACTIVATED = false;
+        public static final boolean ACTIVATED = true;
 
         public static final boolean TEST_PROD = false;
 
@@ -197,7 +197,7 @@ public class Constants {
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
-        return deviceId;
+        return "2FF6C72E-F9C5-497B-941E-0B3398CDE1CF";
     }
 
 

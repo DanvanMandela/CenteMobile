@@ -19,8 +19,8 @@ android {
         applicationId "com.elmacentemobile"
         minSdk 26
         targetSdk 34
-        versionCode 138
-        versionName "138"
+        versionCode 139
+        versionName "139"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -251,12 +251,12 @@ dependencies {
 
 
     //***Core test  library
-    androidTestImplementation 'androidx.test:core:1.5.0'
+    implementation 'androidx.test:core:1.6.1'
 
     //***AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
-    testImplementation 'org.mockito:mockito-core:5.10.0'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
 
     //**jsoup***
     implementation 'org.jsoup:jsoup:1.14.3'
