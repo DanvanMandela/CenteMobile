@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:menu="@menu/validation_menu"
-                    app:navigationIcon="@drawable/back_arrow_new" />
+                    app:navigationIcon="@drawable/baseline_arrow_back_ios_24" />
             </com.google.android.material.appbar.AppBarLayout>
 
             <FrameLayout

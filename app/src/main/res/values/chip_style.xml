@@ -3,7 +3,7 @@
 
     <style name="Widget.App.Chip" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipIconTint">@color/white</item>
-        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeWidth">1dp</item>
         <item name="chipStrokeColor">@color/stroke_tint</item>
         <item name="android:textColor">@color/chip_text_color</item>
         <item name="checkedIconVisible">false</item>
