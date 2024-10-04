@@ -22,14 +22,29 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.annotation.*
+import android.widget.CheckBox
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
 import androidx.palette.graphics.Palette
@@ -64,14 +79,36 @@ import com.elmacentemobile.databinding.BlockCardReaderLayoutBinding
 import com.elmacentemobile.databinding.BlockRadioButtonLayoutBinding
 import com.elmacentemobile.databinding.DotLayoutBinding
 import com.elmacentemobile.databinding.RectangleILayoutBinding
-import com.elmacentemobile.util.*
+import com.elmacentemobile.util.AppLogger
+import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.BaseClass.nonCaps
+import com.elmacentemobile.util.ColorUtil
+import com.elmacentemobile.util.HorizontalMarginItemDecoration
+import com.elmacentemobile.util.NumberTextWatcherForThousand
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.util.image.drawableToBitmap
 import com.elmacentemobile.view.dialog.DayTipData
 import com.elmacentemobile.view.ep.adapter.AccountAdapterItem
-import com.elmacentemobile.view.ep.controller.*
-import com.elmacentemobile.view.ep.data.*
+import com.elmacentemobile.view.ep.controller.AlertServiceController
+import com.elmacentemobile.view.ep.controller.DisplayController
+import com.elmacentemobile.view.ep.controller.DisplayVaultData
+import com.elmacentemobile.view.ep.controller.FormController
+import com.elmacentemobile.view.ep.controller.FrequentController
+import com.elmacentemobile.view.ep.controller.HeaderController
+import com.elmacentemobile.view.ep.controller.LandingPageController
+import com.elmacentemobile.view.ep.controller.MainDisplayController
+import com.elmacentemobile.view.ep.controller.ModuleController
+import com.elmacentemobile.view.ep.controller.ModuleData
+import com.elmacentemobile.view.ep.controller.NewFormController
+import com.elmacentemobile.view.ep.data.AccountData
+import com.elmacentemobile.view.ep.data.AppData
+import com.elmacentemobile.view.ep.data.BodyData
+import com.elmacentemobile.view.ep.data.DynamicData
+import com.elmacentemobile.view.ep.data.FormData
+import com.elmacentemobile.view.ep.data.GroupForm
+import com.elmacentemobile.view.ep.data.GroupLanding
+import com.elmacentemobile.view.ep.data.GroupModule
+import com.elmacentemobile.view.ep.data.LandingPageItem
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -81,9 +118,18 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-import java.text.*
+import java.text.DateFormat
+import java.text.DateFormatSymbols
+import java.text.Format
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Currency
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import kotlin.collections.set
 
 
 @BindingAdapter("callback", "controller", "setIndicator")
@@ -458,8 +504,8 @@ fun MaterialToolbar.setSTitle(data: ActivationData?) {
 
 @BindingAdapter("modules", "callback")
 fun MaterialToolbar.setDynamicToolbar(dynamic: DynamicData?, callbacks: AppCallbacks) {
-    this.navigationIcon?.setTint(ContextCompat.getColor(this.context, R.color.white))
-    this.setTitleTextColor(ContextCompat.getColor(this.context, R.color.white))
+    this.navigationIcon?.setTint(ContextCompat.getColor(this.context, R.color.app_blue_dark))
+    this.setTitleTextColor(ContextCompat.getColor(this.context, R.color.app_blue_dark))
     this.setNavigationOnClickListener { callbacks.navigateUp() }
     if (dynamic != null) {
         when (dynamic) {

@@ -25,12 +25,12 @@
 
 
     <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="backgroundColor">@color/app_blue_light</item>
+        <item name="android:textColorSecondary">@color/app_blue_dark</item>
+        <item name="android:background">@color/back_blue</item>
+        <item name="android:titleTextColor">@color/app_blue_dark</item>
+        <item name="navigationIconTint">@color/app_blue_dark</item>
+        <item name="android:elevation">0dp</item>
     </style>
-
-
-
 
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.CenteMobile">

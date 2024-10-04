@@ -16,11 +16,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        app:cardBackgroundColor="@color/ghost_white"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/dimens_2dp"
-        android:layout_marginStart="@dimen/dimens_8dp"
-        android:layout_marginTop="@dimen/dimens_8dp">
+        android:layout_margin="@dimen/dimens_4dp"
+        app:cardBackgroundColor="@color/ghost_white"
+        app:cardCornerRadius="@dimen/dimens_8dp"
+        app:cardElevation="@dimen/dimens_0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -53,11 +53,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
                 android:maxLines="2"
                 android:minLines="2"
-                android:ellipsize="end"
                 android:paddingVertical="@dimen/dimens_2dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="@color/dar_color_one"

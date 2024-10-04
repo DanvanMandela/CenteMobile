@@ -25,19 +25,36 @@
     </data>
 
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dimens_8dp"
+        android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/autoInput"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
-            android:layout_marginTop="@dimen/dimens_16dp"
+            android:layout_marginBottom="@dimen/dimens_4dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@{data.controlText}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/autoInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
             android:hint="@{data.controlText}"
-            app:boxBackgroundColor="@color/ghost_white"
+            android:layout_marginTop="@dimen/dimens_4dp"
+            app:boxBackgroundColor="@color/back_blue"
+            app:boxCornerRadiusBottomEnd="@dimen/dimens_8dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimens_8dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimens_8dp"
+            app:boxCornerRadiusTopStart="@dimen/dimens_8dp"
+            app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two">
 
@@ -49,17 +66,17 @@
                 setTag="@{data.controlID}"
                 storage="@{storage}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_70dp"
+                android:layout_height="@dimen/dimens_54dp"
                 android:focusable="false"
                 android:fontFamily="@font/poppins_medium"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                android:textColor="@color/dar_color_one"
+                android:textColor="@color/app_blue_dark"
                 tools:ignore="LabelFor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
 </layout>
