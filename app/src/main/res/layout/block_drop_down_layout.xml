@@ -43,16 +43,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/autoInput"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/CustomAutoTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
             android:hint="@{data.controlText}"
-            app:boxBackgroundColor="@color/back_blue"
-            app:boxCornerRadiusBottomEnd="@dimen/dimens_8dp"
-            app:boxCornerRadiusBottomStart="@dimen/dimens_8dp"
-            app:boxCornerRadiusTopEnd="@dimen/dimens_8dp"
-            app:boxCornerRadiusTopStart="@dimen/dimens_8dp"
             app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two">

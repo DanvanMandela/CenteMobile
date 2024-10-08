@@ -55,5 +55,35 @@
     </style>
 
 
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/input_color_focus</item>
+        <item name="boxBackgroundColor">@color/back_blue</item>
+        <item name="android:textColor">@color/input_color_focus</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dimens_8dp</item>
+        <item name="endIconTint">@color/app_blue_dark</item>
+        <item name="hintTextAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="hintTextColor">@color/back_blue</item>
+
+    </style>
+
+
+    <style name="CustomAutoTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+        <item name="boxStrokeColor">@color/input_color_focus</item>
+        <item name="boxBackgroundColor">@color/back_blue</item>
+        <item name="android:textColor">@color/input_color_focus</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dimens_8dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dimens_8dp</item>
+        <item name="endIconTint">@color/app_blue_dark</item>
+        <item name="hintTextAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="hintTextColor">@color/back_blue</item>
+
+    </style>
+
 
 </resources>

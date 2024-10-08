@@ -24,6 +24,7 @@
             android:padding="@dimen/dimens_15dp"
             android:text="@{data}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/app_blue_dark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

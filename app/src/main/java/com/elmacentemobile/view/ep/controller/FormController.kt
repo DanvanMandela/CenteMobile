@@ -18,11 +18,13 @@ import com.elmacentemobile.otpLayout
 import com.elmacentemobile.qRLayout
 import com.elmacentemobile.recentListLayout
 import com.elmacentemobile.textDisplayJsonLayout
-import com.elmacentemobile.util.BaseClass
+import com.elmacentemobile.util.AppLogger
+import com.elmacentemobile.util.BaseClass.nonCaps
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.data.FormData
 import com.elmacentemobile.view.ep.data.GroupForm
 import com.elmacentemobile.view.ep.model.amountModel
+import com.elmacentemobile.view.ep.model.beneficiaryViewModel
 import com.elmacentemobile.view.ep.model.dateSelect
 import com.elmacentemobile.view.ep.model.dropDownAdvancedLayout
 import com.elmacentemobile.view.ep.model.inputDisabledModel
@@ -32,6 +34,7 @@ import com.elmacentemobile.view.ep.model.inputPanModel
 import com.elmacentemobile.view.ep.model.passwordModel
 import com.elmacentemobile.view.ep.model.phoneContacts
 import com.elmacentemobile.view.ep.model.radioGroup
+import com.google.gson.Gson
 
 class FormController(
     val callbacks: AppCallbacks,
@@ -41,18 +44,18 @@ class FormController(
 
     override fun buildModels(data: FormData?) {
         for (d in data?.forms?.form!!) {
-            when (BaseClass.nonCaps(d.controlType)) {
+            when (nonCaps(d.controlType)) {
 
-                BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> setTextInputLayout(d, data)
+                nonCaps(ControlTypeEnum.TEXT.type) -> setTextInputLayout(d, data)
 
-                BaseClass.nonCaps(ControlTypeEnum.BUTTON.type) -> buttonLayout {
+                nonCaps(ControlTypeEnum.BUTTON.type) -> buttonLayout {
                     id(d.controlID)
                     data(d)
                     module(data.forms.module)
                     callback(this@FormController.callbacks)
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.DROPDOWN.type) -> dropDownAdvancedLayout(
+                nonCaps(ControlTypeEnum.DROPDOWN.type) -> dropDownAdvancedLayout(
                     formControl = d,
                     storage = storage!!,
                     appCallbacks = this@FormController.callbacks,
@@ -60,30 +63,40 @@ class FormController(
                 )
 
 
-                BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> hiddenInputLayout {
+                nonCaps(ControlTypeEnum.HIDDEN.type) -> hiddenInputLayout {
                     id(d.controlID)
                     data(d)
                     callback(this@FormController.callbacks)
                 }
 
 
-                BaseClass.nonCaps(ControlTypeEnum.CONTAINER.type) -> setContainer(data.forms, d)
+                nonCaps(ControlTypeEnum.CONTAINER.type) -> setContainer(data.forms, d)
 
-                BaseClass.nonCaps(ControlTypeEnum.CHECKBOX.type) -> checkBoxLayout {
+                nonCaps(ControlTypeEnum.BENEFICIARY.type) -> {
+                    AppLogger.instance.appLog("Beneficiary", Gson().toJson(d))
+                    beneficiaryViewModel(
+                        formControl = d,
+                        appCallbacks = this@FormController.callbacks,
+                        storage = data.storage!!,
+                        module = data.forms.module
+                    )
+                }
+
+                nonCaps(ControlTypeEnum.CHECKBOX.type) -> checkBoxLayout {
                     id(d.controlID)
                     data(d)
                     module(data.forms.module)
                     callback(this@FormController.callbacks)
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
+                nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
                     phoneContacts(
                         vault = ChildVault(container = d, mainData = data),
                         appCallbacks = this@FormController.callbacks
                     )
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.HIDDEN.type) -> {
+                nonCaps(ControlTypeEnum.HIDDEN.type) -> {
                     hiddenInputLayout {
                         id(d.controlID)
                         data(d)
@@ -91,14 +104,14 @@ class FormController(
                     }
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.DATE.type) -> {
+                nonCaps(ControlTypeEnum.DATE.type) -> {
                     dateSelect(
                         vault = ChildVault(container = d, mainData = data),
                         appCallbacks = this@FormController.callbacks
                     )
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
+                nonCaps(ControlTypeEnum.TEXTVIEW.type) -> {
                     textDisplayJsonLayout {
                         id(d.controlID)
                         data(d)
@@ -106,25 +119,25 @@ class FormController(
                     }
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
+                nonCaps(ControlTypeEnum.LIST.type) -> setList(d, data.forms)
 
-                BaseClass.nonCaps(ControlTypeEnum.QR_SCANNER.type) -> qRLayout {
+                nonCaps(ControlTypeEnum.QR_SCANNER.type) -> qRLayout {
                     id(d.controlID)
                     data(d)
                     module(data.forms.module)
                     callback(this@FormController.callbacks)
                 }
 
-                BaseClass.nonCaps(ControlTypeEnum.LABEL.type) -> {
-                    when (BaseClass.nonCaps(d.controlFormat)) {
-                        BaseClass.nonCaps(ControlFormatEnum.LIST_DATA.type) -> labelListLayout {
+                nonCaps(ControlTypeEnum.LABEL.type) -> {
+                    when (nonCaps(d.controlFormat)) {
+                        nonCaps(ControlFormatEnum.LIST_DATA.type) -> labelListLayout {
                             id(d.controlID)
                             data(d)
                             module(data.forms.module)
                             callback(this@FormController.callbacks)
                         }
 
-                        BaseClass.nonCaps(ControlFormatEnum.LABEL_TEXT.type) -> labelTextLayout {
+                        nonCaps(ControlFormatEnum.LABEL_TEXT.type) -> labelTextLayout {
                             id(d.controlID)
                             data(d)
                             callback(this@FormController.callbacks)
@@ -142,8 +155,8 @@ class FormController(
     }
 
     private fun setList(d: FormControl, data: GroupForm) {
-        when (BaseClass.nonCaps(d.controlID)) {
-            BaseClass.nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
+        when (nonCaps(d.controlID)) {
+            nonCaps(ControlIDEnum.RECENT_LIST.type) -> recentListLayout {
                 id(d.controlID)
                 data(d)
                 module(data.module)
@@ -160,8 +173,8 @@ class FormController(
     }
 
     private fun setContainer(data: GroupForm, d: FormControl) {
-        when (BaseClass.nonCaps(d.controlFormat)) {
-            BaseClass.nonCaps(ControlFormatEnum.RADIO_GROUPS.type) -> radioGroup {
+        when (nonCaps(d.controlFormat)) {
+            nonCaps(ControlFormatEnum.RADIO_GROUPS.type) -> radioGroup {
                 id("radioGroup")
                 data(data)
                 callbacks(this@FormController.callbacks)
@@ -172,8 +185,8 @@ class FormController(
     }
 
     private fun setTextInputLayout(d: FormControl, data: FormData) {
-        when (BaseClass.nonCaps(d.controlFormat)) {
-            BaseClass.nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
+        when (nonCaps(d.controlFormat)) {
+            nonCaps(ControlFormatEnum.OTP.type) -> otpLayout {
                 id(d.controlID)
                 data(d)
                 callback(this@FormController.callbacks)
@@ -181,7 +194,7 @@ class FormController(
                 storage(this@FormController.storage)
             }
 
-            BaseClass.nonCaps(ControlFormatEnum.AMOUNT.type) -> {
+            nonCaps(ControlFormatEnum.AMOUNT.type) -> {
                 if (!d.displayControl.isNullOrEmpty()) {
                     if (d.displayControl == "true") {
                         disabledAmountTextInputLayout {
@@ -193,20 +206,20 @@ class FormController(
                 } else amountModel(form = d, storage = storage, callbacks = callbacks)
             }
 
-            BaseClass.nonCaps(ControlFormatEnum.PIN_NUMBER.type),
-            BaseClass.nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
+            nonCaps(ControlFormatEnum.PIN_NUMBER.type),
+            nonCaps(ControlFormatEnum.PIN.type) -> passwordModel(
                 form = d, storage = storage, callbacks = callbacks
             )
 
-            else -> when (BaseClass.nonCaps(d.controlFormat)) {
-                BaseClass.nonCaps(ControlFormatEnum.NUMERIC.type),
-                BaseClass.nonCaps(ControlFormatEnum.NUMBER.type) -> inputNumericModel(
+            else -> when (nonCaps(d.controlFormat)) {
+                nonCaps(ControlFormatEnum.NUMERIC.type),
+                nonCaps(ControlFormatEnum.NUMBER.type) -> inputNumericModel(
                     form = d,
                     storage = storage,
                     callbacks = callbacks
                 )
 
-                BaseClass.nonCaps(ControlFormatEnum.PAN.type) -> inputPanModel(
+                nonCaps(ControlFormatEnum.PAN.type) -> inputPanModel(
                     form = d,
                     storage = storage,
                     callbacks = callbacks

@@ -28,6 +28,7 @@ import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.data.FormData
 import com.elmacentemobile.view.ep.data.GroupForm
 import com.elmacentemobile.view.ep.model.amountModel
+import com.elmacentemobile.view.ep.model.beneficiaryViewModel
 import com.elmacentemobile.view.ep.model.dateSelect
 import com.elmacentemobile.view.ep.model.horizontalContainer
 import com.elmacentemobile.view.ep.model.inputDisabledModel
@@ -56,7 +57,7 @@ class NewFormController(
             ) {
                 when (nonCaps(d.controlType)) {
                     nonCaps(ControlTypeEnum.DROPDOWN.type) -> {
-                        AppLogger.instance.appLog("Linked:Drop",Gson().toJson(d))
+                        AppLogger.instance.appLog("Linked:Drop", Gson().toJson(d))
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             val children =
                                 data.forms.form?.filter { it -> it.linkedToControl == d.controlID }
@@ -78,6 +79,18 @@ class NewFormController(
                                     appCallbacks = this@NewFormController.callbacks
                                 )
                             }
+                        }
+                    }
+
+                    nonCaps(ControlTypeEnum.BENEFICIARY.type) -> {
+                        AppLogger.instance.appLog("Beneficiary", Gson().toJson(d))
+                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
+                            beneficiaryViewModel(
+                                formControl = d,
+                                appCallbacks = this@NewFormController.callbacks,
+                                storage = data.storage!!,
+                                module = data.forms.module
+                            )
                         }
                     }
 

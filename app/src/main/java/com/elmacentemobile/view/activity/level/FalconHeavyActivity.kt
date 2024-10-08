@@ -2789,7 +2789,6 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                     pinStack.pop()
                     baseViewModel.pin.value = pinStack
                 }
-
             }
 
             KeyFunctionEnum.Clear -> {
@@ -2821,5 +2820,11 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         super.onStop()
     }
 
+    override fun addBeneficiary(
+        modules: Modules?,
+        formControl: FormControl?
+    ) {
+
+    }
 
 }

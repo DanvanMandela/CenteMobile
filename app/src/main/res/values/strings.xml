@@ -473,6 +473,8 @@
     <string name="select_opening_account_">Select opening deposit</string>
     <string name="select_monthly_income_">Select monthly income</string>
     <string name="enter_">Enter</string>
+    <string name="add_">Add</string>
+    <string name="beneficiaries_">Beneficiaries</string>
 
 
 </resources>

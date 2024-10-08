@@ -48,22 +48,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/parent"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/CustomTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="@dimen/dimens_4dp"
                 android:hint="@{data.controlText}"
-                app:boxBackgroundColor="@color/back_blue"
-                app:boxCornerRadiusBottomEnd="@dimen/dimens_8dp"
-                app:boxCornerRadiusBottomStart="@dimen/dimens_8dp"
-                app:boxCornerRadiusTopEnd="@dimen/dimens_8dp"
-                app:boxCornerRadiusTopStart="@dimen/dimens_8dp"
                 app:hintEnabled="false"
                 app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:hintTextColor="@color/dar_color_two"
                 app:prefixText="@string/ugx"
-                app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+                app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                app:prefixTextColor="@color/app_blue_dark">
 
                 <com.elmacentemobile.util.custom.CurrencyInput
                     android:id="@+id/child"
@@ -72,9 +67,8 @@
                     setTag="@{data.controlID}"
                     value="@{value}"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:hint="@string/enter_"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
                     android:imeOptions="actionDone"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="@color/app_blue_dark"

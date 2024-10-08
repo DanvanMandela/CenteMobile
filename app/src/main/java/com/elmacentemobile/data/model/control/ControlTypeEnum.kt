@@ -25,6 +25,7 @@ enum class ControlTypeEnum(val type: String) {
     CHECKBOX("CHECKBOX"),
     CONFORM("CONFIRMATIONFORM"),
     OTP("OTPFORM"),
+    BENEFICIARY("BENEFICIARY"),
 
 }
 
