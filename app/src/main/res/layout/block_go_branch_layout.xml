@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:paddingHorizontal="@dimen/dimens_24dp"
+            android:paddingTop="@dimen/dimens_16dp"
+            android:text="@string/pref_branch"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/autoInputBranch"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            app:boxBackgroundColor="@color/white"
+            app:hintEnabled="false"
+            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoEditBranch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="@string/select_one"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                tools:ignore="LabelFor" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

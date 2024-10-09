@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <LinearLayout
+        android:id="@+id/mainLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLay"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_70dp"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginTop="@dimen/dimens_16dp"
+            android:hint="@string/bank_staff_name"
+
+            app:boxBackgroundColor="@color/ghost_white"
+            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:hintTextColor="@color/dar_color_two"
+            app:layout_constraintTop_toBottomOf="@+id/hearAbout"
+            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_medium"
+                android:inputType="textCapSentences"
+                android:maxLength="40"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/branchLay"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_70dp"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginTop="@dimen/dimens_16dp"
+            android:hint="@string/bank_staff_branch"
+
+            app:boxBackgroundColor="@color/ghost_white"
+            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:hintTextColor="@color/dar_color_two"
+            app:layout_constraintTop_toBottomOf="@+id/hearAbout"
+            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/branchInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_medium"
+                android:inputType="textCapSentences"
+                android:maxLength="40"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+</layout>

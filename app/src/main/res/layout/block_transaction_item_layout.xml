@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.data.model.dynamic.TransactionData" />
+    </data>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimens_8dp"
+        android:layout_marginTop="@dimen/dimens_8dp"
+        android:onClick="@{()->callback.onTransactionDetails(data)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimens_16dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/dimens_30dp"
+                android:layout_height="@dimen/dimens_30dp"
+                android:contentDescription="@string/bill"
+                android:src="@drawable/bill"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="end"
+                android:text="@{data.date}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintBottom_toBottomOf="@+id/icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icon"
+                app:layout_constraintTop_toTopOf="@+id/icon"
+                tools:text="July 2022 23" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/ghost_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/transaction_type"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintEnd_toStartOf="@+id/transType"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <TextView
+                android:id="@+id/transType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="end"
+                android:maxLines="1"
+                android:text="@{data.serviceName}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                tools:targetApi="o"
+                tools:text="By Air Time" />
+
+
+            <TextView
+                android:id="@+id/textView3"
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/status"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintEnd_toStartOf="@+id/successTxt"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+            <TextView
+                android:id="@+id/successTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="end"
+                android:text="@{data.status}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/transType"
+                tools:targetApi="o"
+                tools:text="success" />
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/pref_"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintEnd_toStartOf="@+id/refTxt"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+
+            <TextView
+                android:id="@+id/refTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="end"
+                android:text="@{data.refNo}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/successTxt"
+                tools:targetApi="o"
+                tools:text="FLEXING452" />
+
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/amount_"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintEnd_toStartOf="@+id/amountTxt"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+
+            <TextView
+                android:id="@+id/amountTxt"
+                amountSet="@{data.amount}"
+                type="@{data.type}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="end"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView6"
+                app:layout_constraintTop_toBottomOf="@+id/refTxt"
+                tools:targetApi="o"
+                tools:text="UGX,2000" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

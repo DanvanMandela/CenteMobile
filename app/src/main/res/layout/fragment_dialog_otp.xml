@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.registration.self.steps.OTPDialogFragment">
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:elevation="@dimen/dimens_0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_close_white_24dp"
+                app:navigationIconTint="@color/white"
+                app:title="@string/self_reg"
+                app:titleTextColor="@color/white" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/motionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutDescription="@xml/motion_scene_loading_new"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <include
+                android:id="@+id/userFrame"
+                layout="@layout/nssf_otp_layout" />
+
+            <include
+                android:id="@+id/loadingFrame"
+                layout="@layout/fragment_loading" />
+
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/materialButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginVertical="@dimen/dimens_24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/app_blue_light"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/continue_"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/app_blue_light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

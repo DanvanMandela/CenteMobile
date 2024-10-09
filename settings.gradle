@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        //flatDir dirs: 'C://Users/danvan.mandela/Downloads/Telegram Desktop/dexprotector-ent-12.1.53/dexprotector-ent-12.7.87'
+        //flatDir dirs: 'C://Users/danvan.mandela/Documents/dex/dexprotector-ent-12.7.87/dexprotector-ent-12.7.87'
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        jcenter()
+        flatDir dirs: 'C://Users/danvan.mandela/Downloads/Telegram Desktop/dexprotector-ent-12.1.53/dexprotector-ent-12.7.87'
+    }
+}
+rootProject.name = "CenteMobile"
+include ':app'

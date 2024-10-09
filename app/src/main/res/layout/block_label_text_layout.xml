@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="value"
+            type="String" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_8dp">
+        <TextView
+            callback="@{callback}"
+            data="@{value}"
+            labelText="@{data}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:padding="@dimen/dimens_8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/dar_color_one"
+            tools:text="@string/lorem" />
+
+    </FrameLayout>
+</layout>

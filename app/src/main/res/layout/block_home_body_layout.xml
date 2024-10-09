@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.view.ep.data.BodyData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardRecent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_180dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/app_blue_light"
+            app:cardCornerRadius="@dimen/dimens_10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.airbnb.epoxy.EpoxyRecyclerView
+                    android:id="@+id/frequentContainer"
+                    callback="@{callback}"
+                    frequent="@{data}"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_60dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardModule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="-60dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="@dimen/dimens_10dp"
+            app:cardElevation="@dimen/dimens_5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardRecent">
+
+            <com.airbnb.epoxy.EpoxyRecyclerView
+                android:id="@+id/mainContainer"
+                callback="@{callback}"
+                module="@{data}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingVertical="@dimen/dimens_8dp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

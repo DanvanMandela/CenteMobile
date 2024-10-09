@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.home.HomeFragment">
+
+    <data>
+
+        <variable
+            name="userData"
+            type="com.elmacentemobile.data.model.user.ActivationData" />
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ghost_white"
+            android:paddingVertical="@dimen/dimens_10dp"
+            app:elevation="@dimen/dimens_0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/dimens_5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/dimens_40dp"
+                    android:layout_height="@dimen/dimens_40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="@dimen/dimens_5dp"
+                    android:src="@drawable/icon_logo" />
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    callback="@{callback}"
+                    subTitle="@{userData}"
+                    title="@{userData}"
+                    style="@style/HomeToolBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentInsetStart="@dimen/dimens_8dp"
+                    app:menu="@menu/home_menu"
+                    app:subtitle="@string/welcome_back"
+                    app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    app:subtitleTextColor="@color/dar_color_two"
+                    app:title="@string/hello_jane"
+                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    app:titleTextColor="@color/dar_color_one" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ghost_white"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:visibility="gone"
+                    android:id="@+id/mainLay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include
+                        android:id="@+id/headerItem"
+                        layout="@layout/block_home_header_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/bodyItem"
+                        layout="@layout/block_home_body_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/headerItem" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/materialCardView4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bodyItem" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView4"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="16:6"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="@dimen/dimens_8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+                            android:id="@+id/carousel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:autoPlay="true"
+                            app:autoPlayDelay="3000"
+                            app:autoWidthFixing="true"
+                            app:carouselType="BLOCK"
+                            app:imagePlaceholder="@drawable/logo"
+                            app:imageScaleType="centerCrop"
+                            app:scaleOnScroll="false"
+                            app:scalingFactor="0.15"
+                            app:showBottomShadow="false"
+                            app:showCaption="false"
+                            app:showIndicator="true"
+                            app:showNavigationButtons="false"
+                            app:showTopShadow="false"
+                            app:touchToPause="true" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:shimmer_repeat_mode="restart"
+                    app:shimmer_shape="radial">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/block_sand_of_time_layout" />
+
+
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </FrameLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</layout>

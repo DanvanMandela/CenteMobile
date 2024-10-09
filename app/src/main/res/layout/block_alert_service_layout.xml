@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.data.model.user.AlertServices" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="@{()->callback.onAlertService(data)}">
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="@dimen/dimens_100dp"
+            android:layout_height="@dimen/dimens_80dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                period="@{data}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:indicatorSize="@dimen/dimens_60dp"
+                app:trackColor="@color/grey_light" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                imageUri="@{data.moduleUrl}"
+                android:layout_width="@dimen/dimens_50dp"
+                android:layout_height="@dimen/dimens_50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/user_icon" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginEnd="16dp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="@{data.days}"
+            android:textColor="@color/dar_color_one"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+            tools:targetApi="o"
+            tools:text="pepsi" />
+
+
+        <TextView
+            android:textColor="@color/dar_color_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginEnd="16dp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/days_remaining"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/days"
+            tools:targetApi="o"
+            tools:text="pepsi" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

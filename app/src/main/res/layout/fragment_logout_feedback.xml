@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.landing.LogoutFeedback">
+
+
+    <data>
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.view.ep.data.GroupLanding" />
+    </data>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene_loading_new">
+
+        <RelativeLayout
+            android:id="@+id/userFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <com.elmacentemobile.view.custom.AspectRatioImageView
+                        android:id="@+id/banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/app_blue_light"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/bg_feedback" />
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dimens_20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="@dimen/dimens_5dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:alpha="0.7"
+                                android:autoSizeTextType="uniform"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/thank_you_for_using"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                                android:textColor="@color/ghost_white"
+                                tools:targetApi="o" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:autoSizeTextType="uniform"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/centmobile"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textColor="@color/white"
+                                tools:targetApi="o" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:alpha="0.7"
+                                android:autoSizeTextType="uniform"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/you_have_succesfully_logged_out"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                                android:textColor="@color/white"
+                                tools:targetApi="o" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_margin="@dimen/dimens_15dp"
+                                android:alpha="0.5"
+                                android:background="@color/white" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/dimens_12dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/dimens_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.7"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="@string/login"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                    <TextView
+                                        android:id="@+id/txtLoginTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="24 August 2022 "
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/dimens_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.7"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="@string/logout"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                    <TextView
+                                        android:id="@+id/txtLogoutTime"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="24 August 2022 "
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/dimens_5dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.7"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="@string/duration"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                    <TextView
+                                        android:id="@+id/txtDuration"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autoSizeTextType="uniform"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:text="00:24:00"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        android:textColor="@color/white"
+                                        tools:targetApi="o" />
+
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </ScrollView>
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="-40dp"
+                    android:layout_weight="1.2"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/banner"
+                        app:cardBackgroundColor="@color/ghost_white"
+                        app:cardCornerRadius="@dimen/dimens_40dp"
+                        app:cardElevation="@dimen/dimens_0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/dimens_40dp"
+                            android:fillViewport="true"
+                            android:overScrollMode="never"
+                            android:padding="@dimen/dimens_8dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autoSizeTextType="uniform"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:gravity="center"
+                                    android:text="@string/your_feedback_is_important"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                                    android:textColor="@color/app_blue_dark"
+                                    tools:targetApi="o" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autoSizeTextType="uniform"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:gravity="center"
+                                    android:text="@string/tap_to_rate"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                    tools:targetApi="o" />
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/dimens_8dp">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_very_poor()}"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:id="@+id/imgVeryPoor"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:adjustViewBounds="true"
+                                            android:src="@drawable/feedback_one" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
+                                            android:text="@string/feedback_verypoor"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                            tools:targetApi="o" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_poor()}"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:id="@+id/imgPoor"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:adjustViewBounds="true"
+                                            android:src="@drawable/feedback_two" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
+                                            android:text="@string/feedback_poor"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                            tools:targetApi="o" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_average()}"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:id="@+id/imgAverage"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:adjustViewBounds="true"
+                                            android:src="@drawable/feedback_three" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
+                                            android:text="@string/feedback_average"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                            tools:targetApi="o" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_good()}"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:id="@+id/imgGood"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:adjustViewBounds="true"
+                                            android:src="@drawable/feedback_four" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
+                                            android:text="@string/feedback_good"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                            tools:targetApi="o" />
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="@dimen/dimens_2dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rate_excellent()}"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:id="@+id/imgExcellent"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:adjustViewBounds="true"
+                                            android:src="@drawable/feedback_five" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:gravity="center"
+                                            android:text="@string/feedback_excellent"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                            tools:targetApi="o" />
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/materialCardComment"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dimens_70dp"
+                                    android:layout_marginHorizontal="@dimen/dimens_16dp"
+                                    android:layout_marginTop="@dimen/dimens_16dp"
+                                    android:hint="@string/add_comment"
+                                    android:visibility="gone"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                    app:hintTextColor="@color/app_blue_light"
+                                    app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edtComment"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:inputType="textCapSentences"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                        tools:ignore="SpeakableTextPresentCheck" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginVertical="@dimen/dimens_15dp"
+                                    android:orientation="horizontal">
+
+
+                                    <com.google.android.material.button.MaterialButton
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="@dimen/dimens_8dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rating_dismiss()}"
+                                        android:paddingVertical="@dimen/dimens_16dp"
+                                        android:text="@string/dismiss"
+                                        android:textColor="@color/app_blue_dark"
+                                        app:backgroundTint="@color/ghost_white"
+                                        app:cornerRadius="@dimen/dimens_16dp"
+                                        app:strokeColor="@color/app_blue_light"
+                                        app:strokeWidth="@dimen/dimens_2dp" />
+
+                                    <com.google.android.material.button.MaterialButton
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="@dimen/dimens_8dp"
+                                        android:layout_weight="1"
+                                        android:onClick="@{()->callback.rating_submit()}"
+                                        android:paddingVertical="@dimen/dimens_16dp"
+                                        android:text="@string/submit_"
+                                        android:textColor="@color/white"
+                                        app:backgroundTint="@color/app_blue_light"
+                                        app:cornerRadius="@dimen/dimens_16dp" />
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+                        </ScrollView>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/loadingFrame"
+            layout="@layout/fragment_loading" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+</layout>

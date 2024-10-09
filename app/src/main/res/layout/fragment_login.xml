@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.auth.LoginFragment">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.data.model.user.ActivationData" />
+    </data>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/dimens_0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_close_white_24dp"
+                app:navigationIconTint="@color/white"
+                app:title="@string/cente_activation"
+                app:titleTextColor="@color/white" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/logo"
+                    android:src="@drawable/company_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="@string/hello_there"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="@color/dar_color_one"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+                <TextView
+                    android:id="@+id/textView5"
+                    messageFromUs="@{data}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:alpha="0.8"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputMobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editMobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/mobile"
+                            android:inputType="phone"
+                            android:paddingVertical="@dimen/dimens_0dp"
+                            android:paddingStart="@dimen/dimens_140dp"
+                            android:paddingEnd="@dimen/dimens_0dp"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                            android:textColor="@color/dar_color_one" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/countryCodeHolder"
+                        android:layout_width="@dimen/dimens_160dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:gravity="start|center"
+                        android:padding="@dimen/dimens_5dp"
+                        android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:ccp_arrowSize="25dp"
+                        app:ccp_autoDetectCountry="true"
+                        app:ccp_autoDetectLanguage="true"
+                        app:ccp_countryAutoDetectionPref="SIM_ONLY"
+                        app:ccp_defaultNameCode="UG"
+                        app:ccp_showFlag="true"
+                        app:ccp_textSize="15sp" />
+                </FrameLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputPin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    app:boxBackgroundColor="@color/ghost_white"
+                    app:hintEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editPin"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:focusable="false"
+                        android:fontFamily="@font/poppins_medium"
+                        android:hint="@string/pin"
+                        android:inputType="numberPassword"
+                        android:paddingHorizontal="@dimen/dimens_5dp"
+                        android:paddingVertical="@dimen/dimens_0dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <TextView
+                    android:id="@+id/forgotPin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/forgot_pin"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="@color/app_blue_light"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialButton" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/materialButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/login_securely"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/inputPin" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimens_1dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialButton" />
+
+                <LinearLayout
+                    android:id="@+id/privacy"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+                    <TextView
+                        android:gravity="end"
+                        android:text="@string/by_accepting"
+                        android:layout_weight="1"
+                        android:lines="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:layout_width="match_parent"
+                        android:paddingEnd="@dimen/dimens_4dp"
+                        android:layout_height="wrap_content"
+                        tools:ignore="RtlSymmetry" />
+                    <TextView
+                        android:textColor="@color/app_blue_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:text="@string/privacy_policy"
+                        android:layout_weight="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</layout>

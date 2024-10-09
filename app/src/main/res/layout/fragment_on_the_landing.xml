@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.go.steps.OnTheLandingFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:contentDescription="@string/welcome_back"
+            android:scaleType="centerCrop"
+            android:src="@drawable/h_banner" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/logo"
+                android:src="@drawable/company_icon"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textColor="@color/dar_color_one"
+                app:layout_constraintBottom_toTopOf="@+id/openAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:targetApi="o" />
+
+
+            <TextView
+                android:id="@+id/openAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/open_account"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintBottom_toTopOf="@+id/digitally"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:targetApi="o" />
+
+
+            <TextView
+                android:id="@+id/digitally"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/digitally"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/dar_color_two"
+                app:layout_constraintBottom_toTopOf="@+id/kuSpeed"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:targetApi="o" />
+
+            <TextView
+                android:id="@+id/kuSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/open_ku"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/app_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/space3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:targetApi="o" />
+
+
+            <Space
+                android:id="@+id/space3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/materialButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_70dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/lets_get"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/space3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</layout>

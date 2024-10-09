@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragment.go.steps.SmartLifeFragment">
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/dimens_0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_close_white_24dp"
+                app:navigationIconTint="@color/white"
+                app:title="@string/nssf_details"
+                app:titleTextColor="@color/white" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="24dp"
+                android:paddingVertical="@dimen/dimens_16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.motion.widget.MotionLayout
+                android:id="@+id/motionContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutDescription="@xml/motion_scene_loading">
+
+                <include
+                    android:id="@+id/loadingFrame"
+                    layout="@layout/nssf_otp_layout" />
+
+
+                <include
+                    android:id="@+id/userFrame"
+                    layout="@layout/block_nssf_layout" />
+
+            </androidx.constraintlayout.motion.widget.MotionLayout>
+
+        </LinearLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginBottom="@dimen/dimens_16dp"
+            android:background="@color/app_blue_light"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="@string/continue_"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/app_blue_light" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</FrameLayout>

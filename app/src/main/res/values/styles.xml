@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Set parent theme as app theme. -->
+    <style name="AppTheme.FullScreenDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="colorPrimaryDark">@color/app_blue_dark</item>
+        <item name="colorAccent">@color/app_blue_light</item>
+        <item name="colorPrimary">@color/app_blue_dark</item>
+    </style>
+
+    <style name="MyDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_in_down</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="colorPrimaryDark">@color/app_blue_dark</item>
+        <item name="colorAccent">@color/app_blue_light</item>
+        <item name="colorPrimary">@color/app_blue_dark</item>
+    </style>
+
+
+    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="backgroundColor">@color/app_blue_light</item>
+    </style>
+
+
+
+
+
+    <style name="Theme.AppCompat.Translucent" parent="Theme.CenteMobile">
+        <item name="android:background">#33FFFFFF
+        </item> <!-- Or any transparency or color you need -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+
+
+    <style name="ClearBackgroundDialog" parent="Theme.CenteMobile">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent
+        </item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+
+
+
+
+</resources>

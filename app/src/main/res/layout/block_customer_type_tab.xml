@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/parentCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_150dp"
+        android:clipToPadding="false"
+        app:tabIndicator="@null"
+        app:tabMode="fixed"
+        app:tabPaddingBottom="@dimen/dimens_8dp"
+        app:tabPaddingTop="@dimen/dimens_8dp"
+        app:tabRippleColor="@null"
+        app:tabTextColor="@color/chip_text_color" />
+
+</layout>

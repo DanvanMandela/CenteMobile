@@ -1,0 +1,203 @@
+package com.elmacentemobile.data.repository.dynamic.widgets;
+
+import android.app.Activity;
+import android.content.Context;
+
+import androidx.lifecycle.LiveData;
+
+import com.elmacentemobile.data.model.AtmData;
+import com.elmacentemobile.data.model.CarouselData;
+import com.elmacentemobile.data.model.action.ActionControls;
+import com.elmacentemobile.data.model.control.FormControl;
+import com.elmacentemobile.data.model.module.Modules;
+import com.elmacentemobile.data.model.static_data.StaticDataDetails;
+import com.elmacentemobile.data.model.user.Accounts;
+import com.elmacentemobile.data.model.user.Beneficiary;
+import com.elmacentemobile.data.model.user.PendingTransaction;
+import com.elmacentemobile.data.receiver.NotificationData;
+import com.elmacentemobile.data.source.remote.callback.DynamicResponse;
+import com.elmacentemobile.data.source.remote.callback.PayloadData;
+import com.elmacentemobile.util.callbacks.NavigationCallback;
+import com.elmacentemobile.view.ep.data.LayoutData;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+
+public interface WidgetDataSource extends NavigationCallback {
+
+    default Single<DynamicResponse> widgetRequestT(String token, PayloadData data, String path) {
+        return null;
+    }
+
+    default Single<DynamicResponse> requestWidget(PayloadData data, String path) {
+        return null;
+    }
+
+    default void saveFormControl(List<FormControl> data) {
+
+    }
+
+    default Observable<List<FormControl>> getFormControl(String moduleID, String seq) {
+        return null;
+    }
+
+    default Observable<List<FormControl>> linkedForms(String moduleID) {
+        return null;
+    }
+
+    default Observable<List<FormControl>> getFormControlNoSq(String moduleID) {
+        return null;
+    }
+
+    default void deleteFormControl() {
+
+    }
+
+
+    default void saveModule(List<Modules> data) {
+
+    }
+
+    default Observable<List<Modules>> getModules(String moduleID) {
+        return null;
+    }
+
+
+    default Observable<Modules> getModule(String moduleID) {
+        return null;
+    }
+
+    default Observable<Modules> getFrequentModule(String moduleID) {
+        return null;
+    }
+
+
+    default void deleteFormModule() {
+
+    }
+
+    default void requestWidget(List<ActionControls> data) {
+    }
+
+    default Observable<List<ActionControls>> getActionControl(String moduleID) {
+        return null;
+    }
+
+    default Observable<List<ActionControls>> getActionControlByFM(String moduleID, String formID) {
+        return null;
+    }
+
+    default void deleteAction() {
+
+    }
+
+    default Observable<List<ActionControls>> getActionControlCID(String controlID) {
+        return null;
+    }
+
+    default void saveAction(List<ActionControls> data) {
+
+    }
+
+
+    default Single<DynamicResponse> widgets(Activity activity, String action) {
+        return null;
+    }
+
+    default Observable<List<StaticDataDetails>> getStaticData() {
+        return null;
+    }
+
+    default void saveStaticData(List<StaticDataDetails> data) {
+    }
+
+    default LiveData<List<StaticDataDetails>> storageStaticData() {
+        return null;
+    }
+
+
+    default LiveData<List<Accounts>> accountsData() {
+        return null;
+    }
+
+    default LiveData<String> versionData() {
+        return null;
+    }
+
+
+    default LiveData<List<Beneficiary>> beneficiaryData() {
+        return null;
+    }
+
+    default Single<DynamicResponse> recentList(String moduleID, String merchantID, Context context) {
+        return null;
+    }
+
+
+    default Single<LayoutData> layoutData() {
+        return null;
+    }
+
+    default void saveLayoutData(LayoutData data) {
+    }
+
+    default void resetForm() {
+
+    }
+
+    default void saveAtms(List<AtmData> atmData) {
+    }
+
+    default void deleteAtms() {
+    }
+
+    default Observable<List<AtmData>> getAtms() {
+        return null;
+    }
+
+    default Observable<List<AtmData>> getATMBranch(boolean b) {
+        return null;
+    }
+
+    default void saveCarousel(List<CarouselData> data) {
+    }
+
+    default void deleteCarousel() {
+    }
+
+    default Observable<List<CarouselData>> getCarousel() {
+        return null;
+    }
+
+
+    default void saveNotifications(NotificationData data) {
+
+    }
+
+    default Observable<List<NotificationData>> getNotification() {
+        return null;
+    }
+
+    default void deleteNotifications() {
+    }
+
+    default void deleteNotification(int id) {
+
+    }
+
+    default void savePendingTransaction(PendingTransaction pendingTransaction) {
+    }
+
+    default Observable<List<PendingTransaction>> getPendingTransaction() {
+        return null;
+    }
+
+    default void deletePendingTransactions() {
+    }
+
+
+    default void deletePendingTransactionsByID(int id) {
+    }
+}

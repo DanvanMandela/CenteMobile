@@ -1,0 +1,468 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    id 'com.jakewharton.butterknife'
+    id 'kotlin-parcelize'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
+    //  id 'dexprotector'
+    id 'com.dynatrace.instrumentation.module'
+//    id 'com.google.firebase.crashlytics'
+}
+
+android {
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.elmacentemobile"
+        minSdk 26
+        targetSdk 34
+        versionCode 140
+        versionName "140"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'elmaandroidkeystore'
+            keyPassword 'priya143'
+            //storeFile file("C:/Users/danvan.mandela/Documents/keys/craft/ElmaAndroidKeyStore")
+            storeFile file('D:/ElmaAndroidKeyStore')
+            storePassword 'priya143'
+            enableV1Signing = false
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // ext.set("dexprotector.configFile", "${projectDir}/dexprotector.xml")
+            signingConfig signingConfigs.release
+
+        }
+
+        externalNativeBuild {
+            cmake {
+                path "CMakeLists.txt"
+            }
+        }
+    }
+
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "$compose_ui_version"
+    }
+
+    kapt {
+        generateStubs = true
+        correctErrorTypes true
+        javacOptions {
+            option("-Adagger.fastInit=ENABLED")
+            option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+        }
+    }
+    namespace 'com.elmacentemobile'
+    lint {
+        checkReleaseBuilds false
+    }
+
+}
+
+dynatrace {
+    configurations {
+        sampleConfig {
+            autoStart {
+                applicationId '7fba07ca-2f5c-4bed-9898-eeb7e739560b'
+                beaconUrl 'https://bf18347pov.bf.dynatrace.com/mbeacon'
+            }
+            debug {
+                agentLogging(true)
+            }
+            userOptIn true
+            agentBehavior.startupLoadBalancing true
+            sessionReplay.enabled true
+        }
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0'
+    implementation 'com.android.volley:volley:1.2.1'
+    //noinspection GradlePath
+    implementation files('libs/iceberg_ocr_v16.aar')
+    implementation files('libs/spotit_lib_v10.aar')
+    implementation files('libs/small_talk_v1.aar')
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
+    //****Firebase
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
+    implementation 'com.google.firebase:firebase-dynamic-links:21.1.0'
+    implementation 'com.google.firebase:firebase-database:20.2.2'
+    implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+
+//    implementation 'com.google.firebase:firebase-crashlytics'
+//    implementation 'com.google.firebase:firebase-analytics'
+
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    //***Work Manager***
+    def work_version = "2.8.1"
+
+    implementation "androidx.work:work-runtime:$work_version"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-rxjava2:$work_version"
+    implementation "androidx.work:work-gcm:$work_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+    implementation "androidx.work:work-multiprocess:$work_version"
+
+    //***Room SQLite Database***
+    def room_version = "2.5.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    implementation "androidx.room:room-rxjava2:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
+    implementation "androidx.room:room-guava:$room_version"
+    testImplementation("androidx.room:room-testing:$room_version")
+
+    //***Android Architecture Components***
+    def lifecycle_version = "2.6.2"
+
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-runtime-ktx', version: "$lifecycle_version"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: "$lifecycle_version"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-livedata-ktx', version: "$lifecycle_version"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-runtime-ktx', version: "$lifecycle_version"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-common', version: "$lifecycle_version"
+    //noinspection KtxExtensionAvailable
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-reactivestreams', version: "$lifecycle_version"
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-reactivestreams-ktx', version: "$lifecycle_version"
+
+
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    //**Navigation Graph***
+    def nav_version = "2.7.4"
+
+
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    //***Retrofit2***
+    def retrofit_version = '2.9.0'
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    //***okhttp3**
+    def okhttp3_version = "5.0.0-alpha.2"
+
+    implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: "$okhttp3_version"
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp-urlconnection', version: "$okhttp3_version"
+
+    //***Google gson***
+    def google_gson_version = "2.10"
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: "$google_gson_version"
+
+
+    //***RxJava2 &  RxAndroid***
+    def rxJava_version = "2.2.21"
+    def rxAndroid_version = "2.1.1"
+
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: "$rxJava_version"
+    implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: "$rxAndroid_version"
+
+
+    //***Dagger2***
+    final DAGGER_VERSION = '2.48.1'
+
+    implementation "com.google.dagger:dagger:$DAGGER_VERSION"
+    implementation "com.google.dagger:dagger-android-support:$DAGGER_VERSION"
+    annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$DAGGER_VERSION"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+
+    kapt 'com.google.dagger:dagger-compiler:2.48'
+    kapt 'com.google.dagger:dagger-android-processor:2.47'
+
+    //***Hilt dependencies***
+
+
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+
+    //***Hilt testing***
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+
+    //***Lottie Animation view**
+    final LOTTIE_ANDROID_VERSION = '5.2.0'
+
+    implementation "com.airbnb.android:lottie:$LOTTIE_ANDROID_VERSION"
+
+
+    //***Core test  library
+    implementation 'androidx.test:core:1.6.1'
+
+    //***AndroidJUnitRunner and JUnit Rules
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+
+    //**jsoup***
+    implementation 'org.jsoup:jsoup:1.14.3'
+
+    //***coroutines***
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+
+    //***play-services-base***
+    implementation group: 'com.google.android.gms', name: 'play-services-base', version: '18.2.0'
+
+    //***Glide***
+    implementation group: 'com.github.bumptech.glide', name: 'glide', version: '4.14.2'
+    implementation group: 'com.github.bumptech.glide', name: 'annotations', version: '4.14.2'
+    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
+
+    //***Pretty Time**
+    implementation group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '5.0.6.Final'
+
+    //***Jod-a Time***
+    implementation group: 'joda-time', name: 'joda-time', version: '2.12.2'
+
+    //***JavaX & xerces***
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.12.1'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation 'com.github.ismaeldivita:chip-navigation-bar:1.3.4'
+
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.5.0'
+
+    // https://mvnrepository.com/artifact/com.hbb20/ccp
+    implementation group: 'com.hbb20', name: 'ccp', version: '2.6.0'
+
+    //dexter permissions
+    implementation 'com.karumi:dexter:6.2.3'
+    implementation 'com.github.yalantis:ucrop:2.2.6-native'
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
+
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
+    implementation 'com.redmadrobot:input-mask-android:6.0.0'
+
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    def epoxyVersion = '5.0.0-beta05'
+    implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
+    implementation "com.airbnb.android:epoxy-databinding:$epoxyVersion"
+    implementation 'com.airbnb.android:epoxy-viewbinder:4.6.1'
+
+
+    def paris = '2.0.1'
+
+    implementation "com.airbnb.android:paris:$paris"
+    kapt "com.airbnb.android:paris-processor:$paris"
+
+
+    implementation "com.jakewharton:butterknife:$butterKnife"
+    kapt "com.jakewharton:butterknife-compiler:$butterKnife"
+
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("androidx.datastore:datastore-rxjava2:1.0.0")
+    implementation("androidx.datastore:datastore-rxjava3:1.0.0")
+
+    //implementation 'com.stepstone.stepper:material-stepper:4.3.1'
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.5.0'
+    //implementation 'com.amitshekhar.android:rx2-android-networking:1.0.2'
+
+    // https://mvnrepository.com/artifact/com.koushikdutta.ion/ion
+    implementation group: 'com.koushikdutta.ion', name: 'ion', version: '3.1.0'
+
+    //implementation 'com.justkiddingbaby:vercodeedittext:1.1.0'
+
+    // https://mvnrepository.com/artifact/com.hbb20/ccp
+    implementation group: 'com.hbb20', name: 'ccp', version: '2.6.0'
+
+    implementation 'com.github.saeed-lotfi:TowerInfoDialogAndroid:1.0.0'
+
+    implementation 'com.chaos.view:pinview:1.4.4'
+
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    implementation 'com.synnapps:carouselview:0.1.5'
+
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.5.0'
+
+    //noinspection GradleCompatible
+    implementation 'com.android.support:palette-v7:28.0.0'
+
+    implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
+
+    // Java language implementation
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // Kotlin
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+
+    // CameraX core library using the camera2 implementation
+    def camerax_version = "1.4.0-alpha02"
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-video:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-mlkit-vision:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
+
+    implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.1.0'
+    implementation 'com.google.android.gms:play-services-tflite-java:16.1.0'
+
+
+    // https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth-api-phone
+    implementation group: 'com.google.android.gms', name: 'play-services-auth-api-phone', version: '18.0.2'
+
+    // https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth
+    implementation group: 'com.google.android.gms', name: 'play-services-auth', version: '21.0.0'
+
+    // https://mvnrepository.com/artifact/com.github.beigirad/ZigzagView
+    implementation group: 'com.github.beigirad', name: 'ZigzagView', version: '1.0.6'
+
+    implementation("androidx.credentials:credentials:1.2.0-rc01")
+
+    // optional - needed for credentials support from play services, for devices running
+    // Android 13 and below.
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.0-rc01")
+
+
+// https://mvnrepository.com/artifact/com.google.maps.android/android-maps-utils
+    implementation group: 'com.google.maps.android', name: 'android-maps-utils', version: '2.4.0'
+
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
+
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
+
+    //*****COMPOSE *****
+
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation 'androidx.compose.material:material:1.4.3'
+    implementation 'androidx.activity:activity-compose:1.7.2'
+
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
+
+
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+    // https://mvnrepository.com/artifact/com.google.accompanist/accompanist-pager
+    implementation group: 'com.google.accompanist', name: 'accompanist-pager', version: '0.27.0'
+
+    // https://mvnrepository.com/artifact/com.google.accompanist/accompanist-pager-indicators
+    implementation group: 'com.google.accompanist', name: 'accompanist-pager-indicators', version: '0.27.0'
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.28.0'
+
+
+//    // So, make sure you also include that repository in your project's build.gradle file.
+//    implementation("com.google.android.play:app-update:2.0.1")
+//
+//    // For Kotlin users also import the Kotlin extensions library for Play In-App Update:
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
+
+
+    implementation 'com.valentinilk.shimmer:compose-shimmer:1.0.3'
+    implementation("com.vanniktech:android-image-cropper:4.3.3")
+
+    //Qr Scanner
+    implementation 'me.dm7.barcodescanner:zxing:1.9.3'
+
+    //Do not update if using min sdk < 24
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+
+    implementation 'com.daimajia.slider:library:1.1.5@aar'
+    // https://mvnrepository.com/artifact/com.squareup.picasso/picasso
+
+    // https://mvnrepository.com/artifact/com.daimajia.slider/library
+    implementation 'com.daimajia.slider:library:1.1.5'
+
+    //implementation 'com.nineoldandroids:library:2.4.0'
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+
+
+    //Small talk libraries
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation "io.noties.markwon:ext-tables:4.6.2"
+    implementation "com.github.massoudss:waveformSeekBar:5.0.2"
+    implementation "com.github.lincollincol:amplituda:2.2.2"
+    implementation "androidx.media3:media3-exoplayer:1.3.1"
+    implementation "androidx.media3:media3-exoplayer-dash:1.3.1"
+    implementation "androidx.media3:media3-ui:1.3.1"
+
+
+}

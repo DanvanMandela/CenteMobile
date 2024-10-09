@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragment.go.steps.ParentDetailsFragment">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/mainLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:navigationIcon="@drawable/ic_close_white_24dp"
+                    app:navigationIconTint="@color/white"
+                    app:title="@string/parent_details"
+                    app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    app:titleTextColor="@color/white" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/appbar"
+                android:layout_marginHorizontal="@dimen/dimens_24dp"
+                android:layout_marginVertical="@dimen/dimens_16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="24dp" />
+
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bottomBar"
+                android:layout_below="@id/progressIndicator"
+                android:fillViewport="true"
+                android:overScrollMode="never">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/fFName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/f_f_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/fFInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/fMName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/f_m_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fFName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/fMInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/fLName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/f_l_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fMName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/fLInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/mFName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/m_f_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fLName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/mFInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/mMName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/m_m_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/mFName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/mMInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/mLName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/m_l_name"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/mMName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/mLInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/homeLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/home_district"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:hintTextColor="@color/dar_color_two"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/mLName"
+                        app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/homeDisInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_medium"
+                            android:inputType="textCapSentences"
+                            android:maxLength="40"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/durationLay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/homeLayout">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_marginTop="@dimen/dimens_16dp"
+                            android:hint="@string/duration_living_here"
+                            app:boxBackgroundColor="@color/ghost_white"
+                            app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            app:hintTextColor="@color/dar_color_two"
+                            app:prefixTextAppearance="@style/TextAppearance.MaterialComponents.Body2">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/durationInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/poppins_medium"
+                                android:inputType="number"
+                                android:maxLength="40"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <RadioGroup
+                            android:id="@+id/durationGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimens_8dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/years"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+                            <RadioButton
+                                android:id="@+id/radioMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/months"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/politicLay"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="@dimen/dimens_16dp"
+                        android:layout_marginEnd="24dp"
+                        android:hint="@string/politically_ex"
+                        app:boxBackgroundColor="@color/ghost_white"
+                        app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/durationLay">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autoPolitically"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:focusable="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:ignore="LabelFor" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_90dp"
+                android:layout_alignParentBottom="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimens_5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/signatureLay">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonBack"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_5dp"
+                        android:layout_weight="1"
+                        android:text="@string/previous"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonNext"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_marginHorizontal="@dimen/dimens_5dp"
+                        android:layout_weight="1"
+                        android:text="@string/next"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                </LinearLayout>
+            </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+
+        </RelativeLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_shape="radial">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/block_sand_of_time_layout" />
+
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </FrameLayout>
+
+
+</layout>

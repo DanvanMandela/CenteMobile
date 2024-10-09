@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_height="match_parent"
+    tools:layout_width="match_parent"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:drawablePadding="16dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:maxLines="2"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp"
+        android:text="@string/scan_qr_code"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/white"
+        app:drawableTopCompat="@drawable/ic_baseline_qr_code_scanner_24"
+        app:drawableTint="@color/white" />
+
+    <ImageButton
+        android:id="@+id/torch_image_view"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/scan_qr_code"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_baseline_flashlight_on_24"
+        app:tint="@color/white"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/progress_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_in" />
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingStart="24dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="24dp"
+            android:text="@string/loading_"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</merge>

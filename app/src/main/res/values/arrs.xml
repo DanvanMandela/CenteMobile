@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="powered_by">
+        <item>Powered by</item>
+        <item>Craft Silicon</item>
+    </string-array>
+
+    <string-array name="title">
+        <item>Mr.</item>
+        <item>Miss.</item>
+        <item>Mrs.</item>
+    </string-array>
+
+</resources>

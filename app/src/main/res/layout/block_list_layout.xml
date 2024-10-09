@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="module"
+            type="com.elmacentemobile.data.model.module.Modules" />
+
+        <variable
+            name="data"
+            type="com.elmacentemobile.data.model.control.FormControl" />
+
+        <variable
+            name="callback"
+            type="com.elmacentemobile.util.callbacks.AppCallbacks" />
+    </data>
+
+    <com.airbnb.epoxy.EpoxyRecyclerView
+        callback="@{callback}"
+        list="@{data}"
+        module="@{module}"
+        setTag="@{data.controlID}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/dimens_16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+</layout>

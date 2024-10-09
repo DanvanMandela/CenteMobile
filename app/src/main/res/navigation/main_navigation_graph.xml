@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/splashFragment">
+
+    <!--    Global Directions-->
+    <action
+        android:id="@+id/action_nav_login"
+        app:destination="@+id/loginFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_home"
+        app:destination="@+id/homeFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_auth"
+        app:destination="@+id/authFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_otp"
+        app:destination="@+id/otpFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_land"
+        app:destination="@+id/landingPageFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_land_compose"
+        app:destination="@+id/landingPageCompose"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_rooted"
+        app:destination="@+id/deviceRootedFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpTo="@+id/main_navigation_graph"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_change_pin"
+        app:destination="@+id/changePinFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_pre_pin"
+        app:destination="@+id/preForgotFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_transaction_center"
+        app:destination="@+id/transactionCenterFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_privacy_policy_setting"
+        app:destination="@+id/policyAndPrivacyFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_notification"
+        app:destination="@+id/notificationFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_receipt"
+        app:destination="@+id/receiptFragment"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_success"
+        app:destination="@+id/successDialogFragment"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_standing"
+        app:destination="@+id/standingOrderDetailsFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_alert"
+        app:destination="@+id/newAlertDialogFragment"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_global_otp"
+        app:destination="@+id/globalOTPFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_connection"
+        app:destination="@+id/connectionFragment"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_nav_loading"
+        app:destination="@+id/loadingFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_tips"
+        app:destination="@+id/dailyItemDialogFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_login_out_feedback"
+        app:destination="@+id/logoutFeedback"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_disclaimer"
+        app:destination="@+id/disclaimerFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_display_dialog"
+        app:destination="@+id/displayDialogFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_mini"
+        app:destination="@+id/miniStatementFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_reject"
+        app:destination="@+id/rejectPendingFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_nav_bio"
+        app:destination="@+id/biometricFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right"
+        app:popUpToInclusive="true" />
+
+
+    <action
+        android:id="@+id/action_nav_beneficiary_management"
+        app:destination="@+id/beneficiaryManagementFragment"
+        app:enterAnim="@anim/anim_slide_in_right"
+        app:exitAnim="@anim/anim_slide_out_right"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/anim_slide_in_right"
+        app:popExitAnim="@anim/anim_slide_out_right" />
+    <!--    End-->
+
+
+    <!--    Fragments-->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.elmacentemobile.view.fragment.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" />
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.AuthFragment"
+        android:label="fragment_auth"
+        tools:layout="@layout/fragment_auth">
+        <action
+            android:id="@+id/action_nav_pin_atm"
+            app:destination="@+id/forgotPinFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/otpFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.OtpFragment"
+        android:label="fragment_otp"
+        tools:layout="@layout/fragment_otp" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.elmacentemobile.view.fragment.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/landingPageFragment"
+        android:name="com.elmacentemobile.view.fragment.landing.LandingPageFragment"
+        android:label="fragment_landing_page"
+        tools:layout="@layout/fragment_landing_page">
+
+        <action
+            android:id="@+id/action_nav_auth"
+            app:destination="@+id/authFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_login"
+            app:destination="@+id/loginFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_self"
+            app:destination="@+id/selfRegistrationFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_map"
+            app:destination="@+id/mapsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_on_the_go"
+            app:destination="@+id/onTheGoFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+
+    </fragment>
+
+
+    <!--    End-->
+
+    <!--    Dialog-->
+
+    <dialog
+        android:id="@+id/receiptFragment"
+        android:name="com.elmacentemobile.view.dialog.receipt.ReceiptFragment"
+        android:label="fragment_receipt"
+        tools:layout="@layout/fragment_receipt" />
+
+    <fragment
+        android:id="@+id/forgotPinFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.ForgotPinFragment"
+        android:label="fragment_forgot_pin"
+        tools:layout="@layout/fragment_forgot_pin" />
+    <fragment
+        android:id="@+id/selfRegistrationFragment"
+        android:name="com.elmacentemobile.view.fragment.registration.self.SelfRegistrationFragment"
+        android:label="fragment_self_registration"
+        tools:layout="@layout/fragment_self_registration">
+        <action
+            android:id="@+id/action_nav_card_details"
+            app:destination="@+id/cardDetailsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.registration.self.steps.CardDetailsFragment"
+        android:label="fragment_card_details"
+        tools:layout="@layout/fragment_card_details" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.elmacentemobile.view.fragment.map.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps">
+        <action
+            android:id="@+id/action_nav_bottom_map"
+            app:destination="@+id/mapBottomSheetFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onTheGoFragment"
+        android:name="com.elmacentemobile.view.fragment.go.OnTheGoFragment"
+        android:label="fragment_on_the_go"
+        tools:layout="@layout/fragment_on_the_go" />
+
+
+    <!--    End-->
+    <!--    Dialog-->
+
+    <dialog
+        android:id="@+id/connectionFragment"
+        android:name="com.elmacentemobile.view.dialog.conn.ConnectionFragment"
+        android:label="fragment_connection"
+        tools:layout="@layout/fragment_connection" />
+    <dialog
+        android:id="@+id/mapBottomSheetFragment"
+        android:name="com.elmacentemobile.view.fragment.map.MapBottomSheetFragment"
+        android:label="fragment_map_bottom_sheet"
+        tools:layout="@layout/fragment_map_bottom_sheet" />
+    <fragment
+        android:id="@+id/biometricFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.bio.BiometricFragment"
+        android:label="fragment_biometric"
+        tools:layout="@layout/fragment_biometric" />
+    <dialog
+        android:id="@+id/loadingFragment"
+        android:name="com.elmacentemobile.view.dialog.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" />
+    <dialog
+        android:id="@+id/disclaimerFragment"
+        android:name="com.elmacentemobile.view.dialog.DisclaimerFragment"
+        android:label="fragment_disclaimer"
+        tools:layout="@layout/fragment_disclaimer" />
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.elmacentemobile.view.fragment.notifications.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <dialog
+        android:id="@+id/globalOTPFragment"
+        android:name="com.elmacentemobile.view.fragment.global.GlobalOTPFragment"
+        android:label="fragment_global_o_t_p"
+        tools:layout="@layout/fragment_global_o_t_p" />
+
+    <fragment
+        android:id="@+id/transactionCenterFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.TransactionCenterFragment"
+        android:label="fragment_transaction_center"
+        tools:layout="@layout/fragment_transaction_center">
+        <action
+            android:id="@+id/action_nav_transaction_details"
+            app:destination="@+id/transactionDetailsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/transactionDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.TransactionDetailsFragment"
+        android:label="fragment_transaction_details"
+        tools:layout="@layout/fragment_transaction_details" />
+    <fragment
+        android:id="@+id/customerProductFragment"
+        android:name="com.elmacentemobile.view.fragment.go.steps.CustomerProductFragment"
+        android:label="fragment_customer_product"
+        tools:layout="@layout/fragment_customer_product" />
+    <fragment
+        android:id="@+id/preForgotFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.pin.PreForgotFragment"
+        android:label="fragment_pre_forgot"
+        tools:layout="@layout/fragment_pre_forgot" />
+    <dialog
+        android:id="@+id/newAlertDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.NewAlertDialogFragment"
+        android:label="fragment_new_alert_dialog"
+        tools:layout="@layout/fragment_new_alert_dialog" />
+    <dialog
+        android:id="@+id/displayDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.display.DisplayDialogFragment"
+        android:label="fragment_display_dialog"
+        tools:layout="@layout/fragment_display_dialog" />
+    <dialog
+        android:id="@+id/miniStatementFragment"
+        android:name="com.elmacentemobile.view.fragment.MiniStatementFragment"
+        android:label="fragment_mini_statement"
+        tools:layout="@layout/fragment_mini_statement" />
+    <fragment
+        android:id="@+id/changePinFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.pin.ChangePinFragment"
+        android:label="fragment_change_pin"
+        tools:layout="@layout/fragment_change_pin" />
+    <dialog
+        android:id="@+id/standingOrderDetailsFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.StandingOrderDetailsFragment"
+        android:label="fragment_standing_order_details"
+        tools:layout="@layout/fragment_standing_order_details" />
+
+    <fragment
+        android:id="@+id/beneficiaryManagementFragment"
+        android:name="com.elmacentemobile.view.fragment.beneficiary.BeneficiaryManagementFragment"
+        android:label="fragment_beneficiary_management"
+        tools:layout="@layout/fragment_beneficiary_management" />
+    <dialog
+        android:id="@+id/logoutFeedback"
+        android:name="com.elmacentemobile.view.fragment.landing.LogoutFeedback"
+        android:label="fragment_logout_feedback"
+        tools:layout="@layout/fragment_logout_feedback" />
+    <fragment
+        android:id="@+id/deviceRootedFragment"
+        android:name="com.elmacentemobile.view.fragment.auth.DeviceRootedFragment"
+        android:label="fragment_device_rooted"
+        tools:layout="@layout/fragment_device_rooted" />
+    <dialog
+        android:id="@+id/rejectPendingFragment"
+        android:name="com.elmacentemobile.view.fragment.transaction.RejectPendingFragment"
+        android:label="fragment_reject_pending"
+        tools:layout="@layout/fragment_reject_pending" />
+
+    <dialog
+        android:id="@+id/successDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.SuccessDialogFragment"
+        android:label="fragment_success_dialog"
+        tools:layout="@layout/fragment_success_dialog" />
+    <dialog
+        android:id="@+id/dailyItemDialogFragment"
+        android:name="com.elmacentemobile.view.dialog.DailyItemDialogFragment"
+        android:label="fragment_daily_item_dialog"
+        tools:layout="@layout/fragment_daily_item_dialog" />
+    <fragment
+        android:id="@+id/landingPageCompose"
+        android:name="com.elmacentemobile.view.composable.landing.LandingPage"
+        android:label="LandingPageCompose">
+        <action
+            android:id="@+id/action_nav_auth"
+            app:destination="@+id/authFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_login"
+            app:destination="@+id/loginFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_self"
+            app:destination="@+id/selfRegistrationFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_on_the_go"
+            app:destination="@+id/onTheGoFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_nav_map"
+            app:destination="@+id/mapsFragment"
+            app:enterAnim="@anim/anim_slide_in_right"
+            app:exitAnim="@anim/anim_slide_out_right"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in_right"
+            app:popExitAnim="@anim/anim_slide_out_right"
+            app:popUpToInclusive="true" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/policyAndPrivacyFragment"
+        android:name="com.elmacentemobile.view.composable.policy.PolicyAndPrivacyFragment"
+        android:label="PolicyAndPrivacyFragment" />
+
+    <!--    Dialog-->
+</navigation>
