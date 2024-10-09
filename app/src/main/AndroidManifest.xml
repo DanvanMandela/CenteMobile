@@ -74,7 +74,7 @@
         android:theme="@style/Theme.CenteMobile"
         android:usesCleartextTraffic="false"
         android:windowSoftInputMode="adjustNothing"
-        tools:replace="android:icon,android:theme"
+        tools:replace="android:icon,android:theme,android:name"
         tools:targetApi="33">
 
         <activity

@@ -65,6 +65,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <include
+                        android:id="@+id/documentLay"
+                        layout="@layout/block_ocr_details_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_180dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/titleLay" />
+
 
                     <include
                         android:id="@+id/idLay"
@@ -73,7 +82,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/titleLay" />
+                        app:layout_constraintTop_toBottomOf="@+id/documentLay" />
 
 
                     <include

@@ -1,6 +1,7 @@
 package com.elmacentemobile.view.fragment.go.ocr
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -24,27 +25,75 @@ class OCRResultActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
+//            val fullName: String = ocrData.getOtherNames() + " " + ocrData.getSurname()
+//            Log.e("GetData", "State: $fullName")
+//            preferenceHelper.putOCRFullName(fullName)
+//            preferenceHelper.putOCRDateOfBirth(ocrData.getDateOfBirth())
+//            preferenceHelper.putOCRDateOfExpiry(ocrData.getDateOfExpiry())
+            //            preferenceHelper.putOCRDateOfIssue(ocrData.getDateOfIssue())
+//            preferenceHelper.putOCRPassportNo(ocrData.getPassportNo())
+//            preferenceHelper.putOCRPassportType(ocrData.getPassportType())
+//            preferenceHelper.putOCRCountryCode(ocrData.getCountryCode())
+//            preferenceHelper.putOCRCountryName(ocrData.getCountryName())
+//            preferenceHelper.putOCRGender(ocrData.getSex())
+//            preferenceHelper.putEncodedImagePassport(ocrData.getEncodedImagePassport())
+
             val ocrData = EventBus.getDefault()
-                .getStickyEvent(com.example.icebergocr.utils.OCRData::class.java)
+                .getStickyEvent(com.iceberg.ocr.utils.OCRData::class.java)
 
-            val names = ocrData.givenName.split(" ")
-            val firstName = if (names.size > 1) names[0] else ocrData.givenName
-            val secondName = if (names.size > 1) names[1] else String()
+            if (ocrData != null) {
+                Log.e("GetOCRData", "OCR Data: ${Gson().toJson(ocrData)}")
+                Log.e("GetOCRData", "Action Type: ${ocrData.actionType}")
 
-            baseModel.dataSource.setIDDetails(
-                IDDetails(
-                    data = OCRData(
-                        names = firstName,
-                        otherName = secondName,
-                        dob = ocrData.dateOfBirth,
-                        idNo = ocrData.nin,
-                        gender = ocrData.sex,
-                        surname = ocrData.surname,
-                        expires = ocrData.dateOfExpiry,
-                        docId = ocrData?.cardNumber
-                    ), id = ImageData(image = ocrData?.encodedImageFront!!)
-                )
-            )
+
+                if (ocrData.actionType.equals("id")) {
+                    val names = ocrData.givenName.split(" ")
+                    val firstName = if (names.size > 1) names[0] else ocrData.givenName
+                    val secondName = if (names.size > 1) names[1] else String()
+
+                    baseModel.dataSource.setIDDetails(
+                        IDDetails(
+                            data = OCRData(
+                                names = firstName,
+                                otherName = secondName,
+                                dob = ocrData.dateOfBirth,
+                                idNo = ocrData.nin,
+                                gender = ocrData.sex,
+                                surname = ocrData.surname,
+                                expires = ocrData.dateOfExpiry,
+                                docId = ocrData?.cardNumber,
+                                        actionType = ocrData.actionType,
+                            ), id = ImageData(image = ocrData?.encodedImageFront!!)
+                        )
+                    )
+                } else if (ocrData.actionType.equals("passport")) {
+                    baseModel.dataSource.setIDDetails(
+                        IDDetails(
+                            data = OCRData(
+                                otherName = ocrData.otherNames,
+                                dob = ocrData.dateOfBirth,
+                                idNo = ocrData.passportNo,
+                                gender = ocrData.sex,
+                                surname = ocrData.surname,
+                                expires = ocrData.dateOfExpiry,
+                                passportType = ocrData?.passportType,
+                                dateOfIssue = ocrData?.dateOfIssue,
+                                countryName = ocrData.countryName,
+                                actionType = ocrData.actionType,
+                            ), passport = ImageData(image = ocrData?.encodedImagePassport!!)
+                        )
+                    )
+                } else if (ocrData.actionType.equals("selfie")) {
+                    baseModel.dataSource.setIDDetails(
+                        IDDetails(
+                            selfie = ImageData(image = ocrData?.encodedSelfie!!)
+                        )
+                    )
+                }
+
+            }
+
+
             finish()
         }
     }
@@ -59,7 +108,7 @@ class OCRResultActivity : ComponentActivity() {
     }
 
     private fun killEvent() {
-        EventBus.getDefault().removeStickyEvent(com.example.icebergocr.utils.OCRData::class.java)
+        EventBus.getDefault().removeStickyEvent(com.iceberg.ocr.utils.OCRData::class.java)
         EventBus.getDefault().unregister(this)
     }
 
@@ -69,7 +118,7 @@ class OCRResultActivity : ComponentActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: com.example.icebergocr.utils.OCRData) {
+    fun onMessageEvent(event: com.iceberg.ocr.utils.OCRData) {
         AppLogger.instance.appLog(OCRResultActivity::class.java.simpleName, Gson().toJson(event))
     }
 }

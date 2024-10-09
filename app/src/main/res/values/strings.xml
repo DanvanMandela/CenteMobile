@@ -476,5 +476,11 @@
     <string name="add_">Add</string>
     <string name="beneficiaries_">Beneficiaries</string>
 
+    <string name="id_type">Document Type</string>
+    <string name="national_id_header">National ID</string>
+    <string name="passport_header">Passport</string>
+    <string name="passport_front">Passport</string>
+    <string name="passport_required">Passport Required</string>
+
 
 </resources>

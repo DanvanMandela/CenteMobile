@@ -7,10 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -40,11 +42,11 @@ import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
 import com.elmacentemobile.view.model.WorkStatus
 import com.elmacentemobile.view.model.WorkerViewModel
-import com.example.icebergocr.IcebergSDK
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.iceberg.ocr.IcebergSDK
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -79,8 +81,9 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     private lateinit var binding: FragmentIDBinding
     private var imageLive: ImageSelector? = null
-    private var selfie: ImageData? = null
     private var id: ImageData? = null
+    private var passport: ImageData? = null
+    private var selfie: ImageData? = null
     private var signature: ImageData? = null
 
     private val subscribe = CompositeDisposable()
@@ -94,6 +97,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     private lateinit var stateData: IDDetails
     private var ocrData: OCRData? = null
+    var selectedIdType = "nationalId"
 
 
     private lateinit var product: CustomerProduct
@@ -110,10 +114,27 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
             if (it != null) {
                 ocrData = it.data
 
-                Glide.with(requireContext()).load(convert(it.id!!.image)).into(binding.idLay.avatar)
+                if (ocrData?.actionType.equals("passport")) {
+                    Glide.with(requireContext()).load(convert(it.passport!!.image))
+                        .into(binding.idLay.avatar)
 
-                // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
-                id = ImageData(image = it.id.image)
+                    // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
+                    passport = ImageData(image = it.passport.image)
+                } else if (ocrData?.actionType.equals("id")) {
+                    Glide.with(requireContext()).load(convert(it.id!!.image))
+                        .into(binding.idLay.avatar)
+
+                    // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
+                    id = ImageData(image = it.id.image)
+                } else {
+                    Glide.with(requireContext()).load(convert(it.selfie!!.image))
+                        .into(binding.selfieLay.avatar)
+
+                    // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
+                    selfie = ImageData(image = it.selfie.image)
+                }
+
+
             }
         }
     }
@@ -205,6 +226,9 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         setToolbar()
         requestPermissions()
 
+        //Doc Type
+        changeDocumentType()
+
         return binding.root.rootView
     }
 
@@ -244,9 +268,15 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
     override fun setOnClick() {
+        //Check which type, ID or passport
         binding.idLay.avatar.setOnClickListener {
-            imageSelector(ImageSelector.ID, 3, 2)
+            if (selectedIdType.equals("passport", true)) {
+                imageSelector(ImageSelector.PASSPORT, 3, 2)
+            } else {
+                imageSelector(ImageSelector.ID, 3, 2)
+            }
         }
+
         binding.signatureLay.avatar.setOnClickListener {
             imageSelector(ImageSelector.SIGNATURE, 3, 2)
         }
@@ -326,6 +356,14 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 //                        uploadIdImage(bitmap)//out of order
                 }
 
+                ImageSelector.PASSPORT -> {
+                    passport = ImageData(image = convert(bitmap!!))
+                    binding.idLay.avatar.setImageBitmap(bitmap)
+//                    if (product.product?.value != "32217")
+//                        uploadIdImage(bitmap)//out of order
+                }
+
+
                 ImageSelector.SIGNATURE -> {
                     signature = ImageData(image = convert(bitmap!!))
                     binding.signatureLay.avatar.setImageBitmap(bitmap)
@@ -340,8 +378,11 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         return if (TextUtils.isEmpty(binding.titleLay.autoEdit.editableText.toString())) {
             ShowToast(requireContext(), getString(R.string.select_title), true)
             false
-        } else if (id == null) {
+        } else if (selectedIdType.equals("nationalId", true) && id == null) {
             ShowToast(requireContext(), getString(R.string.id_required), true)
+            false
+        } else if (selectedIdType.equals("passport", true) && passport == null) {
+            ShowToast(requireContext(), getString(R.string.passport_required), true)
             false
         } else if (selfie == null) {
             ShowToast(requireContext(), getString(R.string.selfie_required), true)
@@ -349,20 +390,46 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         } else if (signature == null) {
             ShowToast(requireContext(), getString(R.string.signature_required), true)
             false
-        } else true
+        } else {
+            true
+        }
     }
+
 
 
     override fun imageSelector(selector: ImageSelector?, x: Int, y: Int) {
         imageLive = selector
-        if (selector == ImageSelector.ID)
-            IcebergSDK.Builder(requireContext())
-                .ActionType("idFront")
-                .Country("UGANDA")
-                .ScanDoneClass(OCRResultActivity::class.java)
-                .AppName(Constants.Data.APP_NAME)
-                .init()
-        else (requireActivity() as MainActivity).onImagePicker(this, x, y)
+        Log.e("GetState", "Type: " + selector.toString())
+        when (selector) {
+            ImageSelector.ID -> {
+                IcebergSDK.Builder(requireContext())
+                    .ActionType("idFront")
+                    .Country("UGANDA")
+                    .ScanDoneClass(OCRResultActivity::class.java)
+                    .AppName(Constants.Data.APP_NAME)
+                    .init()
+            }
+
+            ImageSelector.PASSPORT -> {
+                IcebergSDK.Builder(requireContext())
+                    .ActionType("passport")
+                    .Country("UGANDA")
+                    .ScanDoneClass(OCRResultActivity::class.java)
+                    .AppName(Constants.Data.APP_NAME)
+                    .init()
+            }
+
+            ImageSelector.SELFIE -> {
+                IcebergSDK.Builder(requireContext())
+                    .ActionType("selfie")
+                    .Country("UGANDA")
+                    .ScanDoneClass(OCRResultActivity::class.java)
+                    .AppName(Constants.Data.APP_NAME)
+                    .init()
+            }
+
+            else -> (requireActivity() as MainActivity).onImagePicker(this, x, y)
+        }
     }
 
     override fun onStart() {
@@ -404,6 +471,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                     //uploadOCR()
 //                    saveState()
 //                    pagerData?.onNext(4)
+                    Log.e("GetPassportData", "Data: ${ocrData?.dob}")
                     nira()//TODO ORC NIRA
                 } else {
                     SmartLifeFragment.showDialog(this.childFragmentManager, this)
@@ -559,15 +627,25 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     }
 
     private fun nira() {
-        val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val date: Date? = ocrData?.dob?.let { it1 -> inputFormat.parse(it1) }
-        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
+        var formattedDate = ""
+        if(ocrData?.actionType.equals("passport", true)) {
+            val inputFormatPassport = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            val outputFormatPassport = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+            val passportDate: Date? = ocrData?.dob.let { it2 -> inputFormatPassport.parse(it2) }
+            formattedDate = passportDate?.let { it1 -> outputFormatPassport.format(it1) }.toString()
+        }else{
+            val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val date: Date? = ocrData?.dob.let { it1 -> inputFormat.parse(it1) }
+            formattedDate = date?.let { it1 -> outputFormat.format(it1) }.toString()
+        }
+
         val json = JSONObject()
         json.put("INFOFIELD1", "ANDROID-OCR")
         json.put("INFOFIELD7", "${ocrData?.surname}")
         json.put("INFOFIELD8", "${ocrData?.names} ${ocrData?.otherName}")
-        json.put("INFOFIELD10", "$formattedDate")
+        json.put("INFOFIELD10", formattedDate)
         json.put(
             "INFOFIELD9", if (ocrData?.gender == "MALE") "M" else "F"
         )
@@ -770,10 +848,49 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         })
 
     }
+
+
+    //Changing Document Type
+    private fun changeDocumentType() {
+
+        // Define colors
+        val selectedBackgroundColor =
+            ContextCompat.getColor(requireContext(), R.color.app_blue_dark)
+        val defaultBackgroundColor = ContextCompat.getColor(requireContext(), R.color.white)
+        val selectedTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+        val defaultTextColor = ContextCompat.getColor(requireContext(), R.color.black)
+
+        binding.documentLay.nationalId.setOnClickListener {
+            selectedIdType = "nationalId"
+
+            // Update colors
+            binding.documentLay.nationalId.setCardBackgroundColor(selectedBackgroundColor)
+            binding.documentLay.passportCard.setCardBackgroundColor(defaultBackgroundColor)
+            binding.documentLay.amOne.setTextColor(selectedTextColor)
+            binding.documentLay.amOnePass.setTextColor(defaultTextColor)
+
+            //Change Title
+            binding.idLay.documentTitle.text = getString(R.string.id_front)
+        }
+
+        binding.documentLay.passportCard.setOnClickListener {
+            selectedIdType = "passport"
+
+            // Update colors
+            binding.documentLay.passportCard.setCardBackgroundColor(selectedBackgroundColor)
+            binding.documentLay.nationalId.setCardBackgroundColor(defaultBackgroundColor)
+            binding.documentLay.amOnePass.setTextColor(selectedTextColor)
+            binding.documentLay.amOne.setTextColor(defaultTextColor)
+
+            //Change Title
+            binding.idLay.documentTitle.text = getString(R.string.passport_front)
+        }
+    }
+
 }
 
 enum class ImageSelector {
-    SELFIE, ID, SIGNATURE
+    SELFIE, ID, SIGNATURE, PASSPORT
 }
 
 @Parcelize
@@ -784,6 +901,8 @@ data class IDDetails(
     val id: ImageData? = null,
     @field:SerializedName("signature")
     val signature: ImageData? = null,
+    @field:SerializedName("passport")
+    val passport: ImageData? = null,
     @field:SerializedName("selfie")
     @field:Expose
     val selfie: ImageData? = null,
@@ -792,32 +911,48 @@ data class IDDetails(
     var data: OCRData? = null
 ) : Parcelable
 
+
 @Parcelize
 data class OCRData(
     @field:SerializedName("F-5")
     @field:Expose
-    val names: String?,
+    val names: String? = "",
     @field:SerializedName("F-3")
     @field:Expose
-    val surname: String?,
+    val surname: String? = "",
     @field:SerializedName("F-14")
     @field:Expose
-    val idNo: String?,
+    val idNo: String? = "",
     @field:SerializedName("F-11")
     @field:Expose
-    val dob: String?,
+    val dob: String? = "",
     @field:SerializedName("F-6")
     @field:Expose
-    val otherName: String?,
+    val otherName: String? = "",
     @field:SerializedName("F-7")
     @field:Expose
-    val gender: String?,
+    val gender: String? = "",
     @field:SerializedName("F-8")
     @field:Expose
-    val expires: String? = String(),
+    val expires: String? = "",
     @field:SerializedName("F-9")
     @field:Expose
-    val docId: String? = String(),
+    val docId: String? = "",
+    @field:SerializedName("F-15")
+    @field:Expose
+    val dateOfIssue: String? = "",
+    @field:SerializedName("F-16")
+    @field:Expose
+    val passportNo: String? = "",
+    @field:SerializedName("F-17")
+    @field:Expose
+    val passportType: String? = "",
+    @field:SerializedName("F-18")
+    @field:Expose
+    val countryName: String? = "",
+    @field:SerializedName("F-19")
+    @field:Expose
+    val actionType: String? = "",
 ) : Parcelable
 
 @Parcelize
@@ -896,4 +1031,5 @@ class OCRConverter {
         private val gsonBuilder: Gson =
             GsonBuilder().create()
     }
+
 }

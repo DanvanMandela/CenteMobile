@@ -16,6 +16,7 @@ import androidx.navigation.NavDirections
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
 import androidx.viewbinding.ViewBinding
+import com.craftsilicon.smalltalk.acts.SmallTalkSDK
 import com.elmacentemobile.R
 import com.elmacentemobile.data.source.constants.Constants
 import com.elmacentemobile.databinding.FragmentLandingPageBinding
@@ -37,6 +38,7 @@ import com.elmacentemobile.view.model.AuthViewModel
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.SplashViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -90,7 +92,18 @@ class LandingPageFragment : Fragment(), AppCallbacks {
         getAdverts()
         setAdvert()
         setLoading()
+
+        openSmallTalk()
+
         return binding.root.rootView
+    }
+
+    private fun openSmallTalk(){
+        binding.smallTalk.setOnClickListener {
+            SmallTalkSDK.Builder(requireContext())
+                .appName("CENTENARY")
+                .init()
+        }
     }
 
 

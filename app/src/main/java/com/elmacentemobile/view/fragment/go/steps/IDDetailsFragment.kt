@@ -140,13 +140,31 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                 stateData = it
                 val data = it.data
                 if (data != null) {
-                    val date: Date? = data.dob?.let { it1 -> inputFormat.parse(it1) }
-                    val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
-                    binding.idInput.setText(data.idNo)
-                    binding.dobInput.setText(formattedDate)
-                    binding.surInput.setText(data.surname)
-                    binding.otherInput.setText(data.otherName)
-                    binding.givenInput.setText(data.names)
+                    if(data.actionType.equals("passport", true)){
+                        val inputFormatPassport = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                        val outputFormatPassport = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+                        val date: Date? = data.dob?.let { it1 -> inputFormatPassport.parse(it1) }
+                        val issueDate: Date? = data.dateOfIssue?.let { it2 -> inputFormatPassport.parse(it2) }
+                        val formattedDate = date?.let { it1 -> outputFormatPassport.format(it1) }
+                        val formattedIssueDate = issueDate?.let { it2 -> outputFormatPassport.format(it2) }
+                        binding.idInput.setText(data.idNo)
+                        binding.idLay.hint = "Passport Number"
+                        binding.dobInput.setText(formattedDate)
+                        binding.surInput.setText(data.surname)
+                        binding.otherInput.setText(data.otherName)
+                        binding.givenInput.setText(formattedIssueDate)
+                        binding.givenName.hint = "Date of Issue"
+                    }else if(data.actionType.equals("id", true)){
+                        val date: Date? = data.dob?.let { it1 -> inputFormat.parse(it1) }
+                        val formattedDate = date?.let { it1 -> outputFormat.format(it1) }
+                        binding.idInput.setText(data.idNo)
+                        binding.dobInput.setText(formattedDate)
+                        binding.surInput.setText(data.surname)
+                        binding.otherInput.setText(data.otherName)
+                        binding.givenInput.setText(data.names)
+                    }
+
                 }
             }
         }

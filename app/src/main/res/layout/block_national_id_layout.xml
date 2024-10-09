@@ -8,7 +8,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/document_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_semi_bold"
@@ -27,7 +27,7 @@
             android:layout_marginHorizontal="@dimen/dimens_24dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/layout_back"
-            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/document_title"
             tools:layout_editor_absoluteX="24dp">
 
 
