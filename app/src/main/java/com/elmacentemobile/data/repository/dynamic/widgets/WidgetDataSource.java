@@ -69,6 +69,10 @@ public interface WidgetDataSource extends NavigationCallback {
         return null;
     }
 
+    default Observable<Modules> module(String id) {
+        return null;
+    }
+
     default Observable<Modules> getFrequentModule(String moduleID) {
         return null;
     }

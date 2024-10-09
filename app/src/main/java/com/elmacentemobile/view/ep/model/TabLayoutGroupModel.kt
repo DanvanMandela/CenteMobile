@@ -3,7 +3,11 @@ package com.elmacentemobile.view.ep.model
 import android.os.Handler
 import android.os.Looper
 import androidx.databinding.ViewDataBinding
-import com.airbnb.epoxy.*
+import com.airbnb.epoxy.DataBindingEpoxyModel
+import com.airbnb.epoxy.EpoxyAttribute
+import com.airbnb.epoxy.EpoxyModelClass
+import com.airbnb.epoxy.EpoxyRecyclerView
+import com.airbnb.epoxy.TypedEpoxyController
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.input.InputData
 import com.elmacentemobile.data.source.pref.StorageDataSource
@@ -92,7 +96,8 @@ open class TabLayoutGroupModel : DataBindingEpoxyModel() {
                             callbacks = callbacks,
                             dynamic = GroupForm(
                                 module = data.mainData.forms.module,
-                                form = linked.toMutableList()
+                                form = linked.toMutableList(),
+                                aux = data.mainData.forms.form
                             ),
                             storage = storage
                         )

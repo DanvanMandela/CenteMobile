@@ -8,6 +8,7 @@ import com.elmacentemobile.data.model.control.ControlFormatEnum
 import com.elmacentemobile.data.model.control.ControlIDEnum
 import com.elmacentemobile.data.model.control.ControlTypeEnum
 import com.elmacentemobile.data.model.control.FormControl
+import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.disabledAmountTextInputLayout
 import com.elmacentemobile.dropDownLayout
@@ -84,12 +85,18 @@ class NewFormController(
 
                     nonCaps(ControlTypeEnum.BENEFICIARY.type) -> {
                         AppLogger.instance.appLog("Beneficiary", Gson().toJson(d))
+                        val children =
+                            data.forms.form?.filter { it.linkedToControl == d.controlID }
                         if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl)) {
                             beneficiaryViewModel(
-                                formControl = d,
                                 appCallbacks = this@NewFormController.callbacks,
                                 storage = data.storage!!,
-                                module = data.forms.module
+                                vault = LinkedVault(
+                                    container = d,
+                                    children = children!!.toMutableList(),
+                                    mainData = data,
+                                    module = data.forms.module
+                                )
                             )
                         }
                     }
@@ -386,7 +393,8 @@ class NewFormController(
 data class LinkedVault(
     var container: FormControl,
     var children: MutableList<FormControl>,
-    var mainData: FormData
+    var mainData: FormData,
+    var module: Modules? = null
 )
 
 data class ChildVault(

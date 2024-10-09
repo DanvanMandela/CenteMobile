@@ -147,8 +147,7 @@ public interface FormCallback {
                                    Beneficiary beneficiary) {
     }
 
-    default void addBeneficiary(Modules modules,
-                                FormControl formControl) {
+    default void addBeneficiary(FormControl formControl) {
     }
 
 }

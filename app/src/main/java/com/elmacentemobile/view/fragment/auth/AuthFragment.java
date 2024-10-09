@@ -71,6 +71,7 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -616,6 +617,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         EventBus.getDefault().removeStickyEvent(BusData.class);
         EventBus.getDefault().postSticky(new BusData(new GroupForm(modules,
                 null,
+                new ArrayList<>(),
                 forms,
                 false),
                 serverResponse.getValue(),

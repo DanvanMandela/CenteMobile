@@ -3,7 +3,11 @@ package com.elmacentemobile.view.ep.data
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.action.ActionControls
 import com.elmacentemobile.data.model.control.FormControl
@@ -27,7 +31,7 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import kotlinx.parcelize.Parcelize
 import java.lang.reflect.Type
-import java.util.*
+import java.util.Collections
 
 open class AppData
 
@@ -65,6 +69,9 @@ data class GroupForm(
     @field:SerializedName("action")
     @field:Expose
     val action: ActionControls? = null,
+    @field:SerializedName("aux")
+    @field:Expose
+    val aux: MutableList<FormControl>? = mutableListOf(),
     @field:SerializedName("formList")
     @field:Expose
     val form: MutableList<FormControl>?,

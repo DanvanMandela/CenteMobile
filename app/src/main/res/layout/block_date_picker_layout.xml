@@ -16,33 +16,51 @@
     </data>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/autoInput"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dimens_24dp"
-        android:layout_marginTop="@dimen/dimens_16dp"
-        android:hint="@{data.controlText}"
-        app:boxBackgroundColor="@color/white"
-        app:endIconDrawable="@drawable/calendar_icon"
-        app:endIconTint="@color/app_blue_light">
+        android:layout_marginVertical="@dimen/dimens_8dp"
+        android:orientation="vertical">
 
-        <AutoCompleteTextView
-            android:id="@+id/autoEdit"
-            auto_date="@{data}"
-            callback="@{callback}"
-            setTag="@{data.controlID}"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_70dp"
-            android:focusable="false"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginVertical="@dimen/dimens_4dp"
             android:fontFamily="@font/poppins_medium"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            tools:ignore="LabelFor" />
+            android:text="@{data.controlText}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/autoInput"
+            style="@style/CustomAutoTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginTop="@dimen/dimens_16dp"
+            android:hint="@{data.controlText}"
+            app:endIconDrawable="@drawable/calendar_icon"
+            app:endIconTint="@color/app_blue_light"
+            app:hintEnabled="false">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoEdit"
+                auto_date="@{data}"
+                callback="@{callback}"
+                setTag="@{data.controlID}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_70dp"
+                android:focusable="false"
+                android:fontFamily="@font/poppins_medium"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                tools:ignore="LabelFor" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 
 </layout>

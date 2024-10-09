@@ -680,6 +680,7 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         EventBus.getDefault().postSticky(new BusData(new GroupForm(
                 modules,
                 null,
+                new ArrayList<>(),
                 forms,
                 false),
                 null,

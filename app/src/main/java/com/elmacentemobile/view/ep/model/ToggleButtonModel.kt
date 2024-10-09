@@ -3,7 +3,11 @@ package com.elmacentemobile.view.ep.model
 import android.view.LayoutInflater
 import androidx.compose.runtime.mutableStateListOf
 import androidx.databinding.ViewDataBinding
-import com.airbnb.epoxy.*
+import com.airbnb.epoxy.DataBindingEpoxyModel
+import com.airbnb.epoxy.EpoxyAttribute
+import com.airbnb.epoxy.EpoxyModelClass
+import com.airbnb.epoxy.EpoxyRecyclerView
+import com.airbnb.epoxy.TypedEpoxyController
 import com.elmacentemobile.R
 import com.elmacentemobile.data.model.control.FormControl
 import com.elmacentemobile.databinding.BlockToggleButtonLayoutBinding
@@ -73,7 +77,8 @@ open class ToggleButtonModel : DataBindingEpoxyModel() {
             callbacks = callbacks,
             dynamic = GroupForm(
                 module = data.mainData.forms.module,
-                form = list
+                form = list,
+                aux = data.mainData.forms.form
             ),
             storage = data.mainData.storage
         )

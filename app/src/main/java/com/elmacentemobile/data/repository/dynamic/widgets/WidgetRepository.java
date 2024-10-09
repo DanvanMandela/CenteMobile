@@ -224,4 +224,9 @@ public class WidgetRepository implements WidgetDataSource {
     public void deletePendingTransactionsByID(int id) {
         localData.deletePendingTransactionsByID(id);
     }
+
+    @Override
+    public Observable<Modules> module(String id) {
+        return localData.module(id);
+    }
 }

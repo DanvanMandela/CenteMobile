@@ -18,7 +18,6 @@ import com.elmacentemobile.otpLayout
 import com.elmacentemobile.qRLayout
 import com.elmacentemobile.recentListLayout
 import com.elmacentemobile.textDisplayJsonLayout
-import com.elmacentemobile.util.AppLogger
 import com.elmacentemobile.util.BaseClass.nonCaps
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.data.FormData
@@ -34,7 +33,6 @@ import com.elmacentemobile.view.ep.model.inputPanModel
 import com.elmacentemobile.view.ep.model.passwordModel
 import com.elmacentemobile.view.ep.model.phoneContacts
 import com.elmacentemobile.view.ep.model.radioGroup
-import com.google.gson.Gson
 
 class FormController(
     val callbacks: AppCallbacks,
@@ -73,12 +71,17 @@ class FormController(
                 nonCaps(ControlTypeEnum.CONTAINER.type) -> setContainer(data.forms, d)
 
                 nonCaps(ControlTypeEnum.BENEFICIARY.type) -> {
-                    AppLogger.instance.appLog("Beneficiary", Gson().toJson(d))
+                    val children =
+                        data.forms.aux?.filter { it.linkedToControl == d.controlID }
                     beneficiaryViewModel(
-                        formControl = d,
                         appCallbacks = this@FormController.callbacks,
                         storage = data.storage!!,
-                        module = data.forms.module
+                        vault = LinkedVault(
+                            container = d,
+                            children = children!!.toMutableList(),
+                            mainData = data,
+                            module = data.forms.module
+                        )
                     )
                 }
 

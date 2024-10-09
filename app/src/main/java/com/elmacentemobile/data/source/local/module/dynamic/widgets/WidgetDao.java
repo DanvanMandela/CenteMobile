@@ -42,6 +42,10 @@ public interface WidgetDao extends WidgetDataSource {
     Observable<List<FormControl>> linkedForms(String moduleID);
 
     @Override
+    @Query("SELECT * FROM modules_tbl WHERE moduleID=:id")
+    Observable<Modules> module(String id);
+
+    @Override
     @Query("DELETE FROM form_control_tb")
     void deleteFormControl();
 

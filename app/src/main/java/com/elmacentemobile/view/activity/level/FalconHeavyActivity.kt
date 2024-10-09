@@ -2820,11 +2820,13 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         super.onStop()
     }
 
-    override fun addBeneficiary(
-        modules: Modules?,
-        formControl: FormControl?
-    ) {
-
+    override fun addBeneficiary(formControl: FormControl?) {
+        subscribe.add(widgetViewModel.module(formControl?.formID)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ module ->
+                onModule(module)
+            }) { obj: Throwable -> obj.printStackTrace() })
     }
 
 }

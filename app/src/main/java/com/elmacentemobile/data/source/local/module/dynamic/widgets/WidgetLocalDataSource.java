@@ -53,6 +53,11 @@ public class WidgetLocalDataSource implements WidgetDataSource {
     }
 
     @Override
+    public Observable<Modules> module(String id) {
+        return widgetDao.module(id);
+    }
+
+    @Override
     public void deleteFormControl() {
         Completable.fromRunnable(widgetDao::deleteFormControl)
                 .subscribeOn(schedulerProvider.io())

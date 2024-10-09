@@ -289,4 +289,9 @@ public class WidgetViewModel extends ViewModel implements WidgetDataSource {
     public Observable<List<FormControl>> linkedForms(String moduleID) {
         return widgetRepository.linkedForms(moduleID);
     }
+
+    @Override
+    public Observable<Modules> module(String id) {
+        return widgetRepository.module(id);
+    }
 }

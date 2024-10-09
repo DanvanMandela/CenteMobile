@@ -1,5 +1,7 @@
 package com.elmacentemobile.view.ep.model
 
+import android.view.LayoutInflater
+import android.widget.AutoCompleteTextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -40,22 +42,23 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.TypedEpoxyController
 import com.elmacentemobile.R
+import com.elmacentemobile.data.model.control.ControlTypeEnum
 import com.elmacentemobile.data.model.control.FormControl
-import com.elmacentemobile.data.model.module.Modules
 import com.elmacentemobile.data.model.user.Beneficiary
 import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.databinding.BlockBeneficiaryViewLayoutBinding
+import com.elmacentemobile.databinding.BlockContactInputLayoutBinding
+import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
+import com.elmacentemobile.view.ep.controller.LinkedVault
 import com.elmacentemobile.view.ep.model.helper.blueColor
 
 @EpoxyModelClass
 open class BeneficiaryViewModel : DataBindingEpoxyModel() {
 
     @EpoxyAttribute
-    lateinit var form: FormControl
+    lateinit var data: LinkedVault
 
-    @EpoxyAttribute
-    lateinit var module: Modules
 
     @EpoxyAttribute
     lateinit var storage: StorageDataSource
@@ -74,6 +77,26 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
     }
 
     private fun addChildren(layoutBinding: BlockBeneficiaryViewLayoutBinding) {
+        var textField: AutoCompleteTextView? = null
+        layoutBinding.children.removeAllViews()
+        for (s in data.children) {
+            when (BaseClass.nonCaps(s.controlType)) {
+                BaseClass.nonCaps(ControlTypeEnum.PHONE_CONTACTS.type) -> {
+                    val binding =
+                        BlockContactInputLayoutBinding.inflate(
+                            LayoutInflater.from(layoutBinding.root.context)
+                        )
+                    binding.data = s
+                    binding.callback = callbacks
+                    layoutBinding.children.addView(binding.root)
+                    textField = binding.autoEdit
+                    binding.autoInput.setEndIconOnClickListener {
+                        callbacks.onContactSelect(binding.autoEdit)
+                    }
+                }
+            }
+        }
+
         layoutBinding.parent.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -84,7 +107,7 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
                     LaunchedEffect(beneficiary) {
                         if (!beneficiary.isNullOrEmpty()) {
                             beneficiaryData.clear()
-                            beneficiaryData.addAll(beneficiary.filter { it?.merchantID == module.merchantID })
+                            beneficiaryData.addAll(beneficiary.filter { it?.merchantID == data.module?.merchantID })
                         }
                     }
 
@@ -98,12 +121,11 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
                         item {
                             BeneficiaryAddItem(
                                 callbacks = callbacks,
-                                formControl = form,
-                                module = module
+                                formControl = data.container
                             )
                         }
                         items(beneficiaryData) { ben ->
-                            BeneficiaryItem(beneficiary = ben!!)
+                            BeneficiaryItem(beneficiary = ben!!, child = textField)
                         }
                     }
                 }
@@ -113,24 +135,23 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
 
 }
 
+
 fun TypedEpoxyController<*>.beneficiaryViewModel(
-    formControl: FormControl,
+    vault: LinkedVault,
     storage: StorageDataSource,
     appCallbacks: AppCallbacks,
-    module: Modules
 ) {
     beneficiaryView {
-        id(formControl.controlID)
-        form(formControl)
+        id(vault.container.controlID)
         storage(storage)
         callbacks(appCallbacks)
-        module(module)
+        data(vault)
     }
 }
 
 
 @Composable
-fun BeneficiaryItem(beneficiary: Beneficiary) {
+fun BeneficiaryItem(beneficiary: Beneficiary, child: AutoCompleteTextView?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -138,7 +159,10 @@ fun BeneficiaryItem(beneficiary: Beneficiary) {
             .padding(horizontal = 8.dp)
     ) {
         IconButton(
-            onClick = { }, modifier = Modifier
+            onClick = {
+                val account = "${beneficiary.accountID}"
+                child?.setText(account)
+            }, modifier = Modifier
                 .background(color = blueColor, shape = CircleShape)
                 .border(
                     width = 1.dp,
@@ -165,8 +189,7 @@ fun BeneficiaryItem(beneficiary: Beneficiary) {
 @Composable
 fun BeneficiaryAddItem(
     callbacks: AppCallbacks,
-    formControl: FormControl,
-    module: Modules
+    formControl: FormControl
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,10 +199,7 @@ fun BeneficiaryAddItem(
     ) {
         IconButton(
             onClick = {
-                callbacks.addBeneficiary(
-                    module,
-                    formControl
-                )
+                callbacks.addBeneficiary(formControl)
             }, modifier = Modifier
                 .background(color = blueColor, shape = CircleShape)
                 .border(
