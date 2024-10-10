@@ -1,5 +1,7 @@
 package com.elmacentemobile.data.source.constants
 
+import android.content.Context
+import androidx.core.content.pm.PackageInfoCompat
 import okhttp3.MultipartBody
 
 enum class StatusEnum(val type: String) {
@@ -17,3 +19,19 @@ enum class StatusEnum(val type: String) {
 }
 
 val s = MultipartBody
+
+
+
+fun getAppVersion(context: Context): String {
+    return try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionName = packageInfo.versionName
+        val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
+       return  versionName
+    } catch (e: Exception) {
+        e.printStackTrace()
+       ""
+    }
+}
+
+

@@ -133,13 +133,13 @@ import com.elmacentemobile.view.model.WidgetViewModel
 import com.elmacentemobile.view.qr.QRContent
 import com.elmacentemobile.view.qr.QRResult
 import com.elmacentemobile.view.qr.ScanQRCode
-import com.example.icebergocr.IcebergSDK
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.tasks.Task
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
+import com.iceberg.ocr.IcebergSDK
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
