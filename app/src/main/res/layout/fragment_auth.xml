@@ -107,18 +107,17 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView"
-                            tools:targetApi="o" />
+                             />
 
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/inputPin"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            style="@style/CustomTextInputLayout"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="@dimen/dimens_54dp"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="24dp"
                             android:layout_marginEnd="24dp"
-                            app:boxBackgroundColor="@color/ghost_white"
                             app:hintEnabled="false"
                             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             app:hintTextColor="@color/dar_color_two"
@@ -130,11 +129,11 @@
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/editPin"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/dimens_70dp"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
                                 android:fontFamily="@font/poppins_medium"
                                 android:gravity="center"
                                 android:hint="@string/pin"
-                                android:focusable="false"
                                 android:inputType="textPassword"
                                 android:paddingHorizontal="@dimen/dimens_5dp"
                                 android:paddingVertical="@dimen/dimens_0dp"
@@ -160,9 +159,9 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/materialButton"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dimens_70dp"
+                            android:layout_height="@dimen/dimens_54dp"
                             android:layout_marginStart="24dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="24dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="@string/login_securely"
@@ -203,34 +202,36 @@
 
                         <LinearLayout
                             android:id="@+id/privacyPolicy"
-                            android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="24dp"
+                            android:gravity="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent">
+
                             <TextView
-                                android:gravity="end"
-                                android:text="@string/by_accepting"
-                                android:layout_weight="1"
-                                android:lines="1"
-                                android:fontFamily="@font/poppins_medium"
-                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                                 android:layout_width="match_parent"
-                                android:paddingEnd="@dimen/dimens_4dp"
                                 android:layout_height="wrap_content"
-                                tools:ignore="RtlSymmetry" />
-                            <TextView
-                                android:textColor="@color/app_blue_light"
+                                android:layout_weight="1"
                                 android:fontFamily="@font/poppins_medium"
+                                android:gravity="end"
+                                android:lines="1"
+                                android:paddingEnd="@dimen/dimens_4dp"
+                                android:text="@string/by_accepting"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                                android:text="@string/privacy_policy"
-                                android:layout_weight="2"
+                                tools:ignore="RtlSymmetry" />
+
+                            <TextView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/privacy_policy"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textColor="@color/app_blue_light" />
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
