@@ -47,7 +47,6 @@
                 android:background="@color/white">
 
 
-
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
@@ -94,7 +93,7 @@
                 <FrameLayout
                     android:id="@+id/frameLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_height="@dimen/dimens_60dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
@@ -105,9 +104,9 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputMobile"
+                        style="@style/CustomTextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:boxBackgroundColor="@color/ghost_white"
                         app:hintEnabled="false">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -121,7 +120,8 @@
                             android:paddingStart="@dimen/dimens_140dp"
                             android:paddingEnd="@dimen/dimens_0dp"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/dar_color_one" />
+                            android:textColor="@color/dar_color_one"
+                            android:textColorHint="@color/app_blue_dark_light" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,12 +144,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputPin"
+                    style="@style/CustomTextInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    app:boxBackgroundColor="@color/ghost_white"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -159,14 +159,15 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editPin"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_70dp"
+                        android:layout_height="match_parent"
                         android:focusable="false"
                         android:fontFamily="@font/poppins_medium"
                         android:hint="@string/pin"
                         android:inputType="numberPassword"
                         android:paddingHorizontal="@dimen/dimens_5dp"
                         android:paddingVertical="@dimen/dimens_0dp"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        android:textColorHint="@color/app_blue_dark_light" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,7 +189,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/materialButton"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_height="@dimen/dimens_60dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
@@ -209,34 +210,36 @@
 
                 <LinearLayout
                     android:id="@+id/privacy"
-                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
+                    android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
+
                     <TextView
-                        android:gravity="end"
-                        android:text="@string/by_accepting"
-                        android:layout_weight="1"
-                        android:lines="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                         android:layout_width="match_parent"
-                        android:paddingEnd="@dimen/dimens_4dp"
                         android:layout_height="wrap_content"
-                        tools:ignore="RtlSymmetry" />
-                    <TextView
-                        android:textColor="@color/app_blue_light"
+                        android:layout_weight="1"
                         android:fontFamily="@font/poppins_medium"
+                        android:gravity="end"
+                        android:lines="1"
+                        android:paddingEnd="@dimen/dimens_4dp"
+                        android:text="@string/by_accepting"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        android:text="@string/privacy_policy"
-                        android:layout_weight="2"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/privacy_policy"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textColor="@color/app_blue_light" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

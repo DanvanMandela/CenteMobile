@@ -19,16 +19,19 @@ android {
         applicationId "com.elmacentemobile"
         minSdk 26
         targetSdk 34
+        versionCode 140
+        versionName "140"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     signingConfigs {
         release {
             keyAlias 'elmaandroidkeystore'
             keyPassword 'priya143'
+            storeFile file("C:/Users/danvan.mandela/Documents/keys/craft/ElmaAndroidKeyStore")
             storePassword 'priya143'
-            enableV1Signing = false
         }
     }
 
@@ -333,7 +336,8 @@ dependencies {
 
     implementation 'com.github.saeed-lotfi:TowerInfoDialogAndroid:1.0.0'
 
-    implementation 'com.chaos.view:pinview:1.4.4'
+    //implementation 'com.chaos.view:pinview:1.4.4'
+    implementation 'io.github.chaosleung:pinview:1.4.4'
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 

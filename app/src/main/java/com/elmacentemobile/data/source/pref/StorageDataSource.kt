@@ -221,5 +221,8 @@ interface StorageDataSource {
     val additionalData: StateFlow<AdditionalInfoData?>
     fun additionalData()
 
+    fun tipTimer(value: Int?)
+    val tipTimer: StateFlow<Int?>
+
 }
 

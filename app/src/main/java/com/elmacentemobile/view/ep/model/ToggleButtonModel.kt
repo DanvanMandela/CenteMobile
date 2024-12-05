@@ -1,5 +1,7 @@
 package com.elmacentemobile.view.ep.model
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.compose.runtime.mutableStateListOf
 import androidx.databinding.ViewDataBinding
@@ -17,6 +19,7 @@ import com.elmacentemobile.view.binding.setChildren
 import com.elmacentemobile.view.ep.controller.LinkedVault
 import com.elmacentemobile.view.ep.data.GroupForm
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 
 @EpoxyModelClass
 open class ToggleButtonModel : DataBindingEpoxyModel() {
@@ -96,4 +99,27 @@ fun TypedEpoxyController<*>.toggleLayout(
         data(vault)
         callbacks(appCallbacks)
     }
+}
+
+class MaterialButtonToggleGroupWithRadius
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MaterialButtonToggleGroup(context, attrs, defStyleAttr) {
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        for (i in 0 until childCount) {
+            val button = getChildAt(i) as MaterialButton
+            if (button.visibility == GONE) {
+                continue
+            }
+            val builder = button.shapeAppearanceModel.toBuilder()
+            val radius = resources.getDimension(R.dimen.dimens_8dp)
+            button.shapeAppearanceModel = builder
+                .setTopLeftCornerSize(radius)
+                .setBottomLeftCornerSize(radius)
+                .setTopRightCornerSize(radius)
+                .setBottomRightCornerSize(radius).build()
+        }
+    }
+
 }

@@ -113,6 +113,8 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         baseViewModel.dataSource.onIDDetails.asLiveData().observe(viewLifecycleOwner) {
             if (it != null) {
                 ocrData = it.data
+                Log.e("FAW",Gson().toJson(it))
+                Log.e("SELFIE", "OCR Data: ${Gson().toJson(it.selfie)}")
 
                 if (ocrData?.actionType.equals("passport")) {
                     Glide.with(requireContext()).load(convert(it.passport!!.image))
@@ -131,7 +133,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
                         .into(binding.selfieLay.avatar)
 
                     // binding.idLay.avatar.setImageBitmap(convert(it.id!!.image))
-                    selfie = ImageData(image = it.selfie.image)
+                    selfie = ImageData(image = it.selfie!!.image)
                 }
 
 
@@ -306,7 +308,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
     private fun setState() {
         val sData = baseViewModel.dataSource.onIDDetails.value
         if (sData != null) {
-            if (sData.selfie != null) sateSelfie(sData.selfie)
+            if (sData.selfie != null) sateSelfie(sData.selfie!!)
             if (sData.id != null) stateId(sData.id)
             if (sData.signature != null) stateSignature(sData.signature)
             if (sData.title != null) stateTitle(sData.title)
@@ -436,6 +438,12 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
         super.onStart()
         onSDKOCRData()
     }
+
+
+
+
+
+
 
     companion object {
         private var pagerData: PagerData? = null
@@ -628,6 +636,7 @@ class IDFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAlertDialog
 
     private fun nira() {
         var formattedDate = ""
+        Log.e("POP",Gson().toJson(ocrData))
         if(ocrData?.actionType.equals("passport", true)) {
             val inputFormatPassport = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
             val outputFormatPassport = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -905,7 +914,7 @@ data class IDDetails(
     val passport: ImageData? = null,
     @field:SerializedName("selfie")
     @field:Expose
-    val selfie: ImageData? = null,
+    var selfie: ImageData? = null,
     @field:SerializedName("ocr")
     @field:Expose
     var data: OCRData? = null
@@ -914,45 +923,45 @@ data class IDDetails(
 
 @Parcelize
 data class OCRData(
-    @field:SerializedName("F-5")
+    @field:SerializedName("names")
     @field:Expose
-    val names: String? = "",
-    @field:SerializedName("F-3")
+    val names: String? = null,
+    @field:SerializedName("surname")
     @field:Expose
-    val surname: String? = "",
-    @field:SerializedName("F-14")
+    val surname: String? = null,
+    @field:SerializedName("idNo")
     @field:Expose
-    val idNo: String? = "",
-    @field:SerializedName("F-11")
+    val idNo: String? = null,
+    @field:SerializedName("dob")
     @field:Expose
-    val dob: String? = "",
-    @field:SerializedName("F-6")
+    val dob: String? = null,
+    @field:SerializedName("otherName")
     @field:Expose
-    val otherName: String? = "",
-    @field:SerializedName("F-7")
+    val otherName: String? = null,
+    @field:SerializedName("gender")
     @field:Expose
-    val gender: String? = "",
-    @field:SerializedName("F-8")
+    val gender: String? = null,
+    @field:SerializedName("expires")
     @field:Expose
-    val expires: String? = "",
-    @field:SerializedName("F-9")
+    val expires: String? = null,
+    @field:SerializedName("docId")
     @field:Expose
-    val docId: String? = "",
-    @field:SerializedName("F-15")
+    val docId: String? = null,
+    @field:SerializedName("dateOfIssue")
     @field:Expose
-    val dateOfIssue: String? = "",
-    @field:SerializedName("F-16")
+    val dateOfIssue: String? = null,
+    @field:SerializedName("passportNo")
     @field:Expose
-    val passportNo: String? = "",
-    @field:SerializedName("F-17")
+    val passportNo: String? = null,
+    @field:SerializedName("passportType")
     @field:Expose
-    val passportType: String? = "",
-    @field:SerializedName("F-18")
+    val passportType: String? = null,
+    @field:SerializedName("countryName")
     @field:Expose
-    val countryName: String? = "",
-    @field:SerializedName("F-19")
+    val countryName: String? = null,
+    @field:SerializedName("type")
     @field:Expose
-    val actionType: String? = "",
+    var actionType: String? = null,
 ) : Parcelable
 
 @Parcelize

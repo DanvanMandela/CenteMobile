@@ -26,7 +26,7 @@
 
     <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:textColorSecondary">@color/app_blue_dark</item>
-        <item name="android:background">@color/back_blue</item>
+        <item name="android:background">@color/ghost_white</item>
         <item name="android:titleTextColor">@color/app_blue_dark</item>
         <item name="navigationIconTint">@color/app_blue_dark</item>
         <item name="android:elevation">0dp</item>
@@ -70,7 +70,8 @@
     </style>
 
 
-    <style name="CustomAutoTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+    <style name="CustomAutoTextInputLayout"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
         <item name="boxStrokeColor">@color/input_color_focus</item>
         <item name="boxBackgroundColor">@color/back_blue</item>
@@ -83,6 +84,16 @@
         <item name="hintTextAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
         <item name="hintTextColor">@color/back_blue</item>
 
+    </style>
+
+    <style name="myTitleTextAppearance" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+    </style>
+
+    <style name="myActionBarTextTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
     </style>
 
 

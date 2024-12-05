@@ -91,7 +91,6 @@
 
 
                                 <FrameLayout
-                                    android:visibility="gone"
                                     android:id="@+id/frameLayout"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/dimens_70dp"
@@ -99,6 +98,7 @@
                                     android:layout_marginTop="24dp"
                                     android:layout_marginEnd="24dp"
                                     android:background="@color/ghost_white"
+                                    android:visibility="gone"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/textView2">
@@ -143,94 +143,150 @@
                                         app:ccp_textSize="15sp" />
                                 </FrameLayout>
 
-
-                                <com.google.android.material.textfield.TextInputLayout
+                                <LinearLayout
                                     android:id="@+id/layAccountNumber"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dimens_70dp"
-                                    android:layout_marginStart="24dp"
-                                    android:layout_marginTop="@dimen/dimens_16dp"
-                                    android:layout_marginEnd="24dp"
-                                    android:hint="@string/account_number"
-                                    app:boxBackgroundColor="@color/ghost_white"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginVertical="@dimen/dimens_8dp"
+                                    android:orientation="vertical"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/editAccountNumber"
+                                    <TextView
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:autoSizeTextType="uniform"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                                        android:layout_marginBottom="@dimen/dimens_8dp"
                                         android:fontFamily="@font/poppins_medium"
-                                        android:inputType="number"
-                                        android:paddingHorizontal="@dimen/dimens_5dp"
-                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                        tools:targetApi="o" />
+                                        android:text="@string/account_number"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
-                                </com.google.android.material.textfield.TextInputLayout>
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/CustomTextInputLayout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dimens_54dp"
+                                        android:layout_marginStart="24dp"
+                                        android:layout_marginTop="@dimen/dimens_4dp"
+                                        android:layout_marginEnd="24dp"
+                                        android:hint="@string/account_number"
+                                        app:hintEnabled="false">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/editAccountNumber"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:hint="@string/enter_"
+                                            android:inputType="number"
+                                            android:paddingHorizontal="@dimen/dimens_5dp"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                            android:textColor="@color/app_blue_dark"
+                                            android:textColorHint="@color/app_blue_dark_light" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
 
 
-                                <com.google.android.material.textfield.TextInputLayout
+                                </LinearLayout>
+
+
+                                <LinearLayout
                                     android:id="@+id/layATMNumber"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dimens_70dp"
-                                    android:layout_marginStart="24dp"
-                                    android:layout_marginTop="16dp"
-                                    android:layout_marginEnd="24dp"
-                                    android:hint="@string/atm_card_number"
-                                    app:boxBackgroundColor="@color/ghost_white"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginVertical="@dimen/dimens_8dp"
+                                    android:orientation="vertical"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/layAccountNumber">
 
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/editATM"
+                                    <TextView
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:autoSizeTextType="uniform"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                                        android:layout_marginVertical="@dimen/dimens_4dp"
                                         android:fontFamily="@font/poppins_medium"
-                                        android:inputType="phone"
-                                        android:maxLength="19"
-                                        android:imeOptions="actionDone"
-                                        android:paddingHorizontal="@dimen/dimens_5dp"
-                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                        tools:targetApi="o" />
+                                        android:text="@string/income_per_"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
-                                </com.google.android.material.textfield.TextInputLayout>
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        style="@style/CustomTextInputLayout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dimens_54dp"
+                                        android:layout_marginStart="24dp"
+                                        android:layout_marginEnd="24dp"
+                                        android:hint="@string/atm_card_number"
+                                        app:hintEnabled="false">
 
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/editATM"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:autoSizeTextType="uniform"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:hint="@string/enter_"
+                                            android:imeOptions="actionDone"
+                                            android:inputType="phone"
+                                            android:maxLength="19"
+                                            android:paddingHorizontal="@dimen/dimens_5dp"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                            android:textColor="@color/app_blue_dark"
+                                            android:textColorHint="@color/app_blue_dark_light" />
 
-                                <com.google.android.material.textfield.TextInputLayout
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:id="@+id/layATMPin"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dimens_70dp"
-                                    android:layout_marginStart="24dp"
-                                    android:layout_marginTop="16dp"
-                                    android:layout_marginEnd="24dp"
-                                    android:hint="@string/atm_card_pin"
-                                    app:boxBackgroundColor="@color/ghost_white"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginVertical="@dimen/dimens_8dp"
+                                    android:orientation="vertical"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/layATMNumber"
-                                    app:passwordToggleEnabled="true">
+                                    app:layout_constraintTop_toBottomOf="@+id/layATMNumber">
 
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/editATMPin"
+                                    <TextView
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:autoSizeTextType="uniform"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="@dimen/dimens_24dp"
+                                        android:layout_marginBottom="@dimen/dimens_8dp"
                                         android:fontFamily="@font/poppins_medium"
-                                        android:inputType="numberPassword"
-                                        android:maxLength="4"
-                                        android:focusable="false"
-                                        android:paddingHorizontal="@dimen/dimens_5dp"
-                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                        tools:targetApi="o" />
+                                        android:text="@string/atm_card_pin"
+                                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
-                                </com.google.android.material.textfield.TextInputLayout>
+                                    <com.google.android.material.textfield.TextInputLayout
+
+                                        style="@style/CustomTextInputLayout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dimens_54dp"
+                                        android:layout_marginStart="24dp"
+                                        android:layout_marginEnd="24dp"
+                                        android:hint="@string/atm_card_pin"
+                                        app:hintEnabled="false"
+                                        app:passwordToggleEnabled="true">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/editATMPin"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:autoSizeTextType="uniform"
+                                            android:focusable="false"
+                                            android:fontFamily="@font/poppins_medium"
+                                            android:hint="@string/enter_"
+                                            android:inputType="numberPassword"
+                                            android:maxLength="4"
+                                            android:paddingHorizontal="@dimen/dimens_5dp"
+                                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                            android:textColor="@color/app_blue_dark"
+                                            android:textColorHint="@color/app_blue_dark_light" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </androidx.core.widget.NestedScrollView>
@@ -249,7 +305,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/materialButton"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_70dp"
+                    android:layout_height="@dimen/dimens_60dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"

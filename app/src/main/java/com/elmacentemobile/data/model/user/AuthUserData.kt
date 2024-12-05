@@ -51,6 +51,12 @@ data class LoginUserData(
     @field:Expose
     var message: String?,
 
+
+    @field:SerializedName("Info")
+    @field:ColumnInfo(name = "Info")
+    @field:Expose
+    var info: String?,
+
     @field:SerializedName("FirstName")
     @field:ColumnInfo(name = "firstName")
     @field:Expose
@@ -357,5 +363,9 @@ data class ActivationData(
 
     @field:SerializedName("message")
     @field:Expose
-    var message: String? = null
+    var message: String? = null,
+
+    @field:SerializedName("info")
+    @field:Expose
+    var info: String? = null
 )

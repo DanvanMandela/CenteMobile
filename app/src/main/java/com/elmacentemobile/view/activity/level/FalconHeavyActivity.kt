@@ -225,6 +225,7 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
         setController()
         onUserInteraction()
         listenToInActivity()
+
     }
 
 
@@ -859,7 +860,25 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                             BaseClass.nonCaps("CHANGEPIN")
                                         ) {
                                             baseViewModel.dataSource.setBio(false)
-                                            setSuccess(resData.message)
+                                            setSuccess(resData.message, object : AppCallbacks {
+                                                override fun navigateUp() {
+                                                    onCancel()
+                                                }
+                                            })
+                                        } else if (BaseClass.nonCaps(resData.formID) ==
+                                            BaseClass.nonCaps("CHANGELANGUAGE")
+                                        ) {
+                                            setSuccess(resData.message, object : AppCallbacks {
+                                                override fun navigateUp() {
+                                                    baseViewModel.dataSource.language(resData.language)
+                                                    baseViewModel.dataSource.setVersion("tag")
+                                                    val intent = Intent(this@FalconHeavyActivity, MainActivity::class.java).apply {
+                                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                    }
+                                                    startActivity(intent)
+                                                    finish()
+                                                }
+                                            })
                                         } else setOnNextModule(
                                             formControl,
                                             if (resData.next.isNullOrBlank()) 0 else resData.next!!.toInt(),
@@ -1559,6 +1578,20 @@ class FalconHeavyActivity : AppCompatActivity(), AppCallbacks, Confirm, Biometri
                                     ) {
                                         baseViewModel.dataSource.setBio(false)
                                         setSuccess(resData.message)
+                                    } else if (BaseClass.nonCaps(resData.formID) ==
+                                        BaseClass.nonCaps("CHANGELANGUAGE")
+                                    ) {
+                                        setSuccess(resData.message, object : AppCallbacks {
+                                            override fun navigateUp() {
+                                                baseViewModel.dataSource.language(resData.language)
+                                                baseViewModel.dataSource.setVersion("tag")
+                                                val intent = Intent(this@FalconHeavyActivity, MainActivity::class.java).apply {
+                                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                }
+                                                startActivity(intent)
+                                                finish()
+                                            }
+                                        })
                                     } else {
                                         setOnNextModule(
                                             formControl,

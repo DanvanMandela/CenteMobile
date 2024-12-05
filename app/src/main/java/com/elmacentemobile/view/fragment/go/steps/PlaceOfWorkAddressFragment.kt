@@ -28,6 +28,7 @@ import com.elmacentemobile.util.ShowToast
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.activity.MainActivity
 import com.elmacentemobile.view.ep.adapter.AddressArrayAdapter
+import com.elmacentemobile.view.ep.adapter.AutoTextArrayAdapter
 import com.elmacentemobile.view.fragment.go.PagerData
 import com.elmacentemobile.view.model.BaseViewModel
 import com.elmacentemobile.view.model.WidgetViewModel
@@ -58,12 +59,13 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
     private lateinit var regionAdapter: AddressArrayAdapter
     private lateinit var districtAdapter: AddressArrayAdapter
     private lateinit var countyAdapter: AddressArrayAdapter
+    private lateinit var countryAdapter: AutoTextArrayAdapter
     private lateinit var subCountyAdapter: AddressArrayAdapter
     private lateinit var parishAdapter: AddressArrayAdapter
     private lateinit var villageAdapter: AddressArrayAdapter
     private lateinit var eaAdapter: AddressArrayAdapter
     private var customer: CustomerProduct? = null
-
+    private var visible: Int = View.VISIBLE
 
 
     override fun onResume() {
@@ -119,6 +121,7 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
             if (sData.parish != null) stateParish(sData.parish!!)
             if (sData.village != null) stateVillage(sData.village!!)
             if (sData.ea != null) stateEA(sData.ea!!)
+            if (sData.county != null) setCountry(sData.country!!)
 
             binding.streetInput.setText(sData.street)
             binding.cityInput.setText(sData.city)
@@ -200,8 +203,12 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
 
     private fun setAddress() {
         addressData.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) setRegion()
+            if (it.isNotEmpty()) {
+                setRegion()
+                setCountry(TwoDMap(key = null, value = null))
+            }
         }
+
     }
 
     @SuppressLint("NewApi")
@@ -246,6 +253,56 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
                 )
             }
 
+    }
+
+
+    private fun setCountry(country: TwoDMap) {
+        val p = widgetViewModel.storageDataSource.staticData.value
+        if (!p.isNullOrEmpty()) {
+            val filtered =
+                p.filter { it?.relationID == country.extra }
+                    .sortedBy { a -> a?.description }
+            val item = filtered.firstOrNull { it?.subCodeID == country.value }
+            if (item != null) {
+                binding.autoCountry.setText(item.description, true)
+                hashMap["country"] = country
+            } else {
+                val default =
+                    p.singleOrNull { it?.description?.lowercase() == "uganda" }
+                binding.autoCountry.setText(default?.description, true)
+                hashMap["country"] = TwoDMap(key = 0, value = default?.subCodeID).apply {
+                    extra = "uganda"
+                }
+                updateLocations(address = country.extra)
+            }
+            countryAdapter = AutoTextArrayAdapter(requireContext(), 0, filtered)
+            binding.autoCountry.setAdapter(countyAdapter)
+            binding.autoCountry.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, p2, _ ->
+                    hashMap["country"] = TwoDMap(
+                        key = p2,
+                        value = countryAdapter.getItem(p2)?.subCodeID
+                    ).apply {
+                        this.extra =
+                            if (countryAdapter.getItem(p2)
+                                    ?.description?.lowercase() == "uganda"
+                            ) "001" else country.extra
+                    }
+                    updateLocations(address = country.extra)
+                }
+
+        }
+    }
+
+    private fun updateLocations(address: String?) {
+        visible = if (address == "001") View.VISIBLE else View.GONE
+        binding.regionLay.visibility = visible
+        binding.districtLay.visibility = visible
+        binding.countyLay.visibility = visible
+        binding.subCountyLay.visibility = visible
+        binding.parishLay.visibility = visible
+        binding.villageLay.visibility = visible
+        binding.eLay.visibility = visible
     }
 
     @SuppressLint("NewApi")
@@ -364,37 +421,42 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
 
 
     override fun validateFields(): Boolean {
-        return if (TextUtils.isEmpty(binding.autoRegion.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_region), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoDistrict.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_district), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoCounty.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_county), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoSubCounty.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_sub_county), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoParish.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_parish), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoVillage.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_village), true)
-            false
-        } else if (TextUtils.isEmpty(binding.autoEA.editableText.toString())) {
-            ShowToast(requireContext(), getString(R.string.select_ea), true)
-            false
-        } else if (TextUtils.isEmpty(binding.streetInput.text.toString())) {
-            ShowToast(requireContext(), getString(R.string.enter_street_), true)
-            false
-        } else if (TextUtils.isEmpty(binding.cityInput.text.toString())) {
-            ShowToast(requireContext(), getString(R.string.enter_city_work_), true)
-            false
-        } else if (TextUtils.isEmpty(binding.codeInput.text.toString())) {
-            ShowToast(requireContext(), getString(R.string.enter_zip_code), true)
-            false
-        } else true
+        return if (visible == View.VISIBLE) {
+            if (TextUtils.isEmpty(binding.autoRegion.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_region), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoDistrict.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_district), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoCounty.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_county), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoSubCounty.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_sub_county), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoParish.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_parish), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoVillage.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_village), true)
+                false
+            } else if (TextUtils.isEmpty(binding.autoEA.editableText.toString())) {
+                ShowToast(requireContext(), getString(R.string.select_ea), true)
+                false
+            } else true
+        } else {
+            if (TextUtils.isEmpty(binding.streetInput.text.toString())) {
+                ShowToast(requireContext(), getString(R.string.enter_street_), true)
+                false
+            } else if (TextUtils.isEmpty(binding.cityInput.text.toString())) {
+                ShowToast(requireContext(), getString(R.string.enter_city_work_), true)
+                false
+            } else if (TextUtils.isEmpty(binding.codeInput.text.toString())) {
+                ShowToast(requireContext(), getString(R.string.enter_zip_code), true)
+                false
+            } else true
+        }
+
 
     }
 
@@ -450,6 +512,7 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
             village = hashMap["Village"],
             parish = hashMap["Parish"],
             ea = hashMap["EA"],
+            country = hashMap["country"],
             street = binding.streetInput.text.toString(),
             zipCode = binding.codeInput.text.toString(),
             city = binding.cityInput.text.toString(),
@@ -459,6 +522,9 @@ class PlaceOfWorkAddressFragment : Fragment(), AppCallbacks, OnAlertDialog, Page
 
 @Parcelize
 data class WorkAddressState(
+    @field:SerializedName("country")
+    @field:Expose
+    var country: TwoDMap? = null,
     @field:SerializedName("region")
     @field:Expose
     var region: TwoDMap? = null,

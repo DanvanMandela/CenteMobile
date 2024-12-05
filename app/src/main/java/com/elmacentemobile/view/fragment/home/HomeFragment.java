@@ -1,6 +1,7 @@
 package com.elmacentemobile.view.fragment.home;
 
 import static com.elmacentemobile.util.BaseClass.nonCaps;
+import static com.elmacentemobile.util.custom.MessageHelperKt.cleanMessage;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -61,6 +62,7 @@ import com.elmacentemobile.view.dialog.DayTipData;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.dialog.InfoFragment;
 import com.elmacentemobile.view.dialog.LoadingFragment;
+import com.elmacentemobile.view.dialog.MessageDialogFragment;
 import com.elmacentemobile.view.dialog.TipConverter;
 import com.elmacentemobile.view.dialog.TipItem;
 import com.elmacentemobile.view.dialog.TipItemConverter;
@@ -154,7 +156,25 @@ public class HomeFragment extends Fragment implements AppCallbacks, OnAlertDialo
         setBinding();
         setViewModel();
         setHomeData();
+        showTip();
         return binding.getRoot().getRootView();
+    }
+
+    private void showTip() {
+        int tip = authViewModel.storage.getTipTimer().getValue();
+        String message = authViewModel.storage.getActivationData().getValue().getInfo();
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (message != null && !TextUtils.isEmpty(message) && tip == 0) {
+                    authViewModel.storage.tipTimer(1);
+                    String messages = cleanMessage(message);
+                    MessageDialogFragment.showDialog(getChildFragmentManager(),
+                            HomeFragment.this, messages);
+                }
+            }
+        }, 800);
+
     }
 
 

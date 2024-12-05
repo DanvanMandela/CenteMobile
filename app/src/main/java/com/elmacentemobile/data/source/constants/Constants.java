@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.elmacentemobile.BuildConfig;
 import com.elmacentemobile.data.model.user.ActivationData;
 import com.elmacentemobile.data.source.pref.StorageDataSource;
 import com.elmacentemobile.util.AppLogger;
@@ -84,7 +85,7 @@ public class Constants {
         public static final boolean TEST = true;//TODO CHECK CAMERA AND LOGS
 
         public static final boolean AUTO_OTP = false;//Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        public static final boolean ACTIVATED = false;
+        public static final boolean ACTIVATED = true;
 
         public static final boolean TEST_PROD = false;
 
@@ -164,7 +165,7 @@ public class Constants {
 
             jsonObject.put("BankID", Data.BANK_ID);
             jsonObject.put("Country", Data.COUNTRY);
-            jsonObject.put("VersionNumber", getAppVersion(activity));
+            jsonObject.put("VersionNumber", BuildConfig.VERSION_NAME);
             jsonObject.put("IMEI", BaseClass.newEncrypt(getIMEIDeviceId(activity)));
             jsonObject.put("IMSI", BaseClass.newEncrypt(getIMEIDeviceId(activity)));
             jsonObject.put("TRXSOURCE", Data.SOURCE);
@@ -197,28 +198,11 @@ public class Constants {
             if (mTelephony != null)
                 deviceId = mTelephony.getDeviceId();
         }
-        return "2FF6C72E-F9C5-497B-941E-0B3398CDE1CF";
+        return deviceId;
     }
 
 
     public static String getUniqueID() {
-        String uniquePseudoID = Data.VERSION +
-                BaseClass.generateAlphaNumericString(3) +
-                Build.BRAND.length() % 10 +
-                Build.DEVICE.length() % 10 +
-                Build.DISPLAY.length() % 10 +
-                Build.HOST.length() % 10 +
-                Build.ID.length() % 10 +
-                Build.MANUFACTURER.length() % 10 +
-                Build.MODEL.length() % 10 +
-                Build.PRODUCT.length() % 10 +
-                Build.TAGS.length() % 10 +
-                Build.TYPE.length() % 10 +
-                Build.USER.length() % 10 +
-                BaseClass.generateAlphaNumericString(4);
-        String serial = Build.getRadioVersion();
-//        return new UUID(uniquePseudoID.hashCode(), serial.hashCode()).toString();
-
         return UUID.randomUUID().toString();
     }
 

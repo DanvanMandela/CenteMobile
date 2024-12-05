@@ -1287,6 +1287,27 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
     }
 
 
+    private val _tipTimer = MutableStateFlow(
+        sharedPreferences.getInt(
+            TAG_TIP_TIMER,
+            0
+        )
+    )
+    override val tipTimer: StateFlow<Int?>
+        get() = _tipTimer
+
+    override fun tipTimer(value: Int?) {
+        _tipTimer.value = value!!
+        with(sharedPreferences.edit()) {
+            putInt(
+                TAG_TIP_TIMER,
+                value
+            )
+            apply()
+        }
+    }
+
+
     companion object {
         private const val SHARED_PREF_NAME = "pref"
         private const val MIGRATION_PREF = "JamiiBoraMobilePrefs"
@@ -1372,5 +1393,7 @@ class SharedPreferencesStorage @Inject constructor(@ApplicationContext context: 
         private const val TAG_ACCOUNT_TYPE = "accountType"
 
         private const val TAG_ADDITIONAL_INFO_TYPE = "addInfo"
+
+        private const val TAG_TIP_TIMER = "tipTimer"
     }
 }

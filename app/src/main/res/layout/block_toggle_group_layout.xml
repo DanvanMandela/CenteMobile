@@ -14,7 +14,7 @@
             type="com.elmacentemobile.util.callbacks.AppCallbacks" />
     </data>
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
+    <com.elmacentemobile.view.ep.model.MaterialButtonToggleGroupWithRadius
         android:id="@+id/parent"
         callback="@{callback}"
         form="@{data}"

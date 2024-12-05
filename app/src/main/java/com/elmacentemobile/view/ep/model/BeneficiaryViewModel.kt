@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -29,7 +30,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -48,10 +48,13 @@ import com.elmacentemobile.data.model.user.Beneficiary
 import com.elmacentemobile.data.source.pref.StorageDataSource
 import com.elmacentemobile.databinding.BlockBeneficiaryViewLayoutBinding
 import com.elmacentemobile.databinding.BlockContactInputLayoutBinding
+import com.elmacentemobile.databinding.BlockTextInputLayoutBinding
+import com.elmacentemobile.disabledAmountTextInputLayout
 import com.elmacentemobile.util.BaseClass
 import com.elmacentemobile.util.callbacks.AppCallbacks
 import com.elmacentemobile.view.ep.controller.LinkedVault
 import com.elmacentemobile.view.ep.model.helper.blueColor
+import com.google.android.material.textfield.TextInputEditText
 
 @EpoxyModelClass
 open class BeneficiaryViewModel : DataBindingEpoxyModel() {
@@ -78,6 +81,7 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
 
     private fun addChildren(layoutBinding: BlockBeneficiaryViewLayoutBinding) {
         var textField: AutoCompleteTextView? = null
+        var textField2: TextInputEditText? = null
         layoutBinding.children.removeAllViews()
         for (s in data.children) {
             when (BaseClass.nonCaps(s.controlType)) {
@@ -90,8 +94,31 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
                     binding.callback = callbacks
                     layoutBinding.children.addView(binding.root)
                     textField = binding.autoEdit
+
+
+                    if (s.displayControl.isNullOrEmpty()) {
+                        if (s.displayControl == "true") {
+                            textField.isFocusable = false
+                        }
+                    }
                     binding.autoInput.setEndIconOnClickListener {
                         callbacks.onContactSelect(binding.autoEdit)
+                    }
+                }
+
+                BaseClass.nonCaps(ControlTypeEnum.TEXT.type) -> {
+                    val binding =
+                        BlockTextInputLayoutBinding.inflate(
+                            LayoutInflater.from(layoutBinding.root.context)
+                        )
+                    binding.data = s
+                    binding.callback = callbacks
+                    layoutBinding.children.addView(binding.root)
+                    textField2 = binding.child
+                    if (s.displayControl.isNullOrEmpty()) {
+                        if (s.displayControl == "true") {
+                            textField?.isFocusable = false
+                        }
                     }
                 }
             }
@@ -125,7 +152,11 @@ open class BeneficiaryViewModel : DataBindingEpoxyModel() {
                             )
                         }
                         items(beneficiaryData) { ben ->
-                            BeneficiaryItem(beneficiary = ben!!, child = textField)
+                            BeneficiaryItem(
+                                beneficiary = ben!!,
+                                child = textField,
+                                child2 = textField2
+                            )
                         }
                     }
                 }
@@ -151,22 +182,28 @@ fun TypedEpoxyController<*>.beneficiaryViewModel(
 
 
 @Composable
-fun BeneficiaryItem(beneficiary: Beneficiary, child: AutoCompleteTextView?) {
+fun BeneficiaryItem(
+    beneficiary: Beneficiary,
+    child: AutoCompleteTextView?,
+    child2: TextInputEditText?
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .wrapContentSize()
+            .width(80.dp)
+            .wrapContentHeight()
             .padding(horizontal = 8.dp)
     ) {
         IconButton(
             onClick = {
                 val account = "${beneficiary.accountID}"
                 child?.setText(account)
+                child2?.setText(account)
             }, modifier = Modifier
                 .background(color = blueColor, shape = CircleShape)
                 .border(
                     width = 1.dp,
-                    shape = CircleShape, color = Color.LightGray
+                    shape = CircleShape, color = blueColor
                 )
         ) {
             Icon(
@@ -180,6 +217,8 @@ fun BeneficiaryItem(beneficiary: Beneficiary, child: AutoCompleteTextView?) {
             text = "${beneficiary.accountAlias}",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
+            maxLines = 2,
+            minLines = 2,
             style = MaterialTheme.typography.caption,
             fontFamily = FontFamily(Font(R.font.poppins_medium))
         )
@@ -194,7 +233,8 @@ fun BeneficiaryAddItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .wrapContentSize()
+            .width(80.dp)
+            .wrapContentHeight()
             .padding(horizontal = 8.dp)
     ) {
         IconButton(
@@ -205,7 +245,7 @@ fun BeneficiaryAddItem(
                 .border(
                     width = 1.dp,
                     shape = CircleShape,
-                    color = Color.LightGray
+                    color = blueColor
                 )
 
         ) {
@@ -221,6 +261,8 @@ fun BeneficiaryAddItem(
             style = MaterialTheme.typography.caption,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
+            maxLines = 2,
+            minLines = 2,
             fontFamily = FontFamily(Font(R.font.poppins_medium))
         )
     }

@@ -481,6 +481,10 @@
     <string name="passport_header">Passport</string>
     <string name="passport_front">Passport</string>
     <string name="passport_required">Passport Required</string>
+    <string name="select_">Select</string>
+    <string name="today_tip_">Today\'s Tip</string>
+    <string name="title_">Title</string>
+    <string name="country_">Country</string>
 
 
 </resources>

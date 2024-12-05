@@ -48,7 +48,7 @@ class ModuleGETWorker @AssistedInject constructor(
                 applicationContext,
                 uniqueID,
                 ActionTypeEnum.GET_MENU.type,
-                "",
+                activeData?.id ?: "",
                 true,
                 storageDataSource
             )
@@ -86,8 +86,10 @@ class ModuleGETWorker @AssistedInject constructor(
                     val accountType = storageDataSource.accountType.value
                     if (status == StatusEnum.SUCCESS.type) {
                         val modules = data.map { s -> s?.modules }.single()
+
                         widgetRepository.saveModule(modules)
-                      //  widgetRepository.saveModule(modules?.filter { m -> m.customerType == accountType })//TODO LANGUAGE ADDED ?.filter { m -> m.language == language }
+                        //widgetRepository.saveModule(modules?.filter { m -> m.language == language })//TODO LANGUAGE ADDED
+                        // ?.filter { m -> m.language == language }
                         constructResponse(Result.success())
                     } else constructResponse(Result.retry())
                 }

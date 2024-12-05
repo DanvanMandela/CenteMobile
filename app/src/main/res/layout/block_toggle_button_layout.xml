@@ -24,6 +24,6 @@
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         app:cornerRadius="@dimen/dimens_5dp"
-        tools:targetApi="o" />
+         />
 
 </layout>

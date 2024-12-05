@@ -21,31 +21,43 @@
                 app:layout_constraintBottom_toTopOf="@+id/loading"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.github.ybq.android.spinkit.SpinKitView
-                    android:id="@+id/spin_kit"
-                    style="@style/SpinKitView.Small.FadingCircle"
-                    android:layout_width="@dimen/dimens_80dp"
-                    android:layout_height="@dimen/dimens_80dp"
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:SpinKit_Color="@color/app_blue_light" />
+                    app:shimmer_repeat_mode="restart"
+                    app:shimmer_shape="linear">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="@dimen/dimens_50dp"
-                    android:layout_height="@dimen/dimens_50dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/icon_logo" />
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="@dimen/dimens_50dp"
+                        android:layout_height="@dimen/dimens_50dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_logo" />
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <!--                <com.github.ybq.android.spinkit.SpinKitView-->
+                <!--                    android:id="@+id/spin_kit"-->
+                <!--                    style="@style/SpinKitView.Small.FadingCircle"-->
+                <!--                    android:layout_width="@dimen/dimens_80dp"-->
+                <!--                    android:layout_height="@dimen/dimens_80dp"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    app:SpinKit_Color="@color/app_blue_light" />-->
+
+                <!--               -->
 
 
             </FrameLayout>
 
 
             <include
-                android:visibility="invisible"
                 android:id="@+id/loading"
                 layout="@layout/block_loading_item_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/aspectRatioImageView2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

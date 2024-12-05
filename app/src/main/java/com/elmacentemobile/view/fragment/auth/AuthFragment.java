@@ -57,7 +57,6 @@ import com.elmacentemobile.view.composable.keyboard.CustomKeyboard;
 import com.elmacentemobile.view.dialog.AlertDialogFragment;
 import com.elmacentemobile.view.dialog.DialogData;
 import com.elmacentemobile.view.ep.data.BusData;
-import com.elmacentemobile.view.ep.data.BusDataTypeConverter;
 import com.elmacentemobile.view.ep.data.GroupForm;
 import com.elmacentemobile.view.ep.data.GroupModule;
 import com.elmacentemobile.view.fragment.auth.bio.util.BiometricAuthListener;
@@ -228,10 +227,14 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
 
     @Override
     public void setBinding() {
-
         binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        authViewModel.storage.tipTimer(0);
+    }
 
     @Override
     public void onPause() {
@@ -556,6 +559,7 @@ public class AuthFragment extends Fragment implements AppCallbacks, View.OnClick
         userData.setImageURL(data.getImageURL());
         userData.setIDNumber(data.getIDNumber());
         userData.setLoginDate(data.getLoginDate());
+        userData.setInfo(data.getInfo());
         if (data.getMessage() != null && !TextUtils.isEmpty(data.getMessage())) {
             new AppLogger().appLog("MESSAGE:LOCAL", "" +
                     authViewModel.storage.getActivationData().getValue().getMessage());

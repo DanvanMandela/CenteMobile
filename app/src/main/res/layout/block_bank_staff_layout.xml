@@ -8,18 +8,27 @@
         android:id="@+id/mainLay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dimens_8dp"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginBottom="@dimen/dimens_4dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/bank_staff_name"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameLay"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/CustomTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_70dp"
+            android:layout_height="@dimen/dimens_54dp"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
-            android:layout_marginTop="@dimen/dimens_16dp"
+            android:layout_marginTop="@dimen/dimens_4dp"
             android:hint="@string/bank_staff_name"
-
-            app:boxBackgroundColor="@color/ghost_white"
+            app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"
@@ -30,23 +39,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins_medium"
+                android:hint="@string/enter_"
                 android:inputType="textCapSentences"
                 android:maxLength="40"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textColor="@color/app_blue_dark"
+                android:textColorHint="@color/app_blue_dark_light"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginTop="@dimen/dimens_8dp"
+            android:layout_marginBottom="@dimen/dimens_4dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/bank_staff_branch"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/branchLay"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/CustomTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_70dp"
+            android:layout_height="@dimen/dimens_54dp"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
-            android:layout_marginTop="@dimen/dimens_16dp"
+            android:layout_marginTop="@dimen/dimens_4dp"
             android:hint="@string/bank_staff_branch"
-
-            app:boxBackgroundColor="@color/ghost_white"
+            app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/dar_color_two"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"
@@ -57,9 +78,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins_medium"
+                android:hint="@string/enter_"
                 android:inputType="textCapSentences"
                 android:maxLength="40"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textColor="@color/app_blue_dark"
+                android:textColorHint="@color/app_blue_dark_light"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>

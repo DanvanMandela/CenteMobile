@@ -23,6 +23,9 @@ data class DynamicDataResponse(
     @field:SerializedName("FormID")
     @field:Expose
     var formID: String?,
+    @field:SerializedName("LanguageID")
+    @field:Expose
+    var language: String?,
     @field:SerializedName("Data")
     @field:Expose
     var resultsData: MutableList<ResultsData>?,
@@ -91,7 +94,11 @@ data class DynamicAPIResponse(
     var accountStatement: MutableList<HashMap<String, String>>? = null,
     @field:SerializedName("NotificationData")
     @field:Expose
-    var notificationdata: MutableList<Notifications>? = null
+    var notificationdata: MutableList<Notifications>? = null,
+    @field:SerializedName("LanguageID")
+    @field:Expose
+    @field:Nullable
+    var language: String? = null,
 
 ) : Parcelable
 

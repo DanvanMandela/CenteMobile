@@ -125,7 +125,7 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
         val product = widgetViewModel.storageDataSource.customerProduct.value
 
         if (product?.product?.value == "32217") {
-            binding.idLay.hint = getString(R.string.nssf_number)
+            binding.idHint.text = getString(R.string.nssf_number)
         }
     }
 
@@ -149,12 +149,12 @@ class IDDetailsFragment : Fragment(), AppCallbacks, View.OnClickListener, OnAler
                         val formattedDate = date?.let { it1 -> outputFormatPassport.format(it1) }
                         val formattedIssueDate = issueDate?.let { it2 -> outputFormatPassport.format(it2) }
                         binding.idInput.setText(data.idNo)
-                        binding.idLay.hint = "Passport Number"
+                        binding.idHint.text = "Passport Number"
                         binding.dobInput.setText(formattedDate)
                         binding.surInput.setText(data.surname)
                         binding.otherInput.setText(data.otherName)
                         binding.givenInput.setText(formattedIssueDate)
-                        binding.givenName.hint = "Date of Issue"
+                        binding.hintName.text = "Date of Issue"
                     }else if(data.actionType.equals("id", true)){
                         val date: Date? = data.dob?.let { it1 -> inputFormat.parse(it1) }
                         val formattedDate = date?.let { it1 -> outputFormat.format(it1) }

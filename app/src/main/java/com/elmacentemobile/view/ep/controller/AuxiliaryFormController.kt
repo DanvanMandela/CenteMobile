@@ -38,6 +38,7 @@ import com.elmacentemobile.view.ep.model.inputNumericModel
 import com.elmacentemobile.view.ep.model.inputPanModel
 import com.elmacentemobile.view.ep.model.linkedDropDownLayout
 import com.elmacentemobile.view.ep.model.linkedDynamicDropDownLayout
+import com.elmacentemobile.view.ep.model.myNumberViewModel
 import com.elmacentemobile.view.ep.model.passwordModel
 import com.elmacentemobile.view.ep.model.phoneContacts
 import com.elmacentemobile.view.ep.model.tabLayoutGroup
@@ -99,6 +100,20 @@ class NewFormController(
                                 )
                             )
                         }
+                    }
+
+                    nonCaps(ControlTypeEnum.MY_NUMBER.type) -> {
+                        if (d.linkedToControl == null || TextUtils.isEmpty(d.linkedToControl))
+                            myNumberViewModel(
+                                appCallbacks = this@NewFormController.callbacks,
+                                storage = data.storage!!,
+                                vault = LinkedVault(
+                                    container = d,
+                                    children = mutableListOf(),
+                                    mainData = data,
+                                    module = data.forms.module
+                                )
+                            )
                     }
 
                     nonCaps(ControlTypeEnum.DYNAMICDROPDOWN.type) -> {

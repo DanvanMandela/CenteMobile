@@ -7,17 +7,27 @@
         android:id="@+id/mainLay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dimens_8dp"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginVertical="@dimen/dimens_4dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/income_per_"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameLay"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/CustomTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_70dp"
+            android:layout_height="@dimen/dimens_54dp"
             android:layout_marginHorizontal="@dimen/dimens_24dp"
-            android:layout_marginTop="@dimen/dimens_16dp"
+            android:layout_marginTop="@dimen/dimens_4dp"
             android:hint="@string/customer_name"
-            app:boxBackgroundColor="@color/ghost_white"
+            app:hintEnabled="false"
             app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:hintTextColor="@color/ghost_white"
             app:layout_constraintTop_toBottomOf="@+id/hearAbout"
@@ -27,20 +37,32 @@
                 android:id="@+id/nameInput"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:maxLength="40"
                 android:fontFamily="@font/poppins_medium"
+                android:hint="@string/enter_"
                 android:inputType="textCapSentences"
+                android:maxLength="40"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textColor="@color/app_blue_dark"
+                android:textColorHint="@color/app_blue_dark_light"
                 tools:ignore="SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimens_24dp"
+            android:layout_marginVertical="@dimen/dimens_8dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/phone_number"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
         <FrameLayout
             android:id="@+id/mobileLayOne"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_70dp"
+            android:layout_height="@dimen/dimens_54dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +71,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputMobile"
+                style="@style/CustomTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:boxBackgroundColor="@color/ghost_white"
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -59,13 +81,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="@string/phone_number"
+                    android:hint="@string/enter_"
                     android:inputType="phone"
                     android:paddingVertical="@dimen/dimens_0dp"
                     android:paddingStart="@dimen/dimens_110dp"
                     android:paddingEnd="@dimen/dimens_0dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textColor="@color/dar_color_one" />
+                    android:textColor="@color/app_blue_dark"
+                    android:textColorHint="@color/app_blue_dark_light" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,6 +103,7 @@
                 app:ccp_arrowSize="25dp"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_autoDetectLanguage="true"
+                app:ccp_contentColor="@color/app_blue_dark"
                 app:ccp_countryAutoDetectionPref="SIM_ONLY"
                 app:ccp_defaultNameCode="UG"
                 app:ccp_showFlag="false"

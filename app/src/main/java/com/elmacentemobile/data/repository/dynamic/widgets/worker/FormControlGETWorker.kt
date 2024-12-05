@@ -38,7 +38,7 @@ class FormControlGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
-
+            val activeData = storageDataSource.activationData.value
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
@@ -48,7 +48,7 @@ class FormControlGETWorker @AssistedInject constructor(
                 applicationContext,
                 uniqueID,
                 ActionTypeEnum.GET_FORM_CONTROL.type,
-                "",
+                activeData?.id ?: "",
                 true,
                 storageDataSource
             )
@@ -82,6 +82,7 @@ class FormControlGETWorker @AssistedInject constructor(
                     AppLogger.instance.appLog("FORMS", Gson().toJson(data))
                     val status = data?.map { s -> s?.status }?.single()
                     val language = storageDataSource.language.value
+                    AppLogger.instance.appLog("Language", "$language")
                     if (status == StatusEnum.SUCCESS.type) {
                         val forms = data.map { s -> s?.formControls }.single()
                         if (forms != null)

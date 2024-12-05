@@ -129,4 +129,5 @@ class SuccessDialogFragment : DialogFragment(), AppCallbacks {
         dialog?.dismiss()
         callBacks?.navigateUp()
     }
+
 }

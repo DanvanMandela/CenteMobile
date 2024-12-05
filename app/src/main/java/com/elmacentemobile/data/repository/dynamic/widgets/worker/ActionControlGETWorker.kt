@@ -35,7 +35,7 @@ class ActionControlGETWorker @AssistedInject constructor(
 ) : RxWorker(context, workerParameters) {
     override fun createWork(): Single<Result> {
         return try {
-
+            val activeData = storageDataSource.activationData.value
             val iv = storageDataSource.deviceData.value!!.run
             val device = storageDataSource.deviceData.value!!.device
             val uniqueID = Constants.getUniqueID()
@@ -45,7 +45,7 @@ class ActionControlGETWorker @AssistedInject constructor(
                 applicationContext,
                 uniqueID,
                 ActionTypeEnum.GET_ACTION_CONTROL.type,
-                "",
+                activeData?.id ?: "",
                 true,
                 storageDataSource
             )

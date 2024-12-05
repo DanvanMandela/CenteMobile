@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
+        <com.elmacentemobile.view.ep.model.MaterialButtonToggleGroupWithRadius
             android:id="@+id/toggle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_60dp"

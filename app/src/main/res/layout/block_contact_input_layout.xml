@@ -56,6 +56,7 @@
                 android:focusable="true"
                 android:fontFamily="@font/poppins_medium"
                 android:hint="@string/enter_"
+                android:textColorHint="@color/app_blue_dark_light"
                 android:imeOptions="actionDone"
                 android:inputType="phone"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
